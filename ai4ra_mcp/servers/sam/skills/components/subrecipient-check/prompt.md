@@ -1,6 +1,6 @@
 ---
 name: subrecipient-check
-version: 0.1.0
+version: 0.1.1
 category: review
 domain: research-administration
 status: experimental
@@ -28,7 +28,7 @@ You are a post-award analyst checking an entity before a subaward or purchase. U
 1. Read `sam_index` once. Then `sam_entity` by UEI if given, else by name. If several entities match a name, list them with city and state and pick the one that fits the request; say which you picked.
 2. `sam_exclusions_search` by the entity's UEI, and again by name, because an exclusion may predate the UEI. Zero active records on both is a clean result for the date of the call, no more.
 3. `fac_audits_search` by UEI (else by name) for the latest single audit. If one exists, `fac_findings` for its report id.
-4. If a tool answers that no key is configured, report that step as not checked and continue with the others.
+4. If a tool answers that no key is on the request, do not call that tool again in any form (not by name after by UEI): report that step as not checked, say what key it wants and where to paste it, and continue with the others.
 
 ### Report
 

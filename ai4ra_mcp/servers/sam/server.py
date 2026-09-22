@@ -56,7 +56,7 @@ def slim_entity(e: dict) -> dict:
     return {
         "uei": uei, "cage": reg.get("cageCode"), "legal_name": reg.get("legalBusinessName"), "dba_name": reg.get("dbaName"),
         "registration_status": reg.get("registrationStatus"), "registration_date": reg.get("registrationDate"),
-        "activation_date": reg.get("activationDate"), "expiration_date": reg.get("expirationDate"),
+        "activation_date": reg.get("activationDate"), "expiration_date": reg.get("registrationExpirationDate") or reg.get("expirationDate"),   # renamed in v2; both read
         "exclusion_status_flag": reg.get("exclusionStatusFlag"), "purpose_of_registration": reg.get("purposeOfRegistrationDesc"),
         "entity_url": info.get("entityURL"), "entity_start_date": info.get("entityStartDate"), "fiscal_year_end": info.get("fiscalYearEndCloseDate"),
         "address": {"line1": addr.get("addressLine1"), "city": addr.get("city"), "state": addr.get("stateOrProvinceCode"), "zip": addr.get("zipCode"), "country": addr.get("countryCode")},

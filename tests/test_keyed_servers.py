@@ -24,7 +24,7 @@ NIH_PROJECT = {
 NSF_AWARD = {"id": "2425033", "title": "EPSCoR Graduate Fellowship", "awardeeName": "University of Montana", "awardeeStateCode": "MT", "pdPIName": "Jane Smith",
              "date": "08/15/2024", "startDate": "09/01/2024", "expDate": "08/31/2027", "fundsObligatedAmt": "1200000", "primaryProgram": "EPSCoR", "fundProgramDir": "OD"}
 SAM_ENTITY = {"entityRegistration": {"ueiSAM": "RV56IG5JM6G9", "legalBusinessName": "REGENTS OF THE UNIVERSITY OF IDAHO", "cageCode": "1ABC2",
-                                     "registrationStatus": "Active", "registrationDate": "2024-05-01", "expirationDate": "2025-05-01", "exclusionStatusFlag": "N",
+                                     "registrationStatus": "Active", "registrationDate": "2024-05-01", "registrationExpirationDate": "2025-05-01", "exclusionStatusFlag": "N",
                                      "purposeOfRegistrationDesc": "All Awards"},
               "coreData": {"entityInformation": {"entityURL": "https://www.uidaho.edu", "fiscalYearEndCloseDate": "06/30"},
                            "physicalAddress": {"addressLine1": "875 Perimeter Dr", "city": "Moscow", "stateOrProvinceCode": "ID", "zipCode": "83844", "countryCode": "USA"},

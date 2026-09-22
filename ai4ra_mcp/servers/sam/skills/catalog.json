@@ -8,8 +8,14 @@
       "slug": "subrecipient-check",
       "name": "subrecipient-check",
       "summary": "Check a prospective subrecipient or vendor: SAM.gov registration status and expiration, active exclusions, and the latest single audit with its findings from the Federal Audit Clearinghouse, reported fact by fact with source and date, and mapped to the 2 CFR 200.332 risk-assessment items it does and does not cover.",
-      "triggers": ["subrecipient check", "debarment check", "SAM check", "is this entity excluded", "subrecipient risk assessment"],
-      "version": "0.1.0",
+      "triggers": [
+        "subrecipient check",
+        "debarment check",
+        "SAM check",
+        "is this entity excluded",
+        "subrecipient risk assessment"
+      ],
+      "version": "0.1.1",
       "category": "review",
       "domain": "research-administration",
       "status": "experimental",
@@ -20,11 +26,33 @@
         "evals_dir": "components/subrecipient-check/evals"
       },
       "manifestations": [
-        {"type": "prompt", "path": "components/subrecipient-check/prompt.md", "version": "0.1.0", "role": "canonical_prompt"}
+        {
+          "type": "prompt",
+          "path": "components/subrecipient-check/prompt.md",
+          "version": "0.1.1",
+          "role": "canonical_prompt"
+        }
       ],
-      "contracts": {"output": {"format": "markdown_review", "scope": "repo_local", "schema_path": null}},
-      "evaluation": {"case_count": 0, "report_count": 0, "last_fully_evaluated_version": null, "current_version_is_fully_evaluated": false},
-      "requires": ["sam_index", "sam_entity", "sam_exclusions_search", "fac_audits_search", "fac_findings"]
+      "contracts": {
+        "output": {
+          "format": "markdown_review",
+          "scope": "repo_local",
+          "schema_path": null
+        }
+      },
+      "evaluation": {
+        "case_count": 0,
+        "report_count": 0,
+        "last_fully_evaluated_version": null,
+        "current_version_is_fully_evaluated": false
+      },
+      "requires": [
+        "sam_index",
+        "sam_entity",
+        "sam_exclusions_search",
+        "fac_audits_search",
+        "fac_findings"
+      ]
     }
   ]
 }

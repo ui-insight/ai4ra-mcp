@@ -2,7 +2,7 @@
 
 Checks a prospective subrecipient or vendor against SAM.gov (registration, exclusions) and the Federal Audit Clearinghouse (latest single audit and its findings) and reports what the public record shows, fact by fact with source and date, mapped to the items of a 2 CFR 200.332 risk assessment it covers and does not.
 
-**Version:** 0.1.0 · **Category:** review · **Status:** experimental · **Output:** Markdown
+**Version:** 0.1.1 · **Category:** review · **Status:** experimental · **Output:** Markdown
 
 ## Inputs
 
