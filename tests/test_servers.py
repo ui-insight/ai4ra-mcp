@@ -45,9 +45,9 @@ def test_app_mounts_every_server_and_its_skills():
         by = {s["name"]: s for s in index["servers"]}
         assert by["sam"]["key"]["required"] is True and by["sam"]["key"]["hint"]
         assert by["ecfr"]["key"] is None and by["ecfr"]["label"] == "eCFR"
-        assert by["nih"]["skills_base"] == "/nih/skills/" and by["nih"]["web"].endswith("/nih/skills/")
+        assert by["nih"]["skills_base"] == "nih/skills/" and by["nih"]["mcp"] == "nih/mcp" and by["nih"]["web"].endswith("/nih/skills/")
         for s in index["servers"]:
-            assert client.get(s["skills"]).status_code == 200
+            assert client.get("/" + s["skills"]).status_code == 200
         r = client.post("/grants/mcp", json={"jsonrpc": "2.0", "id": 1, "method": "tools/list", "params": {}},
                         headers={"Accept": "application/json, text/event-stream"})
         assert r.status_code == 200

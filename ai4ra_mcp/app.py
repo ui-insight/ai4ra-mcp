@@ -108,7 +108,8 @@ def build_app(only: list[str] | None = None) -> Starlette:
             prompts = await SERVERS[name].list_prompts()
             meta = META.get(name, {})
             out.append({"name": name, "label": meta.get("label", name), "description": meta.get("description", ""),
-                        "mcp": f"/{name}/mcp", "skills": f"/{name}/skills/catalog.json", "skills_base": f"/{name}/skills/",
+                        # Relative to this index, so they resolve under whatever prefix a proxy mounts the server at.
+                        "mcp": f"{name}/mcp", "skills": f"{name}/skills/catalog.json", "skills_base": f"{name}/skills/",
                         "web": f"{WEB}{name}/skills/", "key": meta.get("key"),
                         "tools": [t.name for t in tools], "prompts": [p.name for p in prompts]})
         return JSONResponse({"v": 1, "servers": out})

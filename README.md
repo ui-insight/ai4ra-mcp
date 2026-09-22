@@ -33,7 +33,9 @@ A client's connector URL is the server's path on the host, for example
 wants: Idaho's names all eight; another institution leaves out `uidaho` and
 adds whatever it builds for itself. `GET /` is the index: `{"v": 1, "servers": [...]}`, one
 entry per mounted server with its `name`, `label`, `description`, the paths
-`mcp`, `skills` (the catalog) and `skills_base`, a `web` link to the skills
+`mcp`, `skills` (the catalog) and `skills_base` (relative to the index, so
+they resolve under whatever prefix a proxy mounts the server at), a `web`
+link to the skills
 folder on GitHub, `key` (null, or `{"required", "hint"}` when the server
 wants the person's own key), and its `tools` and `prompts`. A client that
 reads the index adds every server in one step and sees a new one the day it
