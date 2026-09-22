@@ -31,8 +31,14 @@ use for attachments and linked documents.
 A client's connector URL is the server's path on the host, for example
 `https://<host>/ecfr/mcp`. A deployment's list of sources names the paths it
 wants: Idaho's names all eight; another institution leaves out `uidaho` and
-adds whatever it builds for itself. `GET /` lists what is mounted, with each server's tools
-and prompts.
+adds whatever it builds for itself. `GET /` is the index: `{"v": 1, "servers": [...]}`, one
+entry per mounted server with its `name`, `label`, `description`, the paths
+`mcp`, `skills` (the catalog) and `skills_base`, a `web` link to the skills
+folder on GitHub, `key` (null, or `{"required", "hint"}` when the server
+wants the person's own key), and its `tools` and `prompts`. A client that
+reads the index adds every server in one step and sees a new one the day it
+is deployed; the Office add-in does this from one `indexes` entry in its
+sources file.
 
 Tool names carry their upstream (`ecfr_`, `grants_gov_`, `uidaho_`) and are
 otherwise unchanged from mcp-ecfr. The extra prefix the Hugging Face Space's
