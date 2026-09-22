@@ -1,9 +1,11 @@
 """sam: SAM.gov entities, exclusions and Assistance Listings.
 
 Upstream: https://api.sam.gov/ (entity-information v4 and assistance-listings v1). One key covers all
-three; it comes from AI4RA_MCP_SAM_KEY or from the client's bearer token. The daily quota is the
-constraint: 10 requests for a personal key with no SAM.gov role, 1,000 with a role or a non-federal
-system account. Requests made by this process are counted so the index can show them.
+three, and it is the person's own: their client sends it as a bearer token on each call (the Office
+pane keeps it beside the gateway key and sends it to this server only). The daily quota is per key:
+10 requests for a personal key with no SAM.gov role, 1,000 with a role or a non-federal system
+account. A deployment may hold a fallback key in AI4RA_MCP_SAM_KEY, used only when a request sends
+none. Requests made by this process are counted so the index can show them.
 """
 
 from __future__ import annotations
@@ -18,7 +20,7 @@ from ai4ra_mcp.common.skills import register_prompts
 
 _READ_ONLY = {"readOnlyHint": True, "destructiveHint": False, "idempotentHint": True, "openWorldHint": True}
 KEY_ENV = "AI4RA_MCP_SAM_KEY"
-KEY_HOW = "A personal key comes from the account details page of a SAM.gov account (10 requests a day without a role in SAM.gov, 1,000 with one); a non-federal system account gets 1,000. Or send your own key as a bearer token."
+KEY_HOW = "Your personal key comes from the account details page of your SAM.gov account (10 requests a day without a role in SAM.gov, 1,000 with one); a non-federal system account gets 1,000."
 ENTITIES = "https://api.sam.gov/entity-information/v4/entities"
 EXCLUSIONS = "https://api.sam.gov/entity-information/v4/exclusions"
 LISTINGS = "https://api.sam.gov/assistance-listings/v1/search"
@@ -139,7 +141,7 @@ async def sam_index() -> dict:
     """How to use the SAM.gov tools. READ THIS FIRST: which key is needed, its daily quota, the workflow."""
     return {
         "upstream": "https://api.sam.gov/ entity-information v4 (entities, exclusions) and assistance-listings v1",
-        "key": {"configured": api_key(KEY_ENV) is not None, "env": KEY_ENV, "how": KEY_HOW,
+        "key": {"on_this_request": api_key(KEY_ENV) is not None, "per_user": "send your own SAM.gov key as a bearer token; the server holds none unless the deployment set " + KEY_ENV + " as a fallback", "how": KEY_HOW,
                 "quota_per_day": {"personal key, no SAM.gov role": 10, "personal key with a role": 1000, "non-federal system account": 1000, "federal system account": 10000}},
         "requests_this_process": _requests["count"],
         "workflow": ["sam_entity by UEI, CAGE or legal name: registration status and expiration, address, business types, exclusion flag",

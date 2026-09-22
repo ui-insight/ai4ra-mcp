@@ -67,8 +67,8 @@ request_key: ContextVar[str | None] = ContextVar("request_key", default=None)
 
 
 def api_key(env_name: str) -> str | None:
-    """The key for an upstream: the request's bearer token when the client sent one, else the
-    environment variable, else None."""
+    """The key for an upstream: the request's bearer token, which is the person's own key sent by
+    their client; else the environment variable, for a deployment that chooses to hold one; else None."""
     sent = request_key.get()
     if sent:
         return sent
@@ -77,7 +77,7 @@ def api_key(env_name: str) -> str | None:
 
 
 def missing_key(env_name: str, where: str) -> dict:
-    return {"error": f"no API key configured: set {env_name} on the server. {where}"}
+    return {"error": f"no API key on this request: send your own key as a bearer token (in the Office pane, paste it into this server's i dialog). {where}"}
 
 
 async def get_json(url: str, params: dict | None = None, headers: dict | None = None) -> dict | list:

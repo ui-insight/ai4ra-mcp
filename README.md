@@ -99,11 +99,13 @@ report. Dates are MM/DD/YYYY both ways.
 ### sam
 
 SAM.gov, https://api.sam.gov/: entities and exclusions (entity-information
-v4) and Assistance Listings (v1). One key covers all three, from
-`AI4RA_MCP_SAM_KEY` or the client's bearer token. **The daily quota is the
-constraint:** 10 requests for a personal key without a role in SAM.gov, 1,000
-with a role or a non-federal system account. The index tool shows whether a
-key is configured and how many requests this process has made. An entity by
+v4) and Assistance Listings (v1). One key covers all three, and it is the
+person's own: the client sends it as a bearer token on each call, and the
+Office pane keeps it beside the gateway key and sends it to this server only.
+**The daily quota is per key:** 10 requests for a personal key without a role
+in SAM.gov, 1,000 with a role or a non-federal system account. The index tool
+says whether the request carried a key and how many requests this process
+has made. An entity by
 UEI, CAGE or name with its registration status and dates; active exclusions
 by name or UEI; one Assistance Listing by number with its eligibility, the
 2 CFR 200 subparts that apply, reporting, audit, matching and contacts;
@@ -113,8 +115,8 @@ search. Entities and listings are cached for a day, exclusions for an hour.
 ### fac
 
 The Federal Audit Clearinghouse, https://api.fac.gov, a PostgREST API over
-the public single-audit data. A free api.data.gov key, from
-`AI4RA_MCP_FAC_KEY` or the client's bearer token, sent as `X-Api-Key`. Audits
+the public single-audit data. A free api.data.gov key, the person's own,
+sent by the client as a bearer token and forwarded as `X-Api-Key`. Audits
 by auditee name, UEI or EIN, newest first, with the auditor, opinion, the
 flags a risk assessment reads (going concern, material weakness, material
 noncompliance, low-risk auditee) and total federal expenditure; the findings
@@ -206,12 +208,14 @@ environment variable. A client may instead send its own key as
 `Authorization: Bearer <key>` on the MCP request; for that request it is used
 in place of the server's, so a person can spend their own quota rather than
 the institution's. The token is held for the request only and never logged.
-Without either, every tool of that server answers with a plain "no API key
-configured" error and the index tool says so; the server still mounts.
+A request with no key gets a plain "no API key on this request" answer from
+every tool of that server, saying to send one; the server still mounts.
 
 Environment: `AI4RA_MCP_HOST` and `AI4RA_MCP_PORT` (defaults 127.0.0.1 and
 8000); `AI4RA_MCP_CONTACT`, the address in the User-Agent; `AI4RA_MCP_SAM_KEY`
-and `AI4RA_MCP_FAC_KEY`, the institutional keys; `AI4RA_MCP_HOSTS`,
+and `AI4RA_MCP_FAC_KEY`, optional fallback keys a deployment may hold for
+requests that send none (the design is per-user keys sent by the client, so
+most deployments set neither); `AI4RA_MCP_HOSTS`,
 a comma-separated list of public hostnames to allow, which turns the SDK's
 DNS-rebinding protection on (off by default, since a reverse proxy in front
 sets the Host header to the public name).
@@ -246,8 +250,10 @@ the clients that name it have moved.
 - **mindrouter-365:** a `servers` entry per server in the deployment's
   `sources.json` with its `/mcp` URL, and a `libraries` entry per server
   whose `catalog` is `https://<host>/<server>/skills/catalog.json` and whose
-  `base` is `https://<host>/<server>/skills/`. A per-user key for a keyed
-  server goes as the bearer token on that server's calls.
+  `base` is `https://<host>/<server>/skills/`. A keyed server's entry
+  declares `"key": {"required": true, "hint": "..."}`; each person pastes
+  their own key into that server's i dialog in the pane, which sends it as
+  the bearer token on that server's calls and nowhere else.
 
 ## Status
 

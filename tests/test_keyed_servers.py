@@ -98,7 +98,7 @@ async def test_keyed_tool_without_key_says_so(monkeypatch, tool, args):
     monkeypatch.delenv("AI4RA_MCP_SAM_KEY", raising=False)
     monkeypatch.delenv("AI4RA_MCP_FAC_KEY", raising=False)
     out = await tool(**args)
-    assert "no API key configured" in out["error"]
+    assert "no API key" in out["error"]
 
 
 def test_api_key_prefers_request_bearer(monkeypatch):
@@ -131,4 +131,4 @@ def test_bearer_middleware_reaches_the_tool(monkeypatch):
         text = r.json()["result"]["content"][0]["text"]
         assert json.loads(text)["returned"] == 1 and seen["key"] == "user-key"
         r = client.post("/fac/mcp", json={**rpc, "id": 2}, headers=hdr)
-        assert "no API key configured" in r.json()["result"]["content"][0]["text"]
+        assert "no API key" in r.json()["result"]["content"][0]["text"]

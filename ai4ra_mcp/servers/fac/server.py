@@ -1,7 +1,8 @@
 """fac: the Federal Audit Clearinghouse, single audits under 2 CFR 200 Subpart F.
 
-Upstream: https://api.fac.gov (PostgREST). A free api.data.gov key, from AI4RA_MCP_FAC_KEY or the
-client's bearer token, sent as X-Api-Key. Filters are PostgREST operators: eq., ilike.*x*, order=.
+Upstream: https://api.fac.gov (PostgREST). A free api.data.gov key, the person's own, sent by their
+client as a bearer token and forwarded as X-Api-Key; AI4RA_MCP_FAC_KEY is a deployment's fallback
+when a request sends none. Filters are PostgREST operators: eq., ilike.*x*, order=.
 """
 
 from __future__ import annotations
@@ -15,7 +16,7 @@ from ai4ra_mcp.common.skills import register_prompts
 
 _READ_ONLY = {"readOnlyHint": True, "destructiveHint": False, "idempotentHint": True, "openWorldHint": True}
 KEY_ENV = "AI4RA_MCP_FAC_KEY"
-KEY_HOW = "A free key comes from the FAC API signup at https://www.fac.gov/api/ (api.data.gov, an email address is all it asks). Or send your own key as a bearer token."
+KEY_HOW = "A free key comes from the FAC API signup at https://www.fac.gov/api/ (api.data.gov, an email address is all it asks)."
 BASE = "https://api.fac.gov"
 GENERAL_FIELDS = ["report_id", "audit_year", "auditee_name", "auditee_uei", "auditee_ein", "auditee_city", "auditee_state", "fy_start_date", "fy_end_date",
                   "audit_type", "audit_period_covered", "auditor_firm_name", "cognizant_agency", "oversight_agency", "gaap_results",
