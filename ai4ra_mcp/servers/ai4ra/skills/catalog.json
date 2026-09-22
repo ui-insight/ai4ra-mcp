@@ -1,0 +1,7 @@
+{
+  "catalog_version": "1.0",
+  "repo": "ui-insight/ai4ra-mcp",
+  "server": "ai4ra",
+  "note": "Skills for the ai4ra catch-all server. None yet: fetch_document is used by other servers' skills, not by one of its own.",
+  "components": []
+}

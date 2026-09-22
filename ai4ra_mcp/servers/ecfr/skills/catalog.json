@@ -1,0 +1,30 @@
+{
+  "catalog_version": "1.0",
+  "repo": "ui-insight/ai4ra-mcp",
+  "server": "ecfr",
+  "note": "Skills that use the ecfr server's tools. Same shape as AI4RA/prompt-library's component_catalog.json, hand-maintained.",
+  "components": [
+    {
+      "slug": "ecfr-research-admin",
+      "name": "ecfr-research-admin",
+      "summary": "Answer a research-administration question from the Code of Federal Regulations by fetching the regulatory text with the ecfr tools: search or cite, validate the date, read, then answer in plain language with the section and its effective date.",
+      "triggers": ["CFR", "eCFR", "Uniform Guidance", "2 CFR 200", "Common Rule", "federal regulation"],
+      "version": "1.0.0",
+      "category": "research",
+      "domain": "research-administration",
+      "status": "experimental",
+      "paths": {
+        "component_dir": "components/ecfr-research-admin",
+        "readme": "components/ecfr-research-admin/README.md",
+        "prompt": "components/ecfr-research-admin/prompt.md",
+        "evals_dir": "components/ecfr-research-admin/evals"
+      },
+      "manifestations": [
+        {"type": "prompt", "path": "components/ecfr-research-admin/prompt.md", "version": "1.0.0", "role": "canonical_prompt"}
+      ],
+      "contracts": {"output": {"format": "markdown_review", "scope": "repo_local", "schema_path": null}},
+      "evaluation": {"case_count": 0, "report_count": 0, "last_fully_evaluated_version": null, "current_version_is_fully_evaluated": false},
+      "requires": ["ecfr_regulatory_index", "ecfr_search", "ecfr_get_title_versions", "ecfr_get_regulation"]
+    }
+  ]
+}

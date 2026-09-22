@@ -1,0 +1,23 @@
+# systemd unit for ai4ra-mcp. Install:
+#   sudo cp deploy/ai4ra-mcp.service /etc/systemd/system/
+#   sudo systemctl daemon-reload && sudo systemctl enable --now ai4ra-mcp
+# Or, without sudo, as a user unit under ~/.config/systemd/user/ with
+# `loginctl enable-linger` so it survives logout.
+
+[Unit]
+Description=ai4ra-mcp: eCFR, grants.gov, University of Idaho and AI4RA MCP servers
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/srv/ai4ra-mcp
+Environment=AI4RA_MCP_HOST=127.0.0.1
+Environment=AI4RA_MCP_PORT=8000
+Environment=AI4RA_MCP_CONTACT=osp@uidaho.edu
+ExecStart=/srv/ai4ra-mcp/.venv/bin/ai4ra-mcp
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

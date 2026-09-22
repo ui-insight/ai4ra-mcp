@@ -1,0 +1,30 @@
+{
+  "catalog_version": "1.0",
+  "repo": "ui-insight/ai4ra-mcp",
+  "server": "grants",
+  "note": "Skills that use the grants server's tools. Same shape as AI4RA/prompt-library's component_catalog.json, hand-maintained.",
+  "components": [
+    {
+      "slug": "funding-opportunity-finder",
+      "name": "funding-opportunity-finder",
+      "summary": "Turn a project idea, a topic, or a half-remembered announcement into a short, ranked list of current funding opportunities on grants.gov, each with a clickable link, and hand the chosen one to the next step (reading it in full, or drafting a budget).",
+      "triggers": ["funding opportunity", "funding opportunities"],
+      "version": "0.2.0",
+      "category": "research",
+      "domain": "research-administration",
+      "status": "experimental",
+      "paths": {
+        "component_dir": "components/funding-opportunity-finder",
+        "readme": "components/funding-opportunity-finder/README.md",
+        "prompt": "components/funding-opportunity-finder/prompt.md",
+        "evals_dir": "components/funding-opportunity-finder/evals"
+      },
+      "manifestations": [
+        {"type": "prompt", "path": "components/funding-opportunity-finder/prompt.md", "version": "0.2.0", "role": "canonical_prompt"}
+      ],
+      "contracts": {"output": {"format": "markdown_review", "scope": "repo_local", "schema_path": null}},
+      "evaluation": {"case_count": 0, "report_count": 0, "last_fully_evaluated_version": null, "current_version_is_fully_evaluated": false},
+      "requires": ["grants_gov_search", "grants_gov_opportunity", "fetch_document"]
+    }
+  ]
+}

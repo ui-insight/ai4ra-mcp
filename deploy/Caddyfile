@@ -1,0 +1,24 @@
+# ai4ra-mcp behind Caddy. The process listens on localhost:8000; Caddy owns TLS
+# and the public name. Add this block to the site that already fronts the host,
+# or use it alone with the hostname changed.
+
+mcp.example.uidaho.edu {
+    encode gzip
+
+    # One MCP server per path. The process answers CORS itself (any origin),
+    # so nothing here touches Access-Control headers.
+    @mcp path /ecfr/* /grants/* /uidaho/* /ai4ra/* /
+    handle @mcp {
+        reverse_proxy 127.0.0.1:8000 {
+            flush_interval -1              # stream SSE responses as they arrive
+            transport http {
+                read_timeout 300s
+            }
+        }
+    }
+
+    log {
+        output file /var/log/caddy/ai4ra-mcp.log
+        format json
+    }
+}
