@@ -82,7 +82,7 @@ async def fac_index() -> dict:
     """How to use the Federal Audit Clearinghouse tools. READ THIS FIRST: the key, the workflow, what the flags mean."""
     return {
         "upstream": "https://api.fac.gov (PostgREST over the public single-audit data)",
-        "key": {"configured": api_key(KEY_ENV) is not None, "env": KEY_ENV, "how": KEY_HOW},
+        "key": {"on_this_request": api_key(KEY_ENV) is not None, "per_user": "send your own api.data.gov key as a bearer token; the server holds none unless the deployment set " + KEY_ENV + " as a fallback", "how": KEY_HOW},
         "workflow": ["fac_audits_search by auditee name, UEI or EIN, newest first; note the report_id",
                      "fac_findings for that report: each finding with its compliance requirement, flags and text",
                      "fac_federal_awards for that report: the schedule of expenditures by program, with findings counts"],
