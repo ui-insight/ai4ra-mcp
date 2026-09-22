@@ -1,0 +1,7 @@
+{
+  "catalog_version": "1.0",
+  "repo": "ui-insight/ai4ra-mcp",
+  "server": "nsf",
+  "note": "Skills that use the nsf server's tools. None yet: its tools are used by skills on the nih and sam servers.",
+  "components": []
+}

@@ -19,6 +19,10 @@ that reads skill catalogs by URL gets the same files as static content.
 | `/grants/mcp` | grants.gov | `grants_gov_search`, `grants_gov_opportunity` | `funding-opportunity-finder` |
 | `/uidaho/mcp` | uidaho.edu | `uidaho_guidance_index`, `uidaho_guidance_search`, `uidaho_guidance_get`, `uidaho_rates` | `uidaho-lookup` |
 | `/ai4ra/mcp` | the open web | `fetch_document` | none |
+| `/nih/mcp` | NIH RePORTER | `nih_index`, `nih_projects_search`, `nih_project`, `nih_publications` | `funding-history` |
+| `/nsf/mcp` | NSF Award Search | `nsf_index`, `nsf_awards_search`, `nsf_award`, `nsf_award_outcomes` | none |
+| `/sam/mcp` | SAM.gov (key) | `sam_index`, `sam_entity`, `sam_exclusions_search`, `sam_assistance_listing`, `sam_assistance_listings_search` | `subrecipient-check` |
+| `/fac/mcp` | Federal Audit Clearinghouse (key) | `fac_index`, `fac_audits_search`, `fac_findings`, `fac_federal_awards` | none |
 
 The `ai4ra` server is the catch-all: whatever AI4RA provides that is tied to
 no single upstream. Today that is the page reader, which other servers' skills
@@ -26,8 +30,8 @@ use for attachments and linked documents.
 
 A client's connector URL is the server's path on the host, for example
 `https://<host>/ecfr/mcp`. A deployment's list of sources names the paths it
-wants: Idaho's names all four; another institution names three and whatever
-it builds for itself. `GET /` lists what is mounted, with each server's tools
+wants: Idaho's names all eight; another institution leaves out `uidaho` and
+adds whatever it builds for itself. `GET /` lists what is mounted, with each server's tools
 and prompts.
 
 Tool names carry their upstream (`ecfr_`, `grants_gov_`, `uidaho_`) and are
@@ -74,6 +78,48 @@ makes a search-and-cite layer cheap:
 Chapter lists and policy text are cached for a day: revisions are rare and
 the page carries its own date. A number with no page is reported as a 404
 with no guessing.
+
+### nih
+
+NIH RePORTER, https://api.reporter.nih.gov/ v2, no key, about one request a
+second. Projects by PI name, organization, fiscal years, activity codes,
+institutes or text; one project by number with its abstract; a project's
+publications by core project number, as PubMed ids. RePORTER returns one
+record per fiscal year and one per component of a center grant, and the index
+tool says how to read that. Searches are cached for an hour, records for a
+day.
+
+### nsf
+
+NSF Award Search, https://api.nsf.gov/services/v1/, no key, 25 a page and
+3,000 for one query. Awards by keyword, PI, awardee, program or start date;
+one award by id with its abstract and program officer; the project outcomes
+report. Dates are MM/DD/YYYY both ways.
+
+### sam
+
+SAM.gov, https://api.sam.gov/: entities and exclusions (entity-information
+v4) and Assistance Listings (v1). One key covers all three, from
+`AI4RA_MCP_SAM_KEY` or the client's bearer token. **The daily quota is the
+constraint:** 10 requests for a personal key without a role in SAM.gov, 1,000
+with a role or a non-federal system account. The index tool shows whether a
+key is configured and how many requests this process has made. An entity by
+UEI, CAGE or name with its registration status and dates; active exclusions
+by name or UEI; one Assistance Listing by number with its eligibility, the
+2 CFR 200 subparts that apply, reporting, audit, matching and contacts;
+listings by agency code, status or date. The listings API has no keyword
+search. Entities and listings are cached for a day, exclusions for an hour.
+
+### fac
+
+The Federal Audit Clearinghouse, https://api.fac.gov, a PostgREST API over
+the public single-audit data. A free api.data.gov key, from
+`AI4RA_MCP_FAC_KEY` or the client's bearer token, sent as `X-Api-Key`. Audits
+by auditee name, UEI or EIN, newest first, with the auditor, opinion, the
+flags a risk assessment reads (going concern, material weakness, material
+noncompliance, low-risk auditee) and total federal expenditure; the findings
+of one report with their text; its schedule of federal awards by program. The
+`subrecipient-check` skill on the sam server reads both servers.
 
 ## Rules
 
@@ -155,8 +201,17 @@ answering in JSON, and runs their session managers under one lifespan.
 Streamable HTTP is the only network transport; the Space's SSE endpoint is
 not carried over.
 
+**Keys.** A keyed server (sam, fac) takes its upstream key from its
+environment variable. A client may instead send its own key as
+`Authorization: Bearer <key>` on the MCP request; for that request it is used
+in place of the server's, so a person can spend their own quota rather than
+the institution's. The token is held for the request only and never logged.
+Without either, every tool of that server answers with a plain "no API key
+configured" error and the index tool says so; the server still mounts.
+
 Environment: `AI4RA_MCP_HOST` and `AI4RA_MCP_PORT` (defaults 127.0.0.1 and
-8000); `AI4RA_MCP_CONTACT`, the address in the User-Agent; `AI4RA_MCP_HOSTS`,
+8000); `AI4RA_MCP_CONTACT`, the address in the User-Agent; `AI4RA_MCP_SAM_KEY`
+and `AI4RA_MCP_FAC_KEY`, the institutional keys; `AI4RA_MCP_HOSTS`,
 a comma-separated list of public hostnames to allow, which turns the SDK's
 DNS-rebinding protection on (off by default, since a reverse proxy in front
 sets the Host header to the public name).
@@ -191,14 +246,17 @@ the clients that name it have moved.
 - **mindrouter-365:** a `servers` entry per server in the deployment's
   `sources.json` with its `/mcp` URL, and a `libraries` entry per server
   whose `catalog` is `https://<host>/<server>/skills/catalog.json` and whose
-  `base` is `https://<host>/<server>/skills/`.
+  `base` is `https://<host>/<server>/skills/`. A per-user key for a keyed
+  server goes as the bearer token on that server's calls.
 
 ## Status
 
-2026-09-22: all four servers run, with the eCFR and grants.gov code moved in
-from mcp-ecfr and the University of Idaho server new. Not yet done: the VM
-deployment, evals for the three skills, and pointing mindrouter-365's
-`sources.json` here instead of at the Space.
+2026-09-22: eight servers. The eCFR and grants.gov code moved in from
+mcp-ecfr; the University of Idaho, NIH, NSF, SAM.gov and Federal Audit
+Clearinghouse servers are new. NIH and NSF are verified against the live
+APIs; SAM.gov and FAC are written to their documentation and await keys to be
+run. Not yet done: the VM deployment, evals for the five skills, and pointing
+mindrouter-365's `sources.json` here instead of at the Space.
 
 ## Related
 

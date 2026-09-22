@@ -1,0 +1,30 @@
+{
+  "catalog_version": "1.0",
+  "repo": "ui-insight/ai4ra-mcp",
+  "server": "nih",
+  "note": "Skills that use the nih server's tools. Same shape as AI4RA/prompt-library's component_catalog.json, hand-maintained.",
+  "components": [
+    {
+      "slug": "funding-history",
+      "name": "funding-history",
+      "summary": "Assemble a named investigator's federal research support from NIH RePORTER and NSF Award Search, in the shape a current-and-pending support section needs: each award with its number, title, sponsor, dates, total, the person's role and a source link, and a plain statement of what was not found.",
+      "triggers": ["funding history", "current and pending", "prior support", "what has this PI been funded for"],
+      "version": "0.1.0",
+      "category": "research",
+      "domain": "research-administration",
+      "status": "experimental",
+      "paths": {
+        "component_dir": "components/funding-history",
+        "readme": "components/funding-history/README.md",
+        "prompt": "components/funding-history/prompt.md",
+        "evals_dir": "components/funding-history/evals"
+      },
+      "manifestations": [
+        {"type": "prompt", "path": "components/funding-history/prompt.md", "version": "0.1.0", "role": "canonical_prompt"}
+      ],
+      "contracts": {"output": {"format": "markdown_review", "scope": "repo_local", "schema_path": null}},
+      "evaluation": {"case_count": 0, "report_count": 0, "last_fully_evaluated_version": null, "current_version_is_fully_evaluated": false},
+      "requires": ["nih_index", "nih_projects_search", "nih_project", "nsf_awards_search", "nsf_award"]
+    }
+  ]
+}

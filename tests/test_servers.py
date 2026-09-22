@@ -16,6 +16,10 @@ EXPECTED_TOOLS = {
     "grants": {"grants_gov_search", "grants_gov_opportunity"},
     "uidaho": {"uidaho_guidance_index", "uidaho_guidance_search", "uidaho_guidance_get", "uidaho_rates"},
     "ai4ra": {"fetch_document"},
+    "nih": {"nih_index", "nih_projects_search", "nih_project", "nih_publications"},
+    "nsf": {"nsf_index", "nsf_awards_search", "nsf_award", "nsf_award_outcomes"},
+    "sam": {"sam_index", "sam_entity", "sam_exclusions_search", "sam_assistance_listing", "sam_assistance_listings_search"},
+    "fac": {"fac_index", "fac_audits_search", "fac_findings", "fac_federal_awards"},
 }
 
 

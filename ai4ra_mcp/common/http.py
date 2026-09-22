@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import os
 import time
+from contextvars import ContextVar
 from typing import Any, Awaitable, Callable
 
 CONTACT = os.environ.get("AI4RA_MCP_CONTACT", "https://github.com/ui-insight/ai4ra-mcp")
@@ -50,3 +51,58 @@ class TTLCache:
         if value is None:
             value = self.put(key, await make(), ttl)
         return value
+
+
+# ---- upstream calls ----
+
+import httpx  # noqa: E402
+
+TIMEOUT_S = 30.0
+
+
+# A bearer token the client sent with this request, set by the app's middleware for the request's
+# scope. A keyed server uses it in place of its own environment key, so a person with their own
+# SAM.gov or FAC key can spend their quota rather than the institution's. It is never logged.
+request_key: ContextVar[str | None] = ContextVar("request_key", default=None)
+
+
+def api_key(env_name: str) -> str | None:
+    """The key for an upstream: the request's bearer token when the client sent one, else the
+    environment variable, else None."""
+    sent = request_key.get()
+    if sent:
+        return sent
+    v = os.environ.get(env_name, "").strip()
+    return v or None
+
+
+def missing_key(env_name: str, where: str) -> dict:
+    return {"error": f"no API key configured: set {env_name} on the server. {where}"}
+
+
+async def get_json(url: str, params: dict | None = None, headers: dict | None = None) -> dict | list:
+    """GET JSON with the shared User-Agent. A 429 or 5xx becomes a ValueError the tool reports."""
+    async with httpx.AsyncClient(timeout=TIMEOUT_S, headers={**HEADERS, **(headers or {})}, follow_redirects=True) as client:
+        resp = await client.get(url, params=params)
+    return _body(resp, url)
+
+
+async def post_json(url: str, payload: dict, headers: dict | None = None) -> dict | list:
+    async with httpx.AsyncClient(timeout=TIMEOUT_S, headers={**HEADERS, **(headers or {})}, follow_redirects=True) as client:
+        resp = await client.post(url, json=payload)
+    return _body(resp, url)
+
+
+def _body(resp: httpx.Response, url: str) -> dict | list:
+    if resp.status_code == 429:
+        raise ValueError(f"rate limit exceeded at {resp.request.url.host}; wait before retrying")
+    if resp.status_code in (401, 403):
+        raise ValueError(f"{resp.status_code} from {resp.request.url.host}: the API key was refused or lacks permission")
+    if resp.status_code == 404:
+        raise ValueError(f"404 from {url}: nothing at that address")
+    if resp.status_code >= 400:
+        raise ValueError(f"{resp.status_code} from {resp.request.url.host}: {resp.text[:200]}")
+    try:
+        return resp.json()
+    except ValueError:
+        raise ValueError(f"{resp.request.url.host} did not return JSON") from None

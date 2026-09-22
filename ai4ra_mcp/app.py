@@ -24,13 +24,42 @@ from starlette.responses import JSONResponse
 from starlette.routing import Mount, Route
 from starlette.staticfiles import StaticFiles
 
+from ai4ra_mcp.common.http import request_key
 from ai4ra_mcp.servers.ai4ra.server import mcp as ai4ra
 from ai4ra_mcp.servers.ecfr.server import mcp as ecfr
+from ai4ra_mcp.servers.fac.server import mcp as fac
 from ai4ra_mcp.servers.grants.server import mcp as grants
+from ai4ra_mcp.servers.nih.server import mcp as nih
+from ai4ra_mcp.servers.nsf.server import mcp as nsf
+from ai4ra_mcp.servers.sam.server import mcp as sam
 from ai4ra_mcp.servers.uidaho.server import mcp as uidaho
 
-SERVERS: dict[str, MCPServer] = {"ecfr": ecfr, "grants": grants, "uidaho": uidaho, "ai4ra": ai4ra}
+SERVERS: dict[str, MCPServer] = {"ecfr": ecfr, "grants": grants, "uidaho": uidaho, "ai4ra": ai4ra,
+                                 "nih": nih, "nsf": nsf, "sam": sam, "fac": fac}
 SERVERS_DIR = Path(__file__).parent / "servers"
+
+
+class BearerKeyMiddleware:
+    """Reads `Authorization: Bearer <token>` and makes it this request's upstream key (see
+    common.http.request_key). The token is held for the request only and never logged."""
+
+    def __init__(self, app):
+        self.app = app
+
+    async def __call__(self, scope, receive, send):
+        token = None
+        if scope["type"] == "http":
+            for name, value in scope.get("headers") or []:
+                if name == b"authorization":
+                    v = value.decode("latin-1").strip()
+                    if v[:7].lower() == "bearer " and v[7:].strip():
+                        token = v[7:].strip()
+                    break
+        reset = request_key.set(token)
+        try:
+            await self.app(scope, receive, send)
+        finally:
+            request_key.reset(reset)
 
 
 def _transport_security() -> TransportSecuritySettings:
@@ -75,7 +104,8 @@ def build_app(only: list[str] | None = None) -> Starlette:
                 await stack.enter_async_context(SERVERS[name].session_manager.run())
             yield
 
-    middleware = [Middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"], expose_headers=["Mcp-Session-Id"])]
+    middleware = [Middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"], expose_headers=["Mcp-Session-Id"]),
+                  Middleware(BearerKeyMiddleware)]
     return Starlette(routes=routes, lifespan=lifespan, middleware=middleware)
 
 
