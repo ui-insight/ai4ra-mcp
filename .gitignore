@@ -1,0 +1,31 @@
+# Private working folders: never committed.
+notes/
+admin/
+
+# Secrets and local configuration.
+.env
+.env.*
+*.local.json
+
+# Python.
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# Local scratch and outputs.
+test_outputs/
+*.log
+
+# Editors and OS.
+.vscode/
+.idea/
+.DS_Store
