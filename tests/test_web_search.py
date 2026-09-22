@@ -31,7 +31,26 @@ async def test_web_search_reports_backend_down(monkeypatch):
     assert "unreachable" in out["error"] and "fetch_document" in out["error"]
 
 
-@pytest.mark.parametrize("q,cat", [("", "general"), ("x", "recipes")])
+async def test_web_search_pins_safe_search_and_drops_unsuitable(monkeypatch):
+    seen = {}
+    async def fake_get_json(url, params=None, headers=None):
+        seen.update(params)
+        return {"results": [{"title": "Essex County soils", "url": "https://essex.example/soil", "content": "ok", "engines": ["google"]},
+                            {"title": "free casino bonus", "url": "https://casino.example/", "content": "x", "engines": ["bing"]},
+                            {"title": "fine", "url": "https://example.edu/xxx-tools", "content": "y", "engines": ["bing"]}]}
+    monkeypatch.setattr(ai4ra, "get_json", fake_get_json)
+    ai4ra._cache._d.clear()
+    out = await ai4ra.web_search("essex soils")
+    assert seen["safesearch"] == "2"
+    assert [r["title"] for r in out["results"]] == ["Essex County soils"] and out["dropped_as_unsuitable"] == 2
+
+
+async def test_web_search_refuses_a_blocked_query():
+    out = await ai4ra.web_search("best casino near campus")
+    assert "error" in out
+
+
+@pytest.mark.parametrize("q,cat", [("", "general"), ("x", "images"), ("x", "recipes")])
 async def test_web_search_validates(q, cat):
     out = await ai4ra.web_search(q, category=cat)
     assert "error" in out

@@ -14,12 +14,20 @@ server:
   method: "GET"
 
 search:
-  safe_search: 0
+  safe_search: 2          # strict: the engines' own safe-search filters, applied to every query, cannot be lowered per request
   autocomplete: ""
   default_lang: "en"
   formats:
     - html
     - json
+
+# Text results only: the tool asks for general, news, science or it; images, videos, files, music,
+# social media and map are not offered. Engines that serve adult content stay at the image's default (off).
+categories_as_tabs:
+  general:
+  news:
+  science:
+  it:
 
 engines:
   - name: google

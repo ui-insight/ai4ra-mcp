@@ -8,6 +8,7 @@ tied to ecfr.gov, grants.gov or one institution goes here too.
 from __future__ import annotations
 
 import os
+import re
 from pathlib import Path
 
 from mcp.server.mcpserver import MCPServer
@@ -18,13 +19,24 @@ from ai4ra_mcp.common.skills import register_prompts
 
 _READ_ONLY = {"readOnlyHint": True, "destructiveHint": False, "idempotentHint": True, "openWorldHint": True}
 SEARXNG_URL = os.environ.get("AI4RA_MCP_SEARXNG_URL", "http://127.0.0.1:8080").rstrip("/")
-CATEGORIES = ("general", "news", "science", "it", "files", "images", "videos", "map")
+CATEGORIES = ("general", "news", "science", "it")   # text results only; images, videos, files, social media and map are not offered
+# Work-environment guardrails, in addition to the engines' strict safe search: results whose address or text
+# matches one of these are dropped before the model sees them. Extend AI4RA_MCP_SEARCH_BLOCK with more
+# comma-separated words or domain fragments.
+_BLOCK_DEFAULT = ("porn", "xxx", "sex", "nsfw", "escort", "onlyfans", "casino", "betting", "gambling", "torrent", "warez", "crack", "keygen", "darkweb", "4chan")
+BLOCK = tuple(w.strip().lower() for w in (os.environ.get("AI4RA_MCP_SEARCH_BLOCK", "") or "").split(",") if w.strip()) + _BLOCK_DEFAULT
 _cache = TTLCache()
 
 mcp = MCPServer(
     "ai4ra",
     instructions="AI4RA's general tools. web_search finds pages on the open web (titles, addresses, snippets); fetch_document reads a page or PDF as text, in pages. Search first, then read.",
 )
+
+
+def _blocked(text: str) -> bool:
+    """True when a blocklist word appears as a word or a domain fragment (so 'sex' does not match 'Essex' or 'Sussex')."""
+    low = text.lower()
+    return any(re.search(r"(?<![a-z])" + re.escape(w) + r"(?![a-z])", low) for w in BLOCK)
 
 
 @mcp.tool(name="web_search", annotations=_READ_ONLY)
@@ -36,10 +48,13 @@ async def web_search(query: str, count: int = 8, category: str = "general", lang
     address when you can search for it. The search runs on this server's own SearXNG, which merges
     Google, Bing, DuckDuckGo, Brave and others; an engine that is rate-limiting drops out silently.
 
+    Safe search is strict and cannot be lowered; only text categories are offered; results that are not for a
+    work environment are dropped and the count of dropped results is reported.
+
     Args:
         query: The search words, e.g. 'University of Idaho Deep Soil Ecotron'.
         count: Results to return, 1-20. Default 8.
-        category: general (default), news, science, it, files, images, videos or map.
+        category: general (default), news, science or it.
         language: Two-letter language code. Default 'en'.
     Returns: query, result_count, results (title, url, snippet, engines, published when known), and the engines that answered or failed.
     """
@@ -51,7 +66,9 @@ async def web_search(query: str, count: int = 8, category: str = "general", lang
         return {"error": f"category must be one of {', '.join(CATEGORIES)}"}
     count = max(1, min(int(count or 8), 20))
     lang = (language or "en").strip().lower()[:5] or "en"
-    params = {"q": q, "format": "json", "categories": cat, "language": lang, "safesearch": "0"}
+    if _blocked(q):
+        return {"error": "that search is not one this server runs; it is for work in research administration"}
+    params = {"q": q, "format": "json", "categories": cat, "language": lang, "safesearch": "2"}
     key = f"search:{cat}:{lang}:{q.lower()}"
     try:
         body = await _cache.remember(key, HOUR, lambda: get_json(f"{SEARXNG_URL}/search", params, headers={"Accept": "application/json"}))
@@ -59,13 +76,20 @@ async def web_search(query: str, count: int = 8, category: str = "general", lang
         return {"error": f"web search is not answering: {e}. The search backend (SearXNG at {SEARXNG_URL}) may not be running; a page you already have an address for can still be read with fetch_document."}
     except Exception as e:  # noqa: BLE001 — connection refused, DNS, timeouts
         return {"error": f"web search backend unreachable at {SEARXNG_URL}: {type(e).__name__}. A page you already have an address for can still be read with fetch_document."}
-    results = []
-    for r in (body.get("results") or [])[:count]:
+    results, dropped = [], 0
+    for r in body.get("results") or []:
+        if len(results) >= count:
+            break
+        if _blocked(" ".join(str(r.get(k) or "") for k in ("url", "title", "content"))):
+            dropped += 1
+            continue
         results.append({"title": r.get("title"), "url": r.get("url"), "snippet": r.get("content"),
                         "engines": r.get("engines") or ([r["engine"]] if r.get("engine") else []),
                         "published": r.get("publishedDate")})
     failed = [u.get("engine") if isinstance(u, dict) else u for u in body.get("unresponsive_engines") or []]
     out = {"query": q, "category": cat, "result_count": body.get("number_of_results") or len(results), "returned": len(results), "results": results}
+    if dropped:
+        out["dropped_as_unsuitable"] = dropped
     if failed:
         out["engines_not_answering"] = failed
     if body.get("suggestions"):

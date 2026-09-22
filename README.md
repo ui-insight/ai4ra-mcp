@@ -42,6 +42,15 @@ tool says so. When the backend is down the tool answers with a plain error
 that points at `fetch_document` for an address already in hand. Results are
 cached for an hour.
 
+Guardrails, all on the server so no client can loosen them: SearXNG runs with
+strict safe search (the engines' own filters) and offers only the text
+categories general, news, science and it; the tool pins safe search on every
+request, refuses a query that contains a blocklisted word, drops any result
+whose address, title or snippet matches the blocklist and reports how many
+it dropped. The blocklist covers adult, gambling and piracy terms as whole
+words or domain fragments; `AI4RA_MCP_SEARCH_BLOCK` adds more, comma
+separated.
+
 A client's connector URL is the server's path on the host, for example
 `https://<host>/ecfr/mcp`. A deployment's list of sources names the paths it
 wants: Idaho's names all eight; another institution leaves out `uidaho` and
