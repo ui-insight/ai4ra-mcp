@@ -1,0 +1,38 @@
+# SearXNG for the ai4ra web_search tool. Merged over the image's defaults (use_default_settings).
+# JSON output is what the tool reads; the limiter is off because there is no Redis and the only
+# client is the ai4ra-mcp container on the compose network.
+use_default_settings: true
+
+general:
+  instance_name: "ai4ra search"
+  debug: false
+
+server:
+  secret_key: "change-me-in-the-environment"   # overridden by SEARXNG_SECRET in docker-compose.yml
+  limiter: false
+  image_proxy: false
+  method: "GET"
+
+search:
+  safe_search: 0
+  autocomplete: ""
+  default_lang: "en"
+  formats:
+    - html
+    - json
+
+engines:
+  - name: google
+    disabled: false
+  - name: bing
+    disabled: false
+  - name: duckduckgo
+    disabled: false
+  - name: brave
+    disabled: false
+  - name: startpage
+    disabled: false
+  - name: wikipedia
+    disabled: false
+  - name: wikidata          # slow and rarely useful here; it timed out on the first live search
+    disabled: true

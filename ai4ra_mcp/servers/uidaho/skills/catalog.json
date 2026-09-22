@@ -9,7 +9,7 @@
       "name": "uidaho-lookup",
       "summary": "Answer a question about the University of Idaho's sponsored-research facts (F&A and fringe rates, budget rules, policies, contacts) with the uidaho tools, quoting each figure or passage with its policy number, effective period or revision date, and page.",
       "triggers": ["University of Idaho policy", "APM", "FSH", "our F&A rate", "fringe rate", "UI policy"],
-      "version": "0.3.0",
+      "version": "0.3.1",
       "category": "research",
       "domain": "research-administration",
       "status": "experimental",
@@ -20,7 +20,7 @@
         "evals_dir": "components/uidaho-lookup/evals"
       },
       "manifestations": [
-        {"type": "prompt", "path": "components/uidaho-lookup/prompt.md", "version": "0.3.0", "role": "canonical_prompt"}
+        {"type": "prompt", "path": "components/uidaho-lookup/prompt.md", "version": "0.3.1", "role": "canonical_prompt"}
       ],
       "contracts": {"output": {"format": "markdown_review", "scope": "repo_local", "schema_path": null}},
       "evaluation": {"case_count": 0, "report_count": 0, "last_fully_evaluated_version": null, "current_version_is_fully_evaluated": false},

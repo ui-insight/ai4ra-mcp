@@ -14,3 +14,25 @@ services:
       - "127.0.0.1:8000:8000"           # localhost only; Caddy is the public face
     environment:
       AI4RA_MCP_CONTACT: osp@uidaho.edu
+      AI4RA_MCP_SEARXNG_URL: http://searxng:8080   # the web_search tool's backend, on the compose network
+    depends_on:
+      - searxng
+
+  # SearXNG answers web_search: a self-hosted metasearch over Google, Bing, DuckDuckGo, Brave and others,
+  # no key, reachable only from this compose network (no host port). Set SEARXNG_SECRET in the environment
+  # or a .env file next to this compose file.
+  searxng:
+    image: searxng/searxng:latest
+    container_name: ai4ra-searxng
+    restart: unless-stopped
+    volumes:
+      - ./deploy/searxng/settings.yml:/etc/searxng/settings.yml:ro
+    environment:
+      SEARXNG_BASE_URL: http://searxng:8080/
+      SEARXNG_SECRET: ${SEARXNG_SECRET:-change-me-in-the-environment}
+    cap_drop:
+      - ALL
+    cap_add:
+      - CHOWN
+      - SETGID
+      - SETUID

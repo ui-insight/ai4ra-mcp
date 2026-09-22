@@ -18,15 +18,29 @@ that reads skill catalogs by URL gets the same files as static content.
 | `/ecfr/mcp` | ecfr.gov | `ecfr_regulatory_index`, `ecfr_search`, `ecfr_list_titles`, `ecfr_list_agencies`, `ecfr_get_title_versions`, `ecfr_get_regulation`, `ecfr_get_title_structure`, `ecfr_compare_regulations` | `ecfr-research-admin` |
 | `/grants/mcp` | grants.gov | `grants_gov_search`, `grants_gov_opportunity` | `funding-opportunity-finder` |
 | `/uidaho/mcp` | uidaho.edu | `uidaho_guidance_index`, `uidaho_guidance_search`, `uidaho_guidance_get`, `uidaho_rates` | `uidaho-lookup` |
-| `/ai4ra/mcp` | the open web | `fetch_document` | none |
+| `/ai4ra/mcp` | the open web | `web_search`, `fetch_document` | none |
 | `/nih/mcp` | NIH RePORTER | `nih_index`, `nih_projects_search`, `nih_project`, `nih_publications` | `funding-history` |
 | `/nsf/mcp` | NSF Award Search | `nsf_index`, `nsf_awards_search`, `nsf_award`, `nsf_award_outcomes` | none |
 | `/sam/mcp` | SAM.gov (key) | `sam_index`, `sam_entity`, `sam_exclusions_search`, `sam_assistance_listing`, `sam_assistance_listings_search` | `subrecipient-check` |
 | `/fac/mcp` | Federal Audit Clearinghouse (key) | `fac_index`, `fac_audits_search`, `fac_findings`, `fac_federal_awards` | none |
 
 The `ai4ra` server is the catch-all: whatever AI4RA provides that is tied to
-no single upstream. Today that is the page reader, which other servers' skills
-use for attachments and linked documents.
+no single upstream. Today that is a web search and the page reader: search
+for an address you do not have, then read it. Other servers' skills use the
+reader for attachments and linked documents.
+
+### ai4ra
+
+`web_search` is answered by a SearXNG instance next to this process, a
+self-hosted metasearch that merges Google, Bing, DuckDuckGo, Brave, Startpage
+and Wikipedia with no key; the compose file runs it as a second container on
+the compose network only, with `deploy/searxng/settings.yml` (JSON output on,
+limiter off). `AI4RA_MCP_SEARXNG_URL` names it (default
+`http://127.0.0.1:8080`). Results carry title, address, snippet and the
+engines that found them; an engine that is rate-limiting drops out and the
+tool says so. When the backend is down the tool answers with a plain error
+that points at `fetch_document` for an address already in hand. Results are
+cached for an hour.
 
 A client's connector URL is the server's path on the host, for example
 `https://<host>/ecfr/mcp`. A deployment's list of sources names the paths it
@@ -219,7 +233,7 @@ the institution's. The token is held for the request only and never logged.
 A request with no key gets a plain "no API key on this request" answer from
 every tool of that server, saying to send one; the server still mounts.
 
-Environment: `AI4RA_MCP_HOST` and `AI4RA_MCP_PORT` (defaults 127.0.0.1 and
+Environment: `AI4RA_MCP_SEARXNG_URL`, the web search backend; `AI4RA_MCP_HOST` and `AI4RA_MCP_PORT` (defaults 127.0.0.1 and
 8000); `AI4RA_MCP_CONTACT`, the address in the User-Agent; `AI4RA_MCP_SAM_KEY`
 and `AI4RA_MCP_FAC_KEY`, optional fallback keys a deployment may hold for
 requests that send none (the design is per-user keys sent by the client, so
@@ -235,7 +249,9 @@ arrangement the mindrouter-365 demo uses. Caddy terminates TLS and
 reverse-proxies the server paths to the process on localhost. On a host
 that already runs its services as containers, `docker compose up -d --build`
 at the repo root does the same for this one, bound to localhost with restart
-unless-stopped; otherwise a systemd unit keeps the process up. `deploy/ai4ra-mcp.user.service` runs it as a user
+unless-stopped, and brings up SearXNG beside it (set `SEARXNG_SECRET` in a
+`.env` file next to the compose file); otherwise a systemd unit keeps the
+process up and SearXNG is yours to run. `deploy/ai4ra-mcp.user.service` runs it as a user
 service with no sudo, under the account that cloned the repo (lingering
 enabled once so it survives logout); `deploy/ai4ra-mcp.service` is the
 system-wide form for an administrator to install. The Dockerfile is for anyone who

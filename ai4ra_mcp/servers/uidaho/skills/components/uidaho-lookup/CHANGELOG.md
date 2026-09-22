@@ -2,6 +2,10 @@
 
 Versions follow semver: MAJOR for output-contract breaks, MINOR for backward-compatible additions, PATCH for wording or clarity.
 
+## [0.3.1] — 2026-09-22
+
+- The answer is the reply: write nothing into the document. A workflow run had added a Rates sheet nobody asked for.
+
 ## [0.3.0] — 2026-09-22
 
 - Rewritten against the uidaho server's tools (`uidaho_guidance_index`, `uidaho_guidance_search`, `uidaho_guidance_get`, `uidaho_rates`). The prompt no longer carries page URLs; policy answers now cite the policy number and its last-updated date.
