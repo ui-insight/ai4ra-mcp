@@ -224,8 +224,11 @@ sets the Host header to the public name).
 
 The intended host is a VM behind Caddy with a campus certificate, the same
 arrangement the mindrouter-365 demo uses. Caddy terminates TLS and
-reverse-proxies the server paths to the process on localhost; the systemd
-unit in `deploy/` keeps the process up. The Dockerfile is for anyone who
+reverse-proxies the server paths to the process on localhost; a systemd
+unit keeps the process up. `deploy/ai4ra-mcp.user.service` runs it as a user
+service with no sudo, under the account that cloned the repo (lingering
+enabled once so it survives logout); `deploy/ai4ra-mcp.service` is the
+system-wide form for an administrator to install. The Dockerfile is for anyone who
 would rather run it elsewhere.
 
 Clients such as the Office add-in call these servers from inside a browser

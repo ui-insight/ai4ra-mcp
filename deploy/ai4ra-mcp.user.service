@@ -1,0 +1,25 @@
+# ai4ra-mcp as a user service: no sudo, runs under the account that cloned the repo.
+# Install (as that account):
+#   mkdir -p ~/.config/systemd/user && cp deploy/ai4ra-mcp.user.service ~/.config/systemd/user/ai4ra-mcp.service
+#   systemctl --user daemon-reload && systemctl --user enable --now ai4ra-mcp
+#   systemctl --user status ai4ra-mcp        # and: journalctl --user -u ai4ra-mcp -f
+# So it keeps running after logout and starts at boot, the account needs lingering once:
+#   loginctl enable-linger $USER             # may need an administrator to run it for you
+# Update: git pull && uv sync && systemctl --user restart ai4ra-mcp
+
+[Unit]
+Description=ai4ra-mcp: eCFR, grants.gov, University of Idaho, NIH, NSF, SAM.gov and FAC MCP servers
+After=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=%h/ai4ra-mcp
+Environment=AI4RA_MCP_HOST=127.0.0.1
+Environment=AI4RA_MCP_PORT=8000
+Environment=AI4RA_MCP_CONTACT=osp@uidaho.edu
+ExecStart=%h/.local/bin/uv run --no-sync ai4ra-mcp
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=default.target
