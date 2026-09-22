@@ -37,6 +37,21 @@ from ai4ra_mcp.servers.uidaho.server import mcp as uidaho
 SERVERS: dict[str, MCPServer] = {"ecfr": ecfr, "grants": grants, "uidaho": uidaho, "ai4ra": ai4ra,
                                  "nih": nih, "nsf": nsf, "sam": sam, "fac": fac}
 SERVERS_DIR = Path(__file__).parent / "servers"
+WEB = "https://github.com/ui-insight/ai4ra-mcp/blob/main/ai4ra_mcp/servers/"
+
+# What a client's picker shows for each server, and whether it wants a key of the person's own.
+META: dict[str, dict] = {
+    "ecfr": {"label": "eCFR", "description": "Federal regulations from the eCFR: search, read a section on a date, compare versions."},
+    "grants": {"label": "grants.gov", "description": "Federal funding opportunities: search, then one opportunity's record with its attachments."},
+    "uidaho": {"label": "University of Idaho", "description": "University policy for sponsored projects (APM, FSH) by number and title, and the F&A and fringe rates."},
+    "ai4ra": {"label": "AI4RA", "description": "General tools: read any public web page or PDF as text."},
+    "nih": {"label": "NIH RePORTER", "description": "NIH-funded projects by PI, organization or topic; one project by number; its publications."},
+    "nsf": {"label": "NSF awards", "description": "NSF awards by PI, institution or keyword; one award with its abstract; its outcomes report."},
+    "sam": {"label": "SAM.gov", "description": "Entity registrations, exclusions and Assistance Listings.",
+            "key": {"required": True, "hint": "Paste your SAM.gov public API key, from the account details page of your SAM.gov account."}},
+    "fac": {"label": "Federal Audit Clearinghouse", "description": "Single audits, findings and federal awards for subrecipient risk assessment.",
+            "key": {"required": True, "hint": "Paste your api.data.gov key for the FAC API (free, from the signup at fac.gov/api)."}},
+}
 
 
 class BearerKeyMiddleware:
@@ -91,9 +106,12 @@ def build_app(only: list[str] | None = None) -> Starlette:
         for name in mounted:
             tools = await SERVERS[name].list_tools()
             prompts = await SERVERS[name].list_prompts()
-            out.append({"name": name, "mcp": f"/{name}/mcp", "skills": f"/{name}/skills/catalog.json",
+            meta = META.get(name, {})
+            out.append({"name": name, "label": meta.get("label", name), "description": meta.get("description", ""),
+                        "mcp": f"/{name}/mcp", "skills": f"/{name}/skills/catalog.json", "skills_base": f"/{name}/skills/",
+                        "web": f"{WEB}{name}/skills/", "key": meta.get("key"),
                         "tools": [t.name for t in tools], "prompts": [p.name for p in prompts]})
-        return JSONResponse({"servers": out})
+        return JSONResponse({"v": 1, "servers": out})
 
     routes.append(Route("/", index))
 
