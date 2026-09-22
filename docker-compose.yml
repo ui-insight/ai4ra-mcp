@@ -1,0 +1,16 @@
+# ai4ra-mcp as one container, the way the lakehouse services run on the same host:
+# Docker keeps it up across logouts and reboots, Caddy on the host proxies to its port.
+#   docker compose up -d --build        # start (or rebuild after a pull)
+#   docker compose logs -f              # follow the log
+#   docker compose down                 # stop
+services:
+  ai4ra-mcp:
+    build:
+      context: .
+      dockerfile: deploy/Dockerfile
+    container_name: ai4ra-mcp
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8000:8000"           # localhost only; Caddy is the public face
+    environment:
+      AI4RA_MCP_CONTACT: osp@uidaho.edu
