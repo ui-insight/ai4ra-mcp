@@ -10,6 +10,7 @@ from ai4ra_mcp.app import build_app
 from ai4ra_mcp.common import http as h
 from ai4ra_mcp.servers.fac import server as fac
 from ai4ra_mcp.servers.nih import server as nih
+from ai4ra_mcp.servers.lakehouse import server as lakehouse
 from ai4ra_mcp.servers.nsf import server as nsf
 from ai4ra_mcp.servers.sam import server as sam
 
@@ -93,10 +94,13 @@ def test_fac_slim_records():
 @pytest.mark.parametrize("tool,args", [
     (sam.sam_entity, {"uei": "RV56IG5JM6G9"}), (sam.sam_exclusions_search, {"name": "Acme"}), (sam.sam_assistance_listing, {"number": "47.070"}),
     (sam.sam_assistance_listings_search, {}), (fac.fac_audits_search, {"uei": "RV56IG5JM6G9"}), (fac.fac_findings, {"report_id": "x"}), (fac.fac_federal_awards, {"report_id": "x"}),
+    (lakehouse.lakehouse_streams, {}), (lakehouse.lakehouse_schema, {"stream": "s"}), (lakehouse.lakehouse_query, {"stream": "s", "table": "t"}),
+    (lakehouse.lakehouse_files, {"stream": "s"}), (lakehouse.lakehouse_file, {"stream": "s", "hash": "h"}),
 ])
 async def test_keyed_tool_without_key_says_so(monkeypatch, tool, args):
     monkeypatch.delenv("AI4RA_MCP_SAM_KEY", raising=False)
     monkeypatch.delenv("AI4RA_MCP_FAC_KEY", raising=False)
+    monkeypatch.delenv("AI4RA_MCP_LAKEHOUSE_SECRET", raising=False)
     out = await tool(**args)
     assert "no API key" in out["error"]
 
@@ -148,4 +152,59 @@ async def test_nsf_awardee_is_sent_as_a_phrase(monkeypatch):
     nsf._cache._d.clear()
     await nsf.nsf_awards_search(awardee="Canisius", pi_name="Andrew Stewart")
     assert seen["awardeeName"] == "Canisius" and seen["pdPIName"] == "Andrew Stewart"
+
+
+def test_lakehouse_rows_are_capped_by_count_and_size():
+    result = {"columns": ["a", "b"], "rows": [{"a": i, "b": "x"} for i in range(1000)], "rowCount": 1000}
+    out = lakehouse.slim_rows("t", result, 300)
+    assert out["returned"] == 300 and out["row_count"] == 1000 and out["truncated"] is True and out["columns"] == ["a", "b"]
+    big = {"columns": ["a"], "rows": [{"a": "y" * 20000} for _ in range(10)], "rowCount": 10}
+    out = lakehouse.slim_rows("t", big, 10)
+    assert out["returned"] == 1 and out["truncated"] is True
+
+
+async def test_lakehouse_token_is_minted_once_and_sent_as_bearer(monkeypatch):
+    calls = []
+
+    class Resp:
+        def __init__(self, status, body=None, content=b"{}", headers=None):
+            self.status_code, self._body, self.content, self.headers, self.text = status, body, content, headers or {}, ""
+        def json(self): return self._body
+
+    class Client:
+        def __init__(self, **kw): self.headers = kw.get("headers") or {}
+        async def __aenter__(self): return self
+        async def __aexit__(self, *a): return False
+        async def post(self, url, auth=None, data=None):
+            calls.append(("token", auth, data)); return Resp(200, {"access_token": "tok-1", "expires_in": 3600}, b"x")
+        async def request(self, method, url, params=None, json=None):
+            calls.append((method, url, self.headers.get("Authorization"), params, json)); return Resp(200, {"client_id": "mr-365", "querying": ["q"], "submitting": []}, b"x")
+
+    monkeypatch.setattr(lakehouse.httpx, "AsyncClient", Client)
+    lakehouse._tokens.clear()
+    monkeypatch.setenv("AI4RA_MCP_LAKEHOUSE_SECRET", "s3")
+    out = await lakehouse.lakehouse_streams()
+    out2 = await lakehouse.lakehouse_streams()
+    assert out["querying"] == ["q"] and out2["querying"] == ["q"]
+    assert calls[0] == ("token", (lakehouse.CLIENT_ID, "s3"), {"grant_type": "client_credentials"})
+    assert sum(1 for c in calls if c[0] == "token") == 1
+    assert calls[1][2] == "Bearer tok-1" and calls[1][1].endswith("/streams")
+
+
+async def test_lakehouse_query_validates_and_builds_the_request(monkeypatch):
+    sent = {}
+
+    async def fake_call(method, path, params=None, payload=None, raw=False):
+        sent.update(payload); return {"awards": {"rows": [{"a": 1}], "columns": ["a"], "rowCount": 1, "totalCount": 9}}
+
+    monkeypatch.setattr(lakehouse, "_call", fake_call)
+    out = await lakehouse.lakehouse_query("s", "awards", limit=5, filters={"fiscal_year": {"gte": 2023}}, offset=0,
+                                          group_by=["status"], aggregate=[{"fn": "count", "column": "*", "alias": "n"}])
+    assert out["total_count"] == 9 and out["rows"] == [{"a": 1}]
+    assert sent["tables"][0] == {"table": "awards", "limit": 5, "filters": {"fiscal_year": {"gte": 2023}}, "offset": 0, "group_by": ["status"],
+                                 "aggregate": [{"fn": "COUNT", "column": "*", "alias": "n"}]}
+    bad = await lakehouse.lakehouse_query("s", "awards", filters={"x": {"between": [1, 2]}})
+    assert "unknown filter operator" in bad["error"]
+    bad = await lakehouse.lakehouse_query("s", "awards", aggregate=[{"fn": "COUNT", "column": "*"}])
+    assert "needs group_by" in bad["error"]
 

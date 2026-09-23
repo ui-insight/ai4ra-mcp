@@ -7,7 +7,7 @@ mcp.example.uidaho.edu {
 
     # One MCP server per path. The process answers CORS itself (any origin),
     # so nothing here touches Access-Control headers.
-    @mcp path /general/* /ai4ra/* /ecfr/* /grants/* /nih/* /nsf/* /sam/* /fac/* /usaspending/* /uidaho/* /
+    @mcp path /general/* /ai4ra/* /ecfr/* /grants/* /nih/* /nsf/* /sam/* /fac/* /usaspending/* /uidaho/* /lakehouse* /
     handle @mcp {
         reverse_proxy 127.0.0.1:8000 {
             flush_interval -1              # stream SSE responses as they arrive

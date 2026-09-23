@@ -30,6 +30,7 @@ from ai4ra_mcp.servers.ecfr.server import mcp as ecfr
 from ai4ra_mcp.servers.fac.server import mcp as fac
 from ai4ra_mcp.servers.general.server import mcp as general
 from ai4ra_mcp.servers.grants.server import mcp as grants
+from ai4ra_mcp.servers.lakehouse import server as lakehouse
 from ai4ra_mcp.servers.nih.server import mcp as nih
 from ai4ra_mcp.servers.nsf.server import mcp as nsf
 from ai4ra_mcp.servers.sam.server import mcp as sam
@@ -39,7 +40,7 @@ from ai4ra_mcp.servers.usaspending.server import mcp as usaspending
 # Index order is picker order: the general fold first, then the research-administration skills, the public
 # upstreams, and last the one institution's own server.
 SERVERS: dict[str, MCPServer] = {"general": general, "ai4ra": ai4ra, "ecfr": ecfr, "grants": grants, "nih": nih, "nsf": nsf,
-                                 "sam": sam, "fac": fac, "usaspending": usaspending, "uidaho": uidaho}
+                                 "sam": sam, "fac": fac, "usaspending": usaspending, "uidaho": uidaho, **lakehouse.SERVERS}
 SERVERS_DIR = Path(__file__).parent / "servers"
 WEB = "https://github.com/ui-insight/ai4ra-mcp/blob/main/ai4ra_mcp/servers/"
 
@@ -58,6 +59,13 @@ META: dict[str, dict] = {
     "fac": {"label": "Federal Audit Clearinghouse", "description": "Single audits, findings and federal awards for subrecipient risk assessment.",
             "key": {"required": True, "hint": "Paste your api.data.gov key for the FAC API (free, from the signup at fac.gov/api)."}},
 }
+
+
+# One lakehouse server per configured client (AI4RA_MCP_LAKEHOUSE_CLIENTS): each its own fold and its own secret.
+for _name, _client in lakehouse.CLIENT_OF.items():
+    META[_name] = {"label": "Lakehouse" if len(lakehouse.CLIENT_OF) == 1 else f"Lakehouse ({_client})",
+                   "description": f"The University of Idaho data lakehouse (Marina) as client {_client}: the streams it may query, their tables and columns, rows filtered or aggregated, and the files a stream may read. Read only.",
+                   "key": {"required": True, "hint": f"Paste the shared secret issued with the lakehouse client id {_client} by Research Computing and Data Services."}}
 
 
 class BearerKeyMiddleware:

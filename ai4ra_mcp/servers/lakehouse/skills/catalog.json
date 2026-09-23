@@ -1,0 +1,56 @@
+{
+  "catalog_version": "1.0",
+  "repo": "ui-insight/ai4ra-mcp",
+  "server": "lakehouse",
+  "note": "Skills that use a lakehouse server's tools. The same folder serves every configured client's server.",
+  "components": [
+    {
+      "slug": "lakehouse-answer",
+      "name": "lakehouse-answer",
+      "summary": "Answer a question from the University of Idaho data lakehouse: discover the streams this client may query and their tables, then read the filtered rows or the grouped aggregates that answer it, each figure with its stream, table, filters and date; nothing from memory.",
+      "triggers": [
+        "lakehouse",
+        "from the lakehouse",
+        "in the lakehouse",
+        "query the lakehouse"
+      ],
+      "version": "0.1.0",
+      "category": "research",
+      "domain": "research-administration",
+      "status": "experimental",
+      "paths": {
+        "component_dir": "components/lakehouse-answer",
+        "readme": "components/lakehouse-answer/README.md",
+        "prompt": "components/lakehouse-answer/prompt.md",
+        "evals_dir": "components/lakehouse-answer/evals"
+      },
+      "manifestations": [
+        {
+          "type": "prompt",
+          "path": "components/lakehouse-answer/prompt.md",
+          "version": "0.1.0",
+          "role": "canonical_prompt"
+        }
+      ],
+      "contracts": {
+        "output": {
+          "format": "markdown_review",
+          "scope": "repo_local",
+          "schema_path": null
+        }
+      },
+      "evaluation": {
+        "case_count": 0,
+        "report_count": 0,
+        "last_fully_evaluated_version": null,
+        "current_version_is_fully_evaluated": false
+      },
+      "requires": [
+        "lakehouse_index",
+        "lakehouse_streams",
+        "lakehouse_schema",
+        "lakehouse_query"
+      ]
+    }
+  ]
+}

@@ -27,6 +27,7 @@ read and write cells, paragraphs and slides.
 | `/sam/mcp` | SAM.gov (key) | `sam_index`, `sam_entity`, `sam_exclusions_search`, `sam_assistance_listing`, `sam_assistance_listings_search` | `subrecipient-check` |
 | `/usaspending/mcp` | usaspending.gov | `usaspending_index`, `usaspending_recipients`, `usaspending_recipient`, `usaspending_awards_search`, `usaspending_subawards_search`, `usaspending_award` | none |
 | `/fac/mcp` | Federal Audit Clearinghouse (key) | `fac_index`, `fac_audits_search`, `fac_findings`, `fac_federal_awards` | none |
+| `/lakehouse/mcp` (one per client) | the University of Idaho lakehouse, Marina (key) | `lakehouse_index`, `lakehouse_streams`, `lakehouse_schema`, `lakehouse_query`, `lakehouse_files`, `lakehouse_file` | `lakehouse-answer` |
 | `/uidaho/mcp` | uidaho.edu | `uidaho_guidance_index`, `uidaho_guidance_search`, `uidaho_guidance_get`, `uidaho_rates` | `uidaho-lookup`, `uidaho-rates`, `award-facts`, `award-lines`, `award-status`, `award-review`, `pi-awards`, `current-pending`, `current-pending-support`, `proposal-workbook` |
 
 The index at `/` lists the servers in this order, which is the order a
@@ -157,6 +158,44 @@ names a sheet (the proposal workbook's Rates step does), it writes them
 onto it in the layout the budget form reads, and a document that could not
 be read leaves its rows without values, marked "not fetched". Neither skill
 carries fallback figures.
+
+### lakehouse
+
+The University of Idaho data lakehouse through Marina, its query and file
+API at `http://lakehouse.uidaho.edu:7010` (`AI4RA_MCP_LAKEHOUSE_URL`),
+reachable on campus, which is why this process reads it and a browser never
+does. Every request needs an OAuth 2.0 bearer from `/auth/token`, minted with
+HTTP Basic from a client id (`AI4RA_MCP_LAKEHOUSE_CLIENT`, default `mr-365`)
+and that client's shared secret. The secret is the key a person pastes into
+the pane, sent as the bearer on the MCP call, exchanged here for a Marina
+token that is kept in memory until it expires and never logged;
+`AI4RA_MCP_LAKEHOUSE_SECRET` is a deployment's fallback. It is one client's
+secret, not a personal key, so its rate limits (100 requests a minute, 1,000
+an hour) are shared by everyone who uses it.
+
+Marina authorizes a client for streams, and a secret belongs to one client,
+so each client is its own server here: its own path, its own fold in the
+pane, its own key. `AI4RA_MCP_LAKEHOUSE_CLIENTS` lists the client ids to
+mount, comma separated; the first is mounted at `lakehouse`, the rest at
+`lakehouse-<id>`, with `AI4RA_MCP_LAKEHOUSE_SECRET_<ID>` as each one's
+fallback. Today one client is configured, `mr-365`, whose querying stream
+is `subaward`. All instances share the same tools and the same skills
+folder.
+
+Marina scopes access by stream: a client is authorized for querying streams,
+each of which exposes a set of tables through a wrapper view (columns masked,
+rows filtered, some filters required) and a set of files by tag, and for
+submitting streams that accept records and files. `lakehouse_streams` lists
+both; `lakehouse_schema` gives a querying stream's tables and columns;
+`lakehouse_query` reads one table with Marina's own filter syntax (equality,
+`gte`, `in`, `ilike`, `is_null` and the rest), paging with a total count,
+and grouped aggregates (COUNT, SUM, AVG, MIN, MAX); `lakehouse_files` and
+`lakehouse_file` read a stream's file catalog and one file as text. Rows are
+capped at 500 and 30,000 characters a call. Nothing is written: the
+submitting streams are listed but not used, because a remote write would run
+behind no confirmation card in the pane. The `lakehouse-answer` skill is the
+way a question is answered: streams first, then the schemas, then a filtered
+or aggregated query, every figure with its stream, table, filters and date.
 
 ### nih
 
