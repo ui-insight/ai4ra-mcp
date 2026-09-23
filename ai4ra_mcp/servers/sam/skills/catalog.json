@@ -7,7 +7,7 @@
     {
       "slug": "subrecipient-check",
       "name": "subrecipient-check",
-      "summary": "Check a prospective subrecipient or vendor: SAM.gov registration status and expiration, active exclusions, and the latest single audit with its findings from the Federal Audit Clearinghouse, reported fact by fact with source and date, and mapped to the 2 CFR 200.332 risk-assessment items it does and does not cover.",
+      "summary": "Check a prospective subrecipient or vendor: SAM.gov registration status and expiration, active exclusions, and the latest single audit with its findings from the Federal Audit Clearinghouse, reported fact by fact with source and date, and mapped to the 2 CFR 200.332 risk-assessment items it does and does not cover; and the entity's federal award history from NSF and NIH as evidence of experience as a prime.",
       "triggers": [
         "subrecipient check",
         "debarment check",
@@ -15,7 +15,7 @@
         "is this entity excluded",
         "subrecipient risk assessment"
       ],
-      "version": "0.1.1",
+      "version": "0.2.0",
       "category": "review",
       "domain": "research-administration",
       "status": "experimental",
@@ -29,7 +29,7 @@
         {
           "type": "prompt",
           "path": "components/subrecipient-check/prompt.md",
-          "version": "0.1.1",
+          "version": "0.2.0",
           "role": "canonical_prompt"
         }
       ],
@@ -51,7 +51,9 @@
         "sam_entity",
         "sam_exclusions_search",
         "fac_audits_search",
-        "fac_findings"
+        "fac_findings",
+        "nsf_awards_search",
+        "nih_projects_search"
       ]
     }
   ]
