@@ -92,8 +92,9 @@ the Office add-in and moved here on 2026-09-22; each catalog entry's `source`
 says so. `budget-nsf` is institution-agnostic: its template ships no rates,
 and the skill reads them from a sheet named Rates when the workbook has one
 (seven fixed-label rows: Location, F&A rate, F&A base, Fringe faculty, Fringe
-staff, Fringe students, Fringe temporary, and a Source row) and writes the
-Source row beside the rates as provenance. An institution provides the Rates
+staff, Fringe students, Fringe temporary, and a Source row), writes the
+Source row beside the rates as provenance, and estimates a rate the sheet
+lacks, filled yellow and marked so. An institution provides the Rates
 sheet with a skill of its own; `uidaho-rates` is Idaho's, and writes the sheet only when the request names one (the proposal workbook's Rates step does).
 
 The other seventeen components are copies of AI4RA/prompt-library at commit
@@ -137,11 +138,25 @@ makes a search-and-cite layer cheap:
 - `uidaho_guidance_get`: one policy as clean text by number (`APM 45.06`,
   `FSH 5100`), with its owner, `Last updated` date and URL, in pages.
 - `uidaho_rates`: the F&A rate agreement PDF (`fa`) or the fringe-rate page
-  (`fringe`) as text.
+  (`fringe`) as text. The agreement is read at the address the F&A page
+  links today, so a new agreement is picked up the day it is posted, with
+  the last known address as the fallback and the result saying which was
+  used; the fringe read returns only the page's fringe section. Every result
+  carries the address it was read from.
 
 Chapter lists and policy text are cached for a day: revisions are rare and
 the page carries its own date. A number with no page is reported as a 404
 with no guessing.
+
+The skills follow the same rule, decided 2026-09-23: nothing from memory.
+`uidaho-lookup` answers a policy or rate question from what the tools
+return, with the address of every figure and passage, and gives no figure
+for a page that could not be read. `uidaho-rates` fetches the F&A and fringe
+rates and reports them with their dates and addresses; when the request
+names a sheet (the proposal workbook's Rates step does), it writes them
+onto it in the layout the budget form reads, and a document that could not
+be read leaves its rows without values, marked "not fetched". Neither skill
+carries fallback figures.
 
 ### nih
 
