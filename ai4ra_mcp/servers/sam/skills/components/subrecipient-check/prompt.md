@@ -1,6 +1,6 @@
 ---
 name: subrecipient-check
-version: 0.3.0
+version: 0.3.1
 category: review
 domain: research-administration
 status: experimental
@@ -39,7 +39,7 @@ Four short blocks, each fact with its source in parentheses:
 - **Registration.** Legal name, UEI, CAGE, status, activation and expiration dates, purpose of registration, entity type; the exclusion flag on the registration.
 - **Exclusions.** The active exclusions found, each with type, program, excluding agency and dates; or "none active" for both searches.
 - **Single audit.** The latest audit year and fiscal year end, auditor, financial statement opinion, the flags (going concern, material weakness, significant deficiency, material noncompliance, low-risk auditee), total federal expenditures, agencies with prior findings; then each finding with its compliance requirement, its flags (questioned costs, repeat) and one line of its text. If no audit is on file, say so and note that the entity may be below the expenditure threshold. When the schedule of expenditures is read, say that its lines are federal programs with spending in the audited year, student aid included, not a list of grants held; note the total, the largest lines, and any line in the same program as the award in hand.
-- **Names.** The current legal name and the former names from the USAspending profile, and which name each portal's records were found under.
+- **Names.** The current legal name and the former names from the USAspending profile, and which name each portal's records were found under. Only names the profile returned are searched. If a portal's results show a name that is on neither list (a near-spelling, an older form, a parent), report it as a possible synonym for the person to confirm; do not search under it.
 - **Federal award history.** From NSF and NIH: how many awards each portal lists, the years they span, the most recent with its title, dates and amount, the largest, and whether anything is active or ended within the last five years. Say that these are prime awards.
 - **Subawards received.** From USAspending: how many, the years, the largest and most recent with their primes and awarding agencies, and any with the same agency or program as the award in hand; or none in the window, noting the $30,000 reporting floor.
 - **Against 2 CFR 200.332(b).** State which of these this check speaks to: prior experience with similar subawards (covered by the subawards-received block for what primes reported, and by the award history for experience as a prime); results of previous audits including whether a single audit was required and any findings relevant to the program (covered by the audit block); new personnel or substantially changed systems (not covered: ask the subrecipient); the results of federal monitoring (not covered beyond the audit's agencies with prior findings). Say plainly that registration and exclusion status are conditions of the award under 2 CFR 200.214 and 180, not the risk assessment itself.

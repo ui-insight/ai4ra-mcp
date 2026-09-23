@@ -15,7 +15,7 @@
         "is this entity excluded",
         "subrecipient risk assessment"
       ],
-      "version": "0.3.0",
+      "version": "0.3.1",
       "category": "review",
       "domain": "research-administration",
       "status": "experimental",
@@ -29,7 +29,7 @@
         {
           "type": "prompt",
           "path": "components/subrecipient-check/prompt.md",
-          "version": "0.3.0",
+          "version": "0.3.1",
           "role": "canonical_prompt"
         }
       ],

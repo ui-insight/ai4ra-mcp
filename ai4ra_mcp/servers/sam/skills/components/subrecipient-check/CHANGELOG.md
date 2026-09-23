@@ -2,6 +2,10 @@
 
 Versions follow semver: MAJOR for output-contract breaks, MINOR for backward-compatible additions, PATCH for wording or clarity.
 
+## [0.3.1] — 2026-09-22
+
+- Only names the USAspending profile returns are searched; a name seen in a portal's results that is on neither list is reported as a possible synonym for the person to confirm, not searched.
+
 ## [0.3.0] — 2026-09-22
 
 - Name history from the USAspending recipient profile, searched under in every portal; a subawards-received block from USAspending, the public record of experience as a subrecipient, so 200.332(b)(1) is covered from public records.
