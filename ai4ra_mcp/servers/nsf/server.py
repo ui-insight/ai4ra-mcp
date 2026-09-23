@@ -71,7 +71,7 @@ async def nsf_awards_search(
     Args:
         keyword: Words in the title or abstract, e.g. 'wildfire smoke'.
         pi_name: Principal investigator name, e.g. 'Jane Smith'.
-        awardee: Awardee institution, e.g. 'University of Idaho'.
+        awardee: Awardee institution, e.g. 'University of Idaho'; matched as a phrase, so give one name at a time (a former name is a second search).
         program: Program name or element code, e.g. 'EPSCoR'.
         date_start: Awards starting on or after MM/DD/YYYY.
         date_end: Awards starting on or before MM/DD/YYYY.
@@ -85,7 +85,10 @@ async def nsf_awards_search(
     if pi_name.strip():
         params["pdPIName"] = pi_name.strip()
     if awardee.strip():
-        params["awardeeName"] = awardee.strip()
+        # The API matches an unquoted name on any word ("Canisius University" is every university); a quoted
+        # phrase matches the name. A PI name is left unquoted: any-word finds "Andrew D Stewart" from "Andrew Stewart".
+        name = awardee.strip()
+        params["awardeeName"] = name if (name.startswith('"') or " " not in name) else f'"{name}"'
     if program.strip():
         params["primaryProgram"] = program.strip()
     if date_start.strip():

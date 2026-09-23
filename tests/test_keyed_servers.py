@@ -132,3 +132,20 @@ def test_bearer_middleware_reaches_the_tool(monkeypatch):
         assert json.loads(text)["returned"] == 1 and seen["key"] == "user-key"
         r = client.post("/fac/mcp", json={**rpc, "id": 2}, headers=hdr)
         assert "no API key" in r.json()["result"]["content"][0]["text"]
+
+
+async def test_nsf_awardee_is_sent_as_a_phrase(monkeypatch):
+    seen = {}
+
+    async def fake_get_json(url, params=None, **kw):
+        seen.update(params or {})
+        return {"response": {"award": [NSF_AWARD]}}
+
+    monkeypatch.setattr(nsf, "get_json", fake_get_json)
+    nsf._cache._d.clear()
+    await nsf.nsf_awards_search(awardee="Canisius University")
+    assert seen["awardeeName"] == '"Canisius University"'
+    nsf._cache._d.clear()
+    await nsf.nsf_awards_search(awardee="Canisius", pi_name="Andrew Stewart")
+    assert seen["awardeeName"] == "Canisius" and seen["pdPIName"] == "Andrew Stewart"
+
