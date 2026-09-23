@@ -2,6 +2,10 @@
 
 All notable changes to this component. Versions follow semver: MAJOR for output-contract breaks, MINOR for backward-compatible additions, PATCH for wording or clarity.
 
+## [5.2.0] — 2026-09-23
+
+- The Rates step runs uidaho-rates with the sheet named in its context (Rates); the skill writes the sheet only because the step names one.
+
 ## [5.1.0] — 2026-09-22
 
 - The Rates step runs uidaho-rates-sheet, which writes a Rates sheet, instead of uidaho-lookup, which answered in the reply; the Budget template step reads the Rates sheet (a source) for its rates and its provenance line. Moved to ui-insight/ai4ra-mcp as a skill of the uidaho server; its steps live on the general, AI4RA and University of Idaho servers.

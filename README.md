@@ -27,7 +27,7 @@ read and write cells, paragraphs and slides.
 | `/sam/mcp` | SAM.gov (key) | `sam_index`, `sam_entity`, `sam_exclusions_search`, `sam_assistance_listing`, `sam_assistance_listings_search` | `subrecipient-check` |
 | `/usaspending/mcp` | usaspending.gov | `usaspending_index`, `usaspending_recipients`, `usaspending_recipient`, `usaspending_awards_search`, `usaspending_subawards_search`, `usaspending_award` | none |
 | `/fac/mcp` | Federal Audit Clearinghouse (key) | `fac_index`, `fac_audits_search`, `fac_findings`, `fac_federal_awards` | none |
-| `/uidaho/mcp` | uidaho.edu | `uidaho_guidance_index`, `uidaho_guidance_search`, `uidaho_guidance_get`, `uidaho_rates` | `uidaho-lookup`, `uidaho-rates-sheet`, `award-facts`, `award-lines`, `award-status`, `award-review`, `pi-awards`, `current-pending`, `current-pending-support`, `proposal-workbook` |
+| `/uidaho/mcp` | uidaho.edu | `uidaho_guidance_index`, `uidaho_guidance_search`, `uidaho_guidance_get`, `uidaho_rates` | `uidaho-lookup`, `uidaho-rates`, `award-facts`, `award-lines`, `award-status`, `award-review`, `pi-awards`, `current-pending`, `current-pending-support`, `proposal-workbook` |
 
 The index at `/` lists the servers in this order, which is the order a
 client's picker shows them: general first, then the research-administration
@@ -40,7 +40,7 @@ and linked documents) and the skills any office uses with any document. The
 `ai4ra` server has no tools: it is the research-administration skills that
 work with a client's own document tools. Anything that can be shared lives on
 one of these two; the `uidaho` server holds only what is the University of
-Idaho's (its policies and rates, a Rates sheet from them, the award skills
+Idaho's (its policies and rates, the rates as a Rates sheet when asked, the award skills
 that read its Banner exports, and the proposal workbook whose steps run
 skills from all three).
 
@@ -94,7 +94,7 @@ and the skill reads them from a sheet named Rates when the workbook has one
 (seven fixed-label rows: Location, F&A rate, F&A base, Fringe faculty, Fringe
 staff, Fringe students, Fringe temporary, and a Source row) and writes the
 Source row beside the rates as provenance. An institution provides the Rates
-sheet with a skill of its own; `uidaho-rates-sheet` is Idaho's.
+sheet with a skill of its own; `uidaho-rates` is Idaho's, and writes the sheet only when the request names one (the proposal workbook's Rates step does).
 
 The other seventeen components are copies of AI4RA/prompt-library at commit
 `eef6fd3d818037ab51ece87f61806c448d51f40d`, files unchanged, each catalog
@@ -299,8 +299,9 @@ one line naming the documents, their periods and their addresses, which the
 form copies beside its rates as provenance. A rate the skill could not read
 is a row with its label and no value, marked "not fetched", never a figure
 from memory. The form estimates a rate the sheet lacks, fills it yellow and
-marks it "estimate", so the highlight means exactly that. `uidaho-rates-sheet`
-is Idaho's; another institution writes its own to the same labels.
+marks it "estimate", so the highlight means exactly that. `uidaho-rates`
+is Idaho's: it fetches and reports the rates, and writes the sheet when the
+request names one; another institution writes its own to the same labels.
 
 ## Running
 

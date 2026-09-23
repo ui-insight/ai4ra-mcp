@@ -1,6 +1,6 @@
 ---
 name: proposal-workbook
-version: 5.1.0
+version: 5.2.0
 category: drafting
 domain: research-administration
 status: experimental
@@ -8,7 +8,7 @@ tags: [proposal, rfa, grants-gov, workbook, narrative, work-plan, timeline, budg
 audience: [principal-investigators, pre-award-staff, proposal-developers]
 owner: nlayman
 created: 2026-09-14
-updated: 2026-09-22
+updated: 2026-09-23
 ---
 
 # Proposal Workbook — Prompt

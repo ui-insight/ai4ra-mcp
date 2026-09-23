@@ -2,7 +2,7 @@
 
 An orchestrating skill that the pane drives one stage per turn. Starting from an opportunity the user picked out of the funding-opportunity finder's list, it builds a proposal-planning workbook in four stages, in this order: the opportunity record on an RFA sheet, checked complete, with the award ceiling and any tracks, followed in the same reply by the questions only the user can answer; a Narrative sheet and an Activities table grounded in the record and the context, copy-edited by the remove-AI-tells skill; a budget from the narrative through the narrative-to-budget worksheet skill, wired back into requested funding, the narrative's budget sentence and a ceiling check by formula; and a timeline from the activities and the budget through the project-timeline (Gantt) skill.
 
-**Version:** 5.1.0 · **Category:** drafting · **Status:** experimental · **Output:** a workbook
+**Version:** 5.2.0 · **Category:** drafting · **Status:** experimental · **Output:** a workbook
 
 ## How the stages are enforced
 

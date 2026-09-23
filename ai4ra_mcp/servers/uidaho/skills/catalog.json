@@ -55,36 +55,37 @@
       ]
     },
     {
-      "slug": "uidaho-rates-sheet",
-      "name": "uidaho-rates-sheet",
-      "summary": "Write the University of Idaho's current F&A and fringe rates onto a sheet named Rates, read from the rate agreement and the fringe-rate page, one row per rate with its effective period, its document and the address it was read from, seven fixed-label rows a budget form reads first and a Source line for provenance; a document that cannot be read leaves its rows without figures, never estimates.",
+      "slug": "uidaho-rates",
+      "name": "uidaho-rates",
+      "summary": "Fetch the University of Idaho's current F&A and fringe rates from the rate agreement and the fringe-rate page and report them, each with its effective period, its document and the address it was read from; when the request names a sheet, write them onto it in the layout a budget form reads (seven fixed-label rows and a Source line). A document that cannot be read yields no figure.",
       "triggers": [
-        "rates sheet",
         "our rates",
         "F&A and fringe rates",
-        "rates tab"
+        "fringe rate",
+        "indirect rate",
+        "rates sheet"
       ],
-      "version": "0.2.0",
+      "version": "0.3.0",
       "category": "research",
       "domain": "research-administration",
       "status": "experimental",
       "paths": {
-        "component_dir": "components/uidaho-rates-sheet",
-        "readme": "components/uidaho-rates-sheet/README.md",
-        "prompt": "components/uidaho-rates-sheet/prompt.md",
-        "evals_dir": "components/uidaho-rates-sheet/evals"
+        "component_dir": "components/uidaho-rates",
+        "readme": "components/uidaho-rates/README.md",
+        "prompt": "components/uidaho-rates/prompt.md",
+        "evals_dir": "components/uidaho-rates/evals"
       },
       "manifestations": [
         {
           "type": "prompt",
-          "path": "components/uidaho-rates-sheet/prompt.md",
-          "version": "0.2.0",
+          "path": "components/uidaho-rates/prompt.md",
+          "version": "0.3.0",
           "role": "canonical_prompt"
         }
       ],
       "contracts": {
         "output": {
-          "format": "spreadsheet",
+          "format": null,
           "scope": "repo_local",
           "schema_path": null
         }
@@ -96,10 +97,7 @@
         "current_version_is_fully_evaluated": false
       },
       "requires": [
-        "uidaho_rates",
-        "excel:add_sheet",
-        "excel:write_values",
-        "excel:format_range"
+        "uidaho_rates"
       ]
     },
     {
@@ -539,7 +537,7 @@
       "slug": "proposal-workbook",
       "name": "proposal-workbook",
       "summary": "Turn a chosen funding opportunity into a proposal-planning workbook: a table of eight steps the pane runs one after another, each skill in its own conversation with a context the pane fills from the run's earlier outputs (ask; RFA sheet; narrative; work plan; a Rates sheet; budget outline; NSF budget form; Gantt). The budget is estimated from the plan and asks nothing; a reviewer edits the outline sheet and reruns the form.",
-      "version": "5.1.0",
+      "version": "5.2.0",
       "category": "drafting",
       "domain": "research-administration",
       "status": "experimental",
@@ -553,7 +551,7 @@
         {
           "type": "prompt",
           "path": "components/proposal-workbook/prompt.md",
-          "version": "5.1.0",
+          "version": "5.2.0",
           "role": "canonical_prompt"
         }
       ],
@@ -575,7 +573,7 @@
         "skill_rfa_sheet",
         "skill_proposal_narrative",
         "skill_work_plan",
-        "skill_uidaho_rates_sheet",
+        "skill_uidaho_rates",
         "skill_budget_outline",
         "skill_budget_nsf",
         "skill_project_timeline_gantt"
@@ -640,8 +638,9 @@
         },
         {
           "name": "Rates",
-          "skill": "uidaho-rates-sheet",
+          "skill": "uidaho-rates",
           "context": {
+            "sheet": "Rates",
             "location": "on-campus unless the RFA sheet says otherwise",
             "type": "organized research"
           },

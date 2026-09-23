@@ -115,3 +115,11 @@ async def test_fringe_rates_return_only_their_section(monkeypatch):
     assert out["text"].startswith("## Consolidated fringe rates by fiscal year")
     assert "Staff Rate: 36.7%" in out["text"] and "Budget books" not in out["text"] and "Trina" not in out["text"]
     assert out["truncated"] is False and out["trimmed_to"]
+
+
+def test_rate_agreement_link_is_the_one_the_page_labels():
+    page = ('<a href="https://content-hub.uidaho.edu/api/public/content/aaa?v=1">July 14, 2026, meeting minutes</a>'
+            '<a href="https://content-hub.uidaho.edu/api/public/content/bbb?v=2&amp;x=1"><span>Current Indirect Rate Agreement (PDF)</span></a>')
+    assert uidaho.pick_agreement_link(page) == "https://content-hub.uidaho.edu/api/public/content/bbb?v=2&x=1"
+    assert uidaho.pick_agreement_link("<a href=\"https://x/y\">Rate Agreement</a>") is None
+

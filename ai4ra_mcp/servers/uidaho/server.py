@@ -10,13 +10,15 @@ what they read for a day, since revisions are rare and the page dates itself.
 
 from __future__ import annotations
 
+import html
 import re
 from pathlib import Path
 
+import httpx
 from mcp.server.mcpserver import MCPServer
 
 from ai4ra_mcp.common import fetch as _fetch
-from ai4ra_mcp.common.http import DAY, TTLCache
+from ai4ra_mcp.common.http import DAY, USER_AGENT, TTLCache
 from ai4ra_mcp.common.skills import register_prompts
 
 _READ_ONLY = {"readOnlyHint": True, "destructiveHint": False, "idempotentHint": True, "openWorldHint": True}
@@ -32,11 +34,41 @@ RATES = {
     "fa": {"label": "Facilities and administrative (indirect) rate agreement",
            "url": "https://content-hub.uidaho.edu/api/public/content/015597383dac40219f3c7f32223b7445?v=6bc964f2",
            "linked_from": "https://www.uidaho.edu/research/faculty/resources/f-and-a-rates",
-           "note": "A PDF. Section I has the rates by type and location and the base definition. Read in pages."},
+           "note": "A PDF, read at the address the F&A page links today (this one is the last known). Section I has the rates by type and location and the base definition. Read in pages."},
     "fringe": {"label": "Consolidated fringe benefit rates by fiscal year",
                "url": "https://www.uidaho.edu/leadership/finance-administration/budget-planning",
                "note": "The section 'Consolidated fringe rates by fiscal year' lists faculty, staff, temporary help and student rates."},
 }
+_ANCHOR = re.compile(r"<a\b[^>]*href=\"([^\"]+)\"[^>]*>(.*?)</a>", re.I | re.S)
+
+
+def pick_agreement_link(page_html: str) -> str | None:
+    """The address of the rate agreement PDF as the F&A page links it: the content-hub link whose text says
+    'rate agreement'. None when the page has no such link."""
+    for href, inner in _ANCHOR.findall(page_html):
+        label = re.sub(r"<[^>]+>", " ", inner)
+        if "content-hub.uidaho.edu" in href and re.search(r"rate\s+agreement", label, re.I):
+            return html.unescape(href)
+    return None
+
+
+async def _fa_agreement_url() -> tuple[str, str]:
+    """(url, how): the current rate agreement's address read from the F&A page today, so a new agreement is
+    picked up the day the page links it; the last known address when the page cannot be read."""
+    async def make():
+        async with httpx.AsyncClient(timeout=20, follow_redirects=True, headers={"User-Agent": USER_AGENT}) as client:
+            r = await client.get(RATES["fa"]["linked_from"])
+            r.raise_for_status()
+        return pick_agreement_link(r.text)
+    try:
+        found = await _cache.remember("fa-agreement-url", DAY, make)
+    except Exception:
+        found = None
+    if found:
+        return found, "the F&A page's rate-agreement link, read today"
+    return RATES["fa"]["url"], "the last known address; the F&A page could not be read or has no rate-agreement link"
+
+
 # The fringe section of the budget office page: from its heading to the next heading.
 _FRINGE_SECTION = re.compile(r"^## Consolidated fringe rates by fiscal year[ \t]*\n(.*?)(?=^## |\Z)", re.S | re.M)
 STARTER_CITATIONS = [
@@ -290,8 +322,9 @@ async def uidaho_rates(kind: str, offset: int = 0, max_chars: int = 12000) -> di
             if page["truncated"]:
                 page["next_offset"] = offset + len(chunk)
         return {"kind": kind, **RATES[kind], **page}
-    page = await _fetch.fetch_document(RATES[kind]["url"], offset=offset, max_chars=max_chars)
-    return {"kind": kind, **RATES[kind], **page}
+    url, how = await _fa_agreement_url()
+    page = await _fetch.fetch_document(url, offset=offset, max_chars=max_chars)
+    return {"kind": kind, **RATES[kind], **page, "url": page.get("url", url), "resolved_via": how}
 
 
 SKILLS_DIR = Path(__file__).parent / "skills"
