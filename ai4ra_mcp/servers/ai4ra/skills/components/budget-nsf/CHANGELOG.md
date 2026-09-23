@@ -33,3 +33,7 @@ All notable changes to this component. Versions follow semver: MAJOR for output-
 ## [3.2.1] — 2026-09-22
 
 - The Origin column beside the rates (C8:C12) is written by the skill: "Rates sheet", "request" or "not set"; a run left the template's "not set" beside rates the pane had filled from the Rates sheet.
+
+## [3.3.0] — 2026-09-23
+
+- A rate the Rates sheet and the request do not supply is estimated (fringe faculty 0.30, staff 0.40, students 0.05, temporary 0.10, F&A 0.50 of MTDC), filled yellow, marked "estimate" in its Origin cell and named in D12; a copied rate is no longer yellow (the template's default fill on B8:B12 is gone), so the highlight means estimate and nothing else.

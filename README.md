@@ -291,12 +291,16 @@ The catalog entry follows AI4RA/prompt-library's shape (`slug`, `summary`,
 **The Rates sheet contract.** A budget form skill is institution-agnostic:
 it takes its rates from a sheet named Rates when the workbook has one. An
 institution's rates skill writes that sheet with a header row (Item, Value,
-Basis, Effective, Source), then seven rows with these labels in column A:
-Location, F&A rate, F&A base, Fringe faculty, Fringe staff, Fringe students,
-Fringe temporary, values as fractions; reference rows after them; and a last
-row labelled Source, one line naming the documents and their periods, which
-the form copies beside its rates as provenance. `uidaho-rates-sheet` is
-Idaho's; another institution writes its own to the same labels.
+Basis, Effective, Source, Link), then seven rows with these labels in column
+A: Location, F&A rate, F&A base, Fringe faculty, Fringe staff, Fringe
+students, Fringe temporary, values as fractions, each with the address it
+was read from; reference rows after them; and a last row labelled Source,
+one line naming the documents, their periods and their addresses, which the
+form copies beside its rates as provenance. A rate the skill could not read
+is a row with its label and no value, marked "not fetched", never a figure
+from memory. The form estimates a rate the sheet lacks, fills it yellow and
+marks it "estimate", so the highlight means exactly that. `uidaho-rates-sheet`
+is Idaho's; another institution writes its own to the same labels.
 
 ## Running
 

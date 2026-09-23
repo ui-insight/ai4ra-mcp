@@ -2,11 +2,11 @@
 
 Fills the NSF budget form (lines A to M) from a Budget outline sheet. Ships a template for the Budget NSF sheet with every total a formula and its labels and formulas locked; the skill maps the outline's rows into the input cells. Other sponsors get their own template skills.
 
-**Version:** 3.2.0 · **Status:** experimental · **Output:** a spreadsheet sheet
+**Version:** 3.3.0 · **Status:** experimental · **Output:** a spreadsheet sheet
 
 ## Inputs
 
-A Budget outline sheet (from the budget-outline skill) and the rates: from a sheet named Rates when the workbook has one (an institution's rates skill writes it with a Source line; the University of Idaho's is uidaho-rates-sheet), else from the request.
+A Budget outline sheet (from the budget-outline skill) and the rates: from a sheet named Rates when the workbook has one (an institution's rates skill writes it with a Source line; the University of Idaho's is uidaho-rates-sheet), else from the request; a rate neither gives is estimated, filled yellow and marked so.
 
 ## Outputs
 

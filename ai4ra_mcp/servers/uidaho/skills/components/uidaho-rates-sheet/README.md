@@ -1,8 +1,8 @@
 # UIdaho Rates Sheet
 
-Writes the University of Idaho's current F&A and fringe rates onto a sheet named Rates, read from the rate agreement and the fringe-rate page with `uidaho_rates`, one row per rate with its effective period and its document. The first seven rows carry fixed labels (Location, F&A rate, F&A base, Fringe faculty, Fringe staff, Fringe students, Fringe temporary) and the last row, Source, is one line of provenance, so a budget form skill can take its rates from the sheet and say where they came from.
+Writes the University of Idaho's current F&A and fringe rates onto a sheet named Rates, read from the rate agreement and the fringe-rate page with `uidaho_rates`, one row per rate with its effective period, its document and the address it was read from. The first seven rows carry fixed labels (Location, F&A rate, F&A base, Fringe faculty, Fringe staff, Fringe students, Fringe temporary) and the last row, Source, is one line of provenance, so a budget form skill can take its rates from the sheet and say where they came from.
 
-**Version:** 0.1.0 · **Category:** research · **Status:** experimental · **Output:** a spreadsheet sheet
+**Version:** 0.2.0 · **Category:** research · **Status:** experimental · **Output:** a spreadsheet sheet
 
 ## Inputs
 
@@ -11,6 +11,10 @@ The project's location (on-campus unless told otherwise) and type (organized res
 ## Outputs
 
 The Rates sheet, and a three-line reply with the figures and their dates.
+
+## No figures from memory
+
+The skill writes only what the tools returned. If the rate agreement or the fringe page cannot be read, the rows are on the sheet with their labels and no value, the Basis cell says "not fetched", and the reply says which document failed and why. Nothing is estimated and no earlier year's figure stands in.
 
 ## Why a sheet
 

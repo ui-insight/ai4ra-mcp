@@ -17,3 +17,7 @@ Versions follow semver: MAJOR for output-contract breaks, MINOR for backward-com
 ## [0.1.0] — 2026-09-14
 
 - First version.
+
+## [0.4.0] — 2026-09-23
+
+- No fallback figures: a page that cannot be read yields no figure, with the tool's reason; every figure carries the address it was read from.

@@ -7,7 +7,7 @@
     {
       "slug": "uidaho-lookup",
       "name": "uidaho-lookup",
-      "summary": "Answer a question about the University of Idaho's sponsored-research facts (F&A and fringe rates, budget rules, policies, contacts) with the uidaho tools, quoting each figure or passage with its policy number, effective period or revision date, and page.",
+      "summary": "Answer a question about the University of Idaho's sponsored-research facts (F&A and fringe rates, budget rules, policies, contacts) with the uidaho tools, quoting each figure or passage with its policy number, effective period or revision date, and the address it was read from; a page that cannot be read yields no figure.",
       "triggers": [
         "University of Idaho policy",
         "APM",
@@ -16,7 +16,7 @@
         "fringe rate",
         "UI policy"
       ],
-      "version": "0.3.1",
+      "version": "0.4.0",
       "category": "research",
       "domain": "research-administration",
       "status": "experimental",
@@ -30,7 +30,7 @@
         {
           "type": "prompt",
           "path": "components/uidaho-lookup/prompt.md",
-          "version": "0.3.1",
+          "version": "0.4.0",
           "role": "canonical_prompt"
         }
       ],
@@ -57,14 +57,14 @@
     {
       "slug": "uidaho-rates-sheet",
       "name": "uidaho-rates-sheet",
-      "summary": "Write the University of Idaho's current F&A and fringe rates onto a sheet named Rates, read from the rate agreement and the fringe-rate page, one row per rate with its effective period and document, seven fixed-label rows a budget form reads first and a Source line for provenance.",
+      "summary": "Write the University of Idaho's current F&A and fringe rates onto a sheet named Rates, read from the rate agreement and the fringe-rate page, one row per rate with its effective period, its document and the address it was read from, seven fixed-label rows a budget form reads first and a Source line for provenance; a document that cannot be read leaves its rows without figures, never estimates.",
       "triggers": [
         "rates sheet",
         "our rates",
         "F&A and fringe rates",
         "rates tab"
       ],
-      "version": "0.1.0",
+      "version": "0.2.0",
       "category": "research",
       "domain": "research-administration",
       "status": "experimental",
@@ -78,7 +78,7 @@
         {
           "type": "prompt",
           "path": "components/uidaho-rates-sheet/prompt.md",
-          "version": "0.1.0",
+          "version": "0.2.0",
           "role": "canonical_prompt"
         }
       ],

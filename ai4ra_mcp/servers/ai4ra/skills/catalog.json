@@ -232,11 +232,11 @@
     {
       "slug": "budget-nsf",
       "name": "budget-nsf",
-      "summary": "Lay the NSF budget form (lines A to M) down from a Budget outline: every total a formula, the lines filled from the outline, the rates taken from a Rates sheet when the workbook has one with its Source line as provenance, the people left for the research administrator.",
+      "summary": "Lay the NSF budget form (lines A to M) down from a Budget outline: every total a formula, the lines filled from the outline, the rates taken from a Rates sheet when the workbook has one with its Source line as provenance, a rate the sheet lacks estimated and filled yellow, the people left for the research administrator.",
       "triggers": [
         "nsf budget"
       ],
-      "version": "3.2.1",
+      "version": "3.3.0",
       "category": "drafting",
       "domain": "research-administration",
       "status": "experimental",
@@ -251,7 +251,7 @@
         {
           "type": "prompt",
           "path": "components/budget-nsf/prompt.md",
-          "version": "3.2.1",
+          "version": "3.3.0",
           "role": "canonical_prompt"
         }
       ],
@@ -270,7 +270,8 @@
       },
       "requires": [
         "excel:read_range",
-        "excel:write_values"
+        "excel:write_values",
+        "excel:format_range"
       ],
       "source": {
         "repo": "ui-insight/mindrouter-365",

@@ -30,7 +30,7 @@ null,
 null
 ],
 [
-"Yellow cells came from the request or a Rates sheet, or are estimates; replace them and every total recalculates.",
+"Yellow cells are estimates; replace them and every total recalculates. A rate copied from a Rates sheet is not yellow and names its source in the Note.",
 null,
 null,
 null,
@@ -908,7 +908,7 @@ null
 "number_format": "0%"
 },
 {
-"address": "B6:B12",
+"address": "B6:B7",
 "fill_color": "#FFFF00"
 },
 {

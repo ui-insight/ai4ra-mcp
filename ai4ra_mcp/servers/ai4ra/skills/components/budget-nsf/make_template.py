@@ -16,7 +16,7 @@ def setc(r, c, val):
     while len(v) < r: v.append([None] * COLS)
     v[r - 1][c] = val
 
-setc(1, A, "Budget NSF"); setc(2, A, "Sponsor / program"); setc(3, A, "Yellow cells came from the request or a Rates sheet, or are estimates; replace them and every total recalculates.")
+setc(1, A, "Budget NSF"); setc(2, A, "Sponsor / program"); setc(3, A, "Yellow cells are estimates; replace them and every total recalculates. A rate copied from a Rates sheet is not yellow and names its source in the Note.")
 for c, val in zip([A, B, C, D], ["Inputs", "Value", "Origin", "Note"]): setc(5, c, val)
 inputs = [
     (6, "Project years", 3, "estimate", "Whole number of years; salaries beyond it come out as zero. Estimate: the announcement's maximum."),
@@ -90,7 +90,7 @@ template = {
         {"address": "D19:D24", "number_format": "$#,##0"}, {"address": "G19:K24", "number_format": "$#,##0"}, {"address": "E19:E24", "number_format": "0.0"},
         {"address": "B25", "number_format": "$#,##0"}, {"address": "E25", "number_format": "$#,##0"}, {"address": "G27:L58", "number_format": "$#,##0"},
         {"address": "B7:B12", "number_format": "0.0%"}, {"address": "F19:F24", "number_format": "0.0%"}, {"address": "C62", "number_format": "0%"},
-        {"address": "B6:B12", "fill_color": "#FFFF00"}, {"address": "A19:E20", "fill_color": "#FFFF00"}, {"address": "G36:K36", "fill_color": "#FFFF00"}],
+        {"address": "B6:B7", "fill_color": "#FFFF00"}, {"address": "A19:E20", "fill_color": "#FFFF00"}, {"address": "G36:K36", "fill_color": "#FFFF00"}],
     "locked": ["A1:A3", "A5:D5", "A6:A15", "G17:K17", "A18:L18", "A19:L24", "A25", "D25", "G25", "A26:K26", "A27:A36", "A38:L58", "A60:C62"],
     "from_context": {"B1": "title", "B2": "sponsor", "B6": "years", "B8": "fringe_faculty", "B9": "fringe_staff", "B10": "fringe_students", "B11": "fringe_temporary", "B12": "fa_rate", "B13": "fa_base", "D12": "rates_note", "B14": "ceiling", "D14": "ceiling_note",
                      "B25": "senior_personnel_year1", "E25": "other_personnel_year1",
