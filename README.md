@@ -67,9 +67,10 @@ words or domain fragments; `AI4RA_MCP_SEARCH_BLOCK` adds more, comma
 separated.
 
 A client's connector URL is the server's path on the host, for example
-`https://<host>/ecfr/mcp`. A deployment's list of sources names the paths it
-wants: Idaho's names all eight; another institution leaves out `uidaho` and
-adds whatever it builds for itself. `GET /` is the index: `{"v": 1, "servers": [...]}`, one
+`https://<host>/ecfr/mcp`. A client that reads catalogs names the index
+instead and gets every server at once; another institution runs the process
+with `--only` for the servers it wants, leaves out `uidaho`, and adds
+whatever it builds for itself. `GET /` is the index: `{"v": 1, "servers": [...]}`, one
 entry per mounted server with its `name`, `label`, `description`, the paths
 `mcp`, `skills` (the catalog) and `skills_base` (relative to the index, so
 they resolve under whatever prefix a proxy mounts the server at), a `web`
@@ -80,9 +81,8 @@ reads the index adds every server in one step and sees a new one the day it
 is deployed; the Office add-in does this from one `indexes` entry in its
 sources file.
 
-Tool names carry their upstream (`ecfr_`, `grants_gov_`, `uidaho_`) and are
-otherwise unchanged from mcp-ecfr. The extra prefix the Hugging Face Space's
-Gradio wrapper added (`ecfr_mcp_server_…`) is gone.
+Tool names carry their upstream (`ecfr_`, `grants_gov_`, `uidaho_`) and
+nothing else; a client shows them as they are.
 
 ### ai4ra
 
@@ -265,9 +265,38 @@ model.
 A folder under the server's `skills/components/<slug>/` with `prompt.md`
 (YAML front matter, a preamble with **Purpose**, **Expected input** and
 **Expected output**, the prompt under `## Prompt`), `README.md`,
-`CHANGELOG.md` and `evals/`, and an entry in that server's `catalog.json`
-whose `requires` lists the tools it calls. The server serves it as an MCP
-prompt named by its slug and as static files under `/<server>/skills/`.
+`CHANGELOG.md` and `evals/`, and an entry in that server's `catalog.json`.
+The server serves it as an MCP prompt named by its slug and as static files
+under `/<server>/skills/`. A skill goes on the server whose tools it uses;
+one that uses only a client's document tools goes on `ai4ra` (research
+administration) or `general` (any office); one that is one institution's
+goes on that institution's server. Bump the version in the front matter and
+the catalog together: a client caches the prompt text by version.
+
+The catalog entry follows AI4RA/prompt-library's shape (`slug`, `summary`,
+`version`, `category`, `status`, `paths`, `contracts.output.format`,
+`evaluation`) and adds the fields a client acts on:
+
+| Field | What it says |
+|---|---|
+| `requires` | The tools the skill calls: a tool name here (`uidaho_rates`), or `<host>:<name>` for a client's own tool (`excel:write_values`) |
+| `triggers` | Words in a request that point at the skill |
+| `hosts` | The clients the skill is offered in (`["excel"]`); absent means all |
+| `fold` | `"host"` lists the skill beside that client's own tools instead of in this server's fold (the Gantt chart, in Excel) |
+| `paths.template` | A `template.json` the client lays down before the skill runs: a sheet of values, formats, `locked` ranges and `from_context` cells |
+| `assertions` | The skill's definition of done, tested by the client on its output sheet: `[{address, rule, min, max, value, of, sheet, label}]` |
+| `stages` | For a workflow, the table of steps: `[{name, skill, context, sources, required_tools}]`; a step's skill may live on any server |
+| `source` | Where a copied or moved component came from: repository, commit, path |
+
+**The Rates sheet contract.** A budget form skill is institution-agnostic:
+it takes its rates from a sheet named Rates when the workbook has one. An
+institution's rates skill writes that sheet with a header row (Item, Value,
+Basis, Effective, Source), then seven rows with these labels in column A:
+Location, F&A rate, F&A base, Fringe faculty, Fringe staff, Fringe students,
+Fringe temporary, values as fractions; reference rows after them; and a last
+row labelled Source, one line naming the documents and their periods, which
+the form copies beside its rates as provenance. `uidaho-rates-sheet` is
+Idaho's; another institution writes its own to the same labels.
 
 ## Running
 
@@ -282,8 +311,7 @@ uv run pytest                      # offline tests
 Each server is an `MCPServer` from the official Python SDK (mcp 2.x). The
 process mounts each one's streamable-HTTP app at its path, stateless and
 answering in JSON, and runs their session managers under one lifespan.
-Streamable HTTP is the only network transport; the Space's SSE endpoint is
-not carried over.
+Streamable HTTP is the only network transport.
 
 **Keys.** A keyed server (sam, fac) takes its upstream key from its
 environment variable. A client may instead send its own key as
@@ -323,12 +351,14 @@ engine, so the process answers CORS itself: any origin, any method, and the
 server that must be reachable only on campus (a future one that reads an
 internal system) is a Caddy rule and a firewall, not a code branch.
 
-Why not the Hugging Face Space: it was the fastest public endpoint for a
-summit, and Gradio was the way to put stdio tools behind HTTP at the time.
-It sleeps when idle, imposes a tool-name prefix, and is one more origin to
-trust. The SDK now serves HTTP directly, and the VM already has the
-certificate and the proxy. The Space stays up until the VM copy is live and
-the clients that name it have moved.
+The demo deployment: the repository cloned on the VM, `docker compose up -d
+--build` for the process and SearXNG, and a `handle_path /mcp/*` block in
+Caddy that forwards to port 8000, so the index is at `https://<host>/mcp/`
+and each server at `https://<host>/mcp/<name>/mcp`. Shipping a change is a
+commit, a pull on the VM and the same compose command; a client's Refresh
+then re-reads the server's tools and skills. The eCFR server's earlier home,
+a Hugging Face Space behind Gradio, is retired: it slept when idle, prefixed
+every tool name, and was one more origin to trust.
 
 ## Connecting
 
@@ -357,7 +387,7 @@ skills, the SAM.gov integrity section, an FDP Clearinghouse reader.
 ## Related
 
 - [AI4RA/mcp-ecfr](https://github.com/AI4RA/mcp-ecfr): the eCFR server this
-  supersedes, and the Space that serves it today.
+  supersedes.
 - [ui-insight/mindrouter-365](https://github.com/ui-insight/mindrouter-365):
   the Office add-in that is the first client. Its issues 17 (the split into
   pane, servers and deployment) and 23 (the University of Idaho server) are
