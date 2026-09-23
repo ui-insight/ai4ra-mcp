@@ -2,6 +2,1744 @@
   "catalog_version": "1.0",
   "repo": "ui-insight/ai4ra-mcp",
   "server": "ai4ra",
-  "note": "Skills for the ai4ra catch-all server. None yet: fetch_document is used by other servers' skills, not by one of its own.",
-  "components": []
+  "note": "Research-administration skills with no tools of their own: the proposal sheets (RFA, narrative, work plan, budget outline, NSF budget form), a PI memo, and the cost-allowability and budget-justification prompts copied from AI4RA/prompt-library at a pinned commit (each entry's source says which). They use the client's document tools and, for the web, the general server's. Same shape as AI4RA/prompt-library's component_catalog.json, hand-maintained.",
+  "components": [
+    {
+      "slug": "rfa-sheet",
+      "name": "rfa-sheet",
+      "summary": "Fetch a chosen funding opportunity and lay it out on an RFA sheet: the record's facts, the announcement's requirements, the ceiling as a number (the chosen track's cap or the typical award), and the project rows from the user's context.",
+      "triggers": [
+        "rfa sheet"
+      ],
+      "version": "0.4.1",
+      "category": "drafting",
+      "domain": "research-administration",
+      "status": "experimental",
+      "paths": {
+        "component_dir": "components/rfa-sheet",
+        "readme": "components/rfa-sheet/README.md",
+        "prompt": "components/rfa-sheet/prompt.md",
+        "evals_dir": "components/rfa-sheet/evals"
+      },
+      "manifestations": [
+        {
+          "type": "prompt",
+          "path": "components/rfa-sheet/prompt.md",
+          "version": "0.4.1",
+          "role": "canonical_prompt"
+        }
+      ],
+      "contracts": {
+        "output": {
+          "format": "spreadsheet",
+          "scope": "repo_local",
+          "schema_path": null
+        }
+      },
+      "evaluation": {
+        "case_count": 0,
+        "report_count": 0,
+        "last_fully_evaluated_version": null,
+        "current_version_is_fully_evaluated": false
+      },
+      "requires": [
+        "web_search",
+        "fetch_document",
+        "excel:add_sheet",
+        "excel:write_values",
+        "excel:format_range",
+        "excel:read_range"
+      ],
+      "source": {
+        "repo": "ui-insight/mindrouter-365",
+        "path": "skills/components/rfa-sheet",
+        "moved": "2026-09-22"
+      }
+    },
+    {
+      "slug": "proposal-narrative",
+      "name": "proposal-narrative",
+      "summary": "Draft a proposal narrative, the scope of work proposed in prose, from an RFA sheet and the user's context onto a Narrative sheet, one paragraph per row under bold headings; the timeline and the money live on their own sheets.",
+      "version": "0.3.2",
+      "category": "drafting",
+      "domain": "research-administration",
+      "status": "experimental",
+      "paths": {
+        "component_dir": "components/proposal-narrative",
+        "readme": "components/proposal-narrative/README.md",
+        "prompt": "components/proposal-narrative/prompt.md",
+        "evals_dir": "components/proposal-narrative/evals"
+      },
+      "manifestations": [
+        {
+          "type": "prompt",
+          "path": "components/proposal-narrative/prompt.md",
+          "version": "0.3.2",
+          "role": "canonical_prompt"
+        }
+      ],
+      "contracts": {
+        "output": {
+          "format": "spreadsheet",
+          "scope": "repo_local",
+          "schema_path": null
+        }
+      },
+      "evaluation": {
+        "case_count": 0,
+        "report_count": 0,
+        "last_fully_evaluated_version": null,
+        "current_version_is_fully_evaluated": false
+      },
+      "requires": [
+        "excel:add_sheet",
+        "excel:write_values",
+        "excel:read_range"
+      ],
+      "source": {
+        "repo": "ui-insight/mindrouter-365",
+        "path": "skills/components/proposal-narrative",
+        "moved": "2026-09-22"
+      }
+    },
+    {
+      "slug": "work-plan",
+      "name": "work-plan",
+      "summary": "Lay out a project's activities on a Work plan sheet from a narrative's objectives and approach: named leads, start months, real durations in months (reporting and releases take time); a milestone row only for a dated deliverable the announcement requires, at most two; no cost column.",
+      "triggers": [
+        "work plan"
+      ],
+      "version": "0.3.1",
+      "category": "drafting",
+      "domain": "research-administration",
+      "status": "experimental",
+      "paths": {
+        "component_dir": "components/work-plan",
+        "readme": "components/work-plan/README.md",
+        "prompt": "components/work-plan/prompt.md",
+        "evals_dir": "components/work-plan/evals"
+      },
+      "manifestations": [
+        {
+          "type": "prompt",
+          "path": "components/work-plan/prompt.md",
+          "version": "0.3.1",
+          "role": "canonical_prompt"
+        }
+      ],
+      "contracts": {
+        "output": {
+          "format": "spreadsheet",
+          "scope": "repo_local",
+          "schema_path": null
+        }
+      },
+      "evaluation": {
+        "case_count": 0,
+        "report_count": 0,
+        "last_fully_evaluated_version": null,
+        "current_version_is_fully_evaluated": false
+      },
+      "requires": [
+        "excel:add_sheet",
+        "excel:write_values",
+        "excel:read_range"
+      ],
+      "source": {
+        "repo": "ui-insight/mindrouter-365",
+        "path": "skills/components/work-plan",
+        "moved": "2026-09-22"
+      }
+    },
+    {
+      "slug": "budget-outline",
+      "name": "budget-outline",
+      "summary": "Write the shape of a budget on a Budget outline sheet: one row per category (senior and other personnel, equipment, travel, participant support, supplies, publication, consultants, computing, subawards, other) with an amount per year and a note, sized so that with fringe and indirect costs added it lands between 85% and 100% of the announcement's amount (the form is held to 90%); a sponsor's form (budget-nsf) expands the categories into lines and people.",
+      "triggers": [
+        "budget outline"
+      ],
+      "version": "2.3.1",
+      "category": "drafting",
+      "domain": "research-administration",
+      "status": "experimental",
+      "paths": {
+        "component_dir": "components/budget-outline",
+        "readme": "components/budget-outline/README.md",
+        "prompt": "components/budget-outline/prompt.md",
+        "evals_dir": "components/budget-outline/evals",
+        "template": "components/budget-outline/template.json"
+      },
+      "manifestations": [
+        {
+          "type": "prompt",
+          "path": "components/budget-outline/prompt.md",
+          "version": "2.3.1",
+          "role": "canonical_prompt"
+        }
+      ],
+      "contracts": {
+        "output": {
+          "format": "spreadsheet",
+          "scope": "repo_local",
+          "schema_path": null
+        }
+      },
+      "evaluation": {
+        "case_count": 0,
+        "report_count": 0,
+        "last_fully_evaluated_version": null,
+        "current_version_is_fully_evaluated": false
+      },
+      "requires": [
+        "excel:write_values",
+        "excel:read_range"
+      ],
+      "assertions": [
+        {
+          "address": "B19",
+          "rule": "between",
+          "min": 0.85,
+          "max": 1.0,
+          "label": "loaded total between 85% and 100% of the ceiling (the load factor is an estimate)"
+        },
+        {
+          "address": "E7",
+          "rule": "nonzero",
+          "label": "a senior personnel amount"
+        },
+        {
+          "address": "E8",
+          "rule": "nonzero",
+          "label": "an other personnel amount"
+        },
+        {
+          "address": "E10",
+          "rule": "nonzero",
+          "label": "a travel amount"
+        },
+        {
+          "address": "E12",
+          "rule": "nonzero",
+          "label": "a supplies amount"
+        }
+      ],
+      "source": {
+        "repo": "ui-insight/mindrouter-365",
+        "path": "skills/components/budget-outline",
+        "moved": "2026-09-22"
+      }
+    },
+    {
+      "slug": "budget-nsf",
+      "name": "budget-nsf",
+      "summary": "Lay the NSF budget form (lines A to M) down from a Budget outline: every total a formula, the lines filled from the outline, the rates taken from a Rates sheet when the workbook has one with its Source line as provenance, the people left for the research administrator.",
+      "triggers": [
+        "nsf budget"
+      ],
+      "version": "3.2.0",
+      "category": "drafting",
+      "domain": "research-administration",
+      "status": "experimental",
+      "paths": {
+        "component_dir": "components/budget-nsf",
+        "readme": "components/budget-nsf/README.md",
+        "prompt": "components/budget-nsf/prompt.md",
+        "evals_dir": "components/budget-nsf/evals",
+        "template": "components/budget-nsf/template.json"
+      },
+      "manifestations": [
+        {
+          "type": "prompt",
+          "path": "components/budget-nsf/prompt.md",
+          "version": "3.2.0",
+          "role": "canonical_prompt"
+        }
+      ],
+      "contracts": {
+        "output": {
+          "format": "spreadsheet",
+          "scope": "repo_local",
+          "schema_path": null
+        }
+      },
+      "evaluation": {
+        "case_count": 0,
+        "report_count": 0,
+        "last_fully_evaluated_version": null,
+        "current_version_is_fully_evaluated": false
+      },
+      "requires": [
+        "excel:read_range",
+        "excel:write_values"
+      ],
+      "source": {
+        "repo": "ui-insight/mindrouter-365",
+        "path": "skills/components/budget-nsf",
+        "moved": "2026-09-22"
+      }
+    },
+    {
+      "slug": "pi-memo",
+      "name": "pi-memo",
+      "summary": "Assemble the email to the principal investigator from the sentences the Award status sheet builds by formula, opener, flagged accounts, charges with no budget line, runway and closeout, F&A and pace against budget, facts only, adding only a greeting and a sign-off: Subject and Body labelled in column A, the text in column B, ready to paste. Copying only.",
+      "version": "2.1.2",
+      "category": "post-award",
+      "domain": "research-administration",
+      "status": "experimental",
+      "paths": {
+        "component_dir": "components/pi-memo",
+        "readme": "components/pi-memo/README.md",
+        "prompt": "components/pi-memo/prompt.md",
+        "evals_dir": "components/pi-memo/evals"
+      },
+      "manifestations": [
+        {
+          "type": "prompt",
+          "path": "components/pi-memo/prompt.md",
+          "version": "2.1.2",
+          "role": "canonical_prompt"
+        }
+      ],
+      "contracts": {
+        "output": {
+          "format": "spreadsheet",
+          "scope": "repo_local",
+          "schema_path": null
+        }
+      },
+      "evaluation": {
+        "case_count": 0,
+        "report_count": 0,
+        "last_fully_evaluated_version": null,
+        "current_version_is_fully_evaluated": false
+      },
+      "requires": [
+        "excel:read_range",
+        "excel:add_sheet",
+        "excel:write_values"
+      ],
+      "assertions": [
+        {
+          "address": "B1:B2",
+          "rule": "nonblank",
+          "label": "a subject in B1 and a body in B2"
+        }
+      ],
+      "source": {
+        "repo": "ui-insight/mindrouter-365",
+        "path": "skills/components/pi-memo",
+        "moved": "2026-09-22"
+      }
+    },
+    {
+      "component_id": "prompt.cost-allowability-determination",
+      "slug": "cost-allowability-determination",
+      "name": "cost-allowability-determination",
+      "summary": "Synthesizes the findings from the upstream single-requirement checks into one concise, decision-ready Markdown allowability review for a single expense. It is the final step of the federal cost-allowability analysis workflow.",
+      "version": "0.1.0",
+      "category": "review",
+      "domain": "research-administration",
+      "status": "experimental",
+      "tags": [
+        "cost-allowability",
+        "post-award",
+        "determination",
+        "synthesis",
+        "review",
+        "research-administration"
+      ],
+      "audience": [
+        "post-award-staff",
+        "sponsored-programs-staff",
+        "grant-accountants",
+        "principal-investigators"
+      ],
+      "paths": {
+        "component_dir": "components/cost-allowability-determination",
+        "readme": "components/cost-allowability-determination/README.md",
+        "prompt": "components/cost-allowability-determination/prompt.md",
+        "schema": null,
+        "evals_dir": "components/cost-allowability-determination/evals",
+        "eval_case_metadata_glob": "components/cost-allowability-determination/evals/cases/*/metadata.yaml",
+        "eval_reports_dir": "components/cost-allowability-determination/evals/reports"
+      },
+      "manifestations": [
+        {
+          "type": "prompt",
+          "path": "components/cost-allowability-determination/prompt.md",
+          "version": "0.1.0",
+          "role": "canonical_prompt"
+        }
+      ],
+      "contracts": {
+        "output": {
+          "format": "markdown_review",
+          "scope": "repo_local_human_readable_determination_contract",
+          "notes": "Repo-local human-readable Markdown allowability determination for a single expense. Synthesizes the upstream single-requirement check findings into one decision (Allowable, Potential issue, Missing info, or Not allowable). No JSON output schema.",
+          "schema_path": null,
+          "schema_entrypoints": [],
+          "validation_surfaces": []
+        }
+      },
+      "evaluation": {
+        "case_count": 0,
+        "report_count": 0,
+        "last_fully_evaluated_version": null,
+        "current_version_is_fully_evaluated": false
+      },
+      "related_components": [
+        {
+          "slug": "regulated-activity-classifier",
+          "relationship": "upstream_compliance_signal",
+          "notes": "The determination surfaces a compliance-oversight flag when the protocol-approval check, gated by the classifier, returns anything other than not_applicable."
+        }
+      ],
+      "triad_integration": {
+        "evaluation_datasets": [],
+        "harness_notes": "Canonical invocation surface is prompt.md. Score the Markdown response against expected.md golden cases for the overall decision, the conservative-decision rule (any not_allowable finding forces an overall Not allowable), per-check coverage, the compliance-oversight flag, and non-fabrication. Invoked as the Step 3 output task of the workflows/cost-allowability-analysis Vandalizer workflow.",
+        "udm_alignment": {
+          "status": "repo_local_human_readable_determination_contract",
+          "notes": "Aligns to sponsored-project cost-allowability semantics; the human-readable determination shape is maintained only in prompt-library and is not a shared UDM schema."
+        }
+      },
+      "source": {
+        "repo": "AI4RA/prompt-library",
+        "commit": "eef6fd3d818037ab51ece87f61806c448d51f40d",
+        "path": "components/cost-allowability-determination",
+        "url": "https://github.com/AI4RA/prompt-library/tree/eef6fd3d818037ab51ece87f61806c448d51f40d/components/cost-allowability-determination",
+        "copied": "2026-09-22"
+      }
+    },
+    {
+      "component_id": "prompt.cost-reasonableness-check",
+      "slug": "cost-reasonableness-check",
+      "name": "cost-reasonableness-check",
+      "summary": "Checks whether a single expense is necessary and reasonable under the prudent-person standard of 2 CFR 200.404. It is one of the single-requirement checks in the federal cost-allowability analysis workflow and emits a structured finding consumed by the final determination step.",
+      "version": "0.1.0",
+      "category": "review",
+      "domain": "research-administration",
+      "status": "experimental",
+      "tags": [
+        "cost-allowability",
+        "post-award",
+        "reasonableness",
+        "review",
+        "federal-grants",
+        "research-administration"
+      ],
+      "audience": [
+        "post-award-staff",
+        "sponsored-programs-staff",
+        "grant-accountants"
+      ],
+      "paths": {
+        "component_dir": "components/cost-reasonableness-check",
+        "readme": "components/cost-reasonableness-check/README.md",
+        "prompt": "components/cost-reasonableness-check/prompt.md",
+        "schema": "components/cost-reasonableness-check/schema.json",
+        "evals_dir": "components/cost-reasonableness-check/evals",
+        "eval_case_metadata_glob": "components/cost-reasonableness-check/evals/cases/*/metadata.yaml",
+        "eval_reports_dir": "components/cost-reasonableness-check/evals/reports"
+      },
+      "manifestations": [
+        {
+          "type": "prompt",
+          "path": "components/cost-reasonableness-check/prompt.md",
+          "version": "0.1.0",
+          "role": "canonical_prompt"
+        }
+      ],
+      "contracts": {
+        "output": {
+          "format": "json_object",
+          "scope": "repo_local_single_requirement_finding_contract",
+          "notes": "Repo-local single-requirement allowability finding for the cost reasonableness check (2 CFR 200.404). Emits the shared cost-allowability finding object.",
+          "schema_path": "components/cost-reasonableness-check/schema.json",
+          "schema_entrypoints": [
+            "#"
+          ],
+          "validation_surfaces": [
+            "json_schema"
+          ]
+        }
+      },
+      "evaluation": {
+        "case_count": 0,
+        "report_count": 0,
+        "last_fully_evaluated_version": null,
+        "current_version_is_fully_evaluated": false
+      },
+      "related_components": [],
+      "triad_integration": {
+        "evaluation_datasets": [],
+        "harness_notes": "Validate JSON output against schema.json. Canonical invocation surface is prompt.md. Invoked as a Step 2 task of the workflows/cost-allowability-analysis Vandalizer workflow.",
+        "udm_alignment": {
+          "status": "repo_local_single_requirement_finding_contract",
+          "notes": "Aligns to sponsored-project cost-allowability semantics; the finding object is a prompt-library contract shared across the cost-allowability check components, not a shared UDM schema."
+        }
+      },
+      "source": {
+        "repo": "AI4RA/prompt-library",
+        "commit": "eef6fd3d818037ab51ece87f61806c448d51f40d",
+        "path": "components/cost-reasonableness-check",
+        "url": "https://github.com/AI4RA/prompt-library/tree/eef6fd3d818037ab51ece87f61806c448d51f40d/components/cost-reasonableness-check",
+        "copied": "2026-09-22"
+      }
+    },
+    {
+      "component_id": "prompt.cost-allocability-check",
+      "slug": "cost-allocability-check",
+      "name": "cost-allocability-check",
+      "summary": "Checks whether a single expense is allocable to the award under 2 CFR 200.405 — that it benefits the award and is charged in reasonable proportion to that benefit. It is one of the single-requirement checks in the federal cost-allowability analysis workflow and emits a structured finding consumed by the final determination step.",
+      "version": "0.1.0",
+      "category": "review",
+      "domain": "research-administration",
+      "status": "experimental",
+      "tags": [
+        "cost-allowability",
+        "post-award",
+        "allocability",
+        "review",
+        "federal-grants",
+        "research-administration"
+      ],
+      "audience": [
+        "post-award-staff",
+        "sponsored-programs-staff",
+        "grant-accountants"
+      ],
+      "paths": {
+        "component_dir": "components/cost-allocability-check",
+        "readme": "components/cost-allocability-check/README.md",
+        "prompt": "components/cost-allocability-check/prompt.md",
+        "schema": "components/cost-allocability-check/schema.json",
+        "evals_dir": "components/cost-allocability-check/evals",
+        "eval_case_metadata_glob": "components/cost-allocability-check/evals/cases/*/metadata.yaml",
+        "eval_reports_dir": "components/cost-allocability-check/evals/reports"
+      },
+      "manifestations": [
+        {
+          "type": "prompt",
+          "path": "components/cost-allocability-check/prompt.md",
+          "version": "0.1.0",
+          "role": "canonical_prompt"
+        }
+      ],
+      "contracts": {
+        "output": {
+          "format": "json_object",
+          "scope": "repo_local_single_requirement_finding_contract",
+          "notes": "Repo-local single-requirement allowability finding for the cost allocability check (2 CFR 200.405). Emits the shared cost-allowability finding object.",
+          "schema_path": "components/cost-allocability-check/schema.json",
+          "schema_entrypoints": [
+            "#"
+          ],
+          "validation_surfaces": [
+            "json_schema"
+          ]
+        }
+      },
+      "evaluation": {
+        "case_count": 0,
+        "report_count": 0,
+        "last_fully_evaluated_version": null,
+        "current_version_is_fully_evaluated": false
+      },
+      "related_components": [],
+      "triad_integration": {
+        "evaluation_datasets": [],
+        "harness_notes": "Validate JSON output against schema.json. Canonical invocation surface is prompt.md. Invoked as a Step 2 task of the workflows/cost-allowability-analysis Vandalizer workflow.",
+        "udm_alignment": {
+          "status": "repo_local_single_requirement_finding_contract",
+          "notes": "Aligns to sponsored-project cost-allowability semantics; the finding object is a prompt-library contract shared across the cost-allowability check components, not a shared UDM schema."
+        }
+      },
+      "source": {
+        "repo": "AI4RA/prompt-library",
+        "commit": "eef6fd3d818037ab51ece87f61806c448d51f40d",
+        "path": "components/cost-allocability-check",
+        "url": "https://github.com/AI4RA/prompt-library/tree/eef6fd3d818037ab51ece87f61806c448d51f40d/components/cost-allocability-check",
+        "copied": "2026-09-22"
+      }
+    },
+    {
+      "component_id": "prompt.cost-consistent-treatment-check",
+      "slug": "cost-consistent-treatment-check",
+      "name": "cost-consistent-treatment-check",
+      "summary": "Checks whether a single expense is accorded consistent treatment under 2 CFR 200.403(d) and 200.405(c) — that it is not direct-charged to the award when costs incurred for the same purpose in like circumstances are recovered as indirect (F&A) costs. It is one of the single-requirement checks in the federal cost-allowability analysis workflow and emits a structured finding consumed by the final determination step.",
+      "version": "0.1.0",
+      "category": "review",
+      "domain": "research-administration",
+      "status": "experimental",
+      "tags": [
+        "cost-allowability",
+        "post-award",
+        "consistent-treatment",
+        "indirect-cost",
+        "review",
+        "research-administration"
+      ],
+      "audience": [
+        "post-award-staff",
+        "sponsored-programs-staff",
+        "grant-accountants"
+      ],
+      "paths": {
+        "component_dir": "components/cost-consistent-treatment-check",
+        "readme": "components/cost-consistent-treatment-check/README.md",
+        "prompt": "components/cost-consistent-treatment-check/prompt.md",
+        "schema": "components/cost-consistent-treatment-check/schema.json",
+        "evals_dir": "components/cost-consistent-treatment-check/evals",
+        "eval_case_metadata_glob": "components/cost-consistent-treatment-check/evals/cases/*/metadata.yaml",
+        "eval_reports_dir": "components/cost-consistent-treatment-check/evals/reports"
+      },
+      "manifestations": [
+        {
+          "type": "prompt",
+          "path": "components/cost-consistent-treatment-check/prompt.md",
+          "version": "0.1.0",
+          "role": "canonical_prompt"
+        }
+      ],
+      "contracts": {
+        "output": {
+          "format": "json_object",
+          "scope": "repo_local_single_requirement_finding_contract",
+          "notes": "Repo-local single-requirement allowability finding for the consistent cost treatment check (2 CFR 200.403(d), 200.405(c)). Emits the shared cost-allowability finding object.",
+          "schema_path": "components/cost-consistent-treatment-check/schema.json",
+          "schema_entrypoints": [
+            "#"
+          ],
+          "validation_surfaces": [
+            "json_schema"
+          ]
+        }
+      },
+      "evaluation": {
+        "case_count": 0,
+        "report_count": 0,
+        "last_fully_evaluated_version": null,
+        "current_version_is_fully_evaluated": false
+      },
+      "related_components": [],
+      "triad_integration": {
+        "evaluation_datasets": [],
+        "harness_notes": "Validate JSON output against schema.json. Canonical invocation surface is prompt.md. Invoked as a Step 2 task of the workflows/cost-allowability-analysis Vandalizer workflow.",
+        "udm_alignment": {
+          "status": "repo_local_single_requirement_finding_contract",
+          "notes": "Aligns to sponsored-project cost-allowability semantics; the finding object is a prompt-library contract shared across the cost-allowability check components, not a shared UDM schema."
+        }
+      },
+      "source": {
+        "repo": "AI4RA/prompt-library",
+        "commit": "eef6fd3d818037ab51ece87f61806c448d51f40d",
+        "path": "components/cost-consistent-treatment-check",
+        "url": "https://github.com/AI4RA/prompt-library/tree/eef6fd3d818037ab51ece87f61806c448d51f40d/components/cost-consistent-treatment-check",
+        "copied": "2026-09-22"
+      }
+    },
+    {
+      "component_id": "prompt.cost-documentation-check",
+      "slug": "cost-documentation-check",
+      "name": "cost-documentation-check",
+      "summary": "Checks whether a single expense is adequately documented under 2 CFR 200.403(g) to support charging it to the award. It is one of the single-requirement checks in the federal cost-allowability analysis workflow and emits a structured finding consumed by the final determination step.",
+      "version": "0.1.0",
+      "category": "review",
+      "domain": "research-administration",
+      "status": "experimental",
+      "tags": [
+        "cost-allowability",
+        "post-award",
+        "documentation",
+        "review",
+        "federal-grants",
+        "research-administration"
+      ],
+      "audience": [
+        "post-award-staff",
+        "sponsored-programs-staff",
+        "grant-accountants"
+      ],
+      "paths": {
+        "component_dir": "components/cost-documentation-check",
+        "readme": "components/cost-documentation-check/README.md",
+        "prompt": "components/cost-documentation-check/prompt.md",
+        "schema": "components/cost-documentation-check/schema.json",
+        "evals_dir": "components/cost-documentation-check/evals",
+        "eval_case_metadata_glob": "components/cost-documentation-check/evals/cases/*/metadata.yaml",
+        "eval_reports_dir": "components/cost-documentation-check/evals/reports"
+      },
+      "manifestations": [
+        {
+          "type": "prompt",
+          "path": "components/cost-documentation-check/prompt.md",
+          "version": "0.1.0",
+          "role": "canonical_prompt"
+        }
+      ],
+      "contracts": {
+        "output": {
+          "format": "json_object",
+          "scope": "repo_local_single_requirement_finding_contract",
+          "notes": "Repo-local single-requirement allowability finding for the cost documentation check (2 CFR 200.403(g)). Emits the shared cost-allowability finding object.",
+          "schema_path": "components/cost-documentation-check/schema.json",
+          "schema_entrypoints": [
+            "#"
+          ],
+          "validation_surfaces": [
+            "json_schema"
+          ]
+        }
+      },
+      "evaluation": {
+        "case_count": 0,
+        "report_count": 0,
+        "last_fully_evaluated_version": null,
+        "current_version_is_fully_evaluated": false
+      },
+      "related_components": [],
+      "triad_integration": {
+        "evaluation_datasets": [],
+        "harness_notes": "Validate JSON output against schema.json. Canonical invocation surface is prompt.md. Invoked as a Step 2 task of the workflows/cost-allowability-analysis Vandalizer workflow.",
+        "udm_alignment": {
+          "status": "repo_local_single_requirement_finding_contract",
+          "notes": "Aligns to sponsored-project cost-allowability semantics; the finding object is a prompt-library contract shared across the cost-allowability check components, not a shared UDM schema."
+        }
+      },
+      "source": {
+        "repo": "AI4RA/prompt-library",
+        "commit": "eef6fd3d818037ab51ece87f61806c448d51f40d",
+        "path": "components/cost-documentation-check",
+        "url": "https://github.com/AI4RA/prompt-library/tree/eef6fd3d818037ab51ece87f61806c448d51f40d/components/cost-documentation-check",
+        "copied": "2026-09-22"
+      }
+    },
+    {
+      "component_id": "prompt.cost-period-check",
+      "slug": "cost-period-check",
+      "name": "cost-period-check",
+      "summary": "Checks whether a single expense was incurred within the award's period of performance, under 2 CFR 200.403(h) and 200.309. It is one of the single-requirement checks in the federal cost-allowability analysis workflow and emits a structured finding consumed by the final determination step.",
+      "version": "0.1.0",
+      "category": "review",
+      "domain": "research-administration",
+      "status": "experimental",
+      "tags": [
+        "cost-allowability",
+        "post-award",
+        "period-of-performance",
+        "review",
+        "federal-grants",
+        "research-administration"
+      ],
+      "audience": [
+        "post-award-staff",
+        "sponsored-programs-staff",
+        "grant-accountants"
+      ],
+      "paths": {
+        "component_dir": "components/cost-period-check",
+        "readme": "components/cost-period-check/README.md",
+        "prompt": "components/cost-period-check/prompt.md",
+        "schema": "components/cost-period-check/schema.json",
+        "evals_dir": "components/cost-period-check/evals",
+        "eval_case_metadata_glob": "components/cost-period-check/evals/cases/*/metadata.yaml",
+        "eval_reports_dir": "components/cost-period-check/evals/reports"
+      },
+      "manifestations": [
+        {
+          "type": "prompt",
+          "path": "components/cost-period-check/prompt.md",
+          "version": "0.1.0",
+          "role": "canonical_prompt"
+        }
+      ],
+      "contracts": {
+        "output": {
+          "format": "json_object",
+          "scope": "repo_local_single_requirement_finding_contract",
+          "notes": "Repo-local single-requirement allowability finding for the cost period-of-performance check (2 CFR 200.403(h), 200.309). Emits the shared cost-allowability finding object.",
+          "schema_path": "components/cost-period-check/schema.json",
+          "schema_entrypoints": [
+            "#"
+          ],
+          "validation_surfaces": [
+            "json_schema"
+          ]
+        }
+      },
+      "evaluation": {
+        "case_count": 0,
+        "report_count": 0,
+        "last_fully_evaluated_version": null,
+        "current_version_is_fully_evaluated": false
+      },
+      "related_components": [],
+      "triad_integration": {
+        "evaluation_datasets": [],
+        "harness_notes": "Validate JSON output against schema.json. Canonical invocation surface is prompt.md. Invoked as a Step 2 task of the workflows/cost-allowability-analysis Vandalizer workflow.",
+        "udm_alignment": {
+          "status": "repo_local_single_requirement_finding_contract",
+          "notes": "Aligns to sponsored-project cost-allowability semantics; the finding object is a prompt-library contract shared across the cost-allowability check components, not a shared UDM schema."
+        }
+      },
+      "source": {
+        "repo": "AI4RA/prompt-library",
+        "commit": "eef6fd3d818037ab51ece87f61806c448d51f40d",
+        "path": "components/cost-period-check",
+        "url": "https://github.com/AI4RA/prompt-library/tree/eef6fd3d818037ab51ece87f61806c448d51f40d/components/cost-period-check",
+        "copied": "2026-09-22"
+      }
+    },
+    {
+      "component_id": "prompt.cost-prior-approval-check",
+      "slug": "cost-prior-approval-check",
+      "name": "cost-prior-approval-check",
+      "summary": "Checks whether a single expense represents an action that requires federal sponsor prior written approval under 2 CFR 200.407, and whether that approval is evidenced. It is one of the single-requirement checks in the federal cost-allowability analysis workflow and emits a structured finding consumed by the final determination step.",
+      "version": "0.1.0",
+      "category": "review",
+      "domain": "research-administration",
+      "status": "experimental",
+      "tags": [
+        "cost-allowability",
+        "post-award",
+        "prior-approval",
+        "review",
+        "federal-grants",
+        "research-administration"
+      ],
+      "audience": [
+        "post-award-staff",
+        "sponsored-programs-staff",
+        "grant-accountants"
+      ],
+      "paths": {
+        "component_dir": "components/cost-prior-approval-check",
+        "readme": "components/cost-prior-approval-check/README.md",
+        "prompt": "components/cost-prior-approval-check/prompt.md",
+        "schema": "components/cost-prior-approval-check/schema.json",
+        "evals_dir": "components/cost-prior-approval-check/evals",
+        "eval_case_metadata_glob": "components/cost-prior-approval-check/evals/cases/*/metadata.yaml",
+        "eval_reports_dir": "components/cost-prior-approval-check/evals/reports"
+      },
+      "manifestations": [
+        {
+          "type": "prompt",
+          "path": "components/cost-prior-approval-check/prompt.md",
+          "version": "0.1.0",
+          "role": "canonical_prompt"
+        }
+      ],
+      "contracts": {
+        "output": {
+          "format": "json_object",
+          "scope": "repo_local_single_requirement_finding_contract",
+          "notes": "Repo-local single-requirement allowability finding for the federal prior approval check (2 CFR 200.407). Emits the shared cost-allowability finding object.",
+          "schema_path": "components/cost-prior-approval-check/schema.json",
+          "schema_entrypoints": [
+            "#"
+          ],
+          "validation_surfaces": [
+            "json_schema"
+          ]
+        }
+      },
+      "evaluation": {
+        "case_count": 0,
+        "report_count": 0,
+        "last_fully_evaluated_version": null,
+        "current_version_is_fully_evaluated": false
+      },
+      "related_components": [
+        {
+          "slug": "protocol-approval-allowability-check",
+          "relationship": "sibling_distinct_regime",
+          "notes": "Covers federal sponsor prior approval (2 CFR 200.407); protocol-approval-allowability-check covers institutional IRB / IACUC / IBC approval, a distinct regulatory regime."
+        }
+      ],
+      "triad_integration": {
+        "evaluation_datasets": [],
+        "harness_notes": "Validate JSON output against schema.json. Canonical invocation surface is prompt.md. Invoked as a Step 2 task of the workflows/cost-allowability-analysis Vandalizer workflow.",
+        "udm_alignment": {
+          "status": "repo_local_single_requirement_finding_contract",
+          "notes": "Aligns to sponsored-project cost-allowability semantics; the finding object is a prompt-library contract shared across the cost-allowability check components, not a shared UDM schema."
+        }
+      },
+      "source": {
+        "repo": "AI4RA/prompt-library",
+        "commit": "eef6fd3d818037ab51ece87f61806c448d51f40d",
+        "path": "components/cost-prior-approval-check",
+        "url": "https://github.com/AI4RA/prompt-library/tree/eef6fd3d818037ab51ece87f61806c448d51f40d/components/cost-prior-approval-check",
+        "copied": "2026-09-22"
+      }
+    },
+    {
+      "component_id": "prompt.cost-selected-item-check",
+      "slug": "cost-selected-item-check",
+      "name": "cost-selected-item-check",
+      "summary": "Identifies which selected item of cost under 2 CFR 200.421-200.476 governs an expense and applies that section's rule. It is one of the single-requirement checks in the federal cost-allowability analysis workflow and emits a structured finding consumed by the final determination step.",
+      "version": "0.1.0",
+      "category": "review",
+      "domain": "research-administration",
+      "status": "experimental",
+      "tags": [
+        "cost-allowability",
+        "post-award",
+        "selected-items-of-cost",
+        "review",
+        "federal-grants",
+        "research-administration"
+      ],
+      "audience": [
+        "post-award-staff",
+        "sponsored-programs-staff",
+        "grant-accountants"
+      ],
+      "paths": {
+        "component_dir": "components/cost-selected-item-check",
+        "readme": "components/cost-selected-item-check/README.md",
+        "prompt": "components/cost-selected-item-check/prompt.md",
+        "schema": "components/cost-selected-item-check/schema.json",
+        "evals_dir": "components/cost-selected-item-check/evals",
+        "eval_case_metadata_glob": "components/cost-selected-item-check/evals/cases/*/metadata.yaml",
+        "eval_reports_dir": "components/cost-selected-item-check/evals/reports"
+      },
+      "manifestations": [
+        {
+          "type": "prompt",
+          "path": "components/cost-selected-item-check/prompt.md",
+          "version": "0.1.0",
+          "role": "canonical_prompt"
+        }
+      ],
+      "contracts": {
+        "output": {
+          "format": "json_object",
+          "scope": "repo_local_single_requirement_finding_contract",
+          "notes": "Repo-local single-requirement allowability finding for the selected items of cost check (2 CFR 200.421-200.476). Routes an expense to its governing selected-item section and emits the shared cost-allowability finding object.",
+          "schema_path": "components/cost-selected-item-check/schema.json",
+          "schema_entrypoints": [
+            "#"
+          ],
+          "validation_surfaces": [
+            "json_schema"
+          ]
+        }
+      },
+      "evaluation": {
+        "case_count": 0,
+        "report_count": 0,
+        "last_fully_evaluated_version": null,
+        "current_version_is_fully_evaluated": false
+      },
+      "related_components": [],
+      "triad_integration": {
+        "evaluation_datasets": [],
+        "harness_notes": "Validate JSON output against schema.json. Canonical invocation surface is prompt.md. Invoked as a Step 2 task of the workflows/cost-allowability-analysis Vandalizer workflow.",
+        "udm_alignment": {
+          "status": "repo_local_single_requirement_finding_contract",
+          "notes": "Aligns to sponsored-project cost-allowability semantics; the finding object is a prompt-library contract shared across the cost-allowability check components, not a shared UDM schema."
+        }
+      },
+      "source": {
+        "repo": "AI4RA/prompt-library",
+        "commit": "eef6fd3d818037ab51ece87f61806c448d51f40d",
+        "path": "components/cost-selected-item-check",
+        "url": "https://github.com/AI4RA/prompt-library/tree/eef6fd3d818037ab51ece87f61806c448d51f40d/components/cost-selected-item-check",
+        "copied": "2026-09-22"
+      }
+    },
+    {
+      "component_id": "prompt.cost-award-terms-conformance-check",
+      "slug": "cost-award-terms-conformance-check",
+      "name": "cost-award-terms-conformance-check",
+      "summary": "Checks whether a single expense conforms to the limitations and exclusions in the Federal award and the cost principles, under 2 CFR 200.403(b). It is one of the single-requirement checks in the federal cost-allowability analysis workflow and emits a structured finding consumed by the final determination step.",
+      "version": "0.1.0",
+      "category": "review",
+      "domain": "research-administration",
+      "status": "experimental",
+      "tags": [
+        "cost-allowability",
+        "post-award",
+        "award-terms",
+        "review",
+        "federal-grants",
+        "research-administration"
+      ],
+      "audience": [
+        "post-award-staff",
+        "sponsored-programs-staff",
+        "grant-accountants"
+      ],
+      "paths": {
+        "component_dir": "components/cost-award-terms-conformance-check",
+        "readme": "components/cost-award-terms-conformance-check/README.md",
+        "prompt": "components/cost-award-terms-conformance-check/prompt.md",
+        "schema": "components/cost-award-terms-conformance-check/schema.json",
+        "evals_dir": "components/cost-award-terms-conformance-check/evals",
+        "eval_case_metadata_glob": "components/cost-award-terms-conformance-check/evals/cases/*/metadata.yaml",
+        "eval_reports_dir": "components/cost-award-terms-conformance-check/evals/reports"
+      },
+      "manifestations": [
+        {
+          "type": "prompt",
+          "path": "components/cost-award-terms-conformance-check/prompt.md",
+          "version": "0.1.0",
+          "role": "canonical_prompt"
+        }
+      ],
+      "contracts": {
+        "output": {
+          "format": "json_object",
+          "scope": "repo_local_single_requirement_finding_contract",
+          "notes": "Repo-local single-requirement allowability finding for the award terms conformance check (2 CFR 200.403(b)). Emits the shared cost-allowability finding object.",
+          "schema_path": "components/cost-award-terms-conformance-check/schema.json",
+          "schema_entrypoints": [
+            "#"
+          ],
+          "validation_surfaces": [
+            "json_schema"
+          ]
+        }
+      },
+      "evaluation": {
+        "case_count": 0,
+        "report_count": 0,
+        "last_fully_evaluated_version": null,
+        "current_version_is_fully_evaluated": false
+      },
+      "related_components": [],
+      "triad_integration": {
+        "evaluation_datasets": [],
+        "harness_notes": "Validate JSON output against schema.json. Canonical invocation surface is prompt.md. Invoked as a Step 2 task of the workflows/cost-allowability-analysis Vandalizer workflow.",
+        "udm_alignment": {
+          "status": "repo_local_single_requirement_finding_contract",
+          "notes": "Aligns to sponsored-project cost-allowability semantics; the finding object is a prompt-library contract shared across the cost-allowability check components, not a shared UDM schema."
+        }
+      },
+      "source": {
+        "repo": "AI4RA/prompt-library",
+        "commit": "eef6fd3d818037ab51ece87f61806c448d51f40d",
+        "path": "components/cost-award-terms-conformance-check",
+        "url": "https://github.com/AI4RA/prompt-library/tree/eef6fd3d818037ab51ece87f61806c448d51f40d/components/cost-award-terms-conformance-check",
+        "copied": "2026-09-22"
+      }
+    },
+    {
+      "component_id": "prompt.nsf-expense-allowability-check",
+      "slug": "nsf-expense-allowability-check",
+      "name": "nsf-expense-allowability-check",
+      "summary": "Reviews a single expense against NSF award terms, supplied budget evidence, and general sponsored-programs allowability criteria. The component turns the original checklist-style \"Expense-Allowability Check\" prompt into an evidence-grounded chat review with explicit rule checks, budget alignment, citations, follow-up actions, and a conservative final decision.",
+      "version": "1.0.0",
+      "category": "review",
+      "domain": "research-administration",
+      "status": "experimental",
+      "tags": [
+        "nsf",
+        "expense-allowability",
+        "post-award",
+        "compliance",
+        "budget",
+        "review",
+        "research-administration"
+      ],
+      "audience": [
+        "post-award-staff",
+        "sponsored-programs-staff",
+        "grant-accountants",
+        "principal-investigators"
+      ],
+      "paths": {
+        "component_dir": "components/nsf-expense-allowability-check",
+        "readme": "components/nsf-expense-allowability-check/README.md",
+        "prompt": "components/nsf-expense-allowability-check/prompt.md",
+        "schema": null,
+        "evals_dir": "components/nsf-expense-allowability-check/evals",
+        "eval_case_metadata_glob": "components/nsf-expense-allowability-check/evals/cases/*/metadata.yaml",
+        "eval_reports_dir": "components/nsf-expense-allowability-check/evals/reports"
+      },
+      "manifestations": [
+        {
+          "type": "prompt",
+          "path": "components/nsf-expense-allowability-check/prompt.md",
+          "version": "1.0.0",
+          "role": "canonical_prompt"
+        }
+      ],
+      "contracts": {
+        "output": {
+          "format": "markdown_review",
+          "scope": "repo_local_human_readable_post_award_review_contract",
+          "notes": "Repo-local single-expense allowability review guidance for traditional chat interfaces. The prompt emits an evidence-backed Markdown decision, budget alignment, rule checks, follow-up actions, and confidence for NSF award expense review. It aligns to sponsored-project and budget semantics but is not a shared AI4RA-UDM schema and has no JSON output schema.",
+          "schema_path": null,
+          "schema_entrypoints": [],
+          "validation_surfaces": [
+            "golden_eval_cases"
+          ]
+        }
+      },
+      "evaluation": {
+        "case_count": 1,
+        "report_count": 0,
+        "last_fully_evaluated_version": "1.0.0",
+        "current_version_is_fully_evaluated": true
+      },
+      "related_components": [
+        {
+          "slug": "nsf-award-notice-extraction-udm",
+          "relationship": "upstream_award_terms_source",
+          "notes": "Award notice extractions can supply award period, sponsor terms, participant-support language, and indirect-cost terms."
+        },
+        {
+          "slug": "nsf-budget-justification-udm",
+          "relationship": "upstream_budget_context_source",
+          "notes": "Budget justification outputs can supply approved category rationale and line-item support for allowability checks."
+        },
+        {
+          "slug": "sponsor-doc-defaults-udm",
+          "relationship": "shares_sponsor_policy_context",
+          "notes": "Sponsor defaults can provide general NSF policy context when award-specific evidence does not supersede it."
+        }
+      ],
+      "triad_integration": {
+        "evaluation_datasets": [],
+        "harness_notes": "Invoke with one expense snapshot plus award, budget, policy, and documentation evidence. Score the Markdown response against expected.md golden cases for decision label, budget alignment, rule-check coverage, evidence grounding, actionability, and non-fabrication. Golden cases should cover each decision value and should verify that the model does not fabricate award-specific caps, approvals, budget balances, participant-support account setup, or policy citations when those facts are missing from the supplied evidence.",
+        "udm_alignment": {
+          "status": "repo_local_human_readable_post_award_review_contract",
+          "notes": "The component uses UDM-style sponsored-project concepts such as award identifier, sponsor, budget category, participant support, indirect-cost treatment, and evidence-backed policy findings, but the human-readable output shape is maintained only in prompt-library."
+        }
+      },
+      "source": {
+        "repo": "AI4RA/prompt-library",
+        "commit": "eef6fd3d818037ab51ece87f61806c448d51f40d",
+        "path": "components/nsf-expense-allowability-check",
+        "url": "https://github.com/AI4RA/prompt-library/tree/eef6fd3d818037ab51ece87f61806c448d51f40d/components/nsf-expense-allowability-check",
+        "copied": "2026-09-22"
+      }
+    },
+    {
+      "component_id": "prompt.expense-transaction-extraction",
+      "slug": "expense-transaction-extraction",
+      "name": "expense-transaction-extraction",
+      "summary": "Normalizes one expense — receipt, invoice, purchase order, p-card line, or general-ledger detail — into a single structured transaction record covering date, vendor, amount, account coding, description, and documentation status. It is the input-normalization step of the federal cost-allowability analysis workflow.",
+      "version": "0.1.0",
+      "category": "extraction",
+      "domain": "research-administration",
+      "status": "experimental",
+      "tags": [
+        "cost-allowability",
+        "post-award",
+        "expense",
+        "extraction",
+        "federal-grants",
+        "research-administration"
+      ],
+      "audience": [
+        "post-award-staff",
+        "sponsored-programs-staff",
+        "grant-accountants"
+      ],
+      "paths": {
+        "component_dir": "components/expense-transaction-extraction",
+        "readme": "components/expense-transaction-extraction/README.md",
+        "prompt": "components/expense-transaction-extraction/prompt.md",
+        "schema": "components/expense-transaction-extraction/schema.json",
+        "evals_dir": "components/expense-transaction-extraction/evals",
+        "eval_case_metadata_glob": "components/expense-transaction-extraction/evals/cases/*/metadata.yaml",
+        "eval_reports_dir": "components/expense-transaction-extraction/evals/reports"
+      },
+      "manifestations": [
+        {
+          "type": "prompt",
+          "path": "components/expense-transaction-extraction/prompt.md",
+          "version": "0.1.0",
+          "role": "canonical_prompt"
+        }
+      ],
+      "contracts": {
+        "output": {
+          "format": "json_object",
+          "scope": "repo_local_normalization_contract",
+          "notes": "Repo-local single-expense transaction record normalized from receipt, invoice, purchase-order, p-card, or general-ledger evidence. Input-normalization contract for the cost-allowability analysis workflow; not a shared AI4RA-UDM schema.",
+          "schema_path": "components/expense-transaction-extraction/schema.json",
+          "schema_entrypoints": [
+            "#"
+          ],
+          "validation_surfaces": [
+            "json_schema"
+          ]
+        }
+      },
+      "evaluation": {
+        "case_count": 0,
+        "report_count": 0,
+        "last_fully_evaluated_version": null,
+        "current_version_is_fully_evaluated": false
+      },
+      "related_components": [
+        {
+          "slug": "regulated-activity-classifier",
+          "relationship": "provides_input_to",
+          "notes": "The normalized expense record is the classifier's primary input."
+        }
+      ],
+      "triad_integration": {
+        "evaluation_datasets": [],
+        "harness_notes": "Validate JSON output against schema.json. Canonical invocation surface is prompt.md. Invoked as a Step 1 task of the workflows/cost-allowability-analysis Vandalizer workflow.",
+        "udm_alignment": {
+          "status": "repo_local_normalization_contract",
+          "notes": "Fields align to sponsored-project transaction semantics (vendor, amount, account coding, period) but the record is a prompt-library normalization contract, not a shared UDM schema."
+        }
+      },
+      "source": {
+        "repo": "AI4RA/prompt-library",
+        "commit": "eef6fd3d818037ab51ece87f61806c448d51f40d",
+        "path": "components/expense-transaction-extraction",
+        "url": "https://github.com/AI4RA/prompt-library/tree/eef6fd3d818037ab51ece87f61806c448d51f40d/components/expense-transaction-extraction",
+        "copied": "2026-09-22"
+      }
+    },
+    {
+      "component_id": "prompt.award-allowability-terms-extraction",
+      "slug": "award-allowability-terms-extraction",
+      "name": "award-allowability-terms-extraction",
+      "summary": "Extracts the federal award terms that govern cost allowability — period of performance, approved budget categories, caps and exclusions, sponsor prior-approval triggers, indirect-cost treatment, and institutional compliance-approval requirements — into one structured record. It is an input-normalization step of the federal cost-allowability analysis workflow.",
+      "version": "0.1.0",
+      "category": "extraction",
+      "domain": "research-administration",
+      "status": "experimental",
+      "tags": [
+        "cost-allowability",
+        "post-award",
+        "award-terms",
+        "extraction",
+        "federal-grants",
+        "research-administration"
+      ],
+      "audience": [
+        "post-award-staff",
+        "sponsored-programs-staff",
+        "grant-accountants"
+      ],
+      "paths": {
+        "component_dir": "components/award-allowability-terms-extraction",
+        "readme": "components/award-allowability-terms-extraction/README.md",
+        "prompt": "components/award-allowability-terms-extraction/prompt.md",
+        "schema": "components/award-allowability-terms-extraction/schema.json",
+        "evals_dir": "components/award-allowability-terms-extraction/evals",
+        "eval_case_metadata_glob": "components/award-allowability-terms-extraction/evals/cases/*/metadata.yaml",
+        "eval_reports_dir": "components/award-allowability-terms-extraction/evals/reports"
+      },
+      "manifestations": [
+        {
+          "type": "prompt",
+          "path": "components/award-allowability-terms-extraction/prompt.md",
+          "version": "0.1.0",
+          "role": "canonical_prompt"
+        }
+      ],
+      "contracts": {
+        "output": {
+          "format": "json_object",
+          "scope": "repo_local_normalization_contract",
+          "notes": "Repo-local record of the federal award terms that govern cost allowability — period of performance, approved budget, caps and exclusions, federal prior-approval triggers, indirect-cost treatment, and institutional compliance-approval requirements. Input-normalization contract for the cost-allowability analysis workflow; not a shared AI4RA-UDM schema.",
+          "schema_path": "components/award-allowability-terms-extraction/schema.json",
+          "schema_entrypoints": [
+            "#"
+          ],
+          "validation_surfaces": [
+            "json_schema"
+          ]
+        }
+      },
+      "evaluation": {
+        "case_count": 0,
+        "report_count": 0,
+        "last_fully_evaluated_version": null,
+        "current_version_is_fully_evaluated": false
+      },
+      "related_components": [
+        {
+          "slug": "cost-award-terms-conformance-check",
+          "relationship": "provides_input_to",
+          "notes": "Supplies the caps, exclusions, and restrictions the conformance check evaluates."
+        }
+      ],
+      "triad_integration": {
+        "evaluation_datasets": [],
+        "harness_notes": "Validate JSON output against schema.json. Canonical invocation surface is prompt.md. Invoked as a Step 1 task of the workflows/cost-allowability-analysis Vandalizer workflow.",
+        "udm_alignment": {
+          "status": "repo_local_normalization_contract",
+          "notes": "Aligns to sponsored-project award and budget semantics. It deliberately separates federal prior-approval triggers from institutional IRB / IACUC / IBC compliance-approval requirements; the record is a prompt-library normalization contract, not a shared UDM schema."
+        }
+      },
+      "source": {
+        "repo": "AI4RA/prompt-library",
+        "commit": "eef6fd3d818037ab51ece87f61806c448d51f40d",
+        "path": "components/award-allowability-terms-extraction",
+        "url": "https://github.com/AI4RA/prompt-library/tree/eef6fd3d818037ab51ece87f61806c448d51f40d/components/award-allowability-terms-extraction",
+        "copied": "2026-09-22"
+      }
+    },
+    {
+      "component_id": "prompt.budget-justification-generator-udm",
+      "slug": "budget-justification-generator-udm",
+      "name": "budget-justification-generator-udm",
+      "summary": "Generates a complete, professional budget-justification narrative from a grant budget form and the project narrative / proposal. Captures both the structured per-section extracted financial data AND the generated narrative text for each section, plus the final assembled Markdown document and cross-validation notes. Organized in standard R&R Budget / SF-424A category order (A through I). Supports multi-year budgets and agency-specific rules when a NOFO / RFA is provided.",
+      "version": "0.1.0",
+      "category": "drafting",
+      "domain": "research-administration",
+      "status": "experimental",
+      "tags": [
+        "budget-justification",
+        "drafting",
+        "pre-award",
+        "nsf",
+        "nih",
+        "rr-budget",
+        "sf-424a",
+        "narrative-generation",
+        "multi-year",
+        "udm",
+        "structured-output",
+        "json"
+      ],
+      "audience": [
+        "sponsored-programs-staff",
+        "pre-award-teams",
+        "pis",
+        "proposal-developers"
+      ],
+      "paths": {
+        "component_dir": "components/budget-justification-generator-udm",
+        "readme": "components/budget-justification-generator-udm/README.md",
+        "prompt": "components/budget-justification-generator-udm/prompt.md",
+        "schema": "components/budget-justification-generator-udm/schema.json",
+        "evals_dir": "components/budget-justification-generator-udm/evals",
+        "eval_case_metadata_glob": "components/budget-justification-generator-udm/evals/cases/*/metadata.yaml",
+        "eval_reports_dir": "components/budget-justification-generator-udm/evals/reports"
+      },
+      "manifestations": [
+        {
+          "type": "prompt",
+          "path": "components/budget-justification-generator-udm/prompt.md",
+          "version": "0.1.0",
+          "role": "canonical_prompt"
+        }
+      ],
+      "contracts": {
+        "output": {
+          "format": "json_object",
+          "scope": "shared_udm_semantics_repo_local_schema",
+          "notes": "Repo-local agency-agnostic budget-justification drafting contract. Seven structured blocks (project_metadata, four per-section data-and-narrative blocks, cross_validation, final_justification_document) capture both the per-section extracted financial data AND the generated narrative text for each R&R Budget / SF-424A section (A-I), plus the final assembled Markdown document and arithmetic / clarification / missing-justification notes. The workflow's primary deliverable is the final_justification_document Markdown string; structured-data fields exist to support arithmetic re-validation.",
+          "schema_path": "components/budget-justification-generator-udm/schema.json",
+          "schema_entrypoints": [
+            "#"
+          ],
+          "validation_surfaces": [
+            "json_schema"
+          ]
+        }
+      },
+      "evaluation": {
+        "case_count": 0,
+        "report_count": 0,
+        "last_fully_evaluated_version": null,
+        "current_version_is_fully_evaluated": false
+      },
+      "related_components": [
+        {
+          "slug": "nsf-budget-justification-udm",
+          "relationship": "sibling_agency_specific_vs_agency_agnostic",
+          "notes": "Both components draft a budget justification. This component follows the agency-agnostic R&R Budget / SF-424A category order (A-I); nsf-budget-justification-udm follows NSF's eight-section structure. Use this component when the agency is not NSF or when the budget follows the standard R&R / SF-424A shape."
+        },
+        {
+          "slug": "proposal-budget-personnel-extraction-udm",
+          "relationship": "complementary_focus",
+          "notes": "proposal-budget-personnel-extraction-udm extracts the budget structure and personnel listing WITHOUT generating narrative text. budget-justification-generator-udm does both — extracts the structure and drafts the narrative."
+        }
+      ],
+      "triad_integration": {
+        "evaluation_datasets": [],
+        "harness_notes": "Validate JSON outputs against schema.json. Canonical single-call invocation surface is prompt.md. The companion top-level workflows/budget-justification-generator Vandalizer workflow at v0.1.0 implements the contract as four parallel Extraction tasks (each both extracting data AND generating section narratives) plus a Consolidation Prompt that computes four arithmetic checks deterministically and renders final_justification_document as a single Markdown string in R&R Budget / SF-424A category order. Scoring is two-layered — structured fields validate against schema.json and arithmetic_checks; narrative strings require human review against the project narrative and budget form.",
+        "udm_alignment": {
+          "status": "shared_udm_semantics_repo_local_schema",
+          "notes": "Leaf fields bind to UDM entities: senior_key_personnel + pi_name to Personnel; project_title to Proposal.Proposal_Title; sponsoring_agency to Organization.Organization_Name; every monetary leaf to ProposalBudget.Direct_Cost or ProposalBudget.Indirect_Cost; budget_period_summary to ProposalBudget.Period_Number; fa_rate_percentage and fa_base_type and fa_rate_type to IndirectRate (Rate_Percentage, Base_Type, Rate_Type); cost_share_required / cost_share_amount / cost_share_type to CostShare (Is_Mandatory, Committed_Amount, Commitment_Type). The seven-block drafting shape itself is repo-local."
+        }
+      },
+      "source": {
+        "repo": "AI4RA/prompt-library",
+        "commit": "eef6fd3d818037ab51ece87f61806c448d51f40d",
+        "path": "components/budget-justification-generator-udm",
+        "url": "https://github.com/AI4RA/prompt-library/tree/eef6fd3d818037ab51ece87f61806c448d51f40d/components/budget-justification-generator-udm",
+        "copied": "2026-09-22"
+      }
+    },
+    {
+      "component_id": "prompt.nsf-budget-justification-udm",
+      "slug": "nsf-budget-justification-udm",
+      "name": "nsf-budget-justification-udm",
+      "summary": "Drafts an NSF-format budget justification narrative from a structured budget object. Output is the eight canonical NSF sections (A..H) as an ordered array of section objects — one per section, each with a `key`, a fixed `title`, and `content` in narrative markdown. All eight sections are always emitted; zero-value categories produce a single-sentence content.",
+      "version": "1.0.0",
+      "category": "drafting",
+      "domain": "research-administration",
+      "status": "experimental",
+      "tags": [
+        "nsf",
+        "budget-justification",
+        "drafting",
+        "udm",
+        "research-administration",
+        "proposal-preparation"
+      ],
+      "audience": [
+        "pre-award-staff",
+        "proposal-developers",
+        "ingest-pipelines"
+      ],
+      "paths": {
+        "component_dir": "components/nsf-budget-justification-udm",
+        "readme": "components/nsf-budget-justification-udm/README.md",
+        "prompt": "components/nsf-budget-justification-udm/prompt.md",
+        "schema": "components/nsf-budget-justification-udm/schema.json",
+        "evals_dir": "components/nsf-budget-justification-udm/evals",
+        "eval_case_metadata_glob": "components/nsf-budget-justification-udm/evals/cases/*/metadata.yaml",
+        "eval_reports_dir": "components/nsf-budget-justification-udm/evals/reports"
+      },
+      "manifestations": [
+        {
+          "type": "prompt",
+          "path": "components/nsf-budget-justification-udm/prompt.md",
+          "version": "1.0.0",
+          "role": "canonical_prompt"
+        },
+        {
+          "type": "skill",
+          "path": "components/nsf-budget-justification-udm/skill/SKILL.md",
+          "version": "1.0.0",
+          "role": "claude_skill",
+          "description": "Drafts an NSF-format budget justification from a structured budget object. Input is a JSON budget (personnel detail, per-category per-year totals, indirect rate and base, and optional detail for equipment / travel / participant support / subawards / other direct costs). Output is an ordered JSON array of exactly eight section objects — the canonical NSF sections A through H (Senior Personnel, Other Personnel, Fringe Benefits, Equipment, Travel, Participant Support Costs, Other Direct Costs, Indirect Costs) — each with key, title, and a narrative markdown content field. All eight sections are always emitted; zero-value categories produce a single-sentence content stating no funds are requested. Use when pre-award staff need a first-draft budget justification to edit, when an ingest pipeline turns a structured budget into narrative for insertion into a proposal, or when a user wants to go from a budget spreadsheet to NSF-ready prose. First in an anticipated family — NIH, DoE, and foundation variants will ship as separate components; the output's eight-section shape is NSF-specific."
+        }
+      ],
+      "contracts": {
+        "output": {
+          "format": "json_array",
+          "scope": "repo_local_sponsor_specific_contract",
+          "schema_entrypoints": [
+            "#/$defs/input",
+            "#/$defs/output"
+          ],
+          "notes": "Sponsor-specific repo-local contract. The schema defines both the input budget object and the output eight-section NSF narrative array; it is not a shared UDM schema.",
+          "schema_path": "components/nsf-budget-justification-udm/schema.json",
+          "validation_surfaces": [
+            "json_schema_entrypoints",
+            "golden_eval_cases"
+          ]
+        }
+      },
+      "evaluation": {
+        "case_count": 1,
+        "report_count": 0,
+        "last_fully_evaluated_version": "1.0.0",
+        "current_version_is_fully_evaluated": true
+      },
+      "related_components": [
+        {
+          "slug": "sponsor-doc-defaults-udm",
+          "relationship": "downstream_of_requirement_discovery",
+          "notes": "Sponsor defaults identify budget_justification as a required deliverable."
+        },
+        {
+          "slug": "solicitation-doc-modifications-udm",
+          "relationship": "downstream_of_requirement_overrides",
+          "notes": "Solicitation overrides may tighten page limits or add justification-specific instructions."
+        }
+      ],
+      "triad_integration": {
+        "evaluation_datasets": [],
+        "harness_notes": "Validate inputs against #/$defs/input and outputs against #/$defs/output. Current reference coverage is repo-local synthetic eval data rather than a shared evaluation-data-sets entry.",
+        "udm_alignment": {
+          "status": "repo_local_sponsor_specific_contract",
+          "notes": "The component can feed UDM-backed proposal workflows, but its section structure is an NSF-specific drafting contract maintained locally here."
+        }
+      },
+      "source": {
+        "repo": "AI4RA/prompt-library",
+        "commit": "eef6fd3d818037ab51ece87f61806c448d51f40d",
+        "path": "components/nsf-budget-justification-udm",
+        "url": "https://github.com/AI4RA/prompt-library/tree/eef6fd3d818037ab51ece87f61806c448d51f40d/components/nsf-budget-justification-udm",
+        "copied": "2026-09-22"
+      }
+    },
+    {
+      "component_id": "prompt.nsf-budget-spreadsheet-justification-udm",
+      "slug": "nsf-budget-spreadsheet-justification-udm",
+      "name": "nsf-budget-spreadsheet-justification-udm",
+      "summary": "Drafts an NSF-format budget justification directly from an NSF-style proposal budget spreadsheet or spreadsheet evidence package. The component interprets workbook tabs for personnel, equipment, travel, participant support, other direct costs, subawards, tuition/fees, and rates, then emits the same eight-section JSON narrative contract used by `nsf-budget-justification-udm`.",
+      "version": "1.0.0",
+      "category": "drafting",
+      "domain": "research-administration",
+      "status": "experimental",
+      "tags": [
+        "nsf",
+        "budget-justification",
+        "spreadsheet-ingest",
+        "drafting",
+        "udm",
+        "research-administration",
+        "proposal-preparation"
+      ],
+      "audience": [
+        "pre-award-staff",
+        "proposal-developers",
+        "ingest-pipelines"
+      ],
+      "paths": {
+        "component_dir": "components/nsf-budget-spreadsheet-justification-udm",
+        "readme": "components/nsf-budget-spreadsheet-justification-udm/README.md",
+        "prompt": "components/nsf-budget-spreadsheet-justification-udm/prompt.md",
+        "schema": null,
+        "evals_dir": "components/nsf-budget-spreadsheet-justification-udm/evals",
+        "eval_case_metadata_glob": "components/nsf-budget-spreadsheet-justification-udm/evals/cases/*/metadata.yaml",
+        "eval_reports_dir": "components/nsf-budget-spreadsheet-justification-udm/evals/reports"
+      },
+      "manifestations": [
+        {
+          "type": "prompt",
+          "path": "components/nsf-budget-spreadsheet-justification-udm/prompt.md",
+          "version": "1.0.0",
+          "role": "canonical_prompt"
+        }
+      ],
+      "contracts": {
+        "output": {
+          "format": "json_array",
+          "scope": "delegated_repo_local_schema",
+          "schema_path": "components/nsf-budget-justification-udm/schema.json",
+          "schema_entrypoints": [
+            "#/$defs/output"
+          ],
+          "notes": "Spreadsheet-ingestion wrapper that emits the existing NSF budget justification output array. The wrapper does not define a new output schema; it delegates validation to nsf-budget-justification-udm.",
+          "validation_surfaces": [
+            "json_schema_entrypoints"
+          ]
+        }
+      },
+      "evaluation": {
+        "case_count": 0,
+        "report_count": 0,
+        "last_fully_evaluated_version": null,
+        "current_version_is_fully_evaluated": false
+      },
+      "related_components": [
+        {
+          "slug": "nsf-budget-justification-udm",
+          "relationship": "delegates_output_contract",
+          "notes": "Emits the same eight-section output array validated by the structured-budget component schema."
+        },
+        {
+          "slug": "sponsor-doc-defaults-udm",
+          "relationship": "downstream_of_requirement_discovery",
+          "notes": "Sponsor defaults identify budget_justification as a required deliverable."
+        }
+      ],
+      "triad_integration": {
+        "evaluation_datasets": [],
+        "harness_notes": "Invoke with workbook-derived evidence or a workbook attachment, then validate the emitted JSON array against components/nsf-budget-justification-udm/schema.json at #/$defs/output. Current coverage is repo-local and does not yet include a shared evaluation-data-sets fixture.",
+        "udm_alignment": {
+          "status": "delegated_repo_local_schema",
+          "notes": "The component can feed UDM-backed proposal workflows, but its spreadsheet interpretation and narrative output are sponsor-specific prompt-library contracts rather than shared AI4RA-UDM schemas."
+        }
+      },
+      "source": {
+        "repo": "AI4RA/prompt-library",
+        "commit": "eef6fd3d818037ab51ece87f61806c448d51f40d",
+        "path": "components/nsf-budget-spreadsheet-justification-udm",
+        "url": "https://github.com/AI4RA/prompt-library/tree/eef6fd3d818037ab51ece87f61806c448d51f40d/components/nsf-budget-spreadsheet-justification-udm",
+        "copied": "2026-09-22"
+      }
+    },
+    {
+      "component_id": "prompt.nsf-budget-spreadsheet-ingest-udm",
+      "slug": "nsf-budget-spreadsheet-ingest-udm",
+      "name": "nsf-budget-spreadsheet-ingest-udm",
+      "summary": "Normalizes an NSF-style proposal budget workbook (or workbook-derived evidence) into the structured budget object consumed by `nsf-budget-justification-udm`. This component is the extraction half of a multi-step budget-justification pipeline: it isolates spreadsheet interpretation from narrative drafting so each responsibility can be prompted, versioned, and evaluated independently.",
+      "version": "1.0.0",
+      "category": "extraction",
+      "domain": "research-administration",
+      "status": "experimental",
+      "tags": [
+        "nsf",
+        "budget",
+        "spreadsheet-ingest",
+        "extraction",
+        "udm",
+        "research-administration",
+        "proposal-preparation"
+      ],
+      "audience": [
+        "pre-award-staff",
+        "proposal-developers",
+        "ingest-pipelines"
+      ],
+      "paths": {
+        "component_dir": "components/nsf-budget-spreadsheet-ingest-udm",
+        "readme": "components/nsf-budget-spreadsheet-ingest-udm/README.md",
+        "prompt": "components/nsf-budget-spreadsheet-ingest-udm/prompt.md",
+        "schema": null,
+        "evals_dir": "components/nsf-budget-spreadsheet-ingest-udm/evals",
+        "eval_case_metadata_glob": "components/nsf-budget-spreadsheet-ingest-udm/evals/cases/*/metadata.yaml",
+        "eval_reports_dir": "components/nsf-budget-spreadsheet-ingest-udm/evals/reports"
+      },
+      "manifestations": [
+        {
+          "type": "prompt",
+          "path": "components/nsf-budget-spreadsheet-ingest-udm/prompt.md",
+          "version": "1.0.0",
+          "role": "canonical_prompt"
+        }
+      ],
+      "contracts": {
+        "output": {
+          "format": "json_object",
+          "scope": "delegated_repo_local_schema",
+          "schema_path": "components/nsf-budget-justification-udm/schema.json",
+          "schema_entrypoints": [
+            "#/$defs/input"
+          ],
+          "notes": "Spreadsheet-to-structured-budget extractor. Emits the input object consumed by nsf-budget-justification-udm. The component does not define a new schema; it delegates validation to nsf-budget-justification-udm at #/$defs/input.",
+          "validation_surfaces": [
+            "json_schema_entrypoints"
+          ]
+        }
+      },
+      "evaluation": {
+        "case_count": 0,
+        "report_count": 0,
+        "last_fully_evaluated_version": null,
+        "current_version_is_fully_evaluated": false
+      },
+      "related_components": [
+        {
+          "slug": "nsf-budget-justification-udm",
+          "relationship": "delegates_output_contract",
+          "notes": "Emits the structured budget object consumed by the drafting component."
+        },
+        {
+          "slug": "nsf-budget-spreadsheet-justification-udm",
+          "relationship": "sibling_multistep_vs_one_shot",
+          "notes": "Same spreadsheet interpretation task family; this component is the ingest step of a multi-step workflow, while nsf-budget-spreadsheet- justification-udm handles the whole pipeline in one shot."
+        }
+      ],
+      "triad_integration": {
+        "evaluation_datasets": [],
+        "harness_notes": "Invoke with workbook-derived evidence, then validate the emitted JSON object against components/nsf-budget-justification-udm/schema.json at #/$defs/input. Current coverage is repo-local and does not yet include a shared evaluation-data-sets fixture.",
+        "udm_alignment": {
+          "status": "delegated_repo_local_schema",
+          "notes": "Spreadsheet interpretation is sponsor-specific and repo-local; the structured-budget output aligns to the existing nsf-budget- justification-udm input contract, which is itself UDM-aligned but maintained in prompt-library."
+        }
+      },
+      "source": {
+        "repo": "AI4RA/prompt-library",
+        "commit": "eef6fd3d818037ab51ece87f61806c448d51f40d",
+        "path": "components/nsf-budget-spreadsheet-ingest-udm",
+        "url": "https://github.com/AI4RA/prompt-library/tree/eef6fd3d818037ab51ece87f61806c448d51f40d/components/nsf-budget-spreadsheet-ingest-udm",
+        "copied": "2026-09-22"
+      }
+    },
+    {
+      "component_id": "prompt.sponsor-doc-defaults-udm",
+      "slug": "sponsor-doc-defaults-udm",
+      "name": "sponsor-doc-defaults-udm",
+      "summary": "Given a sponsor organization (and optional division), emit the default set of documents that sponsor typically requires for a standard full proposal — as a structured list with page limits, format specs, required vs. optional flags, per-person indicators, and conditional triggers.",
+      "version": "1.0.0",
+      "category": "research",
+      "domain": "research-administration",
+      "status": "experimental",
+      "tags": [
+        "sponsor",
+        "requirements",
+        "defaults",
+        "udm",
+        "research-administration",
+        "proposal-preparation"
+      ],
+      "audience": [
+        "pre-award-staff",
+        "ingest-pipelines",
+        "proposal-checklist-builders"
+      ],
+      "paths": {
+        "component_dir": "components/sponsor-doc-defaults-udm",
+        "readme": "components/sponsor-doc-defaults-udm/README.md",
+        "prompt": "components/sponsor-doc-defaults-udm/prompt.md",
+        "schema": "components/sponsor-doc-defaults-udm/schema.json",
+        "evals_dir": "components/sponsor-doc-defaults-udm/evals",
+        "eval_case_metadata_glob": "components/sponsor-doc-defaults-udm/evals/cases/*/metadata.yaml",
+        "eval_reports_dir": "components/sponsor-doc-defaults-udm/evals/reports"
+      },
+      "manifestations": [
+        {
+          "type": "prompt",
+          "path": "components/sponsor-doc-defaults-udm/prompt.md",
+          "version": "1.0.0",
+          "role": "canonical_prompt"
+        },
+        {
+          "type": "skill",
+          "path": "components/sponsor-doc-defaults-udm/skill/SKILL.md",
+          "version": "1.0.0",
+          "role": "claude_skill",
+          "description": "Emits the default set of documents a named research-funding sponsor requires for a standard full proposal — as a structured JSON list with per-document page limits, format specs, required vs. optional flags, per-person indicators, and conditional triggers. Use when a pre-award team needs to seed a proposal checklist before any solicitation-specific text is analyzed, when an ingest pipeline needs to know what NSF / NIH / DoE expects by default, or when a user asks \"what documents do I need to submit for an NSF full proposal?\". Input is a short block naming the sponsor (and optionally a division or institute); both natural language and a structured key-value block work. Output is one JSON object containing sponsor_name, sponsor_division, a knowledge_notes caveat string, and a document_requirements array of requirement objects. Uses a controlled 29-code vocabulary shared with sibling prompt-library components so downstream extractors and reviewers can dispatch on the code directly. For solicitation-specific modifications (overrides or net-new documents a specific program introduces), use solicitation-doc-modifications-udm with this component's output as input. When the sponsor is unrecognized, emits an empty requirements array and explains in knowledge_notes — never synthesizes a generic default list."
+        }
+      ],
+      "contracts": {
+        "output": {
+          "format": "json_object",
+          "scope": "repo_local_sponsor_defaults_contract",
+          "notes": "Repo-local sponsor-defaults contract. The schema is designed for prompt composition and downstream checklist assembly, not as a shared UDM repo schema.",
+          "schema_path": "components/sponsor-doc-defaults-udm/schema.json",
+          "schema_entrypoints": [
+            "#"
+          ],
+          "validation_surfaces": [
+            "json_schema",
+            "golden_eval_cases"
+          ]
+        }
+      },
+      "evaluation": {
+        "case_count": 3,
+        "report_count": 0,
+        "last_fully_evaluated_version": "1.0.0",
+        "current_version_is_fully_evaluated": true
+      },
+      "related_components": [
+        {
+          "slug": "solicitation-doc-modifications-udm",
+          "relationship": "paired_two_pass_pipeline",
+          "notes": "Defaults feed the solicitation-specific diff pass."
+        },
+        {
+          "slug": "document-type-classifier-udm",
+          "relationship": "shares_document_code_vocabulary",
+          "notes": "Document codes are intentionally kept interoperable across the repo."
+        }
+      ],
+      "triad_integration": {
+        "evaluation_datasets": [],
+        "harness_notes": "Use this component as the sponsor prior for solicitation-doc-modifications-udm. Validate output against schema.json and treat repo-local synthetic eval cases as the current reference set.",
+        "udm_alignment": {
+          "status": "repo_local_sponsor_defaults_contract",
+          "notes": "The requirement codes are shared locally across prompt-library components and can map into UDM-backed systems, but the contract itself is maintained only in this repo."
+        }
+      },
+      "source": {
+        "repo": "AI4RA/prompt-library",
+        "commit": "eef6fd3d818037ab51ece87f61806c448d51f40d",
+        "path": "components/sponsor-doc-defaults-udm",
+        "url": "https://github.com/AI4RA/prompt-library/tree/eef6fd3d818037ab51ece87f61806c448d51f40d/components/sponsor-doc-defaults-udm",
+        "copied": "2026-09-22"
+      }
+    }
+  ]
 }

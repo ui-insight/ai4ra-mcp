@@ -1,0 +1,383 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/AI4RA/prompt-library/components/nsf-budget-justification-udm/schema.json",
+  "title": "NSF Budget Justification — UDM Input and Output Contracts",
+  "description": "Defines both the input (structured NSF budget object) and the output (ordered array of eight section narratives) for the nsf-budget-justification-udm component. Validate input data against #/$defs/input and generated narratives against #/$defs/output.",
+  "version": "1.0.0",
+  "$defs": {
+    "input": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["project_years", "personnel", "budget_summary", "indirect_cost"],
+      "properties": {
+        "project_title": {
+          "type": ["string", "null"],
+          "description": "Short title of the proposed project. Optional — used only for contextual phrasing in the narrative."
+        },
+        "project_summary": {
+          "type": ["string", "null"],
+          "description": "One-paragraph summary of the proposed work. Optional — used to ground references to personnel roles and scope."
+        },
+        "project_years": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 10,
+          "description": "Number of project years. All year-indexed arrays in this input must have length equal to this value."
+        },
+        "personnel": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/personnelEntry" },
+          "description": "All prime-institution personnel requested in the budget. Senior personnel (section A) and Other Personnel (section B) are distinguished by the 'senior' flag. Subrecipient personnel belong in 'subawards', not here."
+        },
+        "budget_summary": { "$ref": "#/$defs/budgetSummary" },
+        "indirect_cost": { "$ref": "#/$defs/indirectCost" },
+        "equipment_items": {
+          "type": ["array", "null"],
+          "items": { "$ref": "#/$defs/equipmentItem" },
+          "description": "Per-item detail for Section D. Null or empty when section D is zero. An item is equipment under NSF when its acquisition cost is at least $5,000 and its useful life exceeds one year."
+        },
+        "travel_detail": {
+          "anyOf": [
+            { "$ref": "#/$defs/travelDetail" },
+            { "type": "null" }
+          ],
+          "description": "Optional purpose-level detail for Section E. When null, the narrative describes travel in summary terms from the budget_summary line."
+        },
+        "participant_support_detail": {
+          "anyOf": [
+            { "$ref": "#/$defs/participantSupportDetail" },
+            { "type": "null" }
+          ],
+          "description": "Optional per-line detail for Section F. Null or omitted when section F is zero."
+        },
+        "subawards": {
+          "type": ["array", "null"],
+          "items": { "$ref": "#/$defs/subaward" },
+          "description": "Subrecipient organizations funded under this proposal. Each subaward's amount_by_year contributes to Section G (Other Direct Costs) in budget_summary."
+        },
+        "other_direct_costs_detail": {
+          "anyOf": [
+            { "$ref": "#/$defs/otherDirectCostsDetail" },
+            { "type": "null" }
+          ],
+          "description": "Optional per-sub-line detail for Section G (Materials and Supplies, Publication Costs, Consultant Services, Computer Services, Other). Narrative can fall back to the summary line when null."
+        }
+      }
+    },
+    "output": {
+      "type": "array",
+      "minItems": 8,
+      "maxItems": 8,
+      "description": "Ordered tuple of the eight canonical NSF budget-justification sections. All eight are always emitted, in A..H order. When a category is zero the corresponding content is a single sentence stating no funds are requested.",
+      "prefixItems": [
+        { "$ref": "#/$defs/sectionA" },
+        { "$ref": "#/$defs/sectionB" },
+        { "$ref": "#/$defs/sectionC" },
+        { "$ref": "#/$defs/sectionD" },
+        { "$ref": "#/$defs/sectionE" },
+        { "$ref": "#/$defs/sectionF" },
+        { "$ref": "#/$defs/sectionG" },
+        { "$ref": "#/$defs/sectionH" }
+      ],
+      "items": false
+    },
+    "personnelEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "role", "senior", "effort", "base_salary"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Full name, or a placeholder like 'Graduate Student 1' when the person has not been identified."
+        },
+        "role": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Role on the project (e.g., 'Principal Investigator', 'Co-PI', 'Postdoctoral Researcher', 'Graduate Student', 'Undergraduate Research Assistant')."
+        },
+        "senior": {
+          "type": "boolean",
+          "description": "True when the person is reported under NSF Section A (Senior Personnel). False for Section B (Other Personnel — postdocs, graduate students, undergraduates, hourly staff)."
+        },
+        "effort": { "$ref": "#/$defs/effort" },
+        "base_salary": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Annual base salary in Year 1, in USD. For hourly staff, the annualized equivalent."
+        },
+        "escalation_percent": {
+          "type": ["number", "null"],
+          "minimum": 0,
+          "description": "Year-over-year salary escalation percent. Null to fall back to the institution's standard assumption (narrative should say 'per institutional escalation')."
+        },
+        "funding_source": {
+          "type": ["string", "null"],
+          "description": "Free-text note about when the effort is charged (e.g., 'summer months', 'academic year', 'calendar year') when the effort structure does not already make this explicit."
+        }
+      }
+    },
+    "effort": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["unit", "value"],
+      "properties": {
+        "unit": {
+          "enum": ["academic_months", "summer_months", "calendar_months", "percent"],
+          "description": "NSF senior personnel effort is typically reported in person-months (academic, summer, or calendar). Other personnel effort is often stated as a percent appointment."
+        },
+        "value": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Numeric effort in the unit given. E.g., 1 academic month, 1 summer month, or 50 percent."
+        }
+      }
+    },
+    "budgetSummary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["categories"],
+      "properties": {
+        "categories": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["A", "B", "C", "D", "E", "F", "G"],
+          "properties": {
+            "A": { "$ref": "#/$defs/yearAmounts", "description": "Senior Personnel totals by year, in USD." },
+            "B": { "$ref": "#/$defs/yearAmounts", "description": "Other Personnel totals by year, in USD." },
+            "C": { "$ref": "#/$defs/yearAmounts", "description": "Fringe Benefits totals by year, in USD." },
+            "D": { "$ref": "#/$defs/yearAmounts", "description": "Equipment totals by year, in USD." },
+            "E": { "$ref": "#/$defs/yearAmounts", "description": "Travel totals by year, in USD." },
+            "F": { "$ref": "#/$defs/yearAmounts", "description": "Participant Support Costs totals by year, in USD." },
+            "G": { "$ref": "#/$defs/yearAmounts", "description": "Other Direct Costs totals by year, in USD (includes subawards, materials, publication, consultant, computer services, and other per NSF convention)." }
+          }
+        }
+      }
+    },
+    "yearAmounts": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "number", "minimum": 0 },
+      "description": "Amount in USD for each project year. Index 0 is Year 1. Array length must equal project_years."
+    },
+    "indirectCost": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["rate_percent", "base_description"],
+      "properties": {
+        "rate_percent": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Primary negotiated F&A rate as a percentage (e.g., 54.5)."
+        },
+        "base_description": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Short description of the base, e.g., 'Modified Total Direct Costs (MTDC) excluding equipment, participant support, and the portion of each subaward in excess of $25,000'."
+        },
+        "off_campus_rate_percent": {
+          "type": ["number", "null"],
+          "minimum": 0,
+          "description": "Off-campus rate when a distinct rate applies; null otherwise."
+        },
+        "rate_agreement_citation": {
+          "type": ["string", "null"],
+          "description": "Short reference to the rate agreement, e.g., 'DHHS-negotiated rate agreement dated 2025-06-01'."
+        },
+        "notes": {
+          "type": ["string", "null"],
+          "description": "Short notes the narrative should carry (e.g., 'Rate steps from 52% to 54.5% in Year 3 per the current agreement')."
+        }
+      }
+    },
+    "equipmentItem": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "year", "amount", "justification_hint"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "year": { "type": "integer", "minimum": 1 },
+        "amount": { "type": "number", "minimum": 5000 },
+        "justification_hint": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Short phrase the drafter expands into one or two sentences on why the item is required and why existing equipment is insufficient."
+        }
+      }
+    },
+    "travelDetail": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "domestic_purposes": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "description": "Short phrases describing the purpose of each domestic trip (e.g., 'PI and one graduate student to attend the annual AGU meeting to present project results')."
+        },
+        "international_purposes": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "participantSupportDetail": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["line_items"],
+      "properties": {
+        "program_purpose": {
+          "type": ["string", "null"],
+          "description": "The event or activity the participants take part in (e.g., 'two-week summer research experience for six undergraduate students')."
+        },
+        "line_items": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/participantSupportLineItem" }
+        }
+      }
+    },
+    "participantSupportLineItem": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["category", "count", "amount_per", "description"],
+      "properties": {
+        "category": {
+          "enum": ["stipend", "travel", "subsistence", "fee", "other"],
+          "description": "NSF participant-support categories. 'fee' covers registration or training fees. 'other' should be accompanied by a clear description."
+        },
+        "count": { "type": "integer", "minimum": 1 },
+        "amount_per": { "type": "number", "minimum": 0 },
+        "description": { "type": "string", "minLength": 1 }
+      }
+    },
+    "subaward": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["institution", "scope", "amount_by_year"],
+      "properties": {
+        "institution": { "type": "string", "minLength": 1 },
+        "pi_name": { "type": ["string", "null"] },
+        "scope": {
+          "type": "string",
+          "minLength": 1,
+          "description": "One to two sentences describing the subrecipient's scope of work and why that scope belongs at the subrecipient rather than the prime."
+        },
+        "amount_by_year": { "$ref": "#/$defs/yearAmounts" }
+      }
+    },
+    "otherDirectCostsDetail": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "materials_and_supplies": { "type": ["string", "null"] },
+        "publication_costs": { "type": ["string", "null"] },
+        "consultant_services": { "type": ["string", "null"] },
+        "computer_services": { "type": ["string", "null"] },
+        "other": { "type": ["string", "null"] }
+      }
+    },
+    "sectionObjectBase": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["key", "title", "content"],
+      "properties": {
+        "key": { "type": "string" },
+        "title": { "type": "string", "minLength": 1 },
+        "content": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Narrative markdown. May include subheadings and lists. When the category total is zero in every year, content is a single sentence stating no funds are requested in this category."
+        }
+      }
+    },
+    "sectionA": {
+      "allOf": [
+        { "$ref": "#/$defs/sectionObjectBase" },
+        {
+          "properties": {
+            "key": { "const": "A" },
+            "title": { "const": "Senior Personnel" }
+          }
+        }
+      ]
+    },
+    "sectionB": {
+      "allOf": [
+        { "$ref": "#/$defs/sectionObjectBase" },
+        {
+          "properties": {
+            "key": { "const": "B" },
+            "title": { "const": "Other Personnel" }
+          }
+        }
+      ]
+    },
+    "sectionC": {
+      "allOf": [
+        { "$ref": "#/$defs/sectionObjectBase" },
+        {
+          "properties": {
+            "key": { "const": "C" },
+            "title": { "const": "Fringe Benefits" }
+          }
+        }
+      ]
+    },
+    "sectionD": {
+      "allOf": [
+        { "$ref": "#/$defs/sectionObjectBase" },
+        {
+          "properties": {
+            "key": { "const": "D" },
+            "title": { "const": "Equipment" }
+          }
+        }
+      ]
+    },
+    "sectionE": {
+      "allOf": [
+        { "$ref": "#/$defs/sectionObjectBase" },
+        {
+          "properties": {
+            "key": { "const": "E" },
+            "title": { "const": "Travel" }
+          }
+        }
+      ]
+    },
+    "sectionF": {
+      "allOf": [
+        { "$ref": "#/$defs/sectionObjectBase" },
+        {
+          "properties": {
+            "key": { "const": "F" },
+            "title": { "const": "Participant Support Costs" }
+          }
+        }
+      ]
+    },
+    "sectionG": {
+      "allOf": [
+        { "$ref": "#/$defs/sectionObjectBase" },
+        {
+          "properties": {
+            "key": { "const": "G" },
+            "title": { "const": "Other Direct Costs" }
+          }
+        }
+      ]
+    },
+    "sectionH": {
+      "allOf": [
+        { "$ref": "#/$defs/sectionObjectBase" },
+        {
+          "properties": {
+            "key": { "const": "H" },
+            "title": { "const": "Indirect Costs" }
+          }
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,126 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/AI4RA/prompt-library/components/award-allowability-terms-extraction/schema.json",
+  "title": "Award Allowability Terms Extraction — Output",
+  "description": "Structured record of the federal award terms that govern cost allowability: period of performance, approved budget, caps and exclusions, federal prior-approval triggers, indirect-cost treatment, and institutional compliance-approval requirements. Input-normalization contract for the federal cost-allowability analysis workflow.",
+  "version": "0.1.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "award_number",
+    "period_of_performance",
+    "applicable_cost_principles",
+    "approved_budget_categories",
+    "caps_and_exclusions",
+    "prior_approval_triggers",
+    "compliance_approval_requirements"
+  ],
+  "properties": {
+    "award_number": {
+      "type": ["string", "null"],
+      "description": "Federal Award Identification Number as printed on the award."
+    },
+    "sponsor": {
+      "type": ["string", "null"],
+      "description": "Awarding federal agency or pass-through entity."
+    },
+    "recipient": {
+      "type": ["string", "null"],
+      "description": "Recipient institution."
+    },
+    "period_of_performance": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Award period of performance.",
+      "required": ["start_date", "end_date"],
+      "properties": {
+        "start_date": {
+          "type": ["string", "null"],
+          "description": "Period start date as stated."
+        },
+        "end_date": {
+          "type": ["string", "null"],
+          "description": "Period end date as stated."
+        }
+      }
+    },
+    "pre_award_cost_window": {
+      "type": ["string", "null"],
+      "description": "Authorized pre-award spending window, when stated."
+    },
+    "applicable_cost_principles": {
+      "type": ["string", "null"],
+      "description": "Cost principles the award invokes (e.g., 2 CFR 200 Subpart E)."
+    },
+    "approved_budget_categories": {
+      "type": "array",
+      "description": "Approved budget categories. Empty array when the award does not enumerate them.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["category"],
+        "properties": {
+          "category": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Budget category name as stated."
+          },
+          "approved_amount": {
+            "type": ["number", "null"],
+            "description": "Approved amount as a JSON number; null when not stated."
+          },
+          "restrictions": {
+            "type": ["string", "null"],
+            "description": "Category-specific restriction language, when stated."
+          }
+        }
+      }
+    },
+    "caps_and_exclusions": {
+      "type": "array",
+      "description": "Explicit dollar caps, percentage limits, prohibited cost types, or use restrictions. Empty array when none.",
+      "items": {"type": "string", "minLength": 1}
+    },
+    "prior_approval_triggers": {
+      "type": "array",
+      "description": "Actions requiring federal sponsor prior approval before a cost is incurred. Empty array when none.",
+      "items": {"type": "string", "minLength": 1}
+    },
+    "indirect_cost": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Indirect-cost treatment.",
+      "required": ["rate", "base", "mtdc_exclusions"],
+      "properties": {
+        "rate": {
+          "type": ["string", "null"],
+          "description": "Indirect-cost rate as stated (e.g., '54%')."
+        },
+        "base": {
+          "type": ["string", "null"],
+          "description": "Indirect-cost base as stated (e.g., 'MTDC')."
+        },
+        "mtdc_exclusions": {
+          "type": "array",
+          "description": "Cost types the base excludes. Empty array when not stated.",
+          "items": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "compliance_approval_requirements": {
+      "type": "array",
+      "description": "Award terms conditioning spending or performance on an institutional regulatory approval (IRB, IACUC, IBC, or similar). Empty array when none.",
+      "items": {"type": "string", "minLength": 1}
+    },
+    "special_conditions": {
+      "type": "array",
+      "description": "High-risk conditions, enhanced monitoring, or other special terms. Empty array when none.",
+      "items": {"type": "string", "minLength": 1}
+    },
+    "referenced_documents": {
+      "type": "array",
+      "description": "Governing documents incorporated by reference. Empty array when none.",
+      "items": {"type": "string", "minLength": 1}
+    }
+  }
+}

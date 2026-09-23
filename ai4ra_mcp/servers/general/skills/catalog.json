@@ -1,0 +1,150 @@
+{
+  "catalog_version": "1.0",
+  "repo": "ui-insight/ai4ra-mcp",
+  "server": "general",
+  "note": "Skills any office uses with any document: ask (a question put to the person, its output the reply), remove-ai-tells, and a project timeline drawn as a Gantt chart. Same shape as AI4RA/prompt-library's component_catalog.json, hand-maintained. A component's hosts lists the clients it is offered in; fold: host says a client lists it beside that host's own tools.",
+  "components": [
+    {
+      "slug": "ask",
+      "name": "ask",
+      "summary": "Put a question to the user and stop; the user's reply is the result. Inside a workflow the pane waits for that reply and records it as the step's output.",
+      "version": "1.0.1",
+      "category": "research",
+      "domain": "research-administration",
+      "status": "experimental",
+      "paths": {
+        "component_dir": "components/ask",
+        "readme": "components/ask/README.md",
+        "prompt": "components/ask/prompt.md",
+        "evals_dir": "components/ask/evals"
+      },
+      "manifestations": [
+        {
+          "type": "prompt",
+          "path": "components/ask/prompt.md",
+          "version": "1.0.1",
+          "role": "canonical_prompt"
+        }
+      ],
+      "contracts": {
+        "output": {
+          "format": "reply",
+          "scope": "repo_local",
+          "schema_path": null
+        }
+      },
+      "evaluation": {
+        "case_count": 0,
+        "report_count": 0,
+        "last_fully_evaluated_version": null,
+        "current_version_is_fully_evaluated": false
+      },
+      "requires": [],
+      "source": {
+        "repo": "ui-insight/mindrouter-365",
+        "path": "skills/components/ask",
+        "moved": "2026-09-22"
+      }
+    },
+    {
+      "slug": "remove-ai-tells",
+      "name": "remove-ai-tells",
+      "summary": "Edit a document or selection so it no longer reads like machine output: strip the vocabulary, sentence patterns, structure, formatting habits and chatbot residue that mark AI-generated prose (twenty-nine families), keep every fact, claim and citation, leave the author's meaning and register alone, and finish with a grammar pass. Reads and marks the whole text first, then rewrites by paragraph, one tracked change each, and ends with a grammar pass.",
+      "triggers": [
+        "ai tells"
+      ],
+      "version": "1.0.0",
+      "category": "transformation",
+      "domain": "general",
+      "status": "experimental",
+      "paths": {
+        "component_dir": "components/remove-ai-tells",
+        "readme": "components/remove-ai-tells/README.md",
+        "prompt": "components/remove-ai-tells/prompt.md",
+        "evals_dir": "components/remove-ai-tells/evals"
+      },
+      "manifestations": [
+        {
+          "type": "prompt",
+          "path": "components/remove-ai-tells/prompt.md",
+          "version": "1.0.0",
+          "role": "canonical_prompt"
+        }
+      ],
+      "contracts": {
+        "output": {
+          "format": "document_edits",
+          "scope": "repo_local",
+          "schema_path": null
+        }
+      },
+      "evaluation": {
+        "case_count": 0,
+        "report_count": 0,
+        "last_fully_evaluated_version": null,
+        "current_version_is_fully_evaluated": false
+      },
+      "source": {
+        "repo": "ui-insight/mindrouter-365",
+        "path": "skills/components/remove-ai-tells",
+        "moved": "2026-09-22"
+      }
+    },
+    {
+      "slug": "project-timeline-gantt",
+      "name": "project-timeline-gantt",
+      "summary": "Draw a Gantt chart of a project's tasks in months: a stacked bar chart whose start series is hidden, so each bar runs from the task's start month for its duration.",
+      "triggers": [
+        "gantt",
+        "gantt chart",
+        "project timeline"
+      ],
+      "version": "0.5.6",
+      "category": "drafting",
+      "domain": "research-administration",
+      "status": "experimental",
+      "paths": {
+        "component_dir": "components/project-timeline-gantt",
+        "readme": "components/project-timeline-gantt/README.md",
+        "prompt": "components/project-timeline-gantt/prompt.md",
+        "evals_dir": "components/project-timeline-gantt/evals"
+      },
+      "manifestations": [
+        {
+          "type": "prompt",
+          "path": "components/project-timeline-gantt/prompt.md",
+          "version": "0.5.6",
+          "role": "canonical_prompt"
+        }
+      ],
+      "contracts": {
+        "output": {
+          "format": "spreadsheet",
+          "scope": "repo_local",
+          "schema_path": null
+        }
+      },
+      "evaluation": {
+        "case_count": 0,
+        "report_count": 0,
+        "last_fully_evaluated_version": null,
+        "current_version_is_fully_evaluated": false
+      },
+      "requires": [
+        "excel:add_sheet",
+        "excel:write_values",
+        "excel:add_chart",
+        "excel:edit_chart"
+      ],
+      "source": {
+        "repo": "ui-insight/mindrouter-365",
+        "path": "skills/components/project-timeline-gantt",
+        "moved": "2026-09-22"
+      },
+      "hosts": [
+        "excel"
+      ],
+      "fold": "host"
+    }
+  ]
+}

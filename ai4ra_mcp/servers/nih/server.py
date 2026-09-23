@@ -194,7 +194,7 @@ async def nih_publications(core_project_num: str, offset: int = 0, limit: int = 
     pubs = [{"pmid": r.get("pmid"), "core_project_num": r.get("coreproject"), "appl_id": r.get("applid"),
              "link": f"https://pubmed.ncbi.nlm.nih.gov/{r.get('pmid')}/"} for r in body.get("results") or []]
     out = {"core_project_num": core, "total": meta.get("total"), "offset": offset, "returned": len(pubs), "publications": pubs,
-           "note": "RePORTER gives ids only; fetch a PubMed link with fetch_document on the ai4ra server for the citation."}
+           "note": "RePORTER gives ids only; fetch a PubMed link with fetch_document on the general server for the citation."}
     if isinstance(meta.get("total"), int) and offset + len(pubs) < meta["total"]:
         out["next_offset"] = offset + len(pubs)
     return out

@@ -2,13 +2,20 @@
   "catalog_version": "1.0",
   "repo": "ui-insight/ai4ra-mcp",
   "server": "uidaho",
-  "note": "Skills that use the uidaho server's tools. Same shape as AI4RA/prompt-library's component_catalog.json, hand-maintained.",
+  "note": "Skills that use the uidaho server's tools or the University of Idaho's own data: policy and rate lookups, a Rates sheet, the award skills that read Banner exports (FRIGITD, FRIPSTG), and the proposal workbook whose steps span the general, ai4ra and uidaho servers. Same shape as AI4RA/prompt-library's component_catalog.json, hand-maintained.",
   "components": [
     {
       "slug": "uidaho-lookup",
       "name": "uidaho-lookup",
       "summary": "Answer a question about the University of Idaho's sponsored-research facts (F&A and fringe rates, budget rules, policies, contacts) with the uidaho tools, quoting each figure or passage with its policy number, effective period or revision date, and page.",
-      "triggers": ["University of Idaho policy", "APM", "FSH", "our F&A rate", "fringe rate", "UI policy"],
+      "triggers": [
+        "University of Idaho policy",
+        "APM",
+        "FSH",
+        "our F&A rate",
+        "fringe rate",
+        "UI policy"
+      ],
       "version": "0.3.1",
       "category": "research",
       "domain": "research-administration",
@@ -20,11 +27,707 @@
         "evals_dir": "components/uidaho-lookup/evals"
       },
       "manifestations": [
-        {"type": "prompt", "path": "components/uidaho-lookup/prompt.md", "version": "0.3.1", "role": "canonical_prompt"}
+        {
+          "type": "prompt",
+          "path": "components/uidaho-lookup/prompt.md",
+          "version": "0.3.1",
+          "role": "canonical_prompt"
+        }
       ],
-      "contracts": {"output": {"format": "markdown_review", "scope": "repo_local", "schema_path": null}},
-      "evaluation": {"case_count": 0, "report_count": 0, "last_fully_evaluated_version": null, "current_version_is_fully_evaluated": false},
-      "requires": ["uidaho_guidance_index", "uidaho_guidance_search", "uidaho_guidance_get", "uidaho_rates"]
+      "contracts": {
+        "output": {
+          "format": "markdown_review",
+          "scope": "repo_local",
+          "schema_path": null
+        }
+      },
+      "evaluation": {
+        "case_count": 0,
+        "report_count": 0,
+        "last_fully_evaluated_version": null,
+        "current_version_is_fully_evaluated": false
+      },
+      "requires": [
+        "uidaho_guidance_index",
+        "uidaho_guidance_search",
+        "uidaho_guidance_get",
+        "uidaho_rates"
+      ]
+    },
+    {
+      "slug": "uidaho-rates-sheet",
+      "name": "uidaho-rates-sheet",
+      "summary": "Write the University of Idaho's current F&A and fringe rates onto a sheet named Rates, read from the rate agreement and the fringe-rate page, one row per rate with its effective period and document, seven fixed-label rows a budget form reads first and a Source line for provenance.",
+      "triggers": [
+        "rates sheet",
+        "our rates",
+        "F&A and fringe rates",
+        "rates tab"
+      ],
+      "version": "0.1.0",
+      "category": "research",
+      "domain": "research-administration",
+      "status": "experimental",
+      "paths": {
+        "component_dir": "components/uidaho-rates-sheet",
+        "readme": "components/uidaho-rates-sheet/README.md",
+        "prompt": "components/uidaho-rates-sheet/prompt.md",
+        "evals_dir": "components/uidaho-rates-sheet/evals"
+      },
+      "manifestations": [
+        {
+          "type": "prompt",
+          "path": "components/uidaho-rates-sheet/prompt.md",
+          "version": "0.1.0",
+          "role": "canonical_prompt"
+        }
+      ],
+      "contracts": {
+        "output": {
+          "format": "spreadsheet",
+          "scope": "repo_local",
+          "schema_path": null
+        }
+      },
+      "evaluation": {
+        "case_count": 0,
+        "report_count": 0,
+        "last_fully_evaluated_version": null,
+        "current_version_is_fully_evaluated": false
+      },
+      "requires": [
+        "uidaho_rates",
+        "excel:add_sheet",
+        "excel:write_values",
+        "excel:format_range"
+      ]
+    },
+    {
+      "slug": "award-facts",
+      "name": "award-facts",
+      "summary": "Read an award's facts off the key block at the top of a Banner Grant Inception to Date export (FRIGITD), on the tab the request names, else the only tab that looks like the export, else the one the user is on, and says which: grant code, title, sponsor, PI, project start and end dates as written. Seven lines in the reply; nothing written.",
+      "version": "0.3.1",
+      "category": "post-award",
+      "domain": "research-administration",
+      "status": "experimental",
+      "paths": {
+        "component_dir": "components/award-facts",
+        "readme": "components/award-facts/README.md",
+        "prompt": "components/award-facts/prompt.md",
+        "evals_dir": "components/award-facts/evals"
+      },
+      "manifestations": [
+        {
+          "type": "prompt",
+          "path": "components/award-facts/prompt.md",
+          "version": "0.3.1",
+          "role": "canonical_prompt"
+        }
+      ],
+      "contracts": {
+        "output": {
+          "format": "markdown_review",
+          "scope": "repo_local",
+          "schema_path": null
+        }
+      },
+      "evaluation": {
+        "case_count": 0,
+        "report_count": 0,
+        "last_fully_evaluated_version": null,
+        "current_version_is_fully_evaluated": false
+      },
+      "requires": [
+        "excel:get_workbook_overview",
+        "excel:read_range"
+      ],
+      "source": {
+        "repo": "ui-insight/mindrouter-365",
+        "path": "skills/components/award-facts",
+        "moved": "2026-09-22"
+      }
+    },
+    {
+      "slug": "award-lines",
+      "name": "award-lines",
+      "summary": "Read back a Lines sheet that mirrors a Banner Grant Inception to Date export (FRIGITD) by formula, one row per code with budget, spent, committed and the account it rolls up to (a formula built from General Accounting's expense code list and the chart of accounts); the pane fills the export's tab name and the sheet fills itself. Nothing written; the checks reported.",
+      "version": "3.0.1",
+      "category": "post-award",
+      "domain": "research-administration",
+      "status": "experimental",
+      "paths": {
+        "component_dir": "components/award-lines",
+        "readme": "components/award-lines/README.md",
+        "prompt": "components/award-lines/prompt.md",
+        "evals_dir": "components/award-lines/evals",
+        "template": "components/award-lines/template.json"
+      },
+      "manifestations": [
+        {
+          "type": "prompt",
+          "path": "components/award-lines/prompt.md",
+          "version": "3.0.1",
+          "role": "canonical_prompt"
+        }
+      ],
+      "contracts": {
+        "output": {
+          "format": "spreadsheet",
+          "scope": "repo_local",
+          "schema_path": null
+        }
+      },
+      "evaluation": {
+        "case_count": 0,
+        "report_count": 0,
+        "last_fully_evaluated_version": null,
+        "current_version_is_fully_evaluated": false
+      },
+      "requires": [
+        "excel:read_range"
+      ],
+      "assertions": [
+        {
+          "address": "I2",
+          "rule": "equals",
+          "value": 0,
+          "label": "every expense code is in the chart the Account formula was built from; a ? in column C names one that is not"
+        },
+        {
+          "address": "I1",
+          "rule": "min",
+          "min": 1,
+          "label": "at least one row on the Lines sheet"
+        }
+      ],
+      "source": {
+        "repo": "ui-insight/mindrouter-365",
+        "path": "skills/components/award-lines",
+        "moved": "2026-09-22"
+      }
+    },
+    {
+      "slug": "award-status",
+      "name": "award-status",
+      "summary": "Read an award's status off an Award status sheet, a template filled from the request (title, sponsor, PI, dates) whose every figure is a formula over a Lines sheet from a FRIGITD export: the award's own accounts listed with budget, spent and committed under each, flags for accounts out of step with the time elapsed, burn rate, runway, the projected spend at the end date, an F&A check on the MTDC base against the overhead posted with the effective rate, the rebudget each account's pace implies with the moves that need the sponsor, the closeout figures, the budget pools as Banner enforces them, and a reconciliation. The skill writes nothing.",
+      "version": "1.4.6",
+      "category": "post-award",
+      "domain": "research-administration",
+      "status": "experimental",
+      "paths": {
+        "component_dir": "components/award-status",
+        "readme": "components/award-status/README.md",
+        "prompt": "components/award-status/prompt.md",
+        "evals_dir": "components/award-status/evals",
+        "template": "components/award-status/template.json"
+      },
+      "manifestations": [
+        {
+          "type": "prompt",
+          "path": "components/award-status/prompt.md",
+          "version": "1.4.6",
+          "role": "canonical_prompt"
+        }
+      ],
+      "contracts": {
+        "output": {
+          "format": "spreadsheet",
+          "scope": "repo_local",
+          "schema_path": null
+        }
+      },
+      "evaluation": {
+        "case_count": 0,
+        "report_count": 0,
+        "last_fully_evaluated_version": null,
+        "current_version_is_fully_evaluated": false
+      },
+      "requires": [
+        "excel:read_range"
+      ],
+      "assertions": [
+        {
+          "address": "C27",
+          "rule": "nonzero",
+          "label": "budget total found from the Lines sheet (its account rows must carry the budget)"
+        }
+      ],
+      "source": {
+        "repo": "ui-insight/mindrouter-365",
+        "path": "skills/components/award-status",
+        "moved": "2026-09-22"
+      }
+    },
+    {
+      "slug": "award-review",
+      "name": "award-review",
+      "summary": "Award check, award review, check this award: a monthly award review from a Banner Grant Inception to Date export (FRIGITD) opened in Excel, on the tab the request names, else the only tab that looks like the export, else the one the user is on. The award's facts from the export's key block, a Lines sheet that mirrors the export by formula, an Award status sheet (the award's accounts with budget, spent and committed under each, flags, burn rate, runway, projection, F&A check, rebudget at pace, closeout, budget pools) and an email to the PI, facts only. Four steps run by the pane, no question. This is the skill to call for any request to check or review an award.",
+      "triggers": [
+        "award review",
+        "frigitd"
+      ],
+      "version": "5.1.6",
+      "category": "post-award",
+      "domain": "research-administration",
+      "status": "experimental",
+      "paths": {
+        "component_dir": "components/award-review",
+        "readme": "components/award-review/README.md",
+        "prompt": "components/award-review/prompt.md",
+        "evals_dir": "components/award-review/evals"
+      },
+      "manifestations": [
+        {
+          "type": "prompt",
+          "path": "components/award-review/prompt.md",
+          "version": "5.1.6",
+          "role": "canonical_prompt"
+        }
+      ],
+      "contracts": {
+        "output": {
+          "format": "spreadsheet",
+          "scope": "repo_local",
+          "schema_path": null
+        }
+      },
+      "evaluation": {
+        "case_count": 0,
+        "report_count": 0,
+        "last_fully_evaluated_version": null,
+        "current_version_is_fully_evaluated": false
+      },
+      "requires": [
+        "skill_award_facts",
+        "skill_award_lines",
+        "skill_award_status",
+        "skill_pi_memo"
+      ],
+      "stages": [
+        {
+          "name": "Facts",
+          "skill": "award-facts",
+          "context": {
+            "workbook": "the Banner Grant Inception to Date export (FRIGITD) is open in this workbook; its key block carries the grant, title, agency, PI and project period",
+            "frigitd_tab": "? the tab name the request gives for the export, as written; none if it gives none"
+          },
+          "required_tools": [
+            "excel:read_range"
+          ]
+        },
+        {
+          "name": "Lines",
+          "skill": "award-lines",
+          "context": {
+            "frigitd_tab": "? the export's tab name alone, as the facts step's Tab line gives it",
+            "award": "? the award's title"
+          },
+          "required_tools": [
+            "excel:read_range"
+          ]
+        },
+        {
+          "name": "Award status",
+          "skill": "award-status",
+          "sources": [
+            "Lines"
+          ],
+          "context": {
+            "award": "? the award's title",
+            "sponsor_award": "? the sponsor and the grant code",
+            "pi": "? the principal investigator's name",
+            "start_date": "? the start date as the facts step wrote it",
+            "end_date": "? the end date as the facts step wrote it"
+          },
+          "required_tools": [
+            "excel:read_range"
+          ]
+        },
+        {
+          "name": "Memo",
+          "skill": "pi-memo",
+          "sources": [
+            "Award status"
+          ],
+          "context": {
+            "award": "? the award's title",
+            "pi": "? the principal investigator's name",
+            "sender": "? the user's name if the conversation gives it; none if not"
+          },
+          "required_tools": [
+            "excel:add_sheet",
+            "excel:write_values"
+          ]
+        }
+      ],
+      "source": {
+        "repo": "ui-insight/mindrouter-365",
+        "path": "skills/components/award-review",
+        "moved": "2026-09-22"
+      }
+    },
+    {
+      "slug": "pi-awards",
+      "name": "pi-awards",
+      "summary": "List a PI's active awards off a Banner Grant Personnel Inquiry export (FRIPSTG) on the tab the request names or the one found by its headers: one line per award with grant, title, proposal number and maximum amount, then the inactive count. Reading only.",
+      "version": "0.1.0",
+      "category": "pre-award",
+      "domain": "research-administration",
+      "status": "draft",
+      "paths": {
+        "component_dir": "components/pi-awards",
+        "readme": "components/pi-awards/README.md",
+        "prompt": "components/pi-awards/prompt.md",
+        "evals_dir": "components/pi-awards/evals"
+      },
+      "manifestations": [
+        {
+          "type": "prompt",
+          "path": "components/pi-awards/prompt.md",
+          "version": "0.1.0",
+          "role": "canonical_prompt"
+        }
+      ],
+      "contracts": {
+        "output": {
+          "format": "markdown_review",
+          "scope": "repo_local",
+          "schema_path": null
+        }
+      },
+      "evaluation": {
+        "case_count": 0,
+        "report_count": 0,
+        "last_fully_evaluated_version": null,
+        "current_version_is_fully_evaluated": false
+      },
+      "requires": [
+        "excel:get_workbook_overview",
+        "excel:read_range"
+      ],
+      "source": {
+        "repo": "ui-insight/mindrouter-365",
+        "path": "skills/components/pi-awards",
+        "moved": "2026-09-22"
+      }
+    },
+    {
+      "slug": "current-pending",
+      "name": "current-pending",
+      "summary": "Fill a Current and pending sheet, one row per award of a PI: grant and title from the request's list, and, for each award whose FRIGITD export is a tab in the workbook, the sponsor and project period copied from its key block and the total award as a SUM over its budget column; person-months, overlap, role and the sponsor's number left yellow for the PI. Sponsor-neutral, for SciENcv and NIH Other Support alike.",
+      "version": "0.1.0",
+      "category": "pre-award",
+      "domain": "research-administration",
+      "status": "draft",
+      "paths": {
+        "component_dir": "components/current-pending",
+        "readme": "components/current-pending/README.md",
+        "prompt": "components/current-pending/prompt.md",
+        "evals_dir": "components/current-pending/evals",
+        "template": "components/current-pending/template.json"
+      },
+      "manifestations": [
+        {
+          "type": "prompt",
+          "path": "components/current-pending/prompt.md",
+          "version": "0.1.0",
+          "role": "canonical_prompt"
+        }
+      ],
+      "contracts": {
+        "output": {
+          "format": "spreadsheet",
+          "scope": "repo_local",
+          "schema_path": null
+        }
+      },
+      "evaluation": {
+        "case_count": 0,
+        "report_count": 0,
+        "last_fully_evaluated_version": null,
+        "current_version_is_fully_evaluated": false
+      },
+      "requires": [
+        "excel:get_workbook_overview",
+        "excel:read_range",
+        "excel:write_values"
+      ],
+      "assertions": [
+        {
+          "address": "N1",
+          "rule": "min",
+          "min": 1,
+          "label": "at least one award listed"
+        }
+      ],
+      "source": {
+        "repo": "ui-insight/mindrouter-365",
+        "path": "skills/components/current-pending",
+        "moved": "2026-09-22"
+      }
+    },
+    {
+      "slug": "current-pending-support",
+      "name": "current-pending-support",
+      "summary": "A PI's current and pending support from Banner exports opened in Excel: the award list from the FRIPSTG export, then a Current and pending sheet with each award's sponsor, period and total from its FRIGITD export where the workbook has one, and the PI's cells left yellow. Two steps run by the pane, no question; the reply names the exports still to fetch.",
+      "version": "1.0.0",
+      "category": "pre-award",
+      "domain": "research-administration",
+      "status": "draft",
+      "paths": {
+        "component_dir": "components/current-pending-support",
+        "readme": "components/current-pending-support/README.md",
+        "prompt": "components/current-pending-support/prompt.md",
+        "evals_dir": "components/current-pending-support/evals"
+      },
+      "manifestations": [
+        {
+          "type": "prompt",
+          "path": "components/current-pending-support/prompt.md",
+          "version": "1.0.0",
+          "role": "canonical_prompt"
+        }
+      ],
+      "contracts": {
+        "output": {
+          "format": "spreadsheet",
+          "scope": "repo_local",
+          "schema_path": null
+        }
+      },
+      "evaluation": {
+        "case_count": 0,
+        "report_count": 0,
+        "last_fully_evaluated_version": null,
+        "current_version_is_fully_evaluated": false
+      },
+      "requires": [
+        "skill_pi_awards",
+        "skill_current_pending"
+      ],
+      "stages": [
+        {
+          "name": "Awards",
+          "skill": "pi-awards",
+          "context": {
+            "workbook": "a Banner Grant Personnel Inquiry export (FRIPSTG) for the PI is open in this workbook, and Grant Inception to Date exports (FRIGITD) for some of the awards may be too",
+            "fripstg_tab": "? the tab name the request gives for the personnel inquiry export, as written; none if it gives none"
+          },
+          "required_tools": [
+            "excel:read_range"
+          ]
+        },
+        {
+          "name": "Table",
+          "skill": "current-pending",
+          "context": {
+            "pi": "? the PI's name as the awards step wrote it",
+            "awards": "? the awards step's lines for the active awards, one per line, as written"
+          },
+          "required_tools": [
+            "excel:write_values"
+          ]
+        }
+      ],
+      "source": {
+        "repo": "ui-insight/mindrouter-365",
+        "path": "skills/components/current-pending-support",
+        "moved": "2026-09-22"
+      }
+    },
+    {
+      "slug": "proposal-workbook",
+      "name": "proposal-workbook",
+      "summary": "Turn a chosen funding opportunity into a proposal-planning workbook: a table of eight steps the pane runs one after another, each skill in its own conversation with a context the pane fills from the run's earlier outputs (ask; RFA sheet; narrative; work plan; a Rates sheet; budget outline; NSF budget form; Gantt). The budget is estimated from the plan and asks nothing; a reviewer edits the outline sheet and reruns the form.",
+      "version": "5.1.0",
+      "category": "drafting",
+      "domain": "research-administration",
+      "status": "experimental",
+      "paths": {
+        "component_dir": "components/proposal-workbook",
+        "readme": "components/proposal-workbook/README.md",
+        "prompt": "components/proposal-workbook/prompt.md",
+        "evals_dir": "components/proposal-workbook/evals"
+      },
+      "manifestations": [
+        {
+          "type": "prompt",
+          "path": "components/proposal-workbook/prompt.md",
+          "version": "5.1.0",
+          "role": "canonical_prompt"
+        }
+      ],
+      "contracts": {
+        "output": {
+          "format": "spreadsheet",
+          "scope": "repo_local",
+          "schema_path": null
+        }
+      },
+      "evaluation": {
+        "case_count": 0,
+        "report_count": 0,
+        "last_fully_evaluated_version": null,
+        "current_version_is_fully_evaluated": false
+      },
+      "requires": [
+        "skill_ask",
+        "skill_rfa_sheet",
+        "skill_proposal_narrative",
+        "skill_work_plan",
+        "skill_uidaho_rates_sheet",
+        "skill_budget_outline",
+        "skill_budget_nsf",
+        "skill_project_timeline_gantt"
+      ],
+      "stages": [
+        {
+          "name": "Ask",
+          "skill": "ask",
+          "context": {
+            "opportunity": "? the opportunity the user chose: title, number and grants.gov link as listed in the earlier reply",
+            "question": "Confirm which opportunity this proposal is for. Then ask, in one message, for what only the user knows, each with what will be assumed if they say estimate: the proposal title (assume one from the idea, in the announcement's title format if it has one); the idea in a few sentences (required); the award type or track when the announcement has them; the team as roles and names (assume a PI and one graduate student); the project length and expected start (assume the announcement's maximum). Then ask, open-ended, for other context: a facility, dataset or website to build on, a partner, a prior award, an institutional cap, a reviewer concern, a section to emphasise, and any budget must-haves (a piece of equipment, a partner with a subaward, a named consultant, people who must be on it, cost sharing the sponsor requires), since the budget is estimated from the plan and asks nothing later. Say that the answer starts the build: RFA sheet, narrative, work plan, rates, budget outline, NSF budget form and timeline follow without further questions."
+          },
+          "required_tools": []
+        },
+        {
+          "name": "RFA sheet",
+          "skill": "rfa-sheet",
+          "context": {
+            "opportunity": "? the opportunity: title, number and grants.gov link",
+            "user_context": "? the user's answers to the questions, as written"
+          },
+          "required_tools": [
+            "fetch_document",
+            "excel:add_sheet",
+            "excel:write_values"
+          ]
+        },
+        {
+          "name": "Narrative",
+          "skill": "proposal-narrative",
+          "sources": [
+            "RFA sheet"
+          ],
+          "context": {
+            "title": "? the proposal title",
+            "sponsor": "? agency and program",
+            "team": "? every name and role, as the RFA sheet's Team row lists them",
+            "requirements": "? what the announcement requires in the narrative",
+            "years": "? project length in years",
+            "opportunity_facts": "? the opportunity's facts and the project rows as the RFA sheet holds them, one field: value per line"
+          },
+          "required_tools": [
+            "excel:add_sheet",
+            "excel:write_values"
+          ]
+        },
+        {
+          "name": "Work plan",
+          "skill": "work-plan",
+          "sources": [
+            "Narrative"
+          ],
+          "context": {
+            "team": "? every name and role, as the RFA sheet's Team row lists them",
+            "years": "? project length in years",
+            "objectives": "? the narrative's objectives and approach, as written"
+          },
+          "required_tools": [
+            "excel:add_sheet",
+            "excel:write_values"
+          ]
+        },
+        {
+          "name": "Rates",
+          "skill": "uidaho-rates-sheet",
+          "context": {
+            "location": "on-campus unless the RFA sheet says otherwise",
+            "type": "organized research"
+          },
+          "required_tools": [
+            "uidaho_rates",
+            "excel:add_sheet",
+            "excel:write_values"
+          ]
+        },
+        {
+          "name": "Budget outline",
+          "skill": "budget-outline",
+          "sources": [
+            "RFA sheet",
+            "Narrative"
+          ],
+          "context": {
+            "title": "? the proposal title",
+            "ceiling": "? the chosen track's amount or the typical award, a bare number",
+            "ceiling_note": "? where the ceiling comes from",
+            "years": "? project length in years, a bare number",
+            "work": "? the narrative's objectives and approach, as written: what will be done and what it needs",
+            "must_haves": "? the budget must-haves the user named, as written: a consultant, equipment, a partner with a subaward, cost sharing, people who must be on it; none if they named none"
+          },
+          "required_tools": [
+            "excel:write_values"
+          ]
+        },
+        {
+          "name": "Budget template",
+          "skill": "budget-nsf",
+          "sources": [
+            "Budget outline",
+            "Rates"
+          ],
+          "context": {
+            "title": "? the proposal title",
+            "sponsor": "? agency and program",
+            "years": "? project length in years, a bare number",
+            "ceiling": "? the ceiling, a bare number",
+            "ceiling_note": "? where the ceiling comes from",
+            "fa_rate": "? the F&A rate as the Rates sheet holds it, a fraction",
+            "fa_base": "? the F&A base as the Rates sheet holds it, MTDC or TDC",
+            "fringe_faculty": "? the Rates sheet's fringe rate for faculty, a fraction",
+            "fringe_staff": "? the Rates sheet's fringe rate for staff, a fraction",
+            "fringe_students": "? the Rates sheet's fringe rate for students, a fraction",
+            "fringe_temporary": "? the Rates sheet's fringe rate for temporary, a fraction",
+            "rates_note": "? the Rates sheet's Source row, as written",
+            "senior_personnel_year1": "? the outline's senior personnel amount for year 1, a bare number",
+            "other_personnel_year1": "? the outline's other personnel amount for year 1, a bare number",
+            "equipment_by_year": "? the outline's equipment amounts one bare number per year in order, separated by commas",
+            "travel_by_year": "? the outline's travel amounts one bare number per year in order, separated by commas",
+            "participants_by_year": "? the outline's participant support amounts one bare number per year in order, separated by commas",
+            "supplies_by_year": "? the outline's materials and supplies amounts one bare number per year in order, separated by commas",
+            "publication_by_year": "? the outline's publication amounts one bare number per year in order, separated by commas",
+            "consultants_by_year": "? the outline's consultants amounts one bare number per year in order, separated by commas",
+            "computing_by_year": "? the outline's computing and services amounts one bare number per year in order, separated by commas",
+            "subawards_by_year": "? the outline's subawards amounts one bare number per year in order, separated by commas",
+            "other_by_year": "? the outline's other, including tuition amounts one bare number per year in order, separated by commas"
+          },
+          "required_tools": [
+            "excel:read_range"
+          ]
+        },
+        {
+          "name": "Gantt",
+          "skill": "project-timeline-gantt",
+          "sources": [
+            "Work plan"
+          ],
+          "context": {
+            "years": "? project length in years",
+            "grouping": "one bar per task, no grouping; there are no questions",
+            "tasks": "? the activities as the Work plan sheet holds them, one per line: Activity, Start month, Duration (months), then its Description in full, separated by ' | '; milestones included"
+          },
+          "required_tools": [
+            "excel:add_chart",
+            "excel:edit_chart"
+          ]
+        }
+      ],
+      "source": {
+        "repo": "ui-insight/mindrouter-365",
+        "path": "skills/components/proposal-workbook",
+        "moved": "2026-09-22"
+      }
     }
   ]
 }

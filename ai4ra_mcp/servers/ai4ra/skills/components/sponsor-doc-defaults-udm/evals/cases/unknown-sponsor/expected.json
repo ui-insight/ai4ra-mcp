@@ -1,0 +1,6 @@
+{
+  "sponsor_name": "Fictitious Regional Science Initiative of the Northwest",
+  "sponsor_division": null,
+  "knowledge_notes": "Sponsor is not in the model's default knowledge base. No reliable baseline document requirements can be asserted. Downstream routing should rely on solicitation-doc-modifications-udm with the solicitation text as input to derive the authoritative requirements for this sponsor.",
+  "document_requirements": []
+}

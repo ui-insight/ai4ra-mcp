@@ -1,0 +1,57 @@
+case: Three-year NSF field-science proposal with full category coverage
+source: "Synthetic NSF-style budget constructed for this eval. Not drawn from any real proposal."
+source_url: null
+retrieved: 2026-04-19
+
+structural_features:
+  - three-project-years
+  - synthetic-budget
+  - all-eight-sections-populated
+
+schema_features:
+  - senior-personnel-pi-and-co-pi
+  - other-personnel-postdoc-gradstudents-undergrad
+  - fringe-rates-by-category
+  - year-1-equipment-line
+  - domestic-travel-with-purposes
+  - multi-year-participant-support-program
+  - single-subaward-with-scope
+  - indirect-cost-step-change
+
+validated_by: barrierobison
+validated_at: 2026-04-19
+validated_against_version: "1.0.0"
+
+notes: |
+  Full-coverage case. Every NSF category (A..G) has non-zero amounts
+  in at least one year, and every section should have substantive
+  narrative content (no single-sentence zero-category placeholders).
+
+  Personnel include one senior PI (López, 1 summer month) and one
+  senior co-PI (Ng, 1 summer month), both with 3% escalation. Other
+  Personnel are one full-time postdoctoral researcher, two graduate
+  research assistants (50% academic year + 100% summer), and one
+  undergraduate research assistant (summer hourly).
+
+  Equipment is a single Year-1 field spectroradiometer ($28,500).
+
+  Travel is domestic-only across all three years: annual AGU
+  attendance for the PI plus one graduate student, and field-site
+  trips to a California study site.
+
+  Participant support funds a two-week REU-style summer research
+  program for six undergraduate students in Years 2 and 3 (stipend +
+  subsistence + travel per participant).
+
+  Subaward is a three-year award to State University of X (Dr. Park)
+  covering soil-biogeochemistry analyses that the prime is not
+  equipped to perform.
+
+  Indirect cost is MTDC at 54.5% on-campus / 26% off-campus, with a
+  step-change note stating the rate increases from 52% to 54.5% in
+  Year 3 per the existing rate agreement.
+
+  The expected.json narrative is authored to demonstrate correct
+  behavior, not to evaluate a specific model's verbosity. Models can
+  match the content structure and policy grounding while varying in
+  prose style.

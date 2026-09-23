@@ -1,0 +1,39 @@
+case: NIH R01 full proposal baseline defaults
+source: "NIH Application Instructions (G.400 series) for Research and the NIH Grants Policy Statement; R01 mechanism as the canonical NIH research mechanism"
+source_url: "https://grants.nih.gov/grants/how-to-apply-application-guide.html"
+retrieved: 2026-04-18
+
+structural_features:
+  - sponsor-with-division
+  - mechanism-specified
+  - nih-specific-documents
+
+schema_features:
+  - mechanism-aware-page-limits
+  - nih-specific-codes
+  - conditional-compliance-requirements
+  - optional-document-is-required-false
+  - equipment-as-separate-code
+  - specific-aims-distinct-from-proposal-narrative
+  - project-narrative-distinct-from-proposal-narrative
+
+validated_by: barrierobison
+validated_at: 2026-04-18
+validated_against_version: "1.0.0"
+
+notes: |
+  Baseline NIH case. Input specifies sponsor (NIH), division (NIAID),
+  and mechanism (R01). The mechanism is not a schema field but it
+  affects page limits (Research Strategy = 12 pages for R01; 6 for
+  R21/R03) — the expected output names R01 in knowledge_notes and emits
+  the R01 page limit for proposal_narrative.
+
+  Exercises NIH-specific codes the NSF case does not: specific_aims,
+  project_narrative (the short public-facing relevance statement),
+  equipment (separate from facilities for NIH), resource_sharing (model
+  organism / GDS), authentication_key_resources, leadership_plan
+  (conditional), the three NIH compliance documents (human_subjects,
+  vertebrate_animals, select_agent), and inclusion_enrollment_report.
+
+  Exercises is_required: false for the NIH cover letter — the only
+  baseline-optional document in this component's controlled vocabulary.

@@ -50,7 +50,7 @@ async def grants_gov_opportunity(opportunity_id: str, offset: int = 0, max_chars
     """Fetch one grants.gov opportunity's record by its id (the id field of a search hit).
 
     Returns the synopsis, dates, ceiling and floor, cost sharing, eligibility and attachment links.
-    To read an attachment PDF, pass its link to fetch_document on the ai4ra server.
+    To read an attachment PDF, pass its link to fetch_document on the general server.
 
     Args:
         opportunity_id: The numeric grants.gov opportunity id, e.g. '358463'.

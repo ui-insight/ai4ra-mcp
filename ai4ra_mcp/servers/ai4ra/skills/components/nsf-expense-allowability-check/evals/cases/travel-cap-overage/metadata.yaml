@@ -1,0 +1,28 @@
+case: NSF travel expense exceeds supplied per-person cap
+source: "Synthetic post-award expense scenario based on the operator checklist. Not drawn from a real transaction."
+source_url: null
+retrieved: 2026-04-29
+
+structural_features:
+  - single-expense-review
+  - synthetic-expense
+  - nsf-award-context
+  - travel-budget-category
+  - supplied-budget-cap
+
+expected_response_features:
+  - decision-not-allowable
+  - budget-alignment-travel
+  - rule-check-issue
+  - evidence-backed-cap
+  - follow-up-action-prior-approval
+
+validated_by: barrierobison
+validated_at: 2026-04-29
+validated_against_version: "1.0.0"
+
+notes: |
+  This case exercises the component's conservative treatment of award-specific
+  caps. The travel cap is supplied in the input evidence, so the model may
+  apply it. If the cap were absent, the correct behavior would be needs_info
+  rather than inventing a cap.

@@ -1,0 +1,38 @@
+case: NSF full proposal baseline defaults
+source: "NSF Proposal & Award Policies & Procedures Guide (PAPPG), baseline defaults for a standard Research (full) proposal"
+source_url: "https://www.nsf.gov/pubs/policydocs/pappg/index.jsp"
+retrieved: 2026-04-18
+
+structural_features:
+  - sponsor-abbreviation-input
+  - no-division-specified
+  - single-sponsor
+
+schema_features:
+  - sponsor-abbreviation-normalization
+  - conditional-requirements
+  - results-prior-support-embedded-in-narrative
+  - per-person-documents
+  - nsf-collaboration-letter-vs-letter-of-support-distinction
+
+validated_by: barrierobison
+validated_at: 2026-04-18
+validated_against_version: "1.0.0"
+
+notes: |
+  Baseline NSF case. Input uses the abbreviation "NSF" to exercise the
+  normalization rule (output sponsor_name must be "National Science
+  Foundation"). Division is not specified.
+
+  Expected output covers the canonical NSF full-proposal document set:
+  cover sheet, project summary, project description (proposal_narrative),
+  results from prior NSF support (conditional, embedded in the Project
+  Description page limit — so page_limit is null), references cited,
+  biosketch / current_pending / COA (per-person), facilities, budget,
+  budget justification, DMP, postdoc mentoring (conditional), and the two
+  NSF letter types distinguished from each other (letter_collaboration
+  for the single-sentence NSF-templated form; letter_support for
+  substantive resource commitments).
+
+  Does not include equipment as a separate code — NSF folds equipment
+  into Facilities, Equipment, and Other Resources.

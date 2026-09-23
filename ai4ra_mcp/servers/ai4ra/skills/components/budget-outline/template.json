@@ -1,0 +1,193 @@
+{
+"sheet": "Budget outline",
+"values": [
+[
+"Budget outline",
+null,
+null,
+null,
+null,
+null
+],
+[
+"Ceiling",
+null,
+null,
+null,
+null,
+null
+],
+[
+"Project years",
+3,
+null,
+null,
+null,
+null
+],
+[
+"Loaded share of ceiling",
+"=IF(ISNUMBER($B$2),TEXT(E18*$B$5/$B$2,\"0%\")&\" of the ceiling, with fringe and indirect costs estimated\",\"no ceiling stated\")",
+null,
+null,
+null,
+null
+],
+[
+"Load factor (fringe and indirect costs a sponsor's form adds on top; estimate)",
+1.6,
+"estimate",
+null,
+null,
+null
+],
+[
+"Category",
+"Year 1",
+"Year 2",
+"Year 3",
+"Total",
+"Note"
+],
+[
+"Senior personnel",
+null,
+null,
+null,
+"=SUM(B7:D7)",
+"faculty and senior researchers: summer months times annual salary over twelve"
+],
+[
+"Other personnel",
+null,
+null,
+null,
+"=SUM(B8:D8)",
+"postdocs, staff, students: months times annual salary over twelve"
+],
+[
+"Equipment",
+null,
+null,
+null,
+"=SUM(B9:D9)",
+"items of 5,000 dollars or more, in the year bought"
+],
+[
+"Travel",
+null,
+null,
+null,
+"=SUM(B10:D10)",
+"trips times cost per trip"
+],
+[
+"Participant support",
+null,
+null,
+null,
+"=SUM(B11:D11)",
+"participants times cost each"
+],
+[
+"Materials and supplies",
+null,
+null,
+null,
+"=SUM(B12:D12)",
+null
+],
+[
+"Publication",
+null,
+null,
+null,
+"=SUM(B13:D13)",
+null
+],
+[
+"Consultants",
+null,
+null,
+null,
+"=SUM(B14:D14)",
+"days times daily rate"
+],
+[
+"Computing and services",
+null,
+null,
+null,
+"=SUM(B15:D15)",
+null
+],
+[
+"Subawards",
+null,
+null,
+null,
+"=SUM(B16:D16)",
+"partners' amounts"
+],
+[
+"Other, including tuition",
+null,
+null,
+null,
+"=SUM(B17:D17)",
+"tuition per student, anything else"
+],
+[
+"Total",
+"=SUM(B7:B17)",
+"=SUM(C7:C17)",
+"=SUM(D7:D17)",
+"=SUM(E7:E17)",
+null
+],
+[
+"Loaded share of ceiling",
+"=IF(ISNUMBER($B$2),E18*$B$5/$B$2,\"no ceiling stated\")",
+null,
+null,
+null,
+null
+]
+],
+"formats": [
+{
+"address": "B7:E18",
+"number_format": "$#,##0"
+},
+{
+"address": "B2",
+"number_format": "$#,##0"
+},
+{
+"address": "B19",
+"number_format": "0%"
+},
+{
+"address": "B7:D17",
+"fill_color": "#FFFF00"
+},
+{
+"address": "B5",
+"fill_color": "#FFFF00"
+}
+],
+"locked": [
+"A1:A6",
+"B4:C5",
+"A6:F6",
+"A7:A17",
+"E7:E17",
+"A18:F19"
+],
+"from_context": {
+"B1": "title",
+"B2": "ceiling",
+"B3": "years"
+},
+"notes": "One row per category, rows 7 to 17, amounts per year typed in B to D (and a note in F); E, the total row 18 and the loaded share B19 (total times the load factor in B5 over the ceiling) are formulas."
+}

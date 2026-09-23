@@ -1,0 +1,30 @@
+case: Unrecognized sponsor — empty requirements fallback
+source: "Fabricated sponsor name designed to fall outside the model's default knowledge base"
+retrieved: 2026-04-18
+
+structural_features:
+  - fabricated-sponsor
+  - no-division
+  - no-mechanism
+
+schema_features:
+  - empty-requirements-array
+  - knowledge-notes-explains-gap
+  - no-synthesis-of-generic-defaults
+
+validated_by: barrierobison
+validated_at: 2026-04-18
+validated_against_version: "1.0.0"
+
+notes: |
+  The fabricated sponsor "Fictitious Regional Science Initiative of the
+  Northwest" is not a real funding organization. The component must not
+  attempt to synthesize a generic federal default set for an
+  unrecognized sponsor; the correct behavior is to emit an empty
+  document_requirements array and explain in knowledge_notes that
+  downstream routing should rely on the solicitation-modifications
+  component.
+
+  This case exists to fail loudly when a future prompt change makes the
+  component over-eager and starts hallucinating requirements for
+  sponsors it does not actually have defaults for.

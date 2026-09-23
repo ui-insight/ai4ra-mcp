@@ -1,0 +1,1287 @@
+{
+"sheet": "Award status",
+"values": [
+[
+"Award status",
+"",
+null,
+null,
+null,
+null,
+null,
+null
+],
+[
+"Sponsor and award number",
+"",
+null,
+null,
+null,
+null,
+null,
+null
+],
+[
+"Principal investigator",
+"",
+null,
+null,
+null,
+null,
+null,
+null
+],
+[
+"Start date",
+"",
+"=IF(B4=\"\",\"\",IF(ISNUMBER(B4),B4,DATEVALUE(LEFT(B4,FIND(\" \",B4&\" \")-1))))",
+null,
+null,
+null,
+null,
+null
+],
+[
+"End date",
+"",
+"=IF(B5=\"\",\"\",IF(ISNUMBER(B5),B5,DATEVALUE(LEFT(B5,FIND(\" \",B5&\" \")-1))))",
+null,
+null,
+null,
+null,
+null
+],
+[
+"Review date",
+"=TODAY()",
+null,
+null,
+null,
+null,
+null,
+null
+],
+[
+"Months elapsed",
+"=IF(AND(ISNUMBER(C4),ISNUMBER(C5)),ROUND(MIN(B6,C5)-C4,0)/30.4375,\"\")",
+null,
+null,
+null,
+null,
+null,
+null
+],
+[
+"Months in the award",
+"=IF(AND(ISNUMBER(C4),ISNUMBER(C5)),(C5-C4)/30.4375,\"\")",
+null,
+null,
+null,
+null,
+null,
+null
+],
+[
+"Share of time elapsed",
+"=IF(ISNUMBER(B8),MIN(1,MAX(0,B7/B8)),\"\")",
+null,
+null,
+null,
+null,
+null,
+null
+],
+[
+null,
+null,
+null,
+null,
+null,
+null,
+null,
+null
+],
+[
+"Account",
+"Name",
+"Budget",
+"Spent",
+"Committed",
+"Available",
+"Share spent",
+"Flag"
+],
+[
+"=IFERROR(INDEX(Lines!$A$2:$A$300,AGGREGATE(15,6,(ROW(Lines!$A$2:$A$300)-1)/((Lines!$A$2:$A$300<>\"\")*(Lines!$A$2:$A$300<>0)*ISNUMBER(IFERROR(Lines!$A$2:$A$300*1,\"\"))),1))&\"\",\"\")",
+"=IF(A12=\"\",\"\",INDEX(Lines!$B$2:$B$300,AGGREGATE(15,6,(ROW(Lines!$A$2:$A$300)-1)/((Lines!$A$2:$A$300<>\"\")*(Lines!$A$2:$A$300<>0)*ISNUMBER(IFERROR(Lines!$A$2:$A$300*1,\"\"))),1)))",
+"=IF(A12=\"\",\"\",INDEX(Lines!$D$2:$D$300,AGGREGATE(15,6,(ROW(Lines!$A$2:$A$300)-1)/((Lines!$A$2:$A$300<>\"\")*(Lines!$A$2:$A$300<>0)*ISNUMBER(IFERROR(Lines!$A$2:$A$300*1,\"\"))),1)))",
+"=IF(A12=\"\",\"\",SUMIF(Lines!$C$2:$C$300,A12,Lines!$E$2:$E$300))",
+"=IF(A12=\"\",\"\",SUMIF(Lines!$C$2:$C$300,A12,Lines!$F$2:$F$300))",
+"=IF(A12=\"\",\"\",C12-D12-E12)",
+"=IF(A12=\"\",\"\",IF(C12>0,D12/C12,\"\"))",
+"=IF(A12=\"\",\"\",IF(C12=0,IF(D12+E12>0,\"Spending with no budget\",\"\"),IF(G12>1,TEXT(G12,\"0%\")&\" spent, over budget\",IF(ISNUMBER($B$9),IF(ABS(G12-$B$9)>$B$33,TEXT(G12,\"0%\")&\" spent, \"&TEXT($B$9,\"0%\")&\" of the time gone\",\"\"),\"\"))))"
+],
+[
+"=IFERROR(INDEX(Lines!$A$2:$A$300,AGGREGATE(15,6,(ROW(Lines!$A$2:$A$300)-1)/((Lines!$A$2:$A$300<>\"\")*(Lines!$A$2:$A$300<>0)*ISNUMBER(IFERROR(Lines!$A$2:$A$300*1,\"\"))),2))&\"\",\"\")",
+"=IF(A13=\"\",\"\",INDEX(Lines!$B$2:$B$300,AGGREGATE(15,6,(ROW(Lines!$A$2:$A$300)-1)/((Lines!$A$2:$A$300<>\"\")*(Lines!$A$2:$A$300<>0)*ISNUMBER(IFERROR(Lines!$A$2:$A$300*1,\"\"))),2)))",
+"=IF(A13=\"\",\"\",INDEX(Lines!$D$2:$D$300,AGGREGATE(15,6,(ROW(Lines!$A$2:$A$300)-1)/((Lines!$A$2:$A$300<>\"\")*(Lines!$A$2:$A$300<>0)*ISNUMBER(IFERROR(Lines!$A$2:$A$300*1,\"\"))),2)))",
+"=IF(A13=\"\",\"\",SUMIF(Lines!$C$2:$C$300,A13,Lines!$E$2:$E$300))",
+"=IF(A13=\"\",\"\",SUMIF(Lines!$C$2:$C$300,A13,Lines!$F$2:$F$300))",
+"=IF(A13=\"\",\"\",C13-D13-E13)",
+"=IF(A13=\"\",\"\",IF(C13>0,D13/C13,\"\"))",
+"=IF(A13=\"\",\"\",IF(C13=0,IF(D13+E13>0,\"Spending with no budget\",\"\"),IF(G13>1,TEXT(G13,\"0%\")&\" spent, over budget\",IF(ISNUMBER($B$9),IF(ABS(G13-$B$9)>$B$33,TEXT(G13,\"0%\")&\" spent, \"&TEXT($B$9,\"0%\")&\" of the time gone\",\"\"),\"\"))))"
+],
+[
+"=IFERROR(INDEX(Lines!$A$2:$A$300,AGGREGATE(15,6,(ROW(Lines!$A$2:$A$300)-1)/((Lines!$A$2:$A$300<>\"\")*(Lines!$A$2:$A$300<>0)*ISNUMBER(IFERROR(Lines!$A$2:$A$300*1,\"\"))),3))&\"\",\"\")",
+"=IF(A14=\"\",\"\",INDEX(Lines!$B$2:$B$300,AGGREGATE(15,6,(ROW(Lines!$A$2:$A$300)-1)/((Lines!$A$2:$A$300<>\"\")*(Lines!$A$2:$A$300<>0)*ISNUMBER(IFERROR(Lines!$A$2:$A$300*1,\"\"))),3)))",
+"=IF(A14=\"\",\"\",INDEX(Lines!$D$2:$D$300,AGGREGATE(15,6,(ROW(Lines!$A$2:$A$300)-1)/((Lines!$A$2:$A$300<>\"\")*(Lines!$A$2:$A$300<>0)*ISNUMBER(IFERROR(Lines!$A$2:$A$300*1,\"\"))),3)))",
+"=IF(A14=\"\",\"\",SUMIF(Lines!$C$2:$C$300,A14,Lines!$E$2:$E$300))",
+"=IF(A14=\"\",\"\",SUMIF(Lines!$C$2:$C$300,A14,Lines!$F$2:$F$300))",
+"=IF(A14=\"\",\"\",C14-D14-E14)",
+"=IF(A14=\"\",\"\",IF(C14>0,D14/C14,\"\"))",
+"=IF(A14=\"\",\"\",IF(C14=0,IF(D14+E14>0,\"Spending with no budget\",\"\"),IF(G14>1,TEXT(G14,\"0%\")&\" spent, over budget\",IF(ISNUMBER($B$9),IF(ABS(G14-$B$9)>$B$33,TEXT(G14,\"0%\")&\" spent, \"&TEXT($B$9,\"0%\")&\" of the time gone\",\"\"),\"\"))))"
+],
+[
+"=IFERROR(INDEX(Lines!$A$2:$A$300,AGGREGATE(15,6,(ROW(Lines!$A$2:$A$300)-1)/((Lines!$A$2:$A$300<>\"\")*(Lines!$A$2:$A$300<>0)*ISNUMBER(IFERROR(Lines!$A$2:$A$300*1,\"\"))),4))&\"\",\"\")",
+"=IF(A15=\"\",\"\",INDEX(Lines!$B$2:$B$300,AGGREGATE(15,6,(ROW(Lines!$A$2:$A$300)-1)/((Lines!$A$2:$A$300<>\"\")*(Lines!$A$2:$A$300<>0)*ISNUMBER(IFERROR(Lines!$A$2:$A$300*1,\"\"))),4)))",
+"=IF(A15=\"\",\"\",INDEX(Lines!$D$2:$D$300,AGGREGATE(15,6,(ROW(Lines!$A$2:$A$300)-1)/((Lines!$A$2:$A$300<>\"\")*(Lines!$A$2:$A$300<>0)*ISNUMBER(IFERROR(Lines!$A$2:$A$300*1,\"\"))),4)))",
+"=IF(A15=\"\",\"\",SUMIF(Lines!$C$2:$C$300,A15,Lines!$E$2:$E$300))",
+"=IF(A15=\"\",\"\",SUMIF(Lines!$C$2:$C$300,A15,Lines!$F$2:$F$300))",
+"=IF(A15=\"\",\"\",C15-D15-E15)",
+"=IF(A15=\"\",\"\",IF(C15>0,D15/C15,\"\"))",
+"=IF(A15=\"\",\"\",IF(C15=0,IF(D15+E15>0,\"Spending with no budget\",\"\"),IF(G15>1,TEXT(G15,\"0%\")&\" spent, over budget\",IF(ISNUMBER($B$9),IF(ABS(G15-$B$9)>$B$33,TEXT(G15,\"0%\")&\" spent, \"&TEXT($B$9,\"0%\")&\" of the time gone\",\"\"),\"\"))))"
+],
+[
+"=IFERROR(INDEX(Lines!$A$2:$A$300,AGGREGATE(15,6,(ROW(Lines!$A$2:$A$300)-1)/((Lines!$A$2:$A$300<>\"\")*(Lines!$A$2:$A$300<>0)*ISNUMBER(IFERROR(Lines!$A$2:$A$300*1,\"\"))),5))&\"\",\"\")",
+"=IF(A16=\"\",\"\",INDEX(Lines!$B$2:$B$300,AGGREGATE(15,6,(ROW(Lines!$A$2:$A$300)-1)/((Lines!$A$2:$A$300<>\"\")*(Lines!$A$2:$A$300<>0)*ISNUMBER(IFERROR(Lines!$A$2:$A$300*1,\"\"))),5)))",
+"=IF(A16=\"\",\"\",INDEX(Lines!$D$2:$D$300,AGGREGATE(15,6,(ROW(Lines!$A$2:$A$300)-1)/((Lines!$A$2:$A$300<>\"\")*(Lines!$A$2:$A$300<>0)*ISNUMBER(IFERROR(Lines!$A$2:$A$300*1,\"\"))),5)))",
+"=IF(A16=\"\",\"\",SUMIF(Lines!$C$2:$C$300,A16,Lines!$E$2:$E$300))",
+"=IF(A16=\"\",\"\",SUMIF(Lines!$C$2:$C$300,A16,Lines!$F$2:$F$300))",
+"=IF(A16=\"\",\"\",C16-D16-E16)",
+"=IF(A16=\"\",\"\",IF(C16>0,D16/C16,\"\"))",
+"=IF(A16=\"\",\"\",IF(C16=0,IF(D16+E16>0,\"Spending with no budget\",\"\"),IF(G16>1,TEXT(G16,\"0%\")&\" spent, over budget\",IF(ISNUMBER($B$9),IF(ABS(G16-$B$9)>$B$33,TEXT(G16,\"0%\")&\" spent, \"&TEXT($B$9,\"0%\")&\" of the time gone\",\"\"),\"\"))))"
+],
+[
+"=IFERROR(INDEX(Lines!$A$2:$A$300,AGGREGATE(15,6,(ROW(Lines!$A$2:$A$300)-1)/((Lines!$A$2:$A$300<>\"\")*(Lines!$A$2:$A$300<>0)*ISNUMBER(IFERROR(Lines!$A$2:$A$300*1,\"\"))),6))&\"\",\"\")",
+"=IF(A17=\"\",\"\",INDEX(Lines!$B$2:$B$300,AGGREGATE(15,6,(ROW(Lines!$A$2:$A$300)-1)/((Lines!$A$2:$A$300<>\"\")*(Lines!$A$2:$A$300<>0)*ISNUMBER(IFERROR(Lines!$A$2:$A$300*1,\"\"))),6)))",
+"=IF(A17=\"\",\"\",INDEX(Lines!$D$2:$D$300,AGGREGATE(15,6,(ROW(Lines!$A$2:$A$300)-1)/((Lines!$A$2:$A$300<>\"\")*(Lines!$A$2:$A$300<>0)*ISNUMBER(IFERROR(Lines!$A$2:$A$300*1,\"\"))),6)))",
+"=IF(A17=\"\",\"\",SUMIF(Lines!$C$2:$C$300,A17,Lines!$E$2:$E$300))",
+"=IF(A17=\"\",\"\",SUMIF(Lines!$C$2:$C$300,A17,Lines!$F$2:$F$300))",
+"=IF(A17=\"\",\"\",C17-D17-E17)",
+"=IF(A17=\"\",\"\",IF(C17>0,D17/C17,\"\"))",
+"=IF(A17=\"\",\"\",IF(C17=0,IF(D17+E17>0,\"Spending with no budget\",\"\"),IF(G17>1,TEXT(G17,\"0%\")&\" spent, over budget\",IF(ISNUMBER($B$9),IF(ABS(G17-$B$9)>$B$33,TEXT(G17,\"0%\")&\" spent, \"&TEXT($B$9,\"0%\")&\" of the time gone\",\"\"),\"\"))))"
+],
+[
+"=IFERROR(INDEX(Lines!$A$2:$A$300,AGGREGATE(15,6,(ROW(Lines!$A$2:$A$300)-1)/((Lines!$A$2:$A$300<>\"\")*(Lines!$A$2:$A$300<>0)*ISNUMBER(IFERROR(Lines!$A$2:$A$300*1,\"\"))),7))&\"\",\"\")",
+"=IF(A18=\"\",\"\",INDEX(Lines!$B$2:$B$300,AGGREGATE(15,6,(ROW(Lines!$A$2:$A$300)-1)/((Lines!$A$2:$A$300<>\"\")*(Lines!$A$2:$A$300<>0)*ISNUMBER(IFERROR(Lines!$A$2:$A$300*1,\"\"))),7)))",
+"=IF(A18=\"\",\"\",INDEX(Lines!$D$2:$D$300,AGGREGATE(15,6,(ROW(Lines!$A$2:$A$300)-1)/((Lines!$A$2:$A$300<>\"\")*(Lines!$A$2:$A$300<>0)*ISNUMBER(IFERROR(Lines!$A$2:$A$300*1,\"\"))),7)))",
+"=IF(A18=\"\",\"\",SUMIF(Lines!$C$2:$C$300,A18,Lines!$E$2:$E$300))",
+"=IF(A18=\"\",\"\",SUMIF(Lines!$C$2:$C$300,A18,Lines!$F$2:$F$300))",
+"=IF(A18=\"\",\"\",C18-D18-E18)",
+"=IF(A18=\"\",\"\",IF(C18>0,D18/C18,\"\"))",
+"=IF(A18=\"\",\"\",IF(C18=0,IF(D18+E18>0,\"Spending with no budget\",\"\"),IF(G18>1,TEXT(G18,\"0%\")&\" spent, over budget\",IF(ISNUMBER($B$9),IF(ABS(G18-$B$9)>$B$33,TEXT(G18,\"0%\")&\" spent, \"&TEXT($B$9,\"0%\")&\" of the time gone\",\"\"),\"\"))))"
+],
+[
+"=IFERROR(INDEX(Lines!$A$2:$A$300,AGGREGATE(15,6,(ROW(Lines!$A$2:$A$300)-1)/((Lines!$A$2:$A$300<>\"\")*(Lines!$A$2:$A$300<>0)*ISNUMBER(IFERROR(Lines!$A$2:$A$300*1,\"\"))),8))&\"\",\"\")",
+"=IF(A19=\"\",\"\",INDEX(Lines!$B$2:$B$300,AGGREGATE(15,6,(ROW(Lines!$A$2:$A$300)-1)/((Lines!$A$2:$A$300<>\"\")*(Lines!$A$2:$A$300<>0)*ISNUMBER(IFERROR(Lines!$A$2:$A$300*1,\"\"))),8)))",
+"=IF(A19=\"\",\"\",INDEX(Lines!$D$2:$D$300,AGGREGATE(15,6,(ROW(Lines!$A$2:$A$300)-1)/((Lines!$A$2:$A$300<>\"\")*(Lines!$A$2:$A$300<>0)*ISNUMBER(IFERROR(Lines!$A$2:$A$300*1,\"\"))),8)))",
+"=IF(A19=\"\",\"\",SUMIF(Lines!$C$2:$C$300,A19,Lines!$E$2:$E$300))",
+"=IF(A19=\"\",\"\",SUMIF(Lines!$C$2:$C$300,A19,Lines!$F$2:$F$300))",
+"=IF(A19=\"\",\"\",C19-D19-E19)",
+"=IF(A19=\"\",\"\",IF(C19>0,D19/C19,\"\"))",
+"=IF(A19=\"\",\"\",IF(C19=0,IF(D19+E19>0,\"Spending with no budget\",\"\"),IF(G19>1,TEXT(G19,\"0%\")&\" spent, over budget\",IF(ISNUMBER($B$9),IF(ABS(G19-$B$9)>$B$33,TEXT(G19,\"0%\")&\" spent, \"&TEXT($B$9,\"0%\")&\" of the time gone\",\"\"),\"\"))))"
+],
+[
+"=IFERROR(INDEX(Lines!$A$2:$A$300,AGGREGATE(15,6,(ROW(Lines!$A$2:$A$300)-1)/((Lines!$A$2:$A$300<>\"\")*(Lines!$A$2:$A$300<>0)*ISNUMBER(IFERROR(Lines!$A$2:$A$300*1,\"\"))),9))&\"\",\"\")",
+"=IF(A20=\"\",\"\",INDEX(Lines!$B$2:$B$300,AGGREGATE(15,6,(ROW(Lines!$A$2:$A$300)-1)/((Lines!$A$2:$A$300<>\"\")*(Lines!$A$2:$A$300<>0)*ISNUMBER(IFERROR(Lines!$A$2:$A$300*1,\"\"))),9)))",
+"=IF(A20=\"\",\"\",INDEX(Lines!$D$2:$D$300,AGGREGATE(15,6,(ROW(Lines!$A$2:$A$300)-1)/((Lines!$A$2:$A$300<>\"\")*(Lines!$A$2:$A$300<>0)*ISNUMBER(IFERROR(Lines!$A$2:$A$300*1,\"\"))),9)))",
+"=IF(A20=\"\",\"\",SUMIF(Lines!$C$2:$C$300,A20,Lines!$E$2:$E$300))",
+"=IF(A20=\"\",\"\",SUMIF(Lines!$C$2:$C$300,A20,Lines!$F$2:$F$300))",
+"=IF(A20=\"\",\"\",C20-D20-E20)",
+"=IF(A20=\"\",\"\",IF(C20>0,D20/C20,\"\"))",
+"=IF(A20=\"\",\"\",IF(C20=0,IF(D20+E20>0,\"Spending with no budget\",\"\"),IF(G20>1,TEXT(G20,\"0%\")&\" spent, over budget\",IF(ISNUMBER($B$9),IF(ABS(G20-$B$9)>$B$33,TEXT(G20,\"0%\")&\" spent, \"&TEXT($B$9,\"0%\")&\" of the time gone\",\"\"),\"\"))))"
+],
+[
+"=IFERROR(INDEX(Lines!$A$2:$A$300,AGGREGATE(15,6,(ROW(Lines!$A$2:$A$300)-1)/((Lines!$A$2:$A$300<>\"\")*(Lines!$A$2:$A$300<>0)*ISNUMBER(IFERROR(Lines!$A$2:$A$300*1,\"\"))),10))&\"\",\"\")",
+"=IF(A21=\"\",\"\",INDEX(Lines!$B$2:$B$300,AGGREGATE(15,6,(ROW(Lines!$A$2:$A$300)-1)/((Lines!$A$2:$A$300<>\"\")*(Lines!$A$2:$A$300<>0)*ISNUMBER(IFERROR(Lines!$A$2:$A$300*1,\"\"))),10)))",
+"=IF(A21=\"\",\"\",INDEX(Lines!$D$2:$D$300,AGGREGATE(15,6,(ROW(Lines!$A$2:$A$300)-1)/((Lines!$A$2:$A$300<>\"\")*(Lines!$A$2:$A$300<>0)*ISNUMBER(IFERROR(Lines!$A$2:$A$300*1,\"\"))),10)))",
+"=IF(A21=\"\",\"\",SUMIF(Lines!$C$2:$C$300,A21,Lines!$E$2:$E$300))",
+"=IF(A21=\"\",\"\",SUMIF(Lines!$C$2:$C$300,A21,Lines!$F$2:$F$300))",
+"=IF(A21=\"\",\"\",C21-D21-E21)",
+"=IF(A21=\"\",\"\",IF(C21>0,D21/C21,\"\"))",
+"=IF(A21=\"\",\"\",IF(C21=0,IF(D21+E21>0,\"Spending with no budget\",\"\"),IF(G21>1,TEXT(G21,\"0%\")&\" spent, over budget\",IF(ISNUMBER($B$9),IF(ABS(G21-$B$9)>$B$33,TEXT(G21,\"0%\")&\" spent, \"&TEXT($B$9,\"0%\")&\" of the time gone\",\"\"),\"\"))))"
+],
+[
+"=IFERROR(INDEX(Lines!$A$2:$A$300,AGGREGATE(15,6,(ROW(Lines!$A$2:$A$300)-1)/((Lines!$A$2:$A$300<>\"\")*(Lines!$A$2:$A$300<>0)*ISNUMBER(IFERROR(Lines!$A$2:$A$300*1,\"\"))),11))&\"\",\"\")",
+"=IF(A22=\"\",\"\",INDEX(Lines!$B$2:$B$300,AGGREGATE(15,6,(ROW(Lines!$A$2:$A$300)-1)/((Lines!$A$2:$A$300<>\"\")*(Lines!$A$2:$A$300<>0)*ISNUMBER(IFERROR(Lines!$A$2:$A$300*1,\"\"))),11)))",
+"=IF(A22=\"\",\"\",INDEX(Lines!$D$2:$D$300,AGGREGATE(15,6,(ROW(Lines!$A$2:$A$300)-1)/((Lines!$A$2:$A$300<>\"\")*(Lines!$A$2:$A$300<>0)*ISNUMBER(IFERROR(Lines!$A$2:$A$300*1,\"\"))),11)))",
+"=IF(A22=\"\",\"\",SUMIF(Lines!$C$2:$C$300,A22,Lines!$E$2:$E$300))",
+"=IF(A22=\"\",\"\",SUMIF(Lines!$C$2:$C$300,A22,Lines!$F$2:$F$300))",
+"=IF(A22=\"\",\"\",C22-D22-E22)",
+"=IF(A22=\"\",\"\",IF(C22>0,D22/C22,\"\"))",
+"=IF(A22=\"\",\"\",IF(C22=0,IF(D22+E22>0,\"Spending with no budget\",\"\"),IF(G22>1,TEXT(G22,\"0%\")&\" spent, over budget\",IF(ISNUMBER($B$9),IF(ABS(G22-$B$9)>$B$33,TEXT(G22,\"0%\")&\" spent, \"&TEXT($B$9,\"0%\")&\" of the time gone\",\"\"),\"\"))))"
+],
+[
+"=IFERROR(INDEX(Lines!$A$2:$A$300,AGGREGATE(15,6,(ROW(Lines!$A$2:$A$300)-1)/((Lines!$A$2:$A$300<>\"\")*(Lines!$A$2:$A$300<>0)*ISNUMBER(IFERROR(Lines!$A$2:$A$300*1,\"\"))),12))&\"\",\"\")",
+"=IF(A23=\"\",\"\",INDEX(Lines!$B$2:$B$300,AGGREGATE(15,6,(ROW(Lines!$A$2:$A$300)-1)/((Lines!$A$2:$A$300<>\"\")*(Lines!$A$2:$A$300<>0)*ISNUMBER(IFERROR(Lines!$A$2:$A$300*1,\"\"))),12)))",
+"=IF(A23=\"\",\"\",INDEX(Lines!$D$2:$D$300,AGGREGATE(15,6,(ROW(Lines!$A$2:$A$300)-1)/((Lines!$A$2:$A$300<>\"\")*(Lines!$A$2:$A$300<>0)*ISNUMBER(IFERROR(Lines!$A$2:$A$300*1,\"\"))),12)))",
+"=IF(A23=\"\",\"\",SUMIF(Lines!$C$2:$C$300,A23,Lines!$E$2:$E$300))",
+"=IF(A23=\"\",\"\",SUMIF(Lines!$C$2:$C$300,A23,Lines!$F$2:$F$300))",
+"=IF(A23=\"\",\"\",C23-D23-E23)",
+"=IF(A23=\"\",\"\",IF(C23>0,D23/C23,\"\"))",
+"=IF(A23=\"\",\"\",IF(C23=0,IF(D23+E23>0,\"Spending with no budget\",\"\"),IF(G23>1,TEXT(G23,\"0%\")&\" spent, over budget\",IF(ISNUMBER($B$9),IF(ABS(G23-$B$9)>$B$33,TEXT(G23,\"0%\")&\" spent, \"&TEXT($B$9,\"0%\")&\" of the time gone\",\"\"),\"\"))))"
+],
+[
+"=IFERROR(INDEX(Lines!$A$2:$A$300,AGGREGATE(15,6,(ROW(Lines!$A$2:$A$300)-1)/((Lines!$A$2:$A$300<>\"\")*(Lines!$A$2:$A$300<>0)*ISNUMBER(IFERROR(Lines!$A$2:$A$300*1,\"\"))),13))&\"\",\"\")",
+"=IF(A24=\"\",\"\",INDEX(Lines!$B$2:$B$300,AGGREGATE(15,6,(ROW(Lines!$A$2:$A$300)-1)/((Lines!$A$2:$A$300<>\"\")*(Lines!$A$2:$A$300<>0)*ISNUMBER(IFERROR(Lines!$A$2:$A$300*1,\"\"))),13)))",
+"=IF(A24=\"\",\"\",INDEX(Lines!$D$2:$D$300,AGGREGATE(15,6,(ROW(Lines!$A$2:$A$300)-1)/((Lines!$A$2:$A$300<>\"\")*(Lines!$A$2:$A$300<>0)*ISNUMBER(IFERROR(Lines!$A$2:$A$300*1,\"\"))),13)))",
+"=IF(A24=\"\",\"\",SUMIF(Lines!$C$2:$C$300,A24,Lines!$E$2:$E$300))",
+"=IF(A24=\"\",\"\",SUMIF(Lines!$C$2:$C$300,A24,Lines!$F$2:$F$300))",
+"=IF(A24=\"\",\"\",C24-D24-E24)",
+"=IF(A24=\"\",\"\",IF(C24>0,D24/C24,\"\"))",
+"=IF(A24=\"\",\"\",IF(C24=0,IF(D24+E24>0,\"Spending with no budget\",\"\"),IF(G24>1,TEXT(G24,\"0%\")&\" spent, over budget\",IF(ISNUMBER($B$9),IF(ABS(G24-$B$9)>$B$33,TEXT(G24,\"0%\")&\" spent, \"&TEXT($B$9,\"0%\")&\" of the time gone\",\"\"),\"\"))))"
+],
+[
+"=IFERROR(INDEX(Lines!$A$2:$A$300,AGGREGATE(15,6,(ROW(Lines!$A$2:$A$300)-1)/((Lines!$A$2:$A$300<>\"\")*(Lines!$A$2:$A$300<>0)*ISNUMBER(IFERROR(Lines!$A$2:$A$300*1,\"\"))),14))&\"\",\"\")",
+"=IF(A25=\"\",\"\",INDEX(Lines!$B$2:$B$300,AGGREGATE(15,6,(ROW(Lines!$A$2:$A$300)-1)/((Lines!$A$2:$A$300<>\"\")*(Lines!$A$2:$A$300<>0)*ISNUMBER(IFERROR(Lines!$A$2:$A$300*1,\"\"))),14)))",
+"=IF(A25=\"\",\"\",INDEX(Lines!$D$2:$D$300,AGGREGATE(15,6,(ROW(Lines!$A$2:$A$300)-1)/((Lines!$A$2:$A$300<>\"\")*(Lines!$A$2:$A$300<>0)*ISNUMBER(IFERROR(Lines!$A$2:$A$300*1,\"\"))),14)))",
+"=IF(A25=\"\",\"\",SUMIF(Lines!$C$2:$C$300,A25,Lines!$E$2:$E$300))",
+"=IF(A25=\"\",\"\",SUMIF(Lines!$C$2:$C$300,A25,Lines!$F$2:$F$300))",
+"=IF(A25=\"\",\"\",C25-D25-E25)",
+"=IF(A25=\"\",\"\",IF(C25>0,D25/C25,\"\"))",
+"=IF(A25=\"\",\"\",IF(C25=0,IF(D25+E25>0,\"Spending with no budget\",\"\"),IF(G25>1,TEXT(G25,\"0%\")&\" spent, over budget\",IF(ISNUMBER($B$9),IF(ABS(G25-$B$9)>$B$33,TEXT(G25,\"0%\")&\" spent, \"&TEXT($B$9,\"0%\")&\" of the time gone\",\"\"),\"\"))))"
+],
+[
+"=IFERROR(INDEX(Lines!$A$2:$A$300,AGGREGATE(15,6,(ROW(Lines!$A$2:$A$300)-1)/((Lines!$A$2:$A$300<>\"\")*(Lines!$A$2:$A$300<>0)*ISNUMBER(IFERROR(Lines!$A$2:$A$300*1,\"\"))),15))&\"\",\"\")",
+"=IF(A26=\"\",\"\",INDEX(Lines!$B$2:$B$300,AGGREGATE(15,6,(ROW(Lines!$A$2:$A$300)-1)/((Lines!$A$2:$A$300<>\"\")*(Lines!$A$2:$A$300<>0)*ISNUMBER(IFERROR(Lines!$A$2:$A$300*1,\"\"))),15)))",
+"=IF(A26=\"\",\"\",INDEX(Lines!$D$2:$D$300,AGGREGATE(15,6,(ROW(Lines!$A$2:$A$300)-1)/((Lines!$A$2:$A$300<>\"\")*(Lines!$A$2:$A$300<>0)*ISNUMBER(IFERROR(Lines!$A$2:$A$300*1,\"\"))),15)))",
+"=IF(A26=\"\",\"\",SUMIF(Lines!$C$2:$C$300,A26,Lines!$E$2:$E$300))",
+"=IF(A26=\"\",\"\",SUMIF(Lines!$C$2:$C$300,A26,Lines!$F$2:$F$300))",
+"=IF(A26=\"\",\"\",C26-D26-E26)",
+"=IF(A26=\"\",\"\",IF(C26>0,D26/C26,\"\"))",
+"=IF(A26=\"\",\"\",IF(C26=0,IF(D26+E26>0,\"Spending with no budget\",\"\"),IF(G26>1,TEXT(G26,\"0%\")&\" spent, over budget\",IF(ISNUMBER($B$9),IF(ABS(G26-$B$9)>$B$33,TEXT(G26,\"0%\")&\" spent, \"&TEXT($B$9,\"0%\")&\" of the time gone\",\"\"),\"\"))))"
+],
+[
+"Total",
+null,
+"=SUM(C12:C26)",
+"=SUM(D12:D26)",
+"=SUM(E12:E26)",
+"=SUM(F12:F26)",
+"=IF(C27>0,D27/C27,\"\")",
+null
+],
+[
+"Charges on expense codes that roll up to an account this award has no row for",
+"=IFERROR(TEXTJOIN(\", \",TRUE,IF((Lines!$A$2:$A$300<>\"\")*(Lines!$C$2:$C$300<>\"\")*NOT(((Lines!$A$2:$A$300<>\"\")*(Lines!$A$2:$A$300<>0)*ISNUMBER(IFERROR(Lines!$A$2:$A$300*1,\"\"))))*(Lines!$C$2:$C$300<>\"?\")*(COUNTIF(Lines!$A$2:$A$300,Lines!$C$2:$C$300)=0),Lines!$A$2:$A$300&\" \"&Lines!$B$2:$B$300&\" (Lines row \"&ROW(Lines!$A$2:$A$300)&\")\",\"\")),\"\")",
+null,
+"=SUMPRODUCT((Lines!$A$2:$A$300<>\"\")*NOT(((Lines!$A$2:$A$300<>\"\")*(Lines!$A$2:$A$300<>0)*ISNUMBER(IFERROR(Lines!$A$2:$A$300*1,\"\"))))*(Lines!$C$2:$C$300<>\"?\")*(COUNTIF(Lines!$A$2:$A$300,Lines!$C$2:$C$300)=0),Lines!$E$2:$E$300)",
+null,
+null,
+null,
+"=IF(D28>0,\"No budget line: checked against its pool (Budget pools below)\",\"\")"
+],
+[
+null,
+null,
+null,
+null,
+null,
+null,
+null,
+null
+],
+[
+"Burn rate per month",
+"=IF(AND(ISNUMBER(B7),B7>0),D27/B7,\"\")",
+null,
+null,
+null,
+null,
+null,
+null
+],
+[
+"Months of runway at that rate",
+"=IF(AND(ISNUMBER(B30),B30>0),F27/B30,\"\")",
+"Months left in the award",
+"=IF(ISNUMBER(B8),MAX(0,B8-B7),\"\")",
+null,
+null,
+null,
+null
+],
+[
+"Projected spend at the end date",
+"=IF(ISNUMBER(B30),D27+B30*MAX(0,B8-B7),\"\")",
+"Over (+) or under (-) the budget",
+"=IF(ISNUMBER(B32),B32-C27,\"\")",
+null,
+null,
+null,
+null
+],
+[
+"Flag threshold (share points)",
+0.15,
+null,
+null,
+null,
+null,
+null,
+null
+],
+[
+"Lines in the export",
+"=Lines!$I$1",
+"Export budget (should equal C27)",
+"=SUM(Lines!$D$2:$D$300)",
+"Export spent (should equal D27 plus D28)",
+"=SUM(Lines!$E$2:$E$300)",
+null,
+null
+],
+[
+null,
+null,
+null,
+null,
+null,
+null,
+null,
+null
+],
+[
+"F&A check",
+"Indirect costs at the award's rate on the MTDC base, against the overhead posted",
+null,
+null,
+null,
+null,
+null,
+null
+],
+[
+"F&A rate on this award",
+0.5,
+"estimate: the university's on-campus organized research rate; the award's own rate (FRMFUND) applies, as in effect when it was executed",
+null,
+null,
+null,
+null,
+null
+],
+[
+"MTDC base spent",
+"=D27-SUMIF($A$12:$A$26,\"32\",D$12:D$26)-SUMIF($A$12:$A$26,\"40\",D$12:D$26)-SUMIF($A$12:$A$26,\"60\",D$12:D$26)-MAX(0,SUMIF($A$12:$A$26,\"31\",D$12:D$26)-25000)",
+"all spending except participant support (32), capital outlay (40), overhead (60) and the part of subcontracts (31) above $25,000; tuition inside Other Expense is not excluded here",
+null,
+null,
+null,
+null,
+null
+],
+[
+"Expected indirect",
+"=B38*B37",
+null,
+null,
+null,
+null,
+null,
+null
+],
+[
+"Overhead posted",
+"=SUMIF($A$12:$A$26,\"60\",D$12:D$26)",
+null,
+null,
+null,
+null,
+null,
+null
+],
+[
+"Gap (posted minus expected)",
+"=B40-B39",
+"=IF(AND(ISNUMBER(B39),B39>0),IF(ABS(B41)>0.02*B39,\"Check: more than 2% off\",\"\"),\"\")",
+null,
+null,
+null,
+null,
+null
+],
+[
+"Effective rate posted",
+"=IF(AND(ISNUMBER(B38),B38>0),B40/B38,\"\")",
+"overhead posted over the base spent; a capped or off-campus award reads below the university rate",
+null,
+null,
+null,
+null,
+null
+],
+[
+null,
+null,
+null,
+null,
+null,
+null,
+null,
+null
+],
+[
+"Rebudget at this pace",
+"The budget each account would need if it kept its rate to the end date",
+null,
+null,
+null,
+null,
+null,
+null
+],
+[
+"Account",
+"Name",
+"Budget",
+"Needed at this pace",
+"Difference",
+"Approval",
+null,
+null
+],
+[
+"=A12",
+"=B12",
+"=IF(A46=\"\",\"\",C12)",
+"=IF(OR(A46=\"\",NOT(ISNUMBER($B$9)),$B$9=0),\"\",D12/$B$9)",
+"=IF(ISNUMBER(D46),D46-C46,\"\")",
+"=IF(ISNUMBER(E46),IF(AND(A46=\"32\",E46<0),\"sponsor approval to move participant support out\",IF(ABS(E46)>0.1*$C$27,\"over 10% of the award: sponsor approval likely\",\"\")),\"\")",
+null,
+null
+],
+[
+"=A13",
+"=B13",
+"=IF(A47=\"\",\"\",C13)",
+"=IF(OR(A47=\"\",NOT(ISNUMBER($B$9)),$B$9=0),\"\",D13/$B$9)",
+"=IF(ISNUMBER(D47),D47-C47,\"\")",
+"=IF(ISNUMBER(E47),IF(AND(A47=\"32\",E47<0),\"sponsor approval to move participant support out\",IF(ABS(E47)>0.1*$C$27,\"over 10% of the award: sponsor approval likely\",\"\")),\"\")",
+null,
+null
+],
+[
+"=A14",
+"=B14",
+"=IF(A48=\"\",\"\",C14)",
+"=IF(OR(A48=\"\",NOT(ISNUMBER($B$9)),$B$9=0),\"\",D14/$B$9)",
+"=IF(ISNUMBER(D48),D48-C48,\"\")",
+"=IF(ISNUMBER(E48),IF(AND(A48=\"32\",E48<0),\"sponsor approval to move participant support out\",IF(ABS(E48)>0.1*$C$27,\"over 10% of the award: sponsor approval likely\",\"\")),\"\")",
+null,
+null
+],
+[
+"=A15",
+"=B15",
+"=IF(A49=\"\",\"\",C15)",
+"=IF(OR(A49=\"\",NOT(ISNUMBER($B$9)),$B$9=0),\"\",D15/$B$9)",
+"=IF(ISNUMBER(D49),D49-C49,\"\")",
+"=IF(ISNUMBER(E49),IF(AND(A49=\"32\",E49<0),\"sponsor approval to move participant support out\",IF(ABS(E49)>0.1*$C$27,\"over 10% of the award: sponsor approval likely\",\"\")),\"\")",
+null,
+null
+],
+[
+"=A16",
+"=B16",
+"=IF(A50=\"\",\"\",C16)",
+"=IF(OR(A50=\"\",NOT(ISNUMBER($B$9)),$B$9=0),\"\",D16/$B$9)",
+"=IF(ISNUMBER(D50),D50-C50,\"\")",
+"=IF(ISNUMBER(E50),IF(AND(A50=\"32\",E50<0),\"sponsor approval to move participant support out\",IF(ABS(E50)>0.1*$C$27,\"over 10% of the award: sponsor approval likely\",\"\")),\"\")",
+null,
+null
+],
+[
+"=A17",
+"=B17",
+"=IF(A51=\"\",\"\",C17)",
+"=IF(OR(A51=\"\",NOT(ISNUMBER($B$9)),$B$9=0),\"\",D17/$B$9)",
+"=IF(ISNUMBER(D51),D51-C51,\"\")",
+"=IF(ISNUMBER(E51),IF(AND(A51=\"32\",E51<0),\"sponsor approval to move participant support out\",IF(ABS(E51)>0.1*$C$27,\"over 10% of the award: sponsor approval likely\",\"\")),\"\")",
+null,
+null
+],
+[
+"=A18",
+"=B18",
+"=IF(A52=\"\",\"\",C18)",
+"=IF(OR(A52=\"\",NOT(ISNUMBER($B$9)),$B$9=0),\"\",D18/$B$9)",
+"=IF(ISNUMBER(D52),D52-C52,\"\")",
+"=IF(ISNUMBER(E52),IF(AND(A52=\"32\",E52<0),\"sponsor approval to move participant support out\",IF(ABS(E52)>0.1*$C$27,\"over 10% of the award: sponsor approval likely\",\"\")),\"\")",
+null,
+null
+],
+[
+"=A19",
+"=B19",
+"=IF(A53=\"\",\"\",C19)",
+"=IF(OR(A53=\"\",NOT(ISNUMBER($B$9)),$B$9=0),\"\",D19/$B$9)",
+"=IF(ISNUMBER(D53),D53-C53,\"\")",
+"=IF(ISNUMBER(E53),IF(AND(A53=\"32\",E53<0),\"sponsor approval to move participant support out\",IF(ABS(E53)>0.1*$C$27,\"over 10% of the award: sponsor approval likely\",\"\")),\"\")",
+null,
+null
+],
+[
+"=A20",
+"=B20",
+"=IF(A54=\"\",\"\",C20)",
+"=IF(OR(A54=\"\",NOT(ISNUMBER($B$9)),$B$9=0),\"\",D20/$B$9)",
+"=IF(ISNUMBER(D54),D54-C54,\"\")",
+"=IF(ISNUMBER(E54),IF(AND(A54=\"32\",E54<0),\"sponsor approval to move participant support out\",IF(ABS(E54)>0.1*$C$27,\"over 10% of the award: sponsor approval likely\",\"\")),\"\")",
+null,
+null
+],
+[
+"=A21",
+"=B21",
+"=IF(A55=\"\",\"\",C21)",
+"=IF(OR(A55=\"\",NOT(ISNUMBER($B$9)),$B$9=0),\"\",D21/$B$9)",
+"=IF(ISNUMBER(D55),D55-C55,\"\")",
+"=IF(ISNUMBER(E55),IF(AND(A55=\"32\",E55<0),\"sponsor approval to move participant support out\",IF(ABS(E55)>0.1*$C$27,\"over 10% of the award: sponsor approval likely\",\"\")),\"\")",
+null,
+null
+],
+[
+"=A22",
+"=B22",
+"=IF(A56=\"\",\"\",C22)",
+"=IF(OR(A56=\"\",NOT(ISNUMBER($B$9)),$B$9=0),\"\",D22/$B$9)",
+"=IF(ISNUMBER(D56),D56-C56,\"\")",
+"=IF(ISNUMBER(E56),IF(AND(A56=\"32\",E56<0),\"sponsor approval to move participant support out\",IF(ABS(E56)>0.1*$C$27,\"over 10% of the award: sponsor approval likely\",\"\")),\"\")",
+null,
+null
+],
+[
+"=A23",
+"=B23",
+"=IF(A57=\"\",\"\",C23)",
+"=IF(OR(A57=\"\",NOT(ISNUMBER($B$9)),$B$9=0),\"\",D23/$B$9)",
+"=IF(ISNUMBER(D57),D57-C57,\"\")",
+"=IF(ISNUMBER(E57),IF(AND(A57=\"32\",E57<0),\"sponsor approval to move participant support out\",IF(ABS(E57)>0.1*$C$27,\"over 10% of the award: sponsor approval likely\",\"\")),\"\")",
+null,
+null
+],
+[
+"=A24",
+"=B24",
+"=IF(A58=\"\",\"\",C24)",
+"=IF(OR(A58=\"\",NOT(ISNUMBER($B$9)),$B$9=0),\"\",D24/$B$9)",
+"=IF(ISNUMBER(D58),D58-C58,\"\")",
+"=IF(ISNUMBER(E58),IF(AND(A58=\"32\",E58<0),\"sponsor approval to move participant support out\",IF(ABS(E58)>0.1*$C$27,\"over 10% of the award: sponsor approval likely\",\"\")),\"\")",
+null,
+null
+],
+[
+"=A25",
+"=B25",
+"=IF(A59=\"\",\"\",C25)",
+"=IF(OR(A59=\"\",NOT(ISNUMBER($B$9)),$B$9=0),\"\",D25/$B$9)",
+"=IF(ISNUMBER(D59),D59-C59,\"\")",
+"=IF(ISNUMBER(E59),IF(AND(A59=\"32\",E59<0),\"sponsor approval to move participant support out\",IF(ABS(E59)>0.1*$C$27,\"over 10% of the award: sponsor approval likely\",\"\")),\"\")",
+null,
+null
+],
+[
+"=A26",
+"=B26",
+"=IF(A60=\"\",\"\",C26)",
+"=IF(OR(A60=\"\",NOT(ISNUMBER($B$9)),$B$9=0),\"\",D26/$B$9)",
+"=IF(ISNUMBER(D60),D60-C60,\"\")",
+"=IF(ISNUMBER(E60),IF(AND(A60=\"32\",E60<0),\"sponsor approval to move participant support out\",IF(ABS(E60)>0.1*$C$27,\"over 10% of the award: sponsor approval likely\",\"\")),\"\")",
+null,
+null
+],
+[
+"Total",
+null,
+"=SUM(C46:C60)",
+"=SUM(D46:D60)",
+"=SUM(E46:E60)",
+null,
+null,
+null
+],
+[
+null,
+null,
+null,
+null,
+null,
+null,
+null,
+null
+],
+[
+"Closeout",
+"At this pace",
+null,
+null,
+null,
+null,
+null,
+null
+],
+[
+"Unspent at the end date",
+"=IF(ISNUMBER(B32),C27-B32,\"\")",
+null,
+null,
+null,
+null,
+null,
+null
+],
+[
+"Open commitments to clear",
+"=E27",
+null,
+null,
+null,
+null,
+null,
+null
+],
+[
+"Timing",
+"=IF(AND(ISNUMBER(B31),ISNUMBER(D31)),IF(B31>D31,\"the available balance outlasts the award by \"&TEXT(B31-D31,\"0.0\")&\" months\",\"the available balance runs out \"&TEXT(D31-B31,\"0.0\")&\" months before the end date\"),\"\")",
+null,
+null,
+null,
+null,
+null,
+null
+],
+[
+null,
+null,
+null,
+null,
+null,
+null,
+null,
+null
+],
+[
+"Budget pools",
+"Banner checks availability at the pool, all personnel together, not at the account",
+null,
+null,
+null,
+null,
+null,
+null
+],
+[
+"Pool",
+"Accounts",
+"Budget",
+"Spent",
+"Committed",
+"Available",
+"Share spent",
+null
+],
+[
+"Personnel (PERS)",
+"10, 11, 12",
+"=SUMPRODUCT(--ISNUMBER(MATCH($A$12:$A$26,{\"10\",\"11\",\"12\"},0)),C$12:C$26)",
+"=SUMPRODUCT(--ISNUMBER(MATCH($A$12:$A$26,{\"10\",\"11\",\"12\"},0)),D$12:D$26)+SUMPRODUCT((Lines!$A$2:$A$300<>\"\")*NOT(((Lines!$A$2:$A$300<>\"\")*(Lines!$A$2:$A$300<>0)*ISNUMBER(IFERROR(Lines!$A$2:$A$300*1,\"\"))))*ISNUMBER(MATCH(Lines!$C$2:$C$300,{\"10\",\"11\",\"12\"},0))*(COUNTIF(Lines!$A$2:$A$300,Lines!$C$2:$C$300)=0),Lines!$E$2:$E$300)",
+"=SUMPRODUCT(--ISNUMBER(MATCH($A$12:$A$26,{\"10\",\"11\",\"12\"},0)),E$12:E$26)+SUMPRODUCT((Lines!$A$2:$A$300<>\"\")*NOT(((Lines!$A$2:$A$300<>\"\")*(Lines!$A$2:$A$300<>0)*ISNUMBER(IFERROR(Lines!$A$2:$A$300*1,\"\"))))*ISNUMBER(MATCH(Lines!$C$2:$C$300,{\"10\",\"11\",\"12\"},0))*(COUNTIF(Lines!$A$2:$A$300,Lines!$C$2:$C$300)=0),Lines!$F$2:$F$300)",
+"=C70-D70-E70",
+"=IF(C70>0,D70/C70,\"\")",
+null
+],
+[
+"Operating expense",
+"20, 30, 31, 32, 33, 50, 99",
+"=SUMPRODUCT(--ISNUMBER(MATCH($A$12:$A$26,{\"20\",\"30\",\"31\",\"32\",\"33\",\"50\",\"99\"},0)),C$12:C$26)",
+"=SUMPRODUCT(--ISNUMBER(MATCH($A$12:$A$26,{\"20\",\"30\",\"31\",\"32\",\"33\",\"50\",\"99\"},0)),D$12:D$26)+SUMPRODUCT((Lines!$A$2:$A$300<>\"\")*NOT(((Lines!$A$2:$A$300<>\"\")*(Lines!$A$2:$A$300<>0)*ISNUMBER(IFERROR(Lines!$A$2:$A$300*1,\"\"))))*ISNUMBER(MATCH(Lines!$C$2:$C$300,{\"20\",\"30\",\"31\",\"32\",\"33\",\"50\",\"99\"},0))*(COUNTIF(Lines!$A$2:$A$300,Lines!$C$2:$C$300)=0),Lines!$E$2:$E$300)",
+"=SUMPRODUCT(--ISNUMBER(MATCH($A$12:$A$26,{\"20\",\"30\",\"31\",\"32\",\"33\",\"50\",\"99\"},0)),E$12:E$26)+SUMPRODUCT((Lines!$A$2:$A$300<>\"\")*NOT(((Lines!$A$2:$A$300<>\"\")*(Lines!$A$2:$A$300<>0)*ISNUMBER(IFERROR(Lines!$A$2:$A$300*1,\"\"))))*ISNUMBER(MATCH(Lines!$C$2:$C$300,{\"20\",\"30\",\"31\",\"32\",\"33\",\"50\",\"99\"},0))*(COUNTIF(Lines!$A$2:$A$300,Lines!$C$2:$C$300)=0),Lines!$F$2:$F$300)",
+"=C71-D71-E71",
+"=IF(C71>0,D71/C71,\"\")",
+null
+],
+[
+"Capital outlay",
+"40, 45",
+"=SUMPRODUCT(--ISNUMBER(MATCH($A$12:$A$26,{\"40\",\"45\"},0)),C$12:C$26)",
+"=SUMPRODUCT(--ISNUMBER(MATCH($A$12:$A$26,{\"40\",\"45\"},0)),D$12:D$26)+SUMPRODUCT((Lines!$A$2:$A$300<>\"\")*NOT(((Lines!$A$2:$A$300<>\"\")*(Lines!$A$2:$A$300<>0)*ISNUMBER(IFERROR(Lines!$A$2:$A$300*1,\"\"))))*ISNUMBER(MATCH(Lines!$C$2:$C$300,{\"40\",\"45\"},0))*(COUNTIF(Lines!$A$2:$A$300,Lines!$C$2:$C$300)=0),Lines!$E$2:$E$300)",
+"=SUMPRODUCT(--ISNUMBER(MATCH($A$12:$A$26,{\"40\",\"45\"},0)),E$12:E$26)+SUMPRODUCT((Lines!$A$2:$A$300<>\"\")*NOT(((Lines!$A$2:$A$300<>\"\")*(Lines!$A$2:$A$300<>0)*ISNUMBER(IFERROR(Lines!$A$2:$A$300*1,\"\"))))*ISNUMBER(MATCH(Lines!$C$2:$C$300,{\"40\",\"45\"},0))*(COUNTIF(Lines!$A$2:$A$300,Lines!$C$2:$C$300)=0),Lines!$F$2:$F$300)",
+"=C72-D72-E72",
+"=IF(C72>0,D72/C72,\"\")",
+null
+],
+[
+"Overhead",
+"60",
+"=SUMPRODUCT(--ISNUMBER(MATCH($A$12:$A$26,{\"60\"},0)),C$12:C$26)",
+"=SUMPRODUCT(--ISNUMBER(MATCH($A$12:$A$26,{\"60\"},0)),D$12:D$26)+SUMPRODUCT((Lines!$A$2:$A$300<>\"\")*NOT(((Lines!$A$2:$A$300<>\"\")*(Lines!$A$2:$A$300<>0)*ISNUMBER(IFERROR(Lines!$A$2:$A$300*1,\"\"))))*ISNUMBER(MATCH(Lines!$C$2:$C$300,{\"60\"},0))*(COUNTIF(Lines!$A$2:$A$300,Lines!$C$2:$C$300)=0),Lines!$E$2:$E$300)",
+"=SUMPRODUCT(--ISNUMBER(MATCH($A$12:$A$26,{\"60\"},0)),E$12:E$26)+SUMPRODUCT((Lines!$A$2:$A$300<>\"\")*NOT(((Lines!$A$2:$A$300<>\"\")*(Lines!$A$2:$A$300<>0)*ISNUMBER(IFERROR(Lines!$A$2:$A$300*1,\"\"))))*ISNUMBER(MATCH(Lines!$C$2:$C$300,{\"60\"},0))*(COUNTIF(Lines!$A$2:$A$300,Lines!$C$2:$C$300)=0),Lines!$F$2:$F$300)",
+"=C73-D73-E73",
+"=IF(C73>0,D73/C73,\"\")",
+null
+],
+[
+"Trustee/Benefits",
+"70",
+"=SUMPRODUCT(--ISNUMBER(MATCH($A$12:$A$26,{\"70\"},0)),C$12:C$26)",
+"=SUMPRODUCT(--ISNUMBER(MATCH($A$12:$A$26,{\"70\"},0)),D$12:D$26)+SUMPRODUCT((Lines!$A$2:$A$300<>\"\")*NOT(((Lines!$A$2:$A$300<>\"\")*(Lines!$A$2:$A$300<>0)*ISNUMBER(IFERROR(Lines!$A$2:$A$300*1,\"\"))))*ISNUMBER(MATCH(Lines!$C$2:$C$300,{\"70\"},0))*(COUNTIF(Lines!$A$2:$A$300,Lines!$C$2:$C$300)=0),Lines!$E$2:$E$300)",
+"=SUMPRODUCT(--ISNUMBER(MATCH($A$12:$A$26,{\"70\"},0)),E$12:E$26)+SUMPRODUCT((Lines!$A$2:$A$300<>\"\")*NOT(((Lines!$A$2:$A$300<>\"\")*(Lines!$A$2:$A$300<>0)*ISNUMBER(IFERROR(Lines!$A$2:$A$300*1,\"\"))))*ISNUMBER(MATCH(Lines!$C$2:$C$300,{\"70\"},0))*(COUNTIF(Lines!$A$2:$A$300,Lines!$C$2:$C$300)=0),Lines!$F$2:$F$300)",
+"=C74-D74-E74",
+"=IF(C74>0,D74/C74,\"\")",
+null
+],
+[
+"Total",
+null,
+"=SUM(C70:C74)",
+"=SUM(D70:D74)",
+"=SUM(E70:E74)",
+"=SUM(F70:F74)",
+null,
+null
+],
+[
+null,
+null,
+null,
+null,
+null,
+null,
+null,
+null
+],
+[
+"Email lines",
+"The sentences of the memo, by formula, facts only; the memo copies the ones that are not blank, in order",
+null,
+null,
+null,
+null,
+null,
+null
+],
+[
+"=IF(ISNUMBER(B9),\"The award is \"&TEXT(B9,\"0%\")&\" of the way through its period and \"&TEXT(G27,\"0%\")&\" of the budget is spent: \"&TEXT(D27,\"$#,##0\")&\" of \"&TEXT(C27,\"$#,##0\")&\", with \"&TEXT(E27,\"$#,##0\")&\" committed and \"&TEXT(F27,\"$#,##0\")&\" available.\",\"\")",
+null,
+null,
+null,
+null,
+null,
+null,
+null
+],
+[
+"=IF(OR(A12=\"\",H12=\"\"),\"\",B12&\" (account \"&A12&\"): \"&H12&\", \"&TEXT(D12,\"$#,##0\")&\" spent of \"&TEXT(C12,\"$#,##0\")&\".\")",
+null,
+null,
+null,
+null,
+null,
+null,
+null
+],
+[
+"=IF(OR(A13=\"\",H13=\"\"),\"\",B13&\" (account \"&A13&\"): \"&H13&\", \"&TEXT(D13,\"$#,##0\")&\" spent of \"&TEXT(C13,\"$#,##0\")&\".\")",
+null,
+null,
+null,
+null,
+null,
+null,
+null
+],
+[
+"=IF(OR(A14=\"\",H14=\"\"),\"\",B14&\" (account \"&A14&\"): \"&H14&\", \"&TEXT(D14,\"$#,##0\")&\" spent of \"&TEXT(C14,\"$#,##0\")&\".\")",
+null,
+null,
+null,
+null,
+null,
+null,
+null
+],
+[
+"=IF(OR(A15=\"\",H15=\"\"),\"\",B15&\" (account \"&A15&\"): \"&H15&\", \"&TEXT(D15,\"$#,##0\")&\" spent of \"&TEXT(C15,\"$#,##0\")&\".\")",
+null,
+null,
+null,
+null,
+null,
+null,
+null
+],
+[
+"=IF(OR(A16=\"\",H16=\"\"),\"\",B16&\" (account \"&A16&\"): \"&H16&\", \"&TEXT(D16,\"$#,##0\")&\" spent of \"&TEXT(C16,\"$#,##0\")&\".\")",
+null,
+null,
+null,
+null,
+null,
+null,
+null
+],
+[
+"=IF(OR(A17=\"\",H17=\"\"),\"\",B17&\" (account \"&A17&\"): \"&H17&\", \"&TEXT(D17,\"$#,##0\")&\" spent of \"&TEXT(C17,\"$#,##0\")&\".\")",
+null,
+null,
+null,
+null,
+null,
+null,
+null
+],
+[
+"=IF(OR(A18=\"\",H18=\"\"),\"\",B18&\" (account \"&A18&\"): \"&H18&\", \"&TEXT(D18,\"$#,##0\")&\" spent of \"&TEXT(C18,\"$#,##0\")&\".\")",
+null,
+null,
+null,
+null,
+null,
+null,
+null
+],
+[
+"=IF(OR(A19=\"\",H19=\"\"),\"\",B19&\" (account \"&A19&\"): \"&H19&\", \"&TEXT(D19,\"$#,##0\")&\" spent of \"&TEXT(C19,\"$#,##0\")&\".\")",
+null,
+null,
+null,
+null,
+null,
+null,
+null
+],
+[
+"=IF(OR(A20=\"\",H20=\"\"),\"\",B20&\" (account \"&A20&\"): \"&H20&\", \"&TEXT(D20,\"$#,##0\")&\" spent of \"&TEXT(C20,\"$#,##0\")&\".\")",
+null,
+null,
+null,
+null,
+null,
+null,
+null
+],
+[
+"=IF(OR(A21=\"\",H21=\"\"),\"\",B21&\" (account \"&A21&\"): \"&H21&\", \"&TEXT(D21,\"$#,##0\")&\" spent of \"&TEXT(C21,\"$#,##0\")&\".\")",
+null,
+null,
+null,
+null,
+null,
+null,
+null
+],
+[
+"=IF(OR(A22=\"\",H22=\"\"),\"\",B22&\" (account \"&A22&\"): \"&H22&\", \"&TEXT(D22,\"$#,##0\")&\" spent of \"&TEXT(C22,\"$#,##0\")&\".\")",
+null,
+null,
+null,
+null,
+null,
+null,
+null
+],
+[
+"=IF(OR(A23=\"\",H23=\"\"),\"\",B23&\" (account \"&A23&\"): \"&H23&\", \"&TEXT(D23,\"$#,##0\")&\" spent of \"&TEXT(C23,\"$#,##0\")&\".\")",
+null,
+null,
+null,
+null,
+null,
+null,
+null
+],
+[
+"=IF(OR(A24=\"\",H24=\"\"),\"\",B24&\" (account \"&A24&\"): \"&H24&\", \"&TEXT(D24,\"$#,##0\")&\" spent of \"&TEXT(C24,\"$#,##0\")&\".\")",
+null,
+null,
+null,
+null,
+null,
+null,
+null
+],
+[
+"=IF(OR(A25=\"\",H25=\"\"),\"\",B25&\" (account \"&A25&\"): \"&H25&\", \"&TEXT(D25,\"$#,##0\")&\" spent of \"&TEXT(C25,\"$#,##0\")&\".\")",
+null,
+null,
+null,
+null,
+null,
+null,
+null
+],
+[
+"=IF(OR(A26=\"\",H26=\"\"),\"\",B26&\" (account \"&A26&\"): \"&H26&\", \"&TEXT(D26,\"$#,##0\")&\" spent of \"&TEXT(C26,\"$#,##0\")&\".\")",
+null,
+null,
+null,
+null,
+null,
+null,
+null
+],
+[
+"=IF(D28>0,TEXT(D28,\"$#,##0\")&\" was charged to expense codes that roll up to an account this award has no budget line for: \"&B28&\". Banner checks that spending against the budget pool the account belongs to, not against the account, so the pool balance is the one that applies.\",\"\")",
+null,
+null,
+null,
+null,
+null,
+null,
+null
+],
+[
+"=IF(AND(ISNUMBER(B30),ISNUMBER(B31),ISNUMBER(D31)),\"At the current rate of \"&TEXT(B30,\"$#,##0\")&\" a month, the available balance lasts \"&TEXT(B31,\"0.0\")&\" months against \"&TEXT(D31,\"0.0\")&\" months left in the award; at that pace \"&TEXT(B64,\"$#,##0\")&\" would be unspent at the end date and \"&TEXT(B65,\"$#,##0\")&\" of commitments would still be open.\",\"\")",
+null,
+null,
+null,
+null,
+null,
+null,
+null
+],
+[
+"=IF(B66=\"\",\"\",\"At this pace \"&B66&\".\")",
+null,
+null,
+null,
+null,
+null,
+null,
+null
+],
+[
+"=IF(C41=\"\",\"\",\"Overhead posted is \"&TEXT(B42,\"0.0%\")&\" of the direct-cost base spent, against the \"&TEXT(B37,\"0%\")&\" rate entered on the status sheet; the expected figure depends on the rate in the award agreement.\")",
+null,
+null,
+null,
+null,
+null,
+null,
+null
+],
+[
+"=IF(OR(A46=\"\",NOT(ISNUMBER(E46)),H12=\"\"),\"\",IF(ABS(E46)>0.1*MAX(C46,1),B46&\" is spending at a pace that would use \"&TEXT(D46,\"$#,##0\")&\" by the end date, \"&IF(E46<0,TEXT(-E46,\"$#,##0\")&\" less than\",TEXT(E46,\"$#,##0\")&\" more than\")&\" its budget of \"&TEXT(C46,\"$#,##0\")&IF(F46=\"\",\"\",\"; \"&F46)&\".\",\"\"))",
+null,
+null,
+null,
+null,
+null,
+null,
+null
+],
+[
+"=IF(OR(A47=\"\",NOT(ISNUMBER(E47)),H13=\"\"),\"\",IF(ABS(E47)>0.1*MAX(C47,1),B47&\" is spending at a pace that would use \"&TEXT(D47,\"$#,##0\")&\" by the end date, \"&IF(E47<0,TEXT(-E47,\"$#,##0\")&\" less than\",TEXT(E47,\"$#,##0\")&\" more than\")&\" its budget of \"&TEXT(C47,\"$#,##0\")&IF(F47=\"\",\"\",\"; \"&F47)&\".\",\"\"))",
+null,
+null,
+null,
+null,
+null,
+null,
+null
+],
+[
+"=IF(OR(A48=\"\",NOT(ISNUMBER(E48)),H14=\"\"),\"\",IF(ABS(E48)>0.1*MAX(C48,1),B48&\" is spending at a pace that would use \"&TEXT(D48,\"$#,##0\")&\" by the end date, \"&IF(E48<0,TEXT(-E48,\"$#,##0\")&\" less than\",TEXT(E48,\"$#,##0\")&\" more than\")&\" its budget of \"&TEXT(C48,\"$#,##0\")&IF(F48=\"\",\"\",\"; \"&F48)&\".\",\"\"))",
+null,
+null,
+null,
+null,
+null,
+null,
+null
+],
+[
+"=IF(OR(A49=\"\",NOT(ISNUMBER(E49)),H15=\"\"),\"\",IF(ABS(E49)>0.1*MAX(C49,1),B49&\" is spending at a pace that would use \"&TEXT(D49,\"$#,##0\")&\" by the end date, \"&IF(E49<0,TEXT(-E49,\"$#,##0\")&\" less than\",TEXT(E49,\"$#,##0\")&\" more than\")&\" its budget of \"&TEXT(C49,\"$#,##0\")&IF(F49=\"\",\"\",\"; \"&F49)&\".\",\"\"))",
+null,
+null,
+null,
+null,
+null,
+null,
+null
+],
+[
+"=IF(OR(A50=\"\",NOT(ISNUMBER(E50)),H16=\"\"),\"\",IF(ABS(E50)>0.1*MAX(C50,1),B50&\" is spending at a pace that would use \"&TEXT(D50,\"$#,##0\")&\" by the end date, \"&IF(E50<0,TEXT(-E50,\"$#,##0\")&\" less than\",TEXT(E50,\"$#,##0\")&\" more than\")&\" its budget of \"&TEXT(C50,\"$#,##0\")&IF(F50=\"\",\"\",\"; \"&F50)&\".\",\"\"))",
+null,
+null,
+null,
+null,
+null,
+null,
+null
+],
+[
+"=IF(OR(A51=\"\",NOT(ISNUMBER(E51)),H17=\"\"),\"\",IF(ABS(E51)>0.1*MAX(C51,1),B51&\" is spending at a pace that would use \"&TEXT(D51,\"$#,##0\")&\" by the end date, \"&IF(E51<0,TEXT(-E51,\"$#,##0\")&\" less than\",TEXT(E51,\"$#,##0\")&\" more than\")&\" its budget of \"&TEXT(C51,\"$#,##0\")&IF(F51=\"\",\"\",\"; \"&F51)&\".\",\"\"))",
+null,
+null,
+null,
+null,
+null,
+null,
+null
+],
+[
+"=IF(OR(A52=\"\",NOT(ISNUMBER(E52)),H18=\"\"),\"\",IF(ABS(E52)>0.1*MAX(C52,1),B52&\" is spending at a pace that would use \"&TEXT(D52,\"$#,##0\")&\" by the end date, \"&IF(E52<0,TEXT(-E52,\"$#,##0\")&\" less than\",TEXT(E52,\"$#,##0\")&\" more than\")&\" its budget of \"&TEXT(C52,\"$#,##0\")&IF(F52=\"\",\"\",\"; \"&F52)&\".\",\"\"))",
+null,
+null,
+null,
+null,
+null,
+null,
+null
+],
+[
+"=IF(OR(A53=\"\",NOT(ISNUMBER(E53)),H19=\"\"),\"\",IF(ABS(E53)>0.1*MAX(C53,1),B53&\" is spending at a pace that would use \"&TEXT(D53,\"$#,##0\")&\" by the end date, \"&IF(E53<0,TEXT(-E53,\"$#,##0\")&\" less than\",TEXT(E53,\"$#,##0\")&\" more than\")&\" its budget of \"&TEXT(C53,\"$#,##0\")&IF(F53=\"\",\"\",\"; \"&F53)&\".\",\"\"))",
+null,
+null,
+null,
+null,
+null,
+null,
+null
+],
+[
+"=IF(OR(A54=\"\",NOT(ISNUMBER(E54)),H20=\"\"),\"\",IF(ABS(E54)>0.1*MAX(C54,1),B54&\" is spending at a pace that would use \"&TEXT(D54,\"$#,##0\")&\" by the end date, \"&IF(E54<0,TEXT(-E54,\"$#,##0\")&\" less than\",TEXT(E54,\"$#,##0\")&\" more than\")&\" its budget of \"&TEXT(C54,\"$#,##0\")&IF(F54=\"\",\"\",\"; \"&F54)&\".\",\"\"))",
+null,
+null,
+null,
+null,
+null,
+null,
+null
+],
+[
+"=IF(OR(A55=\"\",NOT(ISNUMBER(E55)),H21=\"\"),\"\",IF(ABS(E55)>0.1*MAX(C55,1),B55&\" is spending at a pace that would use \"&TEXT(D55,\"$#,##0\")&\" by the end date, \"&IF(E55<0,TEXT(-E55,\"$#,##0\")&\" less than\",TEXT(E55,\"$#,##0\")&\" more than\")&\" its budget of \"&TEXT(C55,\"$#,##0\")&IF(F55=\"\",\"\",\"; \"&F55)&\".\",\"\"))",
+null,
+null,
+null,
+null,
+null,
+null,
+null
+],
+[
+"=IF(OR(A56=\"\",NOT(ISNUMBER(E56)),H22=\"\"),\"\",IF(ABS(E56)>0.1*MAX(C56,1),B56&\" is spending at a pace that would use \"&TEXT(D56,\"$#,##0\")&\" by the end date, \"&IF(E56<0,TEXT(-E56,\"$#,##0\")&\" less than\",TEXT(E56,\"$#,##0\")&\" more than\")&\" its budget of \"&TEXT(C56,\"$#,##0\")&IF(F56=\"\",\"\",\"; \"&F56)&\".\",\"\"))",
+null,
+null,
+null,
+null,
+null,
+null,
+null
+],
+[
+"=IF(OR(A57=\"\",NOT(ISNUMBER(E57)),H23=\"\"),\"\",IF(ABS(E57)>0.1*MAX(C57,1),B57&\" is spending at a pace that would use \"&TEXT(D57,\"$#,##0\")&\" by the end date, \"&IF(E57<0,TEXT(-E57,\"$#,##0\")&\" less than\",TEXT(E57,\"$#,##0\")&\" more than\")&\" its budget of \"&TEXT(C57,\"$#,##0\")&IF(F57=\"\",\"\",\"; \"&F57)&\".\",\"\"))",
+null,
+null,
+null,
+null,
+null,
+null,
+null
+],
+[
+"=IF(OR(A58=\"\",NOT(ISNUMBER(E58)),H24=\"\"),\"\",IF(ABS(E58)>0.1*MAX(C58,1),B58&\" is spending at a pace that would use \"&TEXT(D58,\"$#,##0\")&\" by the end date, \"&IF(E58<0,TEXT(-E58,\"$#,##0\")&\" less than\",TEXT(E58,\"$#,##0\")&\" more than\")&\" its budget of \"&TEXT(C58,\"$#,##0\")&IF(F58=\"\",\"\",\"; \"&F58)&\".\",\"\"))",
+null,
+null,
+null,
+null,
+null,
+null,
+null
+],
+[
+"=IF(OR(A59=\"\",NOT(ISNUMBER(E59)),H25=\"\"),\"\",IF(ABS(E59)>0.1*MAX(C59,1),B59&\" is spending at a pace that would use \"&TEXT(D59,\"$#,##0\")&\" by the end date, \"&IF(E59<0,TEXT(-E59,\"$#,##0\")&\" less than\",TEXT(E59,\"$#,##0\")&\" more than\")&\" its budget of \"&TEXT(C59,\"$#,##0\")&IF(F59=\"\",\"\",\"; \"&F59)&\".\",\"\"))",
+null,
+null,
+null,
+null,
+null,
+null,
+null
+],
+[
+"=IF(OR(A60=\"\",NOT(ISNUMBER(E60)),H26=\"\"),\"\",IF(ABS(E60)>0.1*MAX(C60,1),B60&\" is spending at a pace that would use \"&TEXT(D60,\"$#,##0\")&\" by the end date, \"&IF(E60<0,TEXT(-E60,\"$#,##0\")&\" less than\",TEXT(E60,\"$#,##0\")&\" more than\")&\" its budget of \"&TEXT(C60,\"$#,##0\")&IF(F60=\"\",\"\",\"; \"&F60)&\".\",\"\"))",
+null,
+null,
+null,
+null,
+null,
+null,
+null
+]
+],
+"formats": [
+{
+"address": "C12:F27",
+"number_format": "$#,##0"
+},
+{
+"address": "G12:G27",
+"number_format": "0%"
+},
+{
+"address": "D28",
+"number_format": "$#,##0"
+},
+{
+"address": "B9",
+"number_format": "0%"
+},
+{
+"address": "B33",
+"number_format": "0%"
+},
+{
+"address": "B30:B32",
+"number_format": "$#,##0"
+},
+{
+"address": "D32",
+"number_format": "$#,##0"
+},
+{
+"address": "D34",
+"number_format": "$#,##0"
+},
+{
+"address": "F34",
+"number_format": "$#,##0"
+},
+{
+"address": "B7:B8",
+"number_format": "0.0"
+},
+{
+"address": "B31",
+"number_format": "0.0"
+},
+{
+"address": "D31",
+"number_format": "0.0"
+},
+{
+"address": "B6",
+"number_format": "d mmm yyyy"
+},
+{
+"address": "C4:C5",
+"number_format": "d mmm yyyy"
+},
+{
+"address": "B37",
+"number_format": "0.0%"
+},
+{
+"address": "B38:B41",
+"number_format": "$#,##0"
+},
+{
+"address": "B42",
+"number_format": "0.0%"
+},
+{
+"address": "C46:E61",
+"number_format": "$#,##0"
+},
+{
+"address": "B64:B65",
+"number_format": "$#,##0"
+},
+{
+"address": "C70:F75",
+"number_format": "$#,##0"
+},
+{
+"address": "G70:G74",
+"number_format": "0%"
+},
+{
+"address": "B33",
+"fill_color": "#FFFF00"
+},
+{
+"address": "B37",
+"fill_color": "#FFFF00"
+},
+{
+"address": "A12:H26",
+"highlight_when": "=$H12<>\"\"",
+"fill_color": "#FFF9C4"
+},
+{
+"address": "A28:H28",
+"highlight_when": "=$H28<>\"\"",
+"fill_color": "#FFF9C4"
+},
+{
+"address": "A41:C41",
+"highlight_when": "=$C41<>\"\"",
+"fill_color": "#FFF9C4"
+},
+{
+"address": "A46:F60",
+"highlight_when": "=$F46<>\"\"",
+"fill_color": "#FFF9C4"
+},
+{
+"address": "A1:H112",
+"wrap_text": false
+},
+{
+"address": "A1:A112",
+"column_width": 230
+},
+{
+"address": "B1:F112",
+"column_width": 84
+},
+{
+"address": "G1:G112",
+"column_width": 70
+},
+{
+"address": "H1:H112",
+"column_width": 200
+}
+],
+"locked": [
+"A1:A9",
+"B6:B9",
+"C4:C5",
+"A11:H28",
+"A30:A34",
+"B30:B32",
+"C31:D32",
+"A33",
+"B34:F34",
+"A36:C36",
+"A37",
+"C37",
+"A38:C42",
+"A44:B44",
+"A45:F61",
+"A63:B66",
+"A68:G75",
+"A77:B112"
+],
+"from_context": {
+"B1": "award",
+"B2": "sponsor_award",
+"B3": "pi",
+"B4": "start_date",
+"B5": "end_date"
+},
+"notes": "Filled from the request: B1:B5 (title, sponsor and number, PI, start and end as the export writes them; C4:C5 hold them as dates). Rows 12-26 list the award's accounts from the Lines sheet by formula: budget from the account's row, spent and committed summed from the expense codes rolling up to it, available, share spent, a Flag in plain words (\"90% spent, 40% of the time gone\") when an account's share spent is more than B33 (15 points, the administrator's to change in Excel) from the share of time elapsed, is over budget, or has spending with no budget; row 27 totals; row 28 charges whose account the award has no row for, with the codes listed in B28. Rows 30-34 burn rate, runway, projection, threshold and the reconciliation against the export; rows 36-42 the F&A check on the MTDC base at the rate in B37 (50% by default, the award's own rate to be typed in Excel) with the effective rate posted; rows 44-61 the budget each account would need at its pace and which moves need the sponsor; rows 63-66 the closeout figures; rows 68-75 the budget pools as Banner enforces them (all personnel together), counting charges whose account the award has no row for; a row turns light yellow while its Flag, Check or Approval cell is filled; rows 77-112 the email's sentences by formula (opener, one per flagged account, no-line charges, runway, timing, F&A, one per flagged account whose pace differs from its budget), facts only, which the memo copies."
+}

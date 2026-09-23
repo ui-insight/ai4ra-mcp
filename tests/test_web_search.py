@@ -2,7 +2,7 @@
 
 import pytest
 
-from ai4ra_mcp.servers.ai4ra import server as ai4ra
+from ai4ra_mcp.servers.general import server as ai4ra
 
 SEARX = {"query": "deep soil ecotron", "number_of_results": 2,
          "results": [{"title": "Deep Soil Ecotron", "url": "https://www.uidaho.edu/x/ecotron", "content": "A facility...", "engines": ["google", "bing"], "publishedDate": None},

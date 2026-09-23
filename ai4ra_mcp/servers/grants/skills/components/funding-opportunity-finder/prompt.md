@@ -15,7 +15,7 @@ updated: 2026-09-22
 
 > **Purpose:** Turn a project idea, a topic, or a half-remembered announcement into a short, ranked list of current funding opportunities on grants.gov, each with a clickable link, and hand the chosen one to the next step (reading it in full, or drafting a budget).
 > **Expected input:** A few words to a paragraph: the research idea, field, target sponsor, or an opportunity number or title. Optionally constraints: sponsor, deadline window, award size, eligibility.
-> **Expected output:** A numbered list of up to ten opportunities (title as a link, agency, status, close date, one line on fit), the search terms used, and an offer of next steps. Requires the grants server's search and opportunity tools and, for attachments, fetch_document on the ai4ra server.
+> **Expected output:** A numbered list of up to ten opportunities (title as a link, agency, status, close date, one line on fit), the search terms used, and an offer of next steps. Requires the grants server's search and opportunity tools and, for attachments, fetch_document on the general server.
 
 ---
 

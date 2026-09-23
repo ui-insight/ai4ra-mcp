@@ -1,0 +1,84 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/AI4RA/prompt-library/components/cost-selected-item-check/schema.json",
+  "title": "Selected Items of Cost Check — Finding",
+  "description": "Structured single-requirement allowability finding for the selected items of cost check (2 CFR 200.421-200.476). Part of the federal cost-allowability analysis workflow.",
+  "version": "0.1.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "check_id",
+    "check_name",
+    "regulation_anchor",
+    "status",
+    "summary",
+    "rationale",
+    "evidence",
+    "follow_up_actions",
+    "confidence"
+  ],
+  "properties": {
+    "check_id": {
+      "const": "cost-selected-item",
+      "description": "Stable identifier for this check."
+    },
+    "check_name": {
+      "const": "Selected Items of Cost",
+      "description": "Human-readable check name."
+    },
+    "regulation_anchor": {
+      "const": "2 CFR 200.421-200.476",
+      "description": "Primary regulatory anchor for this check."
+    },
+    "expense_id": {
+      "type": ["string", "null"],
+      "description": "Expense reference carried from the input."
+    },
+    "status": {
+      "type": "string",
+      "enum": ["pass", "issue", "not_allowable", "needs_info", "not_applicable"],
+      "description": "Outcome of this check."
+    },
+    "summary": {
+      "type": "string",
+      "minLength": 1,
+      "description": "One-sentence statement of the outcome, including the applied section."
+    },
+    "rationale": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Evidence-grounded reasoning behind the status, naming the applied 2 CFR section."
+    },
+    "evidence": {
+      "type": "array",
+      "description": "Evidence relied on. May be empty only when status is not_applicable.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["source_label", "detail"],
+        "properties": {
+          "source_label": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Short source label, e.g. expense:description."
+          },
+          "detail": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Concise summary of what the source shows."
+          }
+        }
+      }
+    },
+    "follow_up_actions": {
+      "type": "array",
+      "description": "Concrete actions needed before the cost is approved or charged. Empty array when none.",
+      "items": {"type": "string", "minLength": 1}
+    },
+    "confidence": {
+      "type": "string",
+      "enum": ["high", "medium", "low"],
+      "description": "Reviewer confidence in this finding."
+    }
+  }
+}

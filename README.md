@@ -8,29 +8,43 @@ codebase, a deployment and the plumbing underneath (HTTP client, cache, page
 reader), and nothing else.
 
 A server carries the tools that act on its upstream and the skills that know
-how to use those tools. A client that speaks MCP gets both together; a client
-that reads skill catalogs by URL gets the same files as static content.
+how to use those tools, or, for the `ai4ra` server, skills alone. A client
+that speaks MCP gets both together; a client that reads skill catalogs by URL
+gets the same files as static content. Everything a client needs that does not
+touch its own document lives here: the Office add-in keeps only the tools that
+read and write cells, paragraphs and slides.
 
 ## The servers
 
 | Path | Upstream | Tools | Skills |
 |---|---|---|---|
+| `/general/mcp` | the open web | `web_search`, `fetch_document` | `ask`, `remove-ai-tells`, `project-timeline-gantt` (Excel) |
+| `/ai4ra/mcp` | none: skills only | none | `rfa-sheet`, `proposal-narrative`, `work-plan`, `budget-outline`, `budget-nsf`, `pi-memo`, and seventeen cost-allowability and budget-justification prompts copied from AI4RA/prompt-library |
 | `/ecfr/mcp` | ecfr.gov | `ecfr_regulatory_index`, `ecfr_search`, `ecfr_list_titles`, `ecfr_list_agencies`, `ecfr_get_title_versions`, `ecfr_get_regulation`, `ecfr_get_title_structure`, `ecfr_compare_regulations` | `ecfr-research-admin` |
 | `/grants/mcp` | grants.gov | `grants_gov_search`, `grants_gov_opportunity` | `funding-opportunity-finder` |
-| `/uidaho/mcp` | uidaho.edu | `uidaho_guidance_index`, `uidaho_guidance_search`, `uidaho_guidance_get`, `uidaho_rates` | `uidaho-lookup` |
-| `/ai4ra/mcp` | the open web | `web_search`, `fetch_document` | none |
 | `/nih/mcp` | NIH RePORTER | `nih_index`, `nih_projects_search`, `nih_project`, `nih_publications` | `funding-history` |
 | `/nsf/mcp` | NSF Award Search | `nsf_index`, `nsf_awards_search`, `nsf_award`, `nsf_award_outcomes` | none |
 | `/sam/mcp` | SAM.gov (key) | `sam_index`, `sam_entity`, `sam_exclusions_search`, `sam_assistance_listing`, `sam_assistance_listings_search` | `subrecipient-check` |
 | `/usaspending/mcp` | usaspending.gov | `usaspending_index`, `usaspending_recipients`, `usaspending_recipient`, `usaspending_awards_search`, `usaspending_subawards_search`, `usaspending_award` | none |
 | `/fac/mcp` | Federal Audit Clearinghouse (key) | `fac_index`, `fac_audits_search`, `fac_findings`, `fac_federal_awards` | none |
+| `/uidaho/mcp` | uidaho.edu | `uidaho_guidance_index`, `uidaho_guidance_search`, `uidaho_guidance_get`, `uidaho_rates` | `uidaho-lookup`, `uidaho-rates-sheet`, `award-facts`, `award-lines`, `award-status`, `award-review`, `pi-awards`, `current-pending`, `current-pending-support`, `proposal-workbook` |
 
-The `ai4ra` server is the catch-all: whatever AI4RA provides that is tied to
-no single upstream. Today that is a web search and the page reader: search
-for an address you do not have, then read it. Other servers' skills use the
-reader for attachments and linked documents.
+The index at `/` lists the servers in this order, which is the order a
+client's picker shows them: general first, then the research-administration
+skills, the public upstreams, and last the one institution's own server.
 
-### ai4ra
+The `general` server is what belongs to no single upstream and no one
+profession: a web search and the page reader (search for an address you do
+not have, then read it; other servers' skills use the reader for attachments
+and linked documents) and the skills any office uses with any document. The
+`ai4ra` server has no tools: it is the research-administration skills that
+work with a client's own document tools. Anything that can be shared lives on
+one of these two; the `uidaho` server holds only what is the University of
+Idaho's (its policies and rates, a Rates sheet from them, the award skills
+that read its Banner exports, and the proposal workbook whose steps run
+skills from all three).
+
+### general
 
 `web_search` is answered by a SearXNG instance next to this process, a
 self-hosted metasearch that merges Google, Bing, DuckDuckGo, Brave, Startpage
@@ -70,6 +84,24 @@ Tool names carry their upstream (`ecfr_`, `grants_gov_`, `uidaho_`) and are
 otherwise unchanged from mcp-ecfr. The extra prefix the Hugging Face Space's
 Gradio wrapper added (`ecfr_mcp_server_…`) is gone.
 
+### ai4ra
+
+Skills only. The proposal sheets (`rfa-sheet`, `proposal-narrative`,
+`work-plan`, `budget-outline`, `budget-nsf`) and `pi-memo` were written for
+the Office add-in and moved here on 2026-09-22; each catalog entry's `source`
+says so. `budget-nsf` is institution-agnostic: its template ships no rates,
+and the skill reads them from a sheet named Rates when the workbook has one
+(seven fixed-label rows: Location, F&A rate, F&A base, Fringe faculty, Fringe
+staff, Fringe students, Fringe temporary, and a Source row) and writes the
+Source row beside the rates as provenance. An institution provides the Rates
+sheet with a skill of its own; `uidaho-rates-sheet` is Idaho's.
+
+The other seventeen components are copies of AI4RA/prompt-library at commit
+`eef6fd3d818037ab51ece87f61806c448d51f40d`, files unchanged, each catalog
+entry carrying a `source` with the repository, commit and path. They are not
+edited here: a change goes to the prompt library and is copied in again at a
+new commit.
+
 ### ecfr
 
 The tools and their rules are unchanged from mcp-ecfr: read the index first,
@@ -83,7 +115,7 @@ well, because most clients never list resources.
 `grants_gov_search` finds announcements; `grants_gov_opportunity` fetches one
 record by the id a hit carries, with its synopsis, dates, ceiling, cost
 sharing, eligibility and attachment links. An attachment is read with
-`fetch_document` on the `ai4ra` server.
+`fetch_document` on the `general` server.
 
 ### uidaho
 
@@ -177,15 +209,19 @@ of one report with their text; its schedule of federal awards by program. The
 - **One server, one upstream, one audience.** Everything that reads ecfr.gov
   is one server; everything that reads uidaho.edu is another. A federal
   server has no Idaho defaults; the Idaho server hard-codes uidaho.edu.
-  Shared code is plumbing only. The `ai4ra` server is the one exception, by
-  design: the place for what belongs to no upstream.
+  Shared code is plumbing only. Two servers are the exceptions, by design:
+  `general` is the place for what belongs to no upstream, and `ai4ra` is
+  the research-administration skills that have no upstream at all.
 - **Every server stands alone.** Each runs by itself over stdio or HTTP with
   nothing else present, and each has an index tool that tells a model how to
   use it. No server calls another server's tools; a skill may name another
   server's tool when the job needs it.
 - **Skills stay with their tools.** A skill lives in the server whose tools it
-  uses. Skills that need a client's own tools (an Office add-in's cells and
-  paragraphs) belong to that client, not here.
+  uses; a skill that uses only a client's own document tools lives on `ai4ra`
+  (research administration) or `general` (any office). A skill that needs
+  one client only says so with `hosts` in its catalog entry, and `fold:
+  "host"` when that client should list it beside its own tools (the Gantt
+  chart, in Excel).
 - **Be a polite upstream client.** One `User-Agent` naming this project and a
   contact on every request; cache what does not change; on a 429, tell the
   model to wait rather than retrying blindly.
@@ -205,7 +241,7 @@ ai4ra_mcp/
       skills/
         catalog.json          the components, in AI4RA/prompt-library's catalog shape
         components/<slug>/    prompt.md, README.md, CHANGELOG.md, evals/
-    grants/  uidaho/  ai4ra/  same shape
+    general/  ai4ra/  grants/  nih/  nsf/  sam/  fac/  usaspending/  uidaho/   same shape (ai4ra has no tools)
 deploy/
   Caddyfile                   a site block that fronts the process
   ai4ra-mcp.service           a systemd unit
@@ -300,22 +336,23 @@ the clients that name it have moved.
   server's URL, for example `https://<host>/ecfr/mcp`. One connector per
   server; its skills appear as prompts.
 - **Claude Code:** `claude mcp add --transport http ecfr https://<host>/ecfr/mcp`.
-- **mindrouter-365:** a `servers` entry per server in the deployment's
-  `sources.json` with its `/mcp` URL, and a `libraries` entry per server
-  whose `catalog` is `https://<host>/<server>/skills/catalog.json` and whose
-  `base` is `https://<host>/<server>/skills/`. A keyed server's entry
-  declares `"key": {"required": true, "hint": "..."}`; each person pastes
-  their own key into that server's i dialog in the pane, which sends it as
-  the bearer token on that server's calls and nowhere else.
+- **mindrouter-365:** one `indexes` entry in the deployment's `sources.json`
+  with the URL of `/`; the pane reads the index and lists every server as one
+  fold holding its tools, skills and workflows, each with a Refresh that
+  re-reads all three. A keyed server's index entry carries
+  `"key": {"required": true, "hint": "..."}`; each person pastes their own
+  key into that server's i dialog in the pane, which sends it as the bearer
+  token on that server's calls and nowhere else.
 
 ## Status
 
-2026-09-22: eight servers. The eCFR and grants.gov code moved in from
-mcp-ecfr; the University of Idaho, NIH, NSF, SAM.gov and Federal Audit
-Clearinghouse servers are new. NIH and NSF are verified against the live
-APIs; SAM.gov and FAC are written to their documentation and await keys to be
-run. Not yet done: the VM deployment, evals for the five skills, and pointing
-mindrouter-365's `sources.json` here instead of at the Space.
+2026-09-22: ten servers, deployed on the demo VM behind Caddy with SearXNG
+beside it. The eCFR and grants.gov code moved in from mcp-ecfr; the NIH, NSF,
+SAM.gov, USAspending and Federal Audit Clearinghouse servers are verified
+against the live APIs (SAM.gov and FAC with a person's own key). The Office
+add-in's skills moved here the same day: everything that does not touch the
+document is served from this process. Not yet done: evals for the moved
+skills, the SAM.gov integrity section, an FDP Clearinghouse reader.
 
 ## Related
 

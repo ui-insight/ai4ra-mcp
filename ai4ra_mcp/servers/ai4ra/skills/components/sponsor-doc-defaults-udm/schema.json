@@ -1,0 +1,122 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/AI4RA/prompt-library/components/sponsor-doc-defaults-udm/schema.json",
+  "title": "Sponsor Document Defaults — UDM Output",
+  "description": "Single JSON object listing the default documents a named sponsor requires for a standard full proposal. The companion component solicitation-doc-modifications-udm consumes this output (together with solicitation text) to produce overrides and net-new requirements.",
+  "version": "1.0.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "sponsor_name",
+    "sponsor_division",
+    "knowledge_notes",
+    "document_requirements"
+  ],
+  "properties": {
+    "sponsor_name": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Sponsor as interpreted by the classifier. May be a canonical normalization of the input (e.g., 'NSF' normalized to 'National Science Foundation'). When the input names multiple sponsors or is ambiguous, choose the primary and explain in knowledge_notes."
+    },
+    "sponsor_division": {
+      "type": ["string", "null"],
+      "description": "Division, directorate, institute, or center when the caller provided one (e.g., 'NIAID', 'BIO', 'Office of Science'). Null when not provided or not applicable."
+    },
+    "knowledge_notes": {
+      "type": ["string", "null"],
+      "description": "Free-text caveats. Cite the policy version the defaults are drawn from when known (e.g., 'NSF PAPPG effective May 20, 2024' or 'NIH Grants Policy Statement, October 2024 revision'). Explain when the sponsor is unrecognized, when the listed defaults assume a specific mechanism or solicitation family, or when a requirement is expected to vary across the sponsor's programs in ways that the sibling solicitation component must resolve."
+    },
+    "document_requirements": {
+      "type": "array",
+      "description": "Ordered list of document requirements. Empty array ([]) — not null — when the sponsor is unrecognized; the explanation belongs in knowledge_notes. Ordering is conventional: administrative / cover documents first, then proposal body (summary, narrative, references), then per-person documents (biosketch, current & pending, COA), then facilities and budget, then plans (data, resource sharing, mentoring), then conditional compliance documents, then letters.",
+      "items": { "$ref": "#/$defs/documentRequirement" }
+    }
+  },
+  "$defs": {
+    "documentCode": {
+      "type": "string",
+      "enum": [
+        "cover_sheet",
+        "cover_letter",
+        "project_summary",
+        "project_narrative",
+        "proposal_narrative",
+        "specific_aims",
+        "references_cited",
+        "biosketch",
+        "current_pending",
+        "collaborators_and_affiliations",
+        "facilities",
+        "equipment",
+        "budget",
+        "budget_justification",
+        "data_mgmt",
+        "postdoc_mentoring",
+        "mentoring_plan",
+        "results_prior_support",
+        "resource_sharing",
+        "authentication_key_resources",
+        "leadership_plan",
+        "human_subjects",
+        "vertebrate_animals",
+        "select_agent",
+        "inclusion_enrollment_report",
+        "letter_support",
+        "letter_collaboration",
+        "letter_of_intent",
+        "other"
+      ],
+      "description": "Controlled document-code vocabulary. Shared with sibling UDM components (classifier, solicitation modifications, completeness review) so downstream routing can dispatch on the code directly. 'proposal_narrative' covers the main technical body (NSF Project Description, NIH Research Strategy). 'specific_aims' is NIH-specific. 'project_summary' is a one-page abstract (NSF) or NIH abstract. 'project_narrative' is NIH's short public-facing narrative (distinct from proposal_narrative). 'data_mgmt' covers NSF DMP and NIH DMS plans. 'resource_sharing' covers model-organism and research-resource sharing statements separate from data management. 'results_prior_support' is NSF-specific. 'authentication_key_resources' is NIH-specific. Use 'other' with a descriptive label when no enumerated code fits, and consider proposing a new code in a follow-up PR."
+    },
+    "documentRequirement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "code",
+        "label",
+        "description",
+        "page_limit",
+        "format_spec",
+        "is_required",
+        "is_per_person",
+        "conditional_on"
+      ],
+      "properties": {
+        "code": {
+          "$ref": "#/$defs/documentCode"
+        },
+        "label": {
+          "type": "string",
+          "minLength": 1,
+          "description": "The sponsor's printed label for the document (e.g., 'Project Description' for NSF, 'Research Strategy' for NIH). When the sponsor uses a distinctive label, prefer it over a generic one."
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1,
+          "description": "One or two sentences explaining what the document is and what it contains."
+        },
+        "page_limit": {
+          "type": ["integer", "null"],
+          "minimum": 1,
+          "description": "Page limit as an integer. Null when the sponsor does not set a limit or when the limit is known to vary by mechanism. Do not invent a limit; leave null and explain in knowledge_notes or in description."
+        },
+        "format_spec": {
+          "type": ["string", "null"],
+          "description": "Key formatting constraints (font size minimum, line spacing, margin, required subheadings, permitted file types). Null when no format constraints apply beyond the sponsor's general formatting rules."
+        },
+        "is_required": {
+          "type": "boolean",
+          "description": "True when the sponsor requires this document by default for the baseline standard proposal. False when the document is explicitly optional (e.g., NIH cover letter). Conditionally-required documents set is_required=true AND conditional_on=<the condition>; downstream treats a conditional requirement as required only when the condition is met."
+        },
+        "is_per_person": {
+          "type": "boolean",
+          "description": "True when the sponsor requires one instance of this document per person in a named role (typically biosketch, current_pending, and collaborators_and_affiliations, which are per-senior-person)."
+        },
+        "conditional_on": {
+          "type": ["string", "null"],
+          "description": "Short English description of the condition that makes this requirement apply, when the requirement is conditional. Examples: 'Postdoctoral researchers included in budget' (NSF postdoc mentoring plan), 'PI has received NSF support in the last 5 years' (results_prior_support), 'Multiple PDs/PIs named' (NIH leadership_plan), 'Research involves human subjects' (human_subjects), 'Research involves vertebrate animals' (vertebrate_animals). Null when the requirement applies unconditionally."
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,157 @@
+{
+  "sponsor_name": "National Science Foundation",
+  "sponsor_division": null,
+  "knowledge_notes": "Defaults grounded in the NSF Proposal & Award Policies & Procedures Guide (PAPPG), Chapter II, for a standard Research (full) proposal. NSF divisions and programs may modify these defaults through program-specific solicitations; resolve solicitation-specific differences via solicitation-doc-modifications-udm.",
+  "document_requirements": [
+    {
+      "code": "cover_sheet",
+      "label": "Cover Sheet",
+      "description": "System-generated administrative cover sheet populated in Research.gov or Grants.gov at submission time. Captures sponsor, program, PI, organization, dates, and total budget.",
+      "page_limit": null,
+      "format_spec": null,
+      "is_required": true,
+      "is_per_person": false,
+      "conditional_on": null
+    },
+    {
+      "code": "project_summary",
+      "label": "Project Summary",
+      "description": "One-page summary accessible to a broad audience. Must include three labeled subheadings: Overview, Intellectual Merit, and Broader Impacts.",
+      "page_limit": 1,
+      "format_spec": "Required subheadings: 'Overview', 'Intellectual Merit', 'Broader Impacts'. Font-size minimum and line-spacing rules follow PAPPG Chapter II.B.",
+      "is_required": true,
+      "is_per_person": false,
+      "conditional_on": null
+    },
+    {
+      "code": "proposal_narrative",
+      "label": "Project Description",
+      "description": "Main technical body of the proposal. Describes objectives, significance, prior work, approach, and broader impacts activities.",
+      "page_limit": 15,
+      "format_spec": "PAPPG font, line-spacing, and margin rules apply. Results from Prior NSF Support and broader-impacts activities are embedded within this page limit.",
+      "is_required": true,
+      "is_per_person": false,
+      "conditional_on": null
+    },
+    {
+      "code": "results_prior_support",
+      "label": "Results from Prior NSF Support",
+      "description": "Required subsection within the Project Description. For each PI and co-PI who has received NSF funding (whether active or expired) within the last five years, report award number, title, amount, period, summary of results, and relationship to the proposed work.",
+      "page_limit": null,
+      "format_spec": "Embedded within the 15-page Project Description limit; not a separate document.",
+      "is_required": true,
+      "is_per_person": false,
+      "conditional_on": "At least one PI or co-PI has received NSF support (active or expired) within the last five years, regardless of the source directorate or program."
+    },
+    {
+      "code": "references_cited",
+      "label": "References Cited",
+      "description": "Bibliography of every reference cited in the Project Description. Complete citations; annotations are not permitted.",
+      "page_limit": null,
+      "format_spec": "No page limit but no annotations. Complete citation information required for every reference.",
+      "is_required": true,
+      "is_per_person": false,
+      "conditional_on": null
+    },
+    {
+      "code": "biosketch",
+      "label": "Biographical Sketch",
+      "description": "NSF-format biographical sketch for each senior person, prepared via SciENcv or the NSF fillable PDF.",
+      "page_limit": 3,
+      "format_spec": "NSF-approved format only (SciENcv or NSF fillable PDF). Required sections: Professional Preparation, Appointments and Positions, Products, Synergistic Activities.",
+      "is_required": true,
+      "is_per_person": true,
+      "conditional_on": null
+    },
+    {
+      "code": "current_pending",
+      "label": "Current and Pending (Other) Support",
+      "description": "NSF-format disclosure of all current and pending support for each senior person. Includes in-kind contributions and unfunded collaborations where required.",
+      "page_limit": null,
+      "format_spec": "NSF-approved format only (SciENcv or NSF fillable PDF). No page limit; length varies with the person's award portfolio.",
+      "is_required": true,
+      "is_per_person": true,
+      "conditional_on": null
+    },
+    {
+      "code": "collaborators_and_affiliations",
+      "label": "Collaborators and Other Affiliations",
+      "description": "Table of collaborators, graduate advisors, advisees, and other affiliations over a defined look-back window for each senior person. Used by NSF to manage reviewer conflicts of interest.",
+      "page_limit": null,
+      "format_spec": "NSF Collaborators and Other Affiliations spreadsheet template required (xlsx upload).",
+      "is_required": true,
+      "is_per_person": true,
+      "conditional_on": null
+    },
+    {
+      "code": "facilities",
+      "label": "Facilities, Equipment, and Other Resources",
+      "description": "Description of physical and intellectual resources available to the project: laboratory, office, computing, clinical, library, and animal facilities; major instrumentation; shared resources. Equipment is folded into this section for NSF.",
+      "page_limit": null,
+      "format_spec": null,
+      "is_required": true,
+      "is_per_person": false,
+      "conditional_on": null
+    },
+    {
+      "code": "budget",
+      "label": "Budget",
+      "description": "NSF-format structured budget completed in the submission system, covering Senior Personnel (A), Other Personnel (B), Fringe Benefits (C), Equipment (D), Travel (E), Participant Support Costs (F), Other Direct Costs (G), Total Direct Costs (H), Indirect Costs (I), Total Direct & Indirect Costs (J), Residual Funds (K), Amount of this Request (L), and Cost Sharing (M).",
+      "page_limit": null,
+      "format_spec": "System form. NSF budget categories A through M.",
+      "is_required": true,
+      "is_per_person": false,
+      "conditional_on": null
+    },
+    {
+      "code": "budget_justification",
+      "label": "Budget Justification",
+      "description": "Narrative justification for each budget line. Explains personnel roles and effort, fringe basis, equipment necessity, travel purposes, participant support costs, other direct costs, and the indirect cost rate and base.",
+      "page_limit": 5,
+      "format_spec": "Up to 5 pages for the prime institution. An additional budget justification of up to 5 pages is permitted per subawardee.",
+      "is_required": true,
+      "is_per_person": false,
+      "conditional_on": null
+    },
+    {
+      "code": "data_mgmt",
+      "label": "Data Management Plan",
+      "description": "Supplementary document describing how the proposal will conform to NSF's data sharing policy: types of data generated, standards, access and sharing policies, provisions for re-use, and archiving plans.",
+      "page_limit": 2,
+      "format_spec": "Maximum 2 pages. Directorate-specific guidance may add required elements; check the relevant directorate supplement.",
+      "is_required": true,
+      "is_per_person": false,
+      "conditional_on": null
+    },
+    {
+      "code": "postdoc_mentoring",
+      "label": "Mentoring Plan",
+      "description": "NSF-required mentoring plan for postdoctoral researchers supported on the project. Must describe the mentoring activities that will be provided to postdocs during the award period.",
+      "page_limit": 1,
+      "format_spec": "Maximum 1 page. Must address career counseling, training in proposal and grant writing, guidance on publishing, and other activities as described in PAPPG.",
+      "is_required": true,
+      "is_per_person": false,
+      "conditional_on": "Postdoctoral researchers are included in the proposal budget."
+    },
+    {
+      "code": "letter_collaboration",
+      "label": "Collaboration Letter",
+      "description": "Brief collaboration letter confirming a collaborator's willingness to participate. NSF prescribes a single-sentence format to distinguish collaboration confirmations from substantive letters of support.",
+      "page_limit": null,
+      "format_spec": "NSF-prescribed single-sentence format: 'If the proposal submitted by Dr. [name] entitled [title] is selected for funding by NSF, it is my intent to collaborate and/or commit resources as detailed in the Project Description or the Facilities, Equipment and Other Resources section of the proposal.'",
+      "is_required": true,
+      "is_per_person": false,
+      "conditional_on": "A collaborator who is not senior personnel on the proposal is named in the Project Description."
+    },
+    {
+      "code": "letter_support",
+      "label": "Letter of Support",
+      "description": "Substantive letter pledging resources, access, or services from an entity other than the proposing organization or a senior person. NSF prohibits letters that merely endorse the proposal without substantive content.",
+      "page_limit": null,
+      "format_spec": "Must describe the specific resources, access, or services being pledged. Endorsement-only letters are not permitted.",
+      "is_required": true,
+      "is_per_person": false,
+      "conditional_on": "Substantive resources, access, or services are pledged by an entity other than the proposing organization or its senior personnel."
+    }
+  ]
+}

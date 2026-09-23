@@ -28,6 +28,7 @@ from ai4ra_mcp.common.http import request_key
 from ai4ra_mcp.servers.ai4ra.server import mcp as ai4ra
 from ai4ra_mcp.servers.ecfr.server import mcp as ecfr
 from ai4ra_mcp.servers.fac.server import mcp as fac
+from ai4ra_mcp.servers.general.server import mcp as general
 from ai4ra_mcp.servers.grants.server import mcp as grants
 from ai4ra_mcp.servers.nih.server import mcp as nih
 from ai4ra_mcp.servers.nsf.server import mcp as nsf
@@ -35,8 +36,10 @@ from ai4ra_mcp.servers.sam.server import mcp as sam
 from ai4ra_mcp.servers.uidaho.server import mcp as uidaho
 from ai4ra_mcp.servers.usaspending.server import mcp as usaspending
 
-SERVERS: dict[str, MCPServer] = {"ecfr": ecfr, "grants": grants, "uidaho": uidaho, "ai4ra": ai4ra,
-                                 "nih": nih, "nsf": nsf, "sam": sam, "fac": fac, "usaspending": usaspending}
+# Index order is picker order: the general fold first, then the research-administration skills, the public
+# upstreams, and last the one institution's own server.
+SERVERS: dict[str, MCPServer] = {"general": general, "ai4ra": ai4ra, "ecfr": ecfr, "grants": grants, "nih": nih, "nsf": nsf,
+                                 "sam": sam, "fac": fac, "usaspending": usaspending, "uidaho": uidaho}
 SERVERS_DIR = Path(__file__).parent / "servers"
 WEB = "https://github.com/ui-insight/ai4ra-mcp/blob/main/ai4ra_mcp/servers/"
 
@@ -44,8 +47,9 @@ WEB = "https://github.com/ui-insight/ai4ra-mcp/blob/main/ai4ra_mcp/servers/"
 META: dict[str, dict] = {
     "ecfr": {"label": "eCFR", "description": "Federal regulations from the eCFR: search, read a section on a date, compare versions."},
     "grants": {"label": "grants.gov", "description": "Federal funding opportunities: search, then one opportunity's record with its attachments."},
-    "uidaho": {"label": "University of Idaho", "description": "University policy for sponsored projects (APM, FSH) by number and title, and the F&A and fringe rates."},
-    "ai4ra": {"label": "AI4RA", "description": "General tools: read any public web page or PDF as text."},
+    "uidaho": {"label": "University of Idaho", "description": "University policy for sponsored projects (APM, FSH) by number and title, the F&A and fringe rates and a Rates sheet from them; the award skills that read Banner exports; the proposal workbook."},
+    "general": {"label": "General", "description": "Any office, any document: search the open web, read a page or PDF as text; ask the person a question, remove AI writing tells, draw a project timeline as a Gantt chart."},
+    "ai4ra": {"label": "AI4RA", "description": "Research-administration skills, no tools: an RFA sheet, a narrative, a work plan, a budget outline and the NSF budget form, a PI memo, cost-allowability checks and budget justifications."},
     "nih": {"label": "NIH RePORTER", "description": "NIH-funded projects by PI, organization or topic; one project by number; its publications."},
     "nsf": {"label": "NSF awards", "description": "NSF awards by PI, institution or keyword; one award with its abstract; its outcomes report."},
     "sam": {"label": "SAM.gov", "description": "Entity registrations, exclusions and Assistance Listings.",

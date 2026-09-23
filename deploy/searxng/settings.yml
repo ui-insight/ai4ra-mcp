@@ -1,4 +1,4 @@
-# SearXNG for the ai4ra web_search tool. Merged over the image's defaults (use_default_settings).
+# SearXNG for the general server's web_search tool. Merged over the image's defaults (use_default_settings).
 # JSON output is what the tool reads; the limiter is off because there is no Redis and the only
 # client is the ai4ra-mcp container on the compose network.
 use_default_settings: true

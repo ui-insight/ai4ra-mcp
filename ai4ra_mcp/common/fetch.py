@@ -372,7 +372,7 @@ async def grants_gov_search(keyword: str, statuses: str = "posted|forecasted", a
         "hits": hits,
         "agencies": [{"code": a.get("value"), "name": a.get("label"), "count": a.get("count")}
                      for a in (data.get("agencies") or [])[:25]],
-        "note": "Pass a hit's id to grants_gov_opportunity for the full record, its synopsis and its attachment links; pass an attachment link to fetch_document on the ai4ra server to read it.",
+        "note": "Pass a hit's id to grants_gov_opportunity for the full record, its synopsis and its attachment links; pass an attachment link to fetch_document on the general server to read it.",
     }
     if data.get("suggestion"):
         out["suggestion"] = data["suggestion"]

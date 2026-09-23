@@ -1,0 +1,85 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/AI4RA/prompt-library/components/expense-transaction-extraction/schema.json",
+  "title": "Expense Transaction Extraction — Output",
+  "description": "Structured single-expense transaction record normalized from receipt, invoice, purchase-order, p-card, or general-ledger evidence. Input-normalization contract for the federal cost-allowability analysis workflow.",
+  "version": "0.1.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "transaction_date",
+    "vendor",
+    "description",
+    "amount",
+    "currency",
+    "documentation_on_hand"
+  ],
+  "properties": {
+    "expense_id": {
+      "type": ["string", "null"],
+      "description": "Analyst or file reference for this expense."
+    },
+    "source_document": {
+      "type": ["string", "null"],
+      "description": "What the record was read from (invoice number, GL line, p-card statement, etc.)."
+    },
+    "transaction_date": {
+      "type": ["string", "null"],
+      "description": "Date the cost was incurred, quoted in the document's format."
+    },
+    "vendor": {
+      "type": ["string", "null"],
+      "description": "Supplier, payee, or merchant."
+    },
+    "description": {
+      "type": ["string", "null"],
+      "description": "What was purchased or paid for, in the document's words."
+    },
+    "amount": {
+      "type": ["number", "null"],
+      "description": "Charge amount as a JSON number with no currency symbol or thousand separators."
+    },
+    "currency": {
+      "type": "string",
+      "minLength": 1,
+      "description": "ISO currency code. Defaults to USD when the document does not state otherwise."
+    },
+    "gl_account": {
+      "type": ["string", "null"],
+      "description": "General-ledger account or object code."
+    },
+    "cost_code": {
+      "type": ["string", "null"],
+      "description": "Project, fund, grant, or activity code the charge was booked to."
+    },
+    "quantity": {
+      "type": ["string", "null"],
+      "description": "Units purchased, when stated."
+    },
+    "invoice_reference": {
+      "type": ["string", "null"],
+      "description": "Invoice, purchase-order, or requisition number."
+    },
+    "documentation_on_hand": {
+      "type": "array",
+      "description": "Supporting records supplied with the expense. Empty array when none.",
+      "items": {"type": "string", "minLength": 1}
+    },
+    "purchaser": {
+      "type": ["string", "null"],
+      "description": "Person who incurred or requested the charge."
+    },
+    "project_role": {
+      "type": ["string", "null"],
+      "description": "That person's role on the project, when stated."
+    },
+    "expense_category_hint": {
+      "type": ["string", "null"],
+      "description": "Apparent cost category when obvious from the description; null otherwise. Advisory only."
+    },
+    "notes": {
+      "type": ["string", "null"],
+      "description": "Other reviewer-relevant detail, including reviewer questions and any secondary charges."
+    }
+  }
+}

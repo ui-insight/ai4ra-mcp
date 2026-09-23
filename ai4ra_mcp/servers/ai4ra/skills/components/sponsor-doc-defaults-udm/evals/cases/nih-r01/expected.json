@@ -1,0 +1,207 @@
+{
+  "sponsor_name": "National Institutes of Health",
+  "sponsor_division": "NIAID",
+  "knowledge_notes": "Defaults shown are for the R01 mechanism as specified by the caller. Several page limits vary by mechanism (Research Strategy: 12 pages for R01, 6 for R21/R03). Grounded in the NIH Application Instructions for Research (G.400 series) and the NIH Grants Policy Statement. NIAID may impose institute-specific instructions through a Funding Opportunity Notice; resolve those via solicitation-doc-modifications-udm.",
+  "document_requirements": [
+    {
+      "code": "cover_letter",
+      "label": "Cover Letter",
+      "description": "Optional freeform cover letter to NIH receipt and referral. May include assignment requests, referees, reviewer-conflict disclosures, or statements for late submission.",
+      "page_limit": null,
+      "format_spec": null,
+      "is_required": false,
+      "is_per_person": false,
+      "conditional_on": null
+    },
+    {
+      "code": "project_summary",
+      "label": "Project Summary/Abstract",
+      "description": "Succinct, accessible description of the proposed work. Written for a general scientific audience and used by NIH for public reporting.",
+      "page_limit": 1,
+      "format_spec": "30 lines of text.",
+      "is_required": true,
+      "is_per_person": false,
+      "conditional_on": null
+    },
+    {
+      "code": "project_narrative",
+      "label": "Project Narrative",
+      "description": "Short public-facing relevance statement describing the project's relevance to public health. Distinct from the Research Strategy.",
+      "page_limit": 1,
+      "format_spec": "2–3 sentences describing public-health relevance; written for non-scientists.",
+      "is_required": true,
+      "is_per_person": false,
+      "conditional_on": null
+    },
+    {
+      "code": "specific_aims",
+      "label": "Specific Aims",
+      "description": "One-page statement of the specific objectives of the proposed research, the hypotheses being tested, and the expected outcomes.",
+      "page_limit": 1,
+      "format_spec": "Required section heading 'Specific Aims'. One page maximum.",
+      "is_required": true,
+      "is_per_person": false,
+      "conditional_on": null
+    },
+    {
+      "code": "proposal_narrative",
+      "label": "Research Strategy",
+      "description": "Main technical body of the NIH application. For R01, organized into Significance, Innovation, and Approach subsections; Preliminary Studies for new applications are embedded in Approach.",
+      "page_limit": 12,
+      "format_spec": "Required subsection headings for R01: Significance, Innovation, Approach. Page limit is 12 for R01, 6 for R21/R03.",
+      "is_required": true,
+      "is_per_person": false,
+      "conditional_on": null
+    },
+    {
+      "code": "references_cited",
+      "label": "Bibliography & References Cited",
+      "description": "Bibliography of every reference cited in the Research Strategy and other application components. Complete citations required.",
+      "page_limit": null,
+      "format_spec": "No page limit. Include every reference cited in the application.",
+      "is_required": true,
+      "is_per_person": false,
+      "conditional_on": null
+    },
+    {
+      "code": "biosketch",
+      "label": "Biographical Sketch",
+      "description": "NIH-format biographical sketch for each senior/key person, prepared via SciENcv.",
+      "page_limit": 5,
+      "format_spec": "NIH-approved format (SciENcv). Required sections: A. Personal Statement; B. Positions, Scientific Appointments and Honors; C. Contributions to Science (up to 5 contributions, up to 4 products each); D. Scholastic Performance (early-stage and fellowship applications only).",
+      "is_required": true,
+      "is_per_person": true,
+      "conditional_on": null
+    },
+    {
+      "code": "current_pending",
+      "label": "Other Support",
+      "description": "NIH-format disclosure of all active and pending support for each senior/key person. Signed by the Authorized Organization Representative at Just-in-Time.",
+      "page_limit": null,
+      "format_spec": "NIH Other Support format. Electronic signature by the Authorized Organization Representative required at Just-in-Time submission.",
+      "is_required": true,
+      "is_per_person": true,
+      "conditional_on": null
+    },
+    {
+      "code": "facilities",
+      "label": "Facilities and Other Resources",
+      "description": "Description of the facilities, resources, and environment that will contribute to the probability of success of the project. Excludes equipment — Equipment is a separate section for NIH.",
+      "page_limit": null,
+      "format_spec": null,
+      "is_required": true,
+      "is_per_person": false,
+      "conditional_on": null
+    },
+    {
+      "code": "equipment",
+      "label": "Equipment",
+      "description": "Separate section listing major items of equipment already available for the project. Distinct from Facilities and Other Resources in the NIH application template.",
+      "page_limit": null,
+      "format_spec": null,
+      "is_required": true,
+      "is_per_person": false,
+      "conditional_on": null
+    },
+    {
+      "code": "budget",
+      "label": "Budget",
+      "description": "Modular budget (direct costs in $25,000 increments up to $250,000/year) or detailed R&R budget depending on total direct costs and mechanism requirements.",
+      "page_limit": null,
+      "format_spec": "Modular budget permitted when direct costs are ≤ $250,000/year; otherwise detailed R&R Budget Form is required.",
+      "is_required": true,
+      "is_per_person": false,
+      "conditional_on": null
+    },
+    {
+      "code": "budget_justification",
+      "label": "Budget Justification",
+      "description": "Narrative justification for budget line items. Brief for modular budgets (Personnel Justification, Consortium Justification, Additional Narrative Justification); comprehensive for detailed budgets.",
+      "page_limit": null,
+      "format_spec": "For modular budgets: three required sub-justifications (Personnel, Consortium/Contractual, Additional Narrative). For detailed budgets: justification for each line item.",
+      "is_required": true,
+      "is_per_person": false,
+      "conditional_on": null
+    },
+    {
+      "code": "data_mgmt",
+      "label": "Data Management and Sharing (DMS) Plan",
+      "description": "Required plan describing how scientific data will be managed and shared, including data types, standards, preservation and access timeline, and oversight.",
+      "page_limit": 2,
+      "format_spec": "Maximum 2 pages. Required for all NIH-funded research that generates scientific data.",
+      "is_required": true,
+      "is_per_person": false,
+      "conditional_on": null
+    },
+    {
+      "code": "resource_sharing",
+      "label": "Other Plan(s) — Resource Sharing",
+      "description": "Separate resource-sharing plans (Model Organism Sharing Plan, Genomic Data Sharing Plan) when the research generates relevant resources or data.",
+      "page_limit": null,
+      "format_spec": null,
+      "is_required": true,
+      "is_per_person": false,
+      "conditional_on": "Research generates model organisms requiring sharing under NIH policy OR generates large-scale human or non-human genomic data subject to the NIH Genomic Data Sharing policy."
+    },
+    {
+      "code": "authentication_key_resources",
+      "label": "Authentication of Key Biological and/or Chemical Resources",
+      "description": "Description of methods to ensure the identity and validity of key biological and chemical resources (cell lines, specialty chemicals, antibodies, biologics) used in the proposed research.",
+      "page_limit": 1,
+      "format_spec": "Maximum 1 page. Required only when key biological or chemical resources are used.",
+      "is_required": true,
+      "is_per_person": false,
+      "conditional_on": "The proposed research uses key biological or chemical resources as defined by NIH (cell lines, specialty chemicals, antibodies, and other biologics)."
+    },
+    {
+      "code": "leadership_plan",
+      "label": "Multiple PD/PI Leadership Plan",
+      "description": "Required plan for applications with more than one Program Director / Principal Investigator. Describes the governance and organizational structure, communication plans, and processes for resolving conflicts and reallocating resources.",
+      "page_limit": null,
+      "format_spec": null,
+      "is_required": true,
+      "is_per_person": false,
+      "conditional_on": "More than one PD/PI is named on the application."
+    },
+    {
+      "code": "human_subjects",
+      "label": "Protection of Human Subjects / PHS Human Subjects and Clinical Trials Information",
+      "description": "PHS Human Subjects and Clinical Trials Information form plus the Protection of Human Subjects narrative. Clinical-trial-specific sections apply when the study meets NIH's definition of a clinical trial.",
+      "page_limit": null,
+      "format_spec": "Completed PHS Human Subjects and Clinical Trials Information form. Clinical-trial questionnaires and protocol required when applicable.",
+      "is_required": true,
+      "is_per_person": false,
+      "conditional_on": "The research involves human subjects as defined by 45 CFR 46."
+    },
+    {
+      "code": "vertebrate_animals",
+      "label": "Vertebrate Animals",
+      "description": "Narrative addressing the five required vertebrate-animals review points: description of procedures, justifications, minimization of pain and distress, and euthanasia method.",
+      "page_limit": null,
+      "format_spec": "Required review points addressed: description of procedures involving animals, justifications for the use, description of interventions to minimize discomfort, and method of euthanasia.",
+      "is_required": true,
+      "is_per_person": false,
+      "conditional_on": "The research involves live vertebrate animals."
+    },
+    {
+      "code": "select_agent",
+      "label": "Select Agent Research",
+      "description": "Disclosure of research involving HHS or USDA select agents and toxins as defined in 42 CFR Part 73, 7 CFR Part 331, or 9 CFR Part 121.",
+      "page_limit": null,
+      "format_spec": null,
+      "is_required": true,
+      "is_per_person": false,
+      "conditional_on": "The research involves select agents or toxins listed in 42 CFR Part 73, 7 CFR Part 331, or 9 CFR Part 121."
+    },
+    {
+      "code": "inclusion_enrollment_report",
+      "label": "Inclusion of Women, Minorities, and Children / Inclusion Enrollment Report",
+      "description": "Description of plans to include women, racial and ethnic minorities, and individuals across the lifespan in clinical research; tabular inclusion enrollment reports for each study.",
+      "page_limit": null,
+      "format_spec": "Planned and Cumulative Inclusion Enrollment Report tables for each study involving human subjects.",
+      "is_required": true,
+      "is_per_person": false,
+      "conditional_on": "The research involves human subjects subject to NIH's inclusion policy (most NIH-defined clinical research)."
+    }
+  ]
+}
