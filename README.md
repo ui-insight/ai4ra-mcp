@@ -162,7 +162,7 @@ carries fallback figures.
 ### lakehouse
 
 The University of Idaho data lakehouse through Marina, its query and file
-API at `http://lakehouse.uidaho.edu:7010` (`AI4RA_MCP_LAKEHOUSE_URL`),
+API at `http://lakehouse.insight.uidaho.edu:7010` (`AI4RA_MCP_LAKEHOUSE_URL`),
 reachable on campus, which is why this process reads it and a browser never
 does. Every request needs an OAuth 2.0 bearer from `/auth/token`, minted with
 HTTP Basic from a client id (`AI4RA_MCP_LAKEHOUSE_CLIENT`, default `mr-365`)
