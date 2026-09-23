@@ -162,7 +162,7 @@ carries fallback figures.
 ### lakehouse
 
 The University of Idaho data lakehouse through Marina, its query and file
-API at `http://lakehouse.insight.uidaho.edu:7010` (`AI4RA_MCP_LAKEHOUSE_URL`),
+API at `http://nlayman.nkn.uidaho.edu:7010` (`AI4RA_MCP_LAKEHOUSE_URL`),
 reachable on campus, which is why this process reads it and a browser never
 does. Every request needs an OAuth 2.0 bearer from `/auth/token`, minted with
 HTTP Basic from a client id (`AI4RA_MCP_LAKEHOUSE_CLIENT`, default `mr-365`)
@@ -178,9 +178,10 @@ so each client is its own server here: its own path, its own fold in the
 pane, its own key. `AI4RA_MCP_LAKEHOUSE_CLIENTS` lists the client ids to
 mount, comma separated; the first is mounted at `lakehouse`, the rest at
 `lakehouse-<id>`, with `AI4RA_MCP_LAKEHOUSE_SECRET_<ID>` as each one's
-fallback. Today one client is configured, `mr-365`, whose querying stream
-is `subaward`. All instances share the same tools and the same skills
-folder.
+fallback. Today one client is configured, `mr-365`, against the Marina at
+`nlayman.nkn.uidaho.edu`, whose streams the tools discover (`personnel`
+is one). A different Marina is `AI4RA_MCP_LAKEHOUSE_URL` in the VM's
+`.env`; all instances share the same tools and the same skills folder.
 
 Marina scopes access by stream: a client is authorized for querying streams,
 each of which exposes a set of tables through a wrapper view (columns masked,

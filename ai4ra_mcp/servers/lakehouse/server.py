@@ -1,6 +1,6 @@
 """lakehouse: the University of Idaho data lakehouse through Marina, its query and file API.
 
-Upstream: http://lakehouse.insight.uidaho.edu:7010 (AI4RA_MCP_LAKEHOUSE_URL), reachable on campus, so this process
+Upstream: http://nlayman.nkn.uidaho.edu:7010 (AI4RA_MCP_LAKEHOUSE_URL), reachable on campus, so this process
 reads it and a browser client never does. Marina authorizes a *client* (an id and a shared secret) for a set
 of streams, so each client is its own server here, with its own fold and its own secret in a pane:
 AI4RA_MCP_LAKEHOUSE_CLIENTS lists the client ids to mount, comma separated (default mr-365); the first is
@@ -28,7 +28,7 @@ from ai4ra_mcp.common.http import HEADERS, TIMEOUT_S, api_key, missing_key
 from ai4ra_mcp.common.skills import register_prompts
 
 _READ_ONLY = {"readOnlyHint": True, "destructiveHint": False, "idempotentHint": True, "openWorldHint": False}
-BASE = os.environ.get("AI4RA_MCP_LAKEHOUSE_URL", "http://lakehouse.insight.uidaho.edu:7010").rstrip("/")
+BASE = os.environ.get("AI4RA_MCP_LAKEHOUSE_URL", "http://nlayman.nkn.uidaho.edu:7010").rstrip("/")
 CLIENTS = [c.strip() for c in os.environ.get("AI4RA_MCP_LAKEHOUSE_CLIENTS", "mr-365").split(",") if c.strip()] or ["mr-365"]
 MAX_ROWS = 500
 MAX_CHARS = 30_000
