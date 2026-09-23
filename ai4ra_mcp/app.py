@@ -33,9 +33,10 @@ from ai4ra_mcp.servers.nih.server import mcp as nih
 from ai4ra_mcp.servers.nsf.server import mcp as nsf
 from ai4ra_mcp.servers.sam.server import mcp as sam
 from ai4ra_mcp.servers.uidaho.server import mcp as uidaho
+from ai4ra_mcp.servers.usaspending.server import mcp as usaspending
 
 SERVERS: dict[str, MCPServer] = {"ecfr": ecfr, "grants": grants, "uidaho": uidaho, "ai4ra": ai4ra,
-                                 "nih": nih, "nsf": nsf, "sam": sam, "fac": fac}
+                                 "nih": nih, "nsf": nsf, "sam": sam, "fac": fac, "usaspending": usaspending}
 SERVERS_DIR = Path(__file__).parent / "servers"
 WEB = "https://github.com/ui-insight/ai4ra-mcp/blob/main/ai4ra_mcp/servers/"
 
@@ -49,6 +50,7 @@ META: dict[str, dict] = {
     "nsf": {"label": "NSF awards", "description": "NSF awards by PI, institution or keyword; one award with its abstract; its outcomes report."},
     "sam": {"label": "SAM.gov", "description": "Entity registrations, exclusions and Assistance Listings.",
             "key": {"required": True, "hint": "Paste your SAM.gov public API key, from the account details page of your SAM.gov account."}},
+    "usaspending": {"label": "USAspending", "description": "Federal awards an entity held as the prime and the subawards it received, by name or UEI; one award's record."},
     "fac": {"label": "Federal Audit Clearinghouse", "description": "Single audits, findings and federal awards for subrecipient risk assessment.",
             "key": {"required": True, "hint": "Paste your api.data.gov key for the FAC API (free, from the signup at fac.gov/api)."}},
 }

@@ -19,6 +19,7 @@ EXPECTED_TOOLS = {
     "nih": {"nih_index", "nih_projects_search", "nih_project", "nih_publications"},
     "nsf": {"nsf_index", "nsf_awards_search", "nsf_award", "nsf_award_outcomes"},
     "sam": {"sam_index", "sam_entity", "sam_exclusions_search", "sam_assistance_listing", "sam_assistance_listings_search"},
+    "usaspending": {"usaspending_index", "usaspending_recipients", "usaspending_recipient", "usaspending_awards_search", "usaspending_subawards_search", "usaspending_award"},
     "fac": {"fac_index", "fac_audits_search", "fac_findings", "fac_federal_awards"},
 }
 

@@ -22,6 +22,7 @@ that reads skill catalogs by URL gets the same files as static content.
 | `/nih/mcp` | NIH RePORTER | `nih_index`, `nih_projects_search`, `nih_project`, `nih_publications` | `funding-history` |
 | `/nsf/mcp` | NSF Award Search | `nsf_index`, `nsf_awards_search`, `nsf_award`, `nsf_award_outcomes` | none |
 | `/sam/mcp` | SAM.gov (key) | `sam_index`, `sam_entity`, `sam_exclusions_search`, `sam_assistance_listing`, `sam_assistance_listings_search` | `subrecipient-check` |
+| `/usaspending/mcp` | usaspending.gov | `usaspending_index`, `usaspending_recipients`, `usaspending_recipient`, `usaspending_awards_search`, `usaspending_subawards_search`, `usaspending_award` | none |
 | `/fac/mcp` | Federal Audit Clearinghouse (key) | `fac_index`, `fac_audits_search`, `fac_findings`, `fac_federal_awards` | none |
 
 The `ai4ra` server is the catch-all: whatever AI4RA provides that is tied to
@@ -142,6 +143,20 @@ by name or UEI; one Assistance Listing by number with its eligibility, the
 2 CFR 200 subparts that apply, reporting, audit, matching and contacts;
 listings by agency code, status or date. The listings API has no keyword
 search. Entities and listings are cached for a day, exclusions for an hour.
+
+### usaspending
+
+USAspending, https://api.usaspending.gov/api/v2/, no key: the public record
+of federal awards and of the subawards primes report under them (FFATA,
+$30,000 and up). A recipient's profile carries the former names it is filed
+under, which is how an entity renamed since its older awards is found in
+the other portals. Awards an entity held as the prime and the subawards it
+received, by name or UEI, largest first within the last ten fiscal years
+by default, one award-type group per search (grants, other assistance,
+contracts); one award's record by its generated id, with its subaward count.
+Subawards received are the one public evidence of experience as a
+subrecipient, which 2 CFR 200.332(b)(1) asks about. Profiles and records are
+cached for a day, searches for an hour.
 
 ### fac
 

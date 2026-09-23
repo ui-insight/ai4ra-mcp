@@ -1,0 +1,7 @@
+{
+  "catalog_version": "1.0",
+  "repo": "ui-insight/ai4ra-mcp",
+  "server": "usaspending",
+  "note": "Skills that use the usaspending server's tools. None yet; subrecipient-check on the sam server uses its subawards search.",
+  "components": []
+}

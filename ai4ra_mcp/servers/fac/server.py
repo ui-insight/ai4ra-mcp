@@ -85,7 +85,7 @@ async def fac_index() -> dict:
         "key": {"on_this_request": api_key(KEY_ENV) is not None, "per_user": "send your own api.data.gov key as a bearer token; the server holds none unless the deployment set " + KEY_ENV + " as a fallback", "how": KEY_HOW},
         "workflow": ["fac_audits_search by auditee name, UEI or EIN, newest first; note the report_id",
                      "fac_findings for that report: each finding with its compliance requirement, flags and text",
-                     "fac_federal_awards for that report: the schedule of expenditures by program, with findings counts"],
+                     "fac_federal_awards for that report: the SEFA, spending by federal program in the audited year (student aid included), with findings counts; not the entity's list of grants"],
         "notes": ["A single audit is required of a non-federal entity that expends $1,000,000 or more in federal awards in a year ($750,000 before FY2025); an entity with no audit may be below the threshold, not delinquent.",
                   "flags: material_weakness and material_noncompliance on the audit, questioned_costs and repeat_finding on a finding, are what a subrecipient risk assessment under 2 CFR 200.332 looks at.",
                   "low_risk_auditee True means the auditor judged the entity low risk under 2 CFR 200.520.",
@@ -157,8 +157,12 @@ async def fac_findings(report_id: str) -> dict:
 
 @mcp.tool(name="fac_federal_awards", annotations=_READ_ONLY)
 async def fac_federal_awards(report_id: str, agency_prefix: str = "") -> dict:
-    """The schedule of expenditures of federal awards for one single audit: each program with its Assistance Listing
-    number, amount expended, whether direct or passthrough, whether major, and its findings count.
+    """The Schedule of Expenditures of Federal Awards (SEFA) for one single audit: one line per federal program
+    (by Assistance Listing number) with the amount the entity spent under it in the audited year, whether direct
+    or passthrough, whether a major program, and its findings count. These are programs with spending that year,
+    not a list of grants held: at a college, student aid (84.268 Direct Loans, 84.063 Pell) is federal assistance
+    and usually the largest lines, and a research award appears only if it had expenditures in that fiscal year.
+    For the awards an entity holds, use the NSF, NIH and USAspending servers.
 
     Args:
         report_id: The report id from fac_audits_search.
