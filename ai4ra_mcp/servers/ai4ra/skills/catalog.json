@@ -158,7 +158,7 @@
       "triggers": [
         "budget outline"
       ],
-      "version": "2.3.1",
+      "version": "2.3.2",
       "category": "drafting",
       "domain": "research-administration",
       "status": "experimental",
@@ -173,7 +173,7 @@
         {
           "type": "prompt",
           "path": "components/budget-outline/prompt.md",
-          "version": "2.3.1",
+          "version": "2.3.2",
           "role": "canonical_prompt"
         }
       ],

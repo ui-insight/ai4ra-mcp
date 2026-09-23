@@ -101,3 +101,17 @@ def test_parse_policy_page_reads_header_and_stops_at_nav():
 ])
 def test_parse_policy_ref(ref, expected):
     assert uidaho.parse_policy_ref(ref) == expected
+
+
+
+async def test_fringe_rates_return_only_their_section(monkeypatch):
+    page = "Budget and Planning Office\n\nskip to main content\n\n## Budget books\n\nFY2027 Budget books\n\n## Consolidated fringe rates by fiscal year\n\nFY2026\n\nFaculty Rate (includes summer session): 29.5%\n\nStaff Rate: 36.7%\n\n## Contact information\n\nTrina Bower\n"
+
+    async def fake(url, offset=0, max_chars=12000):
+        return {"url": url, "kind": "html", "title": "Budget and Planning Office", "total_chars": len(page), "offset": 0, "returned_chars": len(page), "truncated": False, "text": page}
+
+    monkeypatch.setattr(uidaho._fetch, "fetch_document", fake)
+    out = await uidaho.uidaho_rates("fringe")
+    assert out["text"].startswith("## Consolidated fringe rates by fiscal year")
+    assert "Staff Rate: 36.7%" in out["text"] and "Budget books" not in out["text"] and "Trina" not in out["text"]
+    assert out["truncated"] is False and out["trimmed_to"]

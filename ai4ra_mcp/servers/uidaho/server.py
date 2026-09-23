@@ -37,6 +37,8 @@ RATES = {
                "url": "https://www.uidaho.edu/leadership/finance-administration/budget-planning",
                "note": "The section 'Consolidated fringe rates by fiscal year' lists faculty, staff, temporary help and student rates."},
 }
+# The fringe section of the budget office page: from its heading to the next heading.
+_FRINGE_SECTION = re.compile(r"^## Consolidated fringe rates by fiscal year[ \t]*\n(.*?)(?=^## |\Z)", re.S | re.M)
 STARTER_CITATIONS = [
     {"policy": "APM 45.02", "title": "Sponsored Projects Proposal Preparation and Authorization"},
     {"policy": "APM 45.06", "title": "Allowable and Unallowable Sponsored Project Expenditures"},
@@ -273,6 +275,21 @@ async def uidaho_rates(kind: str, offset: int = 0, max_chars: int = 12000) -> di
     kind = (kind or "").strip().lower()
     if kind not in RATES:
         return {"error": "kind must be 'fa' or 'fringe'", "kinds": {k: v["label"] for k, v in RATES.items()}}
+    if kind == "fringe":
+        # The budget office page is mostly navigation and budget-book links; only its fringe section is returned,
+        # so a model reads the rates and nothing else. Offsets apply to the section.
+        page = await _fetch.fetch_document(RATES[kind]["url"], offset=0, max_chars=40000)
+        m = _FRINGE_SECTION.search(page.get("text") or "")
+        if m:
+            text = "## Consolidated fringe rates by fiscal year\n\n" + m.group(1).strip()
+            offset = max(0, offset)
+            chunk = text[offset:offset + max(1000, min(max_chars, 40000))]
+            page.update({"total_chars": len(text), "offset": offset, "returned_chars": len(chunk),
+                         "truncated": offset + len(chunk) < len(text), "text": chunk, "trimmed_to": "the consolidated fringe rates section of the page"})
+            page.pop("next_offset", None)
+            if page["truncated"]:
+                page["next_offset"] = offset + len(chunk)
+        return {"kind": kind, **RATES[kind], **page}
     page = await _fetch.fetch_document(RATES[kind]["url"], offset=offset, max_chars=max_chars)
     return {"kind": kind, **RATES[kind], **page}
 
