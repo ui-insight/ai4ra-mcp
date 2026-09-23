@@ -29,3 +29,7 @@ All notable changes to this component. Versions follow semver: MAJOR for output-
 ## [3.2.0] — 2026-09-22
 
 - Institution-agnostic: the template ships no rates (0, origin "not set") and the skill fills B8:B13 from a sheet named Rates when the workbook has one, writing its Source line into D12 as provenance; the University of Idaho figures moved to the uidaho-rates-sheet skill. Moved to ui-insight/ai4ra-mcp as a skill of the ai4ra server.
+
+## [3.2.1] — 2026-09-22
+
+- The Origin column beside the rates (C8:C12) is written by the skill: "Rates sheet", "request" or "not set"; a run left the template's "not set" beside rates the pane had filled from the Rates sheet.

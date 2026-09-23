@@ -236,7 +236,7 @@
       "triggers": [
         "nsf budget"
       ],
-      "version": "3.2.0",
+      "version": "3.2.1",
       "category": "drafting",
       "domain": "research-administration",
       "status": "experimental",
@@ -251,7 +251,7 @@
         {
           "type": "prompt",
           "path": "components/budget-nsf/prompt.md",
-          "version": "3.2.0",
+          "version": "3.2.1",
           "role": "canonical_prompt"
         }
       ],
