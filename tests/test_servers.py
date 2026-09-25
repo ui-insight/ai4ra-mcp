@@ -23,6 +23,20 @@ EXPECTED_TOOLS = {
     "sam": {"sam_index", "sam_entity", "sam_exclusions_search", "sam_assistance_listing", "sam_assistance_listings_search"},
     "usaspending": {"usaspending_index", "usaspending_recipients", "usaspending_recipient", "usaspending_awards_search", "usaspending_subawards_search", "usaspending_award"},
     "fac": {"fac_index", "fac_audits_search", "fac_findings", "fac_federal_awards"},
+    "fedreg": {"federal_register_index", "federal_register_search", "federal_register_document", "federal_register_agencies"},
+    "regulations": {"regulations_gov_index", "regulations_gov_documents_search", "regulations_gov_document", "regulations_gov_docket", "regulations_gov_comments_search"},
+    "csl": {"csl_index", "csl_search", "csl_sources"},
+    "oig": {"oig_leie_index", "oig_leie_search", "oig_leie_status"},
+    "propublica": {"propublica_nonprofit_index", "propublica_nonprofit_search", "propublica_nonprofit_organization"},
+    "ror": {"ror_index", "ror_search", "ror_organization"},
+    "perdiem": {"gsa_perdiem_index", "gsa_perdiem_rates", "gsa_perdiem_mie_breakdown"},
+    "bls": {"bls_index", "bls_series", "bls_common_series"},
+    "openalex": {"openalex_index", "openalex_works_search", "openalex_work", "openalex_authors_search", "openalex_institutions_search", "openalex_funders_search"},
+    "pubmed": {"pubmed_index", "pubmed_search", "pubmed_summary", "pmc_id_convert"},
+    "crossref": {"crossref_index", "crossref_works_search", "crossref_work", "crossref_funders_search"},
+    "orcid": {"orcid_index", "orcid_search", "orcid_record"},
+    "osti": {"osti_index", "osti_search", "osti_record"},
+    "clinicaltrials": {"clinicaltrials_index", "clinicaltrials_search", "clinicaltrials_study"},
 }
 
 
@@ -48,6 +62,7 @@ def test_app_mounts_every_server_and_its_skills():
         by = {s["name"]: s for s in index["servers"]}
         assert by["sam"]["key"]["required"] is True and by["sam"]["key"]["hint"]
         assert by["ecfr"]["key"] is None and by["ecfr"]["label"] == "eCFR"
+        assert by["csl"]["key"]["required"] is True and by["bls"]["key"]["required"] is False and by["fedreg"]["key"] is None
         assert by["nih"]["skills_base"] == "nih/skills/" and by["nih"]["mcp"] == "nih/mcp" and by["nih"]["web"].endswith("/nih/skills/")
         for s in index["servers"]:
             assert client.get("/" + s["skills"]).status_code == 200

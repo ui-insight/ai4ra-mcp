@@ -1,0 +1,7 @@
+{
+  "catalog_version": "1.0",
+  "repo": "ui-insight/ai4ra-mcp",
+  "server": "bls",
+  "note": "Skills that use the bls server's tools. None yet.",
+  "components": []
+}

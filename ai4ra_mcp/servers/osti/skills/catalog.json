@@ -1,0 +1,7 @@
+{
+  "catalog_version": "1.0",
+  "repo": "ui-insight/ai4ra-mcp",
+  "server": "osti",
+  "note": "Skills that use the osti server's tools. None yet.",
+  "components": []
+}

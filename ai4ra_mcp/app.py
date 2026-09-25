@@ -26,21 +26,43 @@ from starlette.staticfiles import StaticFiles
 
 from ai4ra_mcp.common.http import request_key
 from ai4ra_mcp.servers.ai4ra.server import mcp as ai4ra
+from ai4ra_mcp.servers.bls.server import mcp as bls
+from ai4ra_mcp.servers.clinicaltrials.server import mcp as clinicaltrials
+from ai4ra_mcp.servers.crossref.server import mcp as crossref
+from ai4ra_mcp.servers.csl.server import mcp as csl
 from ai4ra_mcp.servers.ecfr.server import mcp as ecfr
 from ai4ra_mcp.servers.fac.server import mcp as fac
+from ai4ra_mcp.servers.fedreg.server import mcp as fedreg
 from ai4ra_mcp.servers.general.server import mcp as general
 from ai4ra_mcp.servers.grants.server import mcp as grants
 from ai4ra_mcp.servers.lakehouse import server as lakehouse
 from ai4ra_mcp.servers.nih.server import mcp as nih
 from ai4ra_mcp.servers.nsf.server import mcp as nsf
+from ai4ra_mcp.servers.oig.server import mcp as oig
+from ai4ra_mcp.servers.openalex.server import mcp as openalex
+from ai4ra_mcp.servers.orcid.server import mcp as orcid
+from ai4ra_mcp.servers.osti.server import mcp as osti
+from ai4ra_mcp.servers.perdiem.server import mcp as perdiem
+from ai4ra_mcp.servers.propublica.server import mcp as propublica
+from ai4ra_mcp.servers.pubmed.server import mcp as pubmed
+from ai4ra_mcp.servers.regulations.server import mcp as regulations
+from ai4ra_mcp.servers.ror.server import mcp as ror
 from ai4ra_mcp.servers.sam.server import mcp as sam
 from ai4ra_mcp.servers.uidaho.server import mcp as uidaho
 from ai4ra_mcp.servers.usaspending.server import mcp as usaspending
 
-# Index order is picker order: the general fold first, then the research-administration skills, the public
-# upstreams, and last the one institution's own server.
-SERVERS: dict[str, MCPServer] = {"general": general, "ai4ra": ai4ra, "ecfr": ecfr, "grants": grants, "nih": nih, "nsf": nsf,
-                                 "sam": sam, "fac": fac, "usaspending": usaspending, "uidaho": uidaho, **lakehouse.SERVERS}
+# Index order is picker order: the general fold first, then the research-administration skills, then the public
+# upstreams grouped by the job they serve (the rules and announcements, the awards held, the vetting lists, the
+# budget figures, the scholarly record), and last the one institution's own servers.
+SERVERS: dict[str, MCPServer] = {
+    "general": general, "ai4ra": ai4ra,
+    "ecfr": ecfr, "fedreg": fedreg, "regulations": regulations, "grants": grants,
+    "nih": nih, "nsf": nsf, "usaspending": usaspending,
+    "sam": sam, "fac": fac, "csl": csl, "oig": oig, "propublica": propublica, "ror": ror,
+    "perdiem": perdiem, "bls": bls,
+    "openalex": openalex, "pubmed": pubmed, "crossref": crossref, "orcid": orcid, "osti": osti, "clinicaltrials": clinicaltrials,
+    "uidaho": uidaho, **lakehouse.SERVERS,
+}
 SERVERS_DIR = Path(__file__).parent / "servers"
 WEB = "https://github.com/ui-insight/ai4ra-mcp/blob/main/ai4ra_mcp/servers/"
 
@@ -58,6 +80,25 @@ META: dict[str, dict] = {
     "usaspending": {"label": "USAspending", "description": "Federal awards an entity held as the prime and the subawards it received, by name or UEI; one award's record."},
     "fac": {"label": "Federal Audit Clearinghouse", "description": "Single audits, findings and federal awards for subrecipient risk assessment.",
             "key": {"required": True, "hint": "Paste your api.data.gov key for the FAC API (free, from the signup at fac.gov/api)."}},
+    "fedreg": {"label": "Federal Register", "description": "Rules, proposed rules and notices in the Federal Register: search by words, agency, CFR part or date; one document with its dates and links; agency slugs."},
+    "regulations": {"label": "Regulations.gov", "description": "Rulemaking dockets, documents and public comments on Regulations.gov: search, one document with its files, one docket, the comments on a document.",
+                    "key": {"required": True, "hint": "Paste your api.data.gov key, from https://api.data.gov/signup/ (DEMO_KEY works for a few requests an hour)."}},
+    "csl": {"label": "Consolidated Screening List", "description": "Export-control and sanctions screening of a name against the BIS, OFAC and State lists (Entity List, SDN, Denied Persons, ITAR debarred and the rest).",
+            "key": {"required": True, "hint": "Paste your trade.gov subscription key, from https://developer.trade.gov/ (subscribe to the Consolidated Screening List API)."}},
+    "oig": {"label": "OIG exclusions (LEIE)", "description": "Whether a person or business is excluded from federal health care programs, from the HHS OIG List of Excluded Individuals/Entities, by name or NPI."},
+    "propublica": {"label": "Nonprofit Explorer", "description": "A tax-exempt organization by name or EIN, its IRS status and its Form 990 revenue, expenses, assets and liabilities by year, from ProPublica."},
+    "ror": {"label": "Research Organization Registry", "description": "The ROR id, names, location, type, relationships and Crossref Funder, GRID, ISNI and Wikidata ids of a research organization, by name or affiliation string."},
+    "perdiem": {"label": "GSA per diem", "description": "Federal lodging and M&IE rates by city, state or zip for a fiscal year, and the M&IE meal breakdown.",
+                "key": {"required": True, "hint": "Paste your api.data.gov key, free from https://api.data.gov/signup/ (DEMO_KEY works for a few calls an hour)."}},
+    "bls": {"label": "BLS", "description": "Bureau of Labor Statistics CPI and ECI series for budget escalation rates; a key is optional.",
+            "key": {"required": False, "hint": "Optional: paste your BLS registration key (free at data.bls.gov/registrationEngine) for 500 queries a day instead of the shared 25."}},
+    "openalex": {"label": "OpenAlex", "description": "Publications by author, institution, funder or award number, one work by DOI with its abstract, and authors, institutions and funders by name."},
+    "pubmed": {"label": "PubMed", "description": "Papers by grant number, author or affiliation with PMID, DOI and PMCID for NIH public access compliance, and PMID/PMCID/DOI conversion.",
+               "key": {"required": False, "hint": "Optional: paste an NCBI API key (free from your NCBI account settings) for 10 requests a second instead of the shared 3."}},
+    "crossref": {"label": "Crossref", "description": "Publications by words, author or funder with the funding acknowledgments publishers deposited, one work by DOI with its abstract, and funders in the Funder Registry."},
+    "orcid": {"label": "ORCID", "description": "A researcher's ORCID iD by name and institution, and their public record: employments, educations, funding with grant numbers, and works with DOIs."},
+    "osti": {"label": "OSTI.GOV", "description": "What a DOE award reported: papers, technical reports, data and software in OSTI by contract number, author, institution or words."},
+    "clinicaltrials": {"label": "ClinicalTrials.gov", "description": "Clinical studies by condition, intervention, sponsor or status, and one study's registration and results dates, grant ids and design."},
 }
 
 

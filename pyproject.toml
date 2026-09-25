@@ -1,7 +1,7 @@
 [project]
 name = "ai4ra-mcp"
 version = "0.1.0"
-description = "One process, several MCP servers: eCFR, grants.gov, University of Idaho guidance, and an AI4RA catch-all."
+description = "One process, several MCP servers: the federal, scholarly and screening upstreams a research administrator reads, University of Idaho guidance, and the AI4RA skills."
 requires-python = ">=3.12"
 dependencies = [
   "mcp>=1.27",
