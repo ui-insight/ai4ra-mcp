@@ -709,7 +709,9 @@ one that raises their quota. A client may instead send its own key as
 in place of the server's, so a person can spend their own quota rather than
 the institution's. The token is held for the request only and never logged.
 A request with no key gets a plain "no API key on this request" answer from
-every tool of that server, saying to send one; the server still mounts.
+every tool of that server, saying to send one and telling the model to stop
+there rather than answer from memory or a web search (a per diem question
+once got invented figures that way); the server still mounts.
 
 Environment: `AI4RA_MCP_SEARXNG_URL`, the web search backend; `AI4RA_MCP_HOST` and `AI4RA_MCP_PORT` (defaults 127.0.0.1 and
 8000); `AI4RA_MCP_CONTACT`, the address in the User-Agent and the `mailto` that
