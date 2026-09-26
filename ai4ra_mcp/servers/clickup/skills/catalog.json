@@ -1,0 +1,7 @@
+{
+  "catalog_version": "1.0",
+  "repo": "ui-insight/ai4ra-mcp",
+  "server": "clickup",
+  "note": "Skills that use the clickup server's tools. None yet; the skill that files a piece of mail into a project comes here.",
+  "components": []
+}

@@ -6,6 +6,10 @@
 
 Run every server with `ai4ra-mcp`, a subset with `--only NAME`, or one server
 over stdio with `--stdio NAME` for a local MCP client.
+
+A keyed server takes the person's own key from `Authorization: Bearer <key>` on
+the request (BearerKeyMiddleware), for that request only; the README's Keys
+section says which servers want one and where a key comes from.
 """
 
 from __future__ import annotations
@@ -27,6 +31,7 @@ from starlette.staticfiles import StaticFiles
 from ai4ra_mcp.common.http import request_key
 from ai4ra_mcp.servers.ai4ra.server import mcp as ai4ra
 from ai4ra_mcp.servers.bls.server import mcp as bls
+from ai4ra_mcp.servers.clickup.server import mcp as clickup
 from ai4ra_mcp.servers.clinicaltrials.server import mcp as clinicaltrials
 from ai4ra_mcp.servers.crossref.server import mcp as crossref
 from ai4ra_mcp.servers.csl.server import mcp as csl
@@ -53,7 +58,7 @@ from ai4ra_mcp.servers.usaspending.server import mcp as usaspending
 
 # Index order is picker order: the general fold first, then the research-administration skills, then the public
 # upstreams grouped by the job they serve (the rules and announcements, the awards held, the vetting lists, the
-# budget figures, the scholarly record), and last the one institution's own servers.
+# budget figures, the scholarly record, the project trackers), and last the one institution's own servers.
 SERVERS: dict[str, MCPServer] = {
     "general": general, "ai4ra": ai4ra,
     "ecfr": ecfr, "fedreg": fedreg, "regulations": regulations, "grants": grants,
@@ -61,6 +66,7 @@ SERVERS: dict[str, MCPServer] = {
     "sam": sam, "fac": fac, "csl": csl, "oig": oig, "propublica": propublica, "ror": ror,
     "perdiem": perdiem, "bls": bls,
     "openalex": openalex, "pubmed": pubmed, "crossref": crossref, "orcid": orcid, "osti": osti, "clinicaltrials": clinicaltrials,
+    "clickup": clickup,
     "uidaho": uidaho, **lakehouse.SERVERS,
 }
 SERVERS_DIR = Path(__file__).parent / "servers"
@@ -99,6 +105,8 @@ META: dict[str, dict] = {
     "orcid": {"label": "ORCID", "description": "A researcher's ORCID iD by name and institution, and their public record: employments, educations, funding with grant numbers, and works with DOIs."},
     "osti": {"label": "OSTI.GOV", "description": "What a DOE award reported: papers, technical reports, data and software in OSTI by contract number, author, institution or words."},
     "clinicaltrials": {"label": "ClinicalTrials.gov", "description": "Clinical studies by condition, intervention, sponsor or status, and one study's registration and results dates, grant ids and design."},
+    "clickup": {"label": "ClickUp", "description": "Your ClickUp, with your own token: who you are, your workspaces, spaces, folders and lists, tasks in a list or by id, and a task created, updated, commented on or given a file.",
+                "key": {"required": True, "hint": "Paste your ClickUp personal API token (avatar, Settings, Apps, Generate API Token; it starts with pk_). It acts as you."}},
 }
 
 
