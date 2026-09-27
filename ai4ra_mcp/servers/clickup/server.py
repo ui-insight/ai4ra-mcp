@@ -158,9 +158,10 @@ async def clickup_index() -> dict:
         "upstream": "https://api.clickup.com/api/v2/ with the person's own personal API token",
         "key": {"on_this_request": api_key(KEY_ENV) is not None, "per_user": "send your own ClickUp token as a bearer token; the server holds none unless the deployment set " + KEY_ENV + " as a fallback", "how": KEY_HOW},
         "hierarchy": "workspace (ClickUp calls it a team) > space > folder (optional) > list > task > subtask. Tasks live in lists; a list has its own statuses.",
-        "workflow": ["clickup_whoami: who the token is and the workspaces it reaches",
-                     "clickup_workspace by workspace id: every space, folder and list with their ids, in one call",
-                     "clickup_tasks by list id (optionally a word in the name, a status, open only) or clickup_task by task id (with description, comments, attachments)",
+        "workflow": ["Tasks assigned to the person, or anyone, across the whole workspace: ONE call to clickup_tasks_search (assignee 'me' by default; the workspace is found on its own when the person has one). Never walk the lists with clickup_tasks to find them.",
+                     "clickup_whoami: who the token is and the workspaces it reaches (members=true for the people and their ids, needed only to assign)",
+                     "clickup_workspace by workspace id: every space, folder and list with their ids, in one call, when the question is about where things live or which list to file into",
+                     "clickup_tasks by list id for one list's tasks; clickup_task by task id (with description, comments, attachments)",
                      "clickup_task_create in a list; clickup_task_update to change status, name, description, dates or assignees; clickup_task_comment to add a note; clickup_task_attach to put a file on it"],
         "notes": ["Ids are strings for lists and tasks and numbers for workspaces and people; use them as the tools return them.",
                   "Dates go in as ISO (2026-10-15 or 2026-10-15T17:00:00Z) and come back as ISO; ClickUp stores milliseconds.",
@@ -170,21 +171,97 @@ async def clickup_index() -> dict:
     }
 
 
+async def _me_and_teams() -> tuple[dict, list]:
+    me, teams = await _call("GET", "user", ttl=HOUR), await _call("GET", "team", ttl=HOUR)
+    return (me or {}).get("user") or {}, (teams or {}).get("teams") or []
+
+
+async def _workspace_id(given: str) -> str:
+    """The workspace to search: the one named, else the person's only one; several without a name is an error."""
+    wid = str(given or "").strip()
+    if wid:
+        return wid
+    _, teams = await _me_and_teams()
+    if len(teams) == 1:
+        return str(teams[0].get("id"))
+    if not teams:
+        raise ValueError("this token reaches no workspace")
+    raise ValueError("workspace_id is required: the token reaches " + ", ".join(f"{t.get('name')} ({t.get('id')})" for t in teams))
+
+
 @mcp.tool(name="clickup_whoami", annotations=_READ_ONLY)
-async def clickup_whoami() -> dict:
-    """Who the token belongs to (id, username, email) and the workspaces it can reach, each with its id and members."""
+async def clickup_whoami(members: bool = False) -> dict:
+    """Who the token belongs to (id, username, email) and the workspaces it can reach, each with its id and member count. members=true lists the people with their ids, which assigning a task needs.
+
+    Args:
+        members: Include each workspace's members (id, username, email). Off by default; a workspace can have hundreds.
+    """
     try:
-        me, teams = await _call("GET", "user", ttl=HOUR), await _call("GET", "team", ttl=HOUR)
+        user, teams = await _me_and_teams()
     except LookupError:
         return missing_key(KEY_ENV, KEY_HOW)
     except ValueError as e:
         return _refused(e)
-    user = (me or {}).get("user") or {}
     out = {"user": _user(user), "workspaces": []}
-    for t in (teams or {}).get("teams") or []:
-        out["workspaces"].append({"id": t.get("id"), "name": t.get("name"),
-                                  "members": [_user((m or {}).get("user")) for m in t.get("members") or []][:200]})
+    for t in teams:
+        ws = {"id": t.get("id"), "name": t.get("name"), "member_count": len(t.get("members") or [])}
+        if members:
+            ws["members"] = [_user((m or {}).get("user")) for m in t.get("members") or []][:500]
+        out["workspaces"].append(ws)
+    if not members:
+        out["note"] = "Call with members=true for the people and their ids when you need to assign."
     return out
+
+
+@mcp.tool(name="clickup_tasks_search", annotations=_READ_ONLY)
+async def clickup_tasks_search(workspace_id: str = "", assignee: str = "me", statuses: list[str] | None = None, space_ids: list[str] | None = None,
+                               list_ids: list[str] | None = None, include_closed: bool = False, contains: str = "", updated_since: str = "", page: int = 0) -> dict:
+    """Tasks across a whole workspace in one call, filtered by assignee (the person by default), status, space or list: id, name, status, priority, assignees, tags, dates, list and folder, link. Use this for "my tasks", "what is assigned to X", "everything open in space Y".
+
+    Args:
+        workspace_id: The workspace (team) id; left empty, the person's only workspace is used.
+        assignee: 'me' (default) for the token's own user, a numeric user id, several ids separated by commas, or 'any' for no assignee filter.
+        statuses: Keep only these statuses, as the lists name them.
+        space_ids: Keep only tasks in these spaces.
+        list_ids: Keep only tasks in these lists.
+        include_closed: Include closed and done tasks (default false).
+        contains: Keep only tasks whose name contains this text (applied to the page fetched).
+        updated_since: ISO date or datetime; only tasks updated after it.
+        page: Page number, 0 first; 100 tasks a page, more says whether another page exists.
+    """
+    try:
+        wid = await _workspace_id(workspace_id)
+        params: dict = {"page": max(0, int(page or 0)), "subtasks": "true", "order_by": "updated", "reverse": "true"}
+        who = str(assignee or "me").strip().lower()
+        if who == "me":
+            user, _ = await _me_and_teams()
+            if not user.get("id"):
+                raise ValueError("could not read the token's user id")
+            params["assignees[]"] = [str(user["id"])]
+        elif who and who != "any":
+            params["assignees[]"] = [a.strip() for a in who.split(",") if a.strip()]
+        if include_closed:
+            params["include_closed"] = "true"
+        if statuses:
+            params["statuses[]"] = [str(x).strip() for x in statuses if str(x).strip()]
+        if space_ids:
+            params["space_ids[]"] = [str(x).strip() for x in space_ids if str(x).strip()]
+        if list_ids:
+            params["list_ids[]"] = [str(x).strip() for x in list_ids if str(x).strip()]
+        if str(updated_since or "").strip():
+            params["date_updated_gt"] = _ms(updated_since)
+        body = await _call("GET", f"team/{wid}/task", params)
+    except LookupError:
+        return missing_key(KEY_ENV, KEY_HOW)
+    except ValueError as e:
+        return _refused(e)
+    tasks = [slim_task(t) for t in (body or {}).get("tasks") or []]
+    if contains.strip():
+        needle = contains.strip().lower()
+        tasks = [t for t in tasks if needle in (t["name"] or "").lower()]
+    return {"workspace_id": wid, "assignee": who, "page": params["page"], "returned": len(tasks), "tasks": tasks[:MAX_TASKS],
+            "more": len((body or {}).get("tasks") or []) >= MAX_TASKS,
+            "note": "Closed tasks are left out unless include_closed is true." if not include_closed else None}
 
 
 @mcp.tool(name="clickup_workspace", annotations=_READ_ONLY)

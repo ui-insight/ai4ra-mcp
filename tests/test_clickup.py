@@ -100,3 +100,44 @@ async def test_missing_key_tells_the_model_to_stop(monkeypatch):
     monkeypatch.delenv(c.KEY_ENV, raising=False)
     out = await c.clickup_whoami()
     assert "no API key" in out["error"] and "pk_" in out["error"] and out["do_not"].startswith("Do not answer")
+
+
+async def test_search_finds_the_workspace_and_filters_by_me(monkeypatch):
+    monkeypatch.setenv(c.KEY_ENV, "pk_123")
+    seen = []
+
+    async def fake_request(method, url, key, params=None, json=None, files=None):
+        seen.append((url.split("/api/v2/")[1], params))
+        if url.endswith("/user"):
+            return {"user": {"id": 95185155, "username": "Nathan Layman", "email": "nlayman@uidaho.edu"}}
+        if url.endswith("/team"):
+            return {"teams": [{"id": "9017952524", "name": "University of Idaho", "members": [{"user": {"id": 1}}, {"user": {"id": 2}}]}]}
+        return {"tasks": [TASK, {**TASK, "id": "t2", "name": "Other"}]}
+
+    monkeypatch.setattr(c, "_request", fake_request)
+    c._cache._d.clear()
+    out = await c.clickup_tasks_search(contains="smith", statuses=["in progress"], updated_since="2026-09-01")
+    path, params = seen[-1]
+    assert path == "team/9017952524/task" and params["assignees[]"] == ["95185155"] and params["statuses[]"] == ["in progress"]
+    assert params["date_updated_gt"] == c._ms("2026-09-01") and "include_closed" not in params
+    assert out["workspace_id"] == "9017952524" and out["assignee"] == "me" and out["returned"] == 1 and out["tasks"][0]["id"] == "86czq1abc"
+    c._cache._d.clear()
+    out = await c.clickup_tasks_search(assignee="any", include_closed=True, space_ids=["5"])
+    path, params = seen[-1]
+    assert "assignees[]" not in params and params["include_closed"] == "true" and params["space_ids[]"] == ["5"] and out["returned"] == 2
+
+
+async def test_whoami_leaves_members_out_unless_asked(monkeypatch):
+    monkeypatch.setenv(c.KEY_ENV, "pk_123")
+
+    async def fake_request(method, url, key, params=None, json=None, files=None):
+        if url.endswith("/user"):
+            return {"user": {"id": 95185155, "username": "Nathan Layman", "email": "nlayman@uidaho.edu"}}
+        return {"teams": [{"id": "9017952524", "name": "University of Idaho", "members": [{"user": {"id": 1, "username": "A", "email": "a@x"}}, {"user": {"id": 2, "username": "B", "email": "b@x"}}]}]}
+
+    monkeypatch.setattr(c, "_request", fake_request)
+    c._cache._d.clear()
+    out = await c.clickup_whoami()
+    assert out["workspaces"][0]["member_count"] == 2 and "members" not in out["workspaces"][0] and "members=true" in out["note"]
+    out = await c.clickup_whoami(members=True)
+    assert [m["id"] for m in out["workspaces"][0]["members"]] == [1, 2]
