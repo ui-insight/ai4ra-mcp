@@ -2,7 +2,7 @@
   "catalog_version": "1.0",
   "repo": "ui-insight/ai4ra-mcp",
   "server": "general",
-  "note": "Skills any office uses with any document: ask (a question put to the person, its output the reply), remove-ai-tells, and a project timeline drawn as a Gantt chart. Same shape as AI4RA/prompt-library's component_catalog.json, hand-maintained. A component's hosts lists the clients it is offered in; fold: host says a client lists it beside that host's own tools.",
+  "note": "Skills any office uses with any document: ask (a question put to the person, its output the reply), remove-ai-tells, a project timeline drawn as a Gantt chart, and two for a GitHub repository through GitHub's own MCP server (code-change opens a pull request; actions-check looks at the runs). Same shape as AI4RA/prompt-library's component_catalog.json, hand-maintained. A component's hosts lists the clients it is offered in; fold: host says a client lists it beside that host's own tools.",
   "components": [
     {
       "slug": "ask",
@@ -145,6 +145,109 @@
         "excel"
       ],
       "fold": "host"
+    },
+    {
+      "slug": "code-change",
+      "name": "code-change",
+      "summary": "Make a described change to a GitHub repository as a pull request: read the files first, commit the whole changed files to a new agent/<login>/<slug> branch, open a pull request against the default branch, start the checks (or a named workflow) and report the links. Never writes to main, never merges, never waits for checks, never commits a secret; the person reviews and merges.",
+      "triggers": [
+        "pull request",
+        "open a pr",
+        "make this change in the repo",
+        "commit this",
+        "agent branch",
+        "change the code"
+      ],
+      "version": "0.1.0",
+      "category": "development",
+      "domain": "general",
+      "status": "experimental",
+      "paths": {
+        "component_dir": "components/code-change",
+        "readme": "components/code-change/README.md",
+        "prompt": "components/code-change/prompt.md",
+        "evals_dir": "components/code-change/evals"
+      },
+      "manifestations": [
+        {
+          "type": "prompt",
+          "path": "components/code-change/prompt.md",
+          "version": "0.1.0",
+          "role": "canonical_prompt"
+        }
+      ],
+      "contracts": {
+        "output": {
+          "format": "reply",
+          "scope": "repo_local",
+          "schema_path": null
+        }
+      },
+      "evaluation": {
+        "case_count": 0,
+        "report_count": 0,
+        "last_fully_evaluated_version": null,
+        "current_version_is_fully_evaluated": false
+      },
+      "requires": [
+        "get_me",
+        "get_file_contents",
+        "search_code",
+        "create_branch",
+        "push_files",
+        "create_pull_request",
+        "actions_run_trigger",
+        "actions_list"
+      ]
+    },
+    {
+      "slug": "actions-check",
+      "name": "actions-check",
+      "summary": "One look at a repository's GitHub Actions: the latest runs on a branch, pull request or workflow with status, conclusion and links, and for each failure the job, the step and the first real error from the failed jobs' logs. A snapshot, never a wait; reruns or cancellations only when asked by name.",
+      "triggers": [
+        "actions",
+        "workflow run",
+        "check the ci",
+        "did the checks pass",
+        "build failed",
+        "rerun the failed jobs"
+      ],
+      "version": "0.1.0",
+      "category": "review",
+      "domain": "general",
+      "status": "experimental",
+      "paths": {
+        "component_dir": "components/actions-check",
+        "readme": "components/actions-check/README.md",
+        "prompt": "components/actions-check/prompt.md",
+        "evals_dir": "components/actions-check/evals"
+      },
+      "manifestations": [
+        {
+          "type": "prompt",
+          "path": "components/actions-check/prompt.md",
+          "version": "0.1.0",
+          "role": "canonical_prompt"
+        }
+      ],
+      "contracts": {
+        "output": {
+          "format": "reply",
+          "scope": "repo_local",
+          "schema_path": null
+        }
+      },
+      "evaluation": {
+        "case_count": 0,
+        "report_count": 0,
+        "last_fully_evaluated_version": null,
+        "current_version_is_fully_evaluated": false
+      },
+      "requires": [
+        "actions_list",
+        "actions_get",
+        "get_job_logs"
+      ]
     }
   ]
 }
