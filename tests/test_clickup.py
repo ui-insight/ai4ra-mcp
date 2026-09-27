@@ -141,3 +141,24 @@ async def test_whoami_leaves_members_out_unless_asked(monkeypatch):
     assert out["workspaces"][0]["member_count"] == 2 and "members" not in out["workspaces"][0] and "members=true" in out["note"]
     out = await c.clickup_whoami(members=True)
     assert [m["id"] for m in out["workspaces"][0]["members"]] == [1, 2]
+
+
+async def test_workspace_reads_live_spaces_and_adds_archived_only_on_request(monkeypatch):
+    monkeypatch.setenv(c.KEY_ENV, "pk_123")
+    calls = []
+
+    async def fake_request(method, url, key, params=None, json=None, files=None):
+        calls.append((url.split("/api/v2/")[1], params["archived"]))
+        if url.endswith("/space"):
+            return {"spaces": [{"id": "s1", "name": "Live" if params["archived"] == "false" else "Old", "statuses": []}]}
+        if url.endswith("/folder"):
+            return {"folders": []}
+        return {"lists": [{"id": "l1", "name": "L", "task_count": 1, "statuses": []}]} if params["archived"] == "false" else {"lists": []}
+
+    monkeypatch.setattr(c, "_request", fake_request)
+    c._cache._d.clear()
+    out = await c.clickup_workspace("9017952524")
+    assert [sp["name"] for sp in out["spaces"]] == ["Live"] and out["spaces"][0]["archived"] is False and all(a == "false" for _, a in calls)
+    c._cache._d.clear(); calls.clear()
+    out = await c.clickup_workspace("9017952524", include_archived=True)
+    assert [sp["name"] for sp in out["spaces"]] == ["Live", "Old"] and out["spaces"][1]["archived"] is True and ("team/9017952524/space", "true") in calls

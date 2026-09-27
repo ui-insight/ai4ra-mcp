@@ -275,16 +275,23 @@ async def clickup_workspace(workspace_id: str, include_archived: bool = False) -
     wid = str(workspace_id or "").strip()
     if not wid:
         return {"error": "workspace_id is required (see clickup_whoami)"}
-    arch = {"archived": "true" if include_archived else "false"}
+    # ClickUp's archived=true means "archived only", so the live set is always read and the archived set is added to it on request.
+    async def both(path: str, key: str) -> list:
+        live = ((await _call("GET", path, {"archived": "false"}, ttl=HOUR)) or {}).get(key) or []
+        if not include_archived:
+            return live
+        gone = ((await _call("GET", path, {"archived": "true"}, ttl=HOUR)) or {}).get(key) or []
+        for g in gone:
+            g["archived"] = True
+        return live + gone
     try:
-        spaces = await _call("GET", f"team/{wid}/space", arch, ttl=HOUR)
         out_spaces = []
-        for sp in (spaces or {}).get("spaces") or []:
+        for sp in await both(f"team/{wid}/space", "spaces"):
             sid = sp.get("id")
-            folders = await _call("GET", f"space/{sid}/folder", arch, ttl=HOUR)
-            loose = await _call("GET", f"space/{sid}/list", arch, ttl=HOUR)
+            folders = {"folders": await both(f"space/{sid}/folder", "folders")}
+            loose = {"lists": await both(f"space/{sid}/list", "lists")}
             out_spaces.append({
-                "id": sid, "name": sp.get("name"), "private": sp.get("private"),
+                "id": sid, "name": sp.get("name"), "private": sp.get("private"), "archived": bool(sp.get("archived")),
                 "statuses": [s.get("status") for s in sp.get("statuses") or [] if s.get("status")],
                 "folders": [{"id": f.get("id"), "name": f.get("name"), "lists": [slim_list(l) for l in f.get("lists") or []]} for f in (folders or {}).get("folders") or []],
                 "lists": [slim_list(l) for l in (loose or {}).get("lists") or []],
