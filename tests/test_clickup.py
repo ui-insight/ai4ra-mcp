@@ -162,3 +162,13 @@ async def test_workspace_reads_live_spaces_and_adds_archived_only_on_request(mon
     c._cache._d.clear(); calls.clear()
     out = await c.clickup_workspace("9017952524", include_archived=True)
     assert [sp["name"] for sp in out["spaces"]] == ["Live", "Old"] and out["spaces"][1]["archived"] is True and ("team/9017952524/space", "true") in calls
+
+
+async def test_writes_are_off_unless_the_deployment_turns_them_on():
+    names = {t.name for t in await c.mcp.list_tools()}
+    reads = {"clickup_index", "clickup_whoami", "clickup_tasks_search", "clickup_workspace", "clickup_tasks", "clickup_task"}
+    writes = {"clickup_task_create", "clickup_task_update", "clickup_task_comment", "clickup_task_attach"}
+    assert reads <= names
+    assert (writes <= names) if c.WRITES_ON else not (writes & names)
+    idx = await c.clickup_index()
+    assert idx["writes"] is c.WRITES_ON

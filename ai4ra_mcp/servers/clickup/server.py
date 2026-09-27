@@ -6,12 +6,16 @@ bearer. Their client sends it to this server as a bearer and this server re-send
 wants. The tools are mechanical: what a workspace holds, a task by id, tasks in a list, a task created,
 commented on, updated or given a file. Which project a piece of mail belongs in is a skill's judgment,
 not this server's. ClickUp allows 100 requests a minute per token.
+
+Writes are off unless the deployment sets AI4RA_MCP_CLICKUP_WRITES=1: then the create, update, comment and attach
+tools are registered too. Off, the model sees the read tools only and cannot change anything in ClickUp.
 """
 
 from __future__ import annotations
 
 import base64
 import datetime as dt
+import os
 from pathlib import Path
 
 import httpx
@@ -28,11 +32,13 @@ BASE = "https://api.clickup.com/api/v2"
 MAX_TASKS = 100          # tasks returned per call (ClickUp pages at 100)
 MAX_TEXT = 20000         # characters of description or comment per call
 MAX_FILE_BYTES = 5 * 1024 * 1024
+WRITES_ENV = "AI4RA_MCP_CLICKUP_WRITES"
+WRITES_ON = os.environ.get(WRITES_ENV, "").strip().lower() in ("1", "true", "yes", "on")
 _cache = TTLCache()
 
 mcp = MCPServer(
     "clickup",
-    instructions="ClickUp with the person's own token: who they are, their workspaces, spaces, folders and lists, tasks in a list or by id, and a task created, updated, commented on or given a file. Needs a ClickUp personal API token. Read clickup_index first.",
+    instructions="ClickUp with the person's own token: who they are, their workspaces, spaces, folders and lists, tasks across the workspace or in a list or by id" + (", and a task created, updated, commented on or given a file" if WRITES_ON else "; read only in this deployment") + ". Needs a ClickUp personal API token. Read clickup_index first.",
 )
 
 
@@ -149,6 +155,13 @@ def _refused(e: Exception) -> dict:
     return {"error": str(e)}
 
 
+def _write_tool(name: str):
+    """Registers a write tool only when the deployment turned writes on; otherwise the function stays a plain function."""
+    if WRITES_ON:
+        return mcp.tool(name=name, annotations=_WRITES)
+    return lambda fn: fn
+
+
 # ---- tools ----
 
 @mcp.tool(name="clickup_index", annotations=_READ_ONLY)
@@ -162,7 +175,9 @@ async def clickup_index() -> dict:
                      "clickup_whoami: who the token is and the workspaces it reaches (members=true for the people and their ids, needed only to assign)",
                      "clickup_workspace by workspace id: every space, folder and list with their ids, in one call, when the question is about where things live or which list to file into",
                      "clickup_tasks by list id for one list's tasks; clickup_task by task id (with description, comments, attachments)",
-                     "clickup_task_create in a list; clickup_task_update to change status, name, description, dates or assignees; clickup_task_comment to add a note; clickup_task_attach to put a file on it"],
+                     "clickup_task_create in a list; clickup_task_update to change status, name, description, dates or assignees; clickup_task_comment to add a note; clickup_task_attach to put a file on it" if WRITES_ON else
+                     "Writes are off in this deployment: nothing in ClickUp can be created, changed, commented on or given a file from here. When the person asks for one, say so and give them the link to do it in ClickUp."],
+        "writes": WRITES_ON,
         "notes": ["Ids are strings for lists and tasks and numbers for workspaces and people; use them as the tools return them.",
                   "Dates go in as ISO (2026-10-15 or 2026-10-15T17:00:00Z) and come back as ISO; ClickUp stores milliseconds.",
                   "Descriptions and comments take markdown.",
@@ -361,7 +376,7 @@ async def clickup_task(task_id: str, comments: bool = True) -> dict:
     return out
 
 
-@mcp.tool(name="clickup_task_create", annotations=_WRITES)
+@_write_tool(name="clickup_task_create")
 async def clickup_task_create(list_id: str, name: str, description: str = "", assignees: list[int] | None = None, tags: list[str] | None = None,
                               priority: int = 0, due_date: str = "", start_date: str = "", status: str = "", parent: str = "") -> dict:
     """Create a task in a list. Returns the new task with its id and link. Nothing else in the list changes.
@@ -415,7 +430,7 @@ async def clickup_task_create(list_id: str, name: str, description: str = "", as
     return {"ok": True, "task": slim_task(t or {}, full=False), "created_in_list": lid}
 
 
-@mcp.tool(name="clickup_task_update", annotations=_WRITES)
+@_write_tool(name="clickup_task_update")
 async def clickup_task_update(task_id: str, name: str = "", description: str = "", status: str = "", priority: int = 0,
                               due_date: str = "", start_date: str = "", add_assignees: list[int] | None = None, remove_assignees: list[int] | None = None) -> dict:
     """Change a task's name, description, status, priority, dates or assignees. Only the fields given change; the description given replaces the old one.
@@ -462,7 +477,7 @@ async def clickup_task_update(task_id: str, name: str = "", description: str = "
     return {"ok": True, "changed": sorted(k for k in payload if not k.endswith("_time")), "task": slim_task(t or {}, full=False)}
 
 
-@mcp.tool(name="clickup_task_comment", annotations=_WRITES)
+@_write_tool(name="clickup_task_comment")
 async def clickup_task_comment(task_id: str, text: str, notify_all: bool = False) -> dict:
     """Add a comment to a task. Markdown is fine. Returns the comment id.
 
@@ -486,7 +501,7 @@ async def clickup_task_comment(task_id: str, text: str, notify_all: bool = False
     return {"ok": True, "comment_id": (c or {}).get("id"), "task_id": tid, "link": f"https://app.clickup.com/t/{tid}"}
 
 
-@mcp.tool(name="clickup_task_attach", annotations=_WRITES)
+@_write_tool(name="clickup_task_attach")
 async def clickup_task_attach(task_id: str, filename: str, content_base64: str) -> dict:
     """Attach a file to a task from its base64 content (up to 5 MB). Returns the attachment's id and link.
 
