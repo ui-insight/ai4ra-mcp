@@ -1,19 +1,20 @@
 # ai4ra-mcp behind Caddy. The process listens on localhost:8000; Caddy owns TLS
-# and the public name. Add this block to the site that already fronts the host,
-# or use it alone with the hostname changed.
+# and the public name. Two forms, pick one.
+#
+# The process answers CORS itself (any origin), so nothing here touches
+# Access-Control headers. Every server is a path under the process
+# (/<name>/mcp and /<name>/skills/, the index at /), so one reverse_proxy
+# covers all of them, including servers added later.
 
+# Form 1: the process is the whole site. The index is https://mcp.example.uidaho.edu/
+# and each server is https://mcp.example.uidaho.edu/<name>/mcp.
 mcp.example.uidaho.edu {
     encode gzip
 
-    # One MCP server per path. The process answers CORS itself (any origin),
-    # so nothing here touches Access-Control headers.
-    @mcp path /general/* /ai4ra/* /ecfr/* /grants/* /nih/* /nsf/* /sam/* /fac/* /usaspending/* /uidaho/* /lakehouse* /
-    handle @mcp {
-        reverse_proxy 127.0.0.1:8000 {
-            flush_interval -1              # stream SSE responses as they arrive
-            transport http {
-                read_timeout 300s
-            }
+    reverse_proxy 127.0.0.1:8000 {
+        flush_interval -1              # stream responses as they arrive
+        transport http {
+            read_timeout 300s          # a long fetch_document or lakehouse read
         }
     }
 
@@ -22,3 +23,20 @@ mcp.example.uidaho.edu {
         format json
     }
 }
+
+# Form 2: the process under /mcp/ on a host that serves other things (the demo
+# deployment). handle_path strips the prefix, so the index is https://host/mcp/
+# and each server https://host/mcp/<name>/mcp; the index's relative paths
+# resolve under the prefix on their own.
+#
+# example.uidaho.edu {
+#     handle_path /mcp/* {
+#         reverse_proxy 127.0.0.1:8000 {
+#             flush_interval -1
+#             transport http {
+#                 read_timeout 300s
+#             }
+#         }
+#     }
+#     # ... the rest of the site
+# }

@@ -8,7 +8,7 @@
 # Update: git pull && uv sync && systemctl --user restart ai4ra-mcp
 
 [Unit]
-Description=ai4ra-mcp: eCFR, grants.gov, University of Idaho, NIH, NSF, SAM.gov and FAC MCP servers
+Description=ai4ra-mcp: the federal, scholarly, screening and University of Idaho MCP servers and the AI4RA skills, one process
 After=network-online.target
 
 [Service]
