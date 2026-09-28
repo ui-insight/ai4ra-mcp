@@ -208,3 +208,10 @@ async def test_lakehouse_query_validates_and_builds_the_request(monkeypatch):
     bad = await lakehouse.lakehouse_query("s", "awards", aggregate=[{"fn": "COUNT", "column": "*"}])
     assert "needs group_by" in bad["error"]
 
+
+
+def test_lakehouse_second_client_names():
+    """A second configured client is mounted at lakehouse-<id> with its own secret variable (the names need `re`)."""
+    assert lakehouse.mount_name(0, "mr-365") == "lakehouse" and lakehouse.key_env(0, "mr-365") == "AI4RA_MCP_LAKEHOUSE_SECRET"
+    assert lakehouse.mount_name(1, "OSP Reports") == "lakehouse-osp-reports"
+    assert lakehouse.key_env(1, "OSP Reports") == "AI4RA_MCP_LAKEHOUSE_SECRET_OSP_REPORTS"
