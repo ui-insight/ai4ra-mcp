@@ -26,8 +26,10 @@ import os
 import re
 import time
 from pathlib import Path
+from typing import Annotated, NotRequired, TypedDict
 
 import httpx
+from pydantic import Field
 from mcp.server.mcpserver import MCPServer
 
 from ai4ra_mcp.common import fetch as _fetch
@@ -137,6 +139,13 @@ def slim_rows(table: str, result: dict, limit: int) -> dict:
 
 _OPERATORS = ("eq", "neq", "gt", "gte", "lt", "lte", "in", "like", "ilike", "is_null")
 _AGG_FUNCS = ("COUNT", "SUM", "AVG", "MIN", "MAX")
+
+
+class Aggregate(TypedDict):
+    """One aggregate for lakehouse_query: the keys are exactly fn, column and alias."""
+    fn: Annotated[str, Field(description="Exactly one of COUNT, SUM, AVG, MIN, MAX; nothing else exists. COUNT on * counts every row of the group and COUNT on a column counts its non-null rows.")]
+    column: Annotated[str, Field(description="A column name, or * (with COUNT only).")]
+    alias: NotRequired[Annotated[str, Field(description="The name the value comes back under.")]]
 
 
 def _check_filters(filters) -> str | None:
@@ -406,7 +415,7 @@ def make_server(name: str, client_id: str, key_env_name: str) -> tuple[MCPServer
 
     @mcp.tool(name="lakehouse_schema", annotations=_READ_ONLY)
     async def lakehouse_schema(stream: str) -> dict:
-        """The tables a querying stream can read, with their columns and types, as the stream's wrapper view exposes them.
+        """The tables a querying stream can read, with their columns and types, as the stream's wrapper view exposes them: the whole stream in one answer, which a stream of a thousand tables makes very large. To survey, use lakehouse_sql_catalog(stream) and then (stream, table), which come in layers.
 
         Args:
             stream: A querying stream name from lakehouse_streams.
@@ -423,7 +432,7 @@ def make_server(name: str, client_id: str, key_env_name: str) -> tuple[MCPServer
 
     @mcp.tool(name="lakehouse_query", annotations=_READ_ONLY)
     async def lakehouse_query(stream: str, table: str, limit: int = 100, filters: dict | None = None, offset: int | None = None,
-                              group_by: list[str] | None = None, aggregate: list[dict] | None = None) -> dict:
+                              group_by: list[str] | None = None, aggregate: list[Aggregate] | None = None) -> dict:
         """Rows from one table of a querying stream, as the stream's view exposes them: filtered, paged, or grouped and aggregated.
 
         Filter before you page and aggregate before you scan: a wide table is best asked for its distinct values
@@ -431,8 +440,8 @@ def make_server(name: str, client_id: str, key_env_name: str) -> tuple[MCPServer
         certain filters (a 400 names them) and caps the rows.
 
         Args:
-            stream: A querying stream name from lakehouse_streams.
-            table: A table name from lakehouse_schema.
+            stream: A querying stream name from lakehouse_sql_catalog.
+            table: A table name from lakehouse_sql_catalog(stream).
             limit: Rows to return, 1-500. Default 100.
             filters: Column filters combined with AND. A bare value is equality: {"fiscal_year": 2024, "status": "Active"}. An object is operators: {"amount": {"gte": 50000, "lte": 200000}, "status": {"in": ["Active", "Pending"]}, "title": {"ilike": "%climate%"}, "ended": {"is_null": true}}; operators eq, neq, gt, gte, lt, lte, in (a list, at most 1000), like, ilike, is_null.
             offset: Row offset for paging, 0-based; when given, the result carries total_count, the matching rows before paging.
@@ -442,7 +451,7 @@ def make_server(name: str, client_id: str, key_env_name: str) -> tuple[MCPServer
         """
         stream, table = (stream or "").strip(), (table or "").strip()
         if not stream or not table:
-            return {"error": "stream and table are required: see lakehouse_streams and lakehouse_schema"}
+            return {"error": "stream and table are required: see lakehouse_sql_catalog"}
         limit = max(1, min(int(limit or 100), MAX_ROWS))
         problem = _check_filters(filters) or _check_aggregate(aggregate)
         if problem:

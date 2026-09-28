@@ -14,7 +14,7 @@
         "in the lakehouse",
         "query the lakehouse"
       ],
-      "version": "0.1.0",
+      "version": "0.2.0",
       "category": "research",
       "domain": "research-administration",
       "status": "experimental",
@@ -28,7 +28,7 @@
         {
           "type": "prompt",
           "path": "components/lakehouse-answer/prompt.md",
-          "version": "0.1.0",
+          "version": "0.2.0",
           "role": "canonical_prompt"
         }
       ],
@@ -47,8 +47,7 @@
       },
       "requires": [
         "lakehouse_index",
-        "lakehouse_streams",
-        "lakehouse_schema",
+        "lakehouse_sql_catalog",
         "lakehouse_query"
       ]
     }

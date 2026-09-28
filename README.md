@@ -823,8 +823,11 @@ and grouped aggregates (COUNT, SUM, AVG, MIN, MAX); `lakehouse_files` and
 capped at 500 and 30,000 characters a call. Nothing is written: the
 submitting streams are listed but not used, because a remote write would run
 behind no confirmation card in the pane. The `lakehouse-answer` skill is the
-way a question is answered: streams first, then the schemas, then a filtered
-or aggregated query, every figure with its stream, table, filters and date.
+way a question is answered: the catalog's layers first (streams, one
+stream's tables, one table's columns), then a filtered or aggregated query,
+every figure with its stream, table, filters and date. An aggregate is typed
+in the tool's schema: `fn` (exactly COUNT, SUM, AVG, MIN or MAX), `column`
+and `alias`, so a model fills the keys from the schema rather than the prose.
 
 **SQL.** Marina also speaks v1 of the Trino HTTP statement protocol at
 `/sql/v1/statement`: one schema per querying stream, named

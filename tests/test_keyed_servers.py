@@ -207,6 +207,19 @@ async def test_lakehouse_query_validates_and_builds_the_request(monkeypatch):
     assert "unknown filter operator" in bad["error"]
     bad = await lakehouse.lakehouse_query("s", "awards", aggregate=[{"fn": "COUNT", "column": "*"}])
     assert "needs group_by" in bad["error"]
+    bad = await lakehouse.lakehouse_query("s", "awards", group_by=["status"], aggregate=[{"fn": "count_non_null", "column": "x"}])
+    assert "count_non_null" in bad["error"] and "lakehouse_sql" in bad["error"]
+
+
+@pytest.mark.asyncio
+async def test_lakehouse_query_aggregate_is_typed_in_the_schema():
+    """The aggregate item's keys and the five functions are in the published input schema, not only in the prose:
+    a small model sent {function, on, as} and had only the docstring to correct it from."""
+    srv, _ = lakehouse.make_server("lakehouse", "mr-365", "AI4RA_MCP_LAKEHOUSE_SECRET")
+    tool = [t for t in await srv.list_tools() if t.name == "lakehouse_query"][0]
+    item = tool.input_schema["$defs"]["Aggregate"]
+    assert set(item["properties"]) == {"fn", "column", "alias"} and item["required"] == ["fn", "column"]
+    assert "COUNT, SUM, AVG, MIN, MAX" in item["properties"]["fn"]["description"]
 
 
 
