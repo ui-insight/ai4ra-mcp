@@ -98,18 +98,18 @@ async def _call(client: dict, method: str, path: str, params: dict | None = None
         raise LookupError(client["key_env"])
     for attempt in (1, 2):
         token = await _token(client["id"], secret)
-        async with httpx.AsyncClient(timeout=TIMEOUT_S, headers={**HEADERS, "Authorization": f"Bearer {token}"}) as client_http:
-            resp = await client_http.request(method, f"{BASE}{path}", params=params, json=payload)
+        try:
+            async with httpx.AsyncClient(timeout=TIMEOUT_S, headers={**HEADERS, "Authorization": f"Bearer {token}"}) as client_http:
+                resp = await client_http.request(method, f"{BASE}{path}", params=params, json=payload)
+        except httpx.TimeoutException as e:
+            raise ValueError(f"the lakehouse gave no answer to {method} {path} within {TIMEOUT_S:.0f} seconds ({type(e).__name__}); "
+                             "ask for less in one call") from e
         if resp.status_code == 401 and attempt == 1:
             _tokens.pop(_hash(client["id"], secret), None)   # the token died early: mint another once
             continue
         break
-    if resp.status_code in (401, 403):
-        raise ValueError(f"{resp.status_code} from the lakehouse: this client is not authorized for that stream, table or file")
-    if resp.status_code == 404:
-        raise ValueError("404 from the lakehouse: no such stream, table or file")
     if resp.status_code >= 400:
-        raise ValueError(f"{resp.status_code} from the lakehouse: {resp.text[:300]}")
+        raise ValueError(_marina_message(resp))
     return resp if raw else (resp.json() if resp.content else {})
 
 
@@ -117,8 +117,11 @@ def _report(client: dict, e: Exception) -> dict:
     if isinstance(e, LookupError):
         return missing_key(client["key_env"], key_how(client["id"]))
     if isinstance(e, (httpx.ConnectError, httpx.ConnectTimeout, OSError)) and not isinstance(e, ValueError):
-        return {"error": f"the lakehouse at {BASE} is not reachable from this server ({e}); it answers on campus only"}
-    return {"error": str(e)}
+        return {"error": f"the lakehouse at {BASE} is not reachable from this server ({type(e).__name__}{': ' + str(e) if str(e).strip() else ''}); it answers on campus only"}
+    if isinstance(e, httpx.TimeoutException):   # an httpx timeout stringifies to nothing at all
+        return {"error": f"the lakehouse at {BASE} gave no answer within the time allowed ({type(e).__name__}); ask for less in one call"}
+    text = str(e).strip()
+    return {"error": text or f"{type(e).__name__} from the lakehouse call, with no message"}
 
 
 
@@ -161,6 +164,57 @@ def _check_filters(filters) -> str | None:
             if "in" in v and not isinstance(v["in"], list):
                 return f"the in operator on {col} takes a list"
     return None
+
+
+def _ident(name: str) -> str:
+    return '"' + str(name).replace('"', '""') + '"'
+
+
+def _literal(v) -> str:
+    if v is None:
+        return "NULL"
+    if isinstance(v, bool):
+        return "TRUE" if v else "FALSE"
+    if isinstance(v, (int, float)):
+        return repr(v)
+    return "'" + str(v).replace("'", "''") + "'"
+
+
+_OP_SQL = {"eq": "=", "neq": "<>", "gt": ">", "gte": ">=", "lt": "<", "lte": "<="}
+
+
+def where_sql(filters: dict | None) -> str:
+    """lakehouse_query's filters as one WHERE clause (without the word), so an aggregate with no group_by can run as SQL."""
+    parts = []
+    for col, v in (filters or {}).items():
+        c = _ident(col)
+        if not isinstance(v, dict):
+            parts.append(f"{c} IS NULL" if v is None else f"{c} = {_literal(v)}")
+            continue
+        for op, val in v.items():
+            if op in _OP_SQL:
+                parts.append(f"{c} {_OP_SQL[op]} {_literal(val)}")
+            elif op == "in":
+                parts.append(f"{c} IN ({', '.join(_literal(x) for x in val)})" if val else "FALSE")
+            elif op == "like":
+                parts.append(f"{c} LIKE {_literal(val)}")
+            elif op == "ilike":
+                parts.append(f"lower(CAST({c} AS varchar)) LIKE lower({_literal(val)})")
+            elif op == "is_null":
+                parts.append(f"{c} IS {'NULL' if val else 'NOT NULL'}")
+    return " AND ".join(parts)
+
+
+def aggregate_sql(client_id: str, stream: str, table: str, aggregate: list[dict], filters: dict | None) -> str:
+    """One SELECT of ungrouped aggregates over a view, filtered: the statement lakehouse_query runs when aggregate comes with no
+    group_by, so a plain count (COUNT on *) is one row back rather than a refusal."""
+    cols = []
+    for a in aggregate:
+        fn, col = str(a["fn"]).upper(), str(a["column"])
+        alias = a.get("alias") or f"{fn.lower()}_{'all' if col == '*' else col}"
+        cols.append(f"{fn}({'*' if col == '*' else _ident(col)}) AS {_ident(alias)}")
+    where = where_sql(filters)
+    return f"SELECT {', '.join(cols)} FROM {qualified(client_id, stream, table)}" + (f" WHERE {where}" if where else "")
 
 
 def _check_aggregate(aggregate) -> str | None:
@@ -231,6 +285,11 @@ async def _sql(client: dict, sql: str, budget_s: float | None = None) -> dict:
     if not secret:
         raise LookupError(client["key_env"])
     budget = budget_s or SQL_TIMEOUT_S
+    # Marina may run the whole statement before its first answer, so each HTTP exchange is allowed the statement's
+    # budget (the shared 30-second TIMEOUT_S cut a slow count short with an empty message, before the budget was reached).
+    http_timeout = httpx.Timeout(budget + 10.0, connect=10.0)
+    too_slow = (f"Marina gave no answer to the statement within {budget:.0f} seconds; it may still be running there. "
+                "Narrow it with a WHERE, put fewer tables in one statement, or for row counts read the stream's _stats table")
     for attempt in (1, 2):
         token = await _token(client["id"], secret)
         auth = (client["id"], token)
@@ -240,72 +299,99 @@ async def _sql(client: dict, sql: str, budget_s: float | None = None) -> dict:
         chars = 0
         truncated = False
         state = ""
-        async with httpx.AsyncClient(timeout=TIMEOUT_S, headers=HEADERS) as http:
-            resp = await http.post(f"{BASE}/sql/v1/statement", content=sql.encode("utf-8"), headers={"Content-Type": "text/plain"}, auth=auth)
-            if resp.status_code == 401 and attempt == 1:
-                _tokens.pop(_hash(client["id"], secret), None)   # the bearer died: mint another and send the statement again, once
-                continue
-            if resp.status_code >= 400:
-                raise ValueError(_marina_message(resp))
-            body = resp.json() if resp.content else {}
-            while True:
-                if body.get("columns") and not columns:
-                    columns = [{"name": c.get("name"), "type": c.get("type")} for c in body["columns"] if isinstance(c, dict)]
-                for r in body.get("data") or []:
-                    if len(rows) >= MAX_ROWS or chars > MAX_CHARS:
-                        truncated = True
-                        break
-                    rows.append(r)
-                    chars += len(json.dumps(r, default=str))
-                stats = body.get("stats") or {}
-                state = str(stats.get("state") or "")
-                next_uri = body.get("nextUri")
-                if body.get("error"):
-                    err = body["error"] if isinstance(body["error"], dict) else {"message": str(body["error"])}
-                    raise ValueError(str(err.get("message") or err.get("errorName") or "the statement failed"))
-                if not next_uri:
-                    if state in ("FAILED", "CANCELED"):
-                        raise ValueError(f"the statement ended {state.lower()} without a message from Marina")
-                    break
-                if truncated or time.monotonic() - started > budget:
-                    try:
-                        await http.delete(next_uri, auth=auth)
-                    except Exception:
-                        pass
-                    if not truncated:
-                        raise ValueError(f"the statement ran past {budget:.0f} seconds and was cancelled; narrow it with a WHERE or ask for less")
-                    state = state or "CANCELED"
-                    break
-                resp = await http.get(next_uri, auth=auth)
+        try:
+            async with httpx.AsyncClient(timeout=http_timeout, headers=HEADERS) as http:
+                resp = await http.post(f"{BASE}/sql/v1/statement", content=sql.encode("utf-8"), headers={"Content-Type": "text/plain"}, auth=auth)
                 if resp.status_code == 401 and attempt == 1:
-                    _tokens.pop(_hash(client["id"], secret), None)
-                    body = None
-                    break
+                    _tokens.pop(_hash(client["id"], secret), None)   # the bearer died: mint another and send the statement again, once
+                    continue
                 if resp.status_code >= 400:
                     raise ValueError(_marina_message(resp))
                 body = resp.json() if resp.content else {}
-            if body is None:
-                continue   # the bearer expired mid-poll: the outer loop re-sends the statement with a fresh one
+                while True:
+                    if body.get("columns") and not columns:
+                        columns = [{"name": c.get("name"), "type": c.get("type")} for c in body["columns"] if isinstance(c, dict)]
+                    for r in body.get("data") or []:
+                        if len(rows) >= MAX_ROWS or chars > MAX_CHARS:
+                            truncated = True
+                            break
+                        rows.append(r)
+                        chars += len(json.dumps(r, default=str))
+                    stats = body.get("stats") or {}
+                    state = str(stats.get("state") or "")
+                    next_uri = body.get("nextUri")
+                    if body.get("error"):
+                        raise ValueError(_trino_error(body["error"]))
+                    if not next_uri:
+                        if state in ("FAILED", "CANCELED"):
+                            raise ValueError(f"the statement ended {state.lower()} without a message from Marina")
+                        break
+                    if truncated or time.monotonic() - started > budget:
+                        try:
+                            await http.delete(next_uri, auth=auth)
+                        except Exception:
+                            pass
+                        if not truncated:
+                            raise ValueError(f"the statement ran past {budget:.0f} seconds and was cancelled; narrow it with a WHERE or ask for less")
+                        state = state or "CANCELED"
+                        break
+                    resp = await http.get(next_uri, auth=auth)
+                    if resp.status_code == 401 and attempt == 1:
+                        _tokens.pop(_hash(client["id"], secret), None)
+                        body = None
+                        break
+                    if resp.status_code >= 400:
+                        raise ValueError(_marina_message(resp))
+                    body = resp.json() if resp.content else {}
+        except httpx.TimeoutException as e:
+            raise ValueError(f"{too_slow} ({type(e).__name__})") from e
+        if body is None:
+            continue   # the bearer expired mid-poll: the outer loop re-sends the statement with a fresh one
         return {"columns": [c["name"] for c in columns], "types": [c["type"] for c in columns], "rows": rows, "row_count": len(rows),
                 "truncated": truncated, "state": state or "FINISHED", "elapsed_ms": int((time.monotonic() - started) * 1000)}
     raise ValueError("the lakehouse refused the bearer twice")   # unreachable in practice: attempt 2 returns or raises above
 
 
+def _trino_error(err) -> str:
+    """The message of a Trino statement error ({message, errorName, errorType, failureInfo: {message, ...}}), whichever field holds it."""
+    if not isinstance(err, dict):
+        return str(err).strip() or "the statement failed without a message from Marina"
+    for k in ("message", "errorName"):
+        if isinstance(err.get(k), str) and err[k].strip():
+            return err[k].strip()
+    fi = err.get("failureInfo")
+    if isinstance(fi, dict) and isinstance(fi.get("message"), str) and fi["message"].strip():
+        return fi["message"].strip()
+    return "the statement failed without a message from Marina"
+
+
+_STATUS_FALLBACK = {401: "this client is not authorized for that stream, table or file", 403: "this client is not authorized for that stream, table or file",
+                    404: "no such stream, table or file", 429: "rate limited: 100 requests a minute and 1,000 an hour for this client, shared by everyone using it"}
+
+
 def _marina_message(resp) -> str:
-    """Marina's own words for a refusal, unchanged: they are written for a model and name the discovery statements."""
+    """Marina's own words for a failure, unchanged, from whichever shape carried them: the REST endpoints answer a 4xx or 5xx
+    with {"error": "<message>"}, the SQL gateway with Trino's {"error": {"message", "errorName", "failureInfo"}}. They are
+    written to tell the caller what to do next. Only when Marina sent none does the status and a fixed reading stand in."""
+    body = None
     try:
-        body = resp.json()
-        if isinstance(body, dict):
-            err = body.get("error")
-            if isinstance(err, dict) and err.get("message"):
-                return str(err["message"])
-            for k in ("message", "detail", "error"):
-                if isinstance(body.get(k), str) and body[k]:
-                    return body[k]
+        body = resp.json() if resp.content else None
     except Exception:
-        pass
+        body = None
+    if isinstance(body, dict):
+        err = body.get("error")
+        if isinstance(err, dict):
+            msg = _trino_error(err)
+            if not msg.startswith("the statement failed without"):
+                return msg
+        for k in ("error", "message", "detail"):
+            if isinstance(body.get(k), str) and body[k].strip():
+                return body[k].strip()
     text = (resp.text or "").strip()
-    return text[:1000] if text else f"{resp.status_code} from the lakehouse SQL endpoint"
+    if text and body is None and not text.startswith("<"):
+        return text[:1000]
+    fallback = _STATUS_FALLBACK.get(resp.status_code, "")
+    return f"{resp.status_code} from the lakehouse" + (f": {fallback}" if fallback else " with no message" + (f" ({text[:200]})" if text and body is not None else ""))
 
 
 def _stream_names(body) -> list[str]:
@@ -395,8 +481,8 @@ def make_server(name: str, client_id: str, key_env_name: str) -> tuple[MCPServer
                         "how": key_how(client["id"])},
             "model": "A client is an application identity authorized for streams; everyone using it sees the same views. A querying stream reads a set of tables through a wrapper view (columns masked and rows filtered as the admin set on the stream) and a set of files by tag. A submitting stream accepts records and files; those are listed here but not written to. In SQL, a stream is the schema lakehouse.\"client_" + client["id"] + "__<stream>\" and each table a view in it.",
             "workflow": ["lakehouse_sql_catalog(): the streams this client sees with their sizes and the largest tables across them; (stream): that stream's tables by row count, or with like='%doc%' only the tables whose names match; (stream, table): every column with Marina's statistics (null_count, distinct_count, min, max, mean, true_count, rows_by_year and the rest, where measured). Read this before writing SQL; the conversation keeps it. counts=true scans only the tables Marina has not measured yet.",
-                         "lakehouse_sql(sql, limit): one SELECT or WITH over one stream's views, fully qualified as lakehouse.\"client_" + client["id"] + "__<stream>\".\"<view>\"; any Trino function; SHOW PROFILE IN a schema and SELECT * FROM its _stats give statistics; a LIMIT is added when missing. Marina refuses DML, DDL, EXPLAIN and multi-statement requests, and its message says what to do.",
-                         "lakehouse_query(stream, table, limit, filters, offset, group_by, aggregate): a simple filtered read of one table without SQL, or grouped aggregates (exactly COUNT, SUM, AVG, MIN, MAX; COUNT on a column is its non-null count). Anything else is lakehouse_sql.",
+                         "lakehouse_sql(sql, limit): one SELECT or WITH over one stream's views, fully qualified as lakehouse.\"client_" + client["id"] + "__<stream>\".\"<view>\"; any Trino function; SHOW PROFILE IN a schema and SELECT * FROM its _stats give statistics; a LIMIT is added when missing. Marina refuses DML, DDL, EXPLAIN and multi-statement requests, and its message says what to do. Row counts of many tables are one statement, never one call per table: SELECT DISTINCT table_name, row_count FROM the stream's _stats WHERE table_name LIKE '%word%', or one UNION ALL of SELECT 'a' AS t, count(*) FROM s.\"a\" branches (fifty at most) for tables _stats has not measured.",
+                         "lakehouse_query(stream, table, limit, filters, offset, group_by, aggregate): a simple filtered read of one table without SQL, or aggregates (exactly COUNT, SUM, AVG, MIN, MAX; COUNT on a column is its non-null count) per group with group_by or as one row of totals without it. Anything else is lakehouse_sql.",
                          "lakehouse_streams and lakehouse_schema(stream): the plain lists behind the catalog",
                          "lakehouse_files(stream): the files a stream may read, with their hashes",
                          "lakehouse_file(stream, hash): one file as text, in pages"],
@@ -406,6 +492,7 @@ def make_server(name: str, client_id: str, key_env_name: str) -> tuple[MCPServer
                       "A stream may require certain filters; a 400 names them. A column not in the stream's row_params is filtered as text.",
                       "Rate limits: 100 requests a minute and 1,000 an hour for this client, shared by everyone using it.",
                       "Every result names the stream and table it came from; cite them with the date of the call.",
+                      "A failed call returns Marina's own message, which says what to change; change the call rather than sending it again unchanged.",
                       "Nothing is written to the lakehouse from here."],
         }
 
@@ -457,8 +544,8 @@ def make_server(name: str, client_id: str, key_env_name: str) -> tuple[MCPServer
             filters: Column filters combined with AND. A bare value is equality: {"fiscal_year": 2024, "status": "Active"}. An object is operators: {"amount": {"gte": 50000, "lte": 200000}, "status": {"in": ["Active", "Pending"]}, "title": {"ilike": "%climate%"}, "ended": {"is_null": true}}; operators eq, neq, gt, gte, lt, lte, in (a list, at most 1000), like, ilike, is_null.
             offset: Row offset for paging, 0-based; when given, the result carries total_count, the matching rows before paging.
             group_by: Column names to group by. Alone, it returns the distinct combinations; with aggregate, the computed values, ordered by the first aggregate descending.
-            aggregate: With group_by: [{"fn": "COUNT", "column": "*", "alias": "cnt"}, {"fn": "SUM", "column": "amount", "alias": "total"}]. fn is exactly one of COUNT, SUM, AVG, MIN, MAX; nothing else exists. COUNT on * counts every row of the group and COUNT on a column counts its non-null rows (SQL semantics), so "how many have a file" is COUNT on the file column. A count with a condition, a distinct count or any other function is a lakehouse_sql SELECT instead.
-        Returns: stream, table, columns, rows, returned, row_count, total_count (when offset was given), truncated.
+            aggregate: [{"fn": "COUNT", "column": "*", "alias": "cnt"}, {"fn": "SUM", "column": "amount", "alias": "total"}]. fn is exactly one of COUNT, SUM, AVG, MIN, MAX; nothing else exists. COUNT on * counts every row and COUNT on a column counts its non-null rows (SQL semantics), so "how many have a file" is COUNT on the file column. With group_by, one row per group; without it, one row of totals over the filtered table (a plain row count is aggregate [{"fn": "COUNT", "column": "*"}] alone). A count with a condition, a distinct count or any other function is a lakehouse_sql SELECT instead.
+        Returns: stream, table, columns, rows, returned, row_count, total_count (when offset was given), truncated; an ungrouped aggregate also returns sql_run, the statement it ran.
         """
         stream, table = (stream or "").strip(), (table or "").strip()
         if not stream or not table:
@@ -467,8 +554,17 @@ def make_server(name: str, client_id: str, key_env_name: str) -> tuple[MCPServer
         problem = _check_filters(filters) or _check_aggregate(aggregate)
         if problem:
             return {"error": problem}
-        if aggregate and not group_by:
-            return {"error": "aggregate needs group_by (group by a column to aggregate over it)"}
+        aggs = [{"fn": str(a["fn"]).upper(), "column": str(a["column"]), **({"alias": str(a["alias"])} if a.get("alias") else {})} for a in aggregate or []]
+        if aggs and not group_by:
+            # Marina's /query aggregates per group only; totals over the whole (filtered) table are one SELECT through its SQL gateway.
+            sql = aggregate_sql(client["id"], stream, table, aggs, filters)
+            try:
+                res = await _sql(client, sql)
+            except Exception as e:
+                return _report(client, e)
+            return {"stream": stream, "table": table, "columns": res["columns"], "rows": res["rows"], "returned": len(res["rows"]),
+                    "row_count": len(res["rows"]), "truncated": False, "sql_run": sql,
+                    "note": "totals over the whole filtered table, computed as one SQL statement; rows are lists in column order"}
         req: dict = {"table": table, "limit": limit}
         if filters:
             req["filters"] = filters
@@ -476,8 +572,8 @@ def make_server(name: str, client_id: str, key_env_name: str) -> tuple[MCPServer
             req["offset"] = max(0, int(offset))
         if group_by:
             req["group_by"] = [str(c) for c in group_by]
-        if aggregate:
-            req["aggregate"] = [{"fn": str(a["fn"]).upper(), "column": str(a["column"]), **({"alias": str(a["alias"])} if a.get("alias") else {})} for a in aggregate]
+        if aggs:
+            req["aggregate"] = aggs
         try:
             body = await _call(client, "POST", "/query", payload={"stream": stream, "tables": [req]})
         except Exception as e:
@@ -547,18 +643,24 @@ def make_server(name: str, client_id: str, key_env_name: str) -> tuple[MCPServer
         body = await _call(client, "GET", "/query/schema", params={"stream": stream})
         return _schema_tables(body)
 
-    async def _count_unmeasured(stream: str, tables: list[dict]) -> dict:
-        """Row counts for the data tables Marina has not measured, one UNION ALL statement per chunk of COUNT_CHUNK views."""
+    async def _count_unmeasured(stream: str, tables: list[dict]) -> tuple[dict, list[str]]:
+        """Row counts for the data tables Marina has not measured, one UNION ALL statement per chunk of COUNT_CHUNK views.
+        A chunk that fails (a timeout, a refusal) is reported with Marina's message and the other chunks still count."""
         names = [t["name"] for t in tables if t["row_count"] is None and not is_meta_table(t["name"])]
         counts: dict = {}
+        problems: list[str] = []
         for i in range(0, len(names), COUNT_CHUNK):
             chunk = names[i:i + COUNT_CHUNK]
             sql = " UNION ALL ".join(f"SELECT '{v}' AS view, count(*) AS n FROM {qualified(client['id'], stream, v)}" for v in chunk)
-            res = await _sql(client, sql)
+            try:
+                res = await _sql(client, sql)
+            except ValueError as e:
+                problems.append(f"{len(chunk)} tables ({chunk[0]} through {chunk[-1]}) were not counted: {e}")
+                continue
             for row in res["rows"]:
                 if isinstance(row, (list, tuple)) and len(row) >= 2:
                     counts[str(row[0])] = row[1]
-        return counts
+        return counts, problems
 
     @mcp.tool(name="lakehouse_sql_catalog", annotations=_READ_ONLY)
     async def lakehouse_sql_catalog(stream: str = "", table: str = "", like: str = "", counts: bool = False) -> dict:
@@ -581,15 +683,25 @@ def make_server(name: str, client_id: str, key_env_name: str) -> tuple[MCPServer
                     tables = await _stream_schema(st)
                     data = [t for t in tables if not is_meta_table(t["name"])]
                     meta += len(tables) - len(data)
-                    streams.append({"stream": st, "schema": schema_name(client["id"], st), "tables": len(data),
-                                    "rows": sum(t["row_count"] for t in data if isinstance(t["row_count"], (int, float))),
-                                    "unmeasured": sum(1 for t in data if t["row_count"] is None), "stats_table": qualified(client["id"], st, "_stats")})
+                    measured = [t["row_count"] for t in data if isinstance(t["row_count"], (int, float))]
+                    entry = {"stream": st, "schema": schema_name(client["id"], st), "tables": len(data), "measured": len(measured), "unmeasured": len(data) - len(measured),
+                             "stats_table": qualified(client["id"], st, "_stats")}
+                    if entry["unmeasured"]:
+                        # The sum of the measured tables is not the stream's size: it is named for what it is, and rows stays unknown.
+                        entry["rows"], entry["rows_measured"] = None, sum(measured)
+                    else:
+                        entry["rows"] = sum(measured)
+                    streams.append(entry)
                     largest.extend({"table": qualified(client["id"], st, t["name"]), "rows": t["row_count"]} for t in data if isinstance(t["row_count"], (int, float)))
                 largest.sort(key=lambda x: -x["rows"])
                 out = {"client": client["id"], "streams": streams, "largest_tables": largest[:LARGEST_TABLES], "metadata_tables": meta,
                        "stats_source": "marina", "next": "lakehouse_sql_catalog(stream) for one stream's tables; (stream, table) for a table's columns and statistics."}
+                if any(s["unmeasured"] for s in streams):
+                    out["note"] = ("rows is null for a stream Marina has not finished measuring: rows_measured sums only its measured tables, and largest_tables "
+                                   "ranks only measured tables. Row counts of the rest: SELECT DISTINCT table_name, row_count FROM the stream's stats_table (its _stats view) "
+                                   "WHERE table_name LIKE '%word%' through lakehouse_sql, or lakehouse_sql_catalog(stream, like, counts=true), which scans.")
                 if counts:
-                    out["note"] = "counts=true needs a stream; the overview shows Marina's counts only."
+                    out["note"] = (out.get("note", "") + " counts=true needs a stream; the overview shows Marina's counts only.").strip()
                 return _fit(out, [("largest_tables", 10), ("streams", 20)])
             tables = await _stream_schema(stream)
             if table:
@@ -617,7 +729,7 @@ def make_server(name: str, client_id: str, key_env_name: str) -> tuple[MCPServer
             data = [t for t in tables if not is_meta_table(t["name"])]
             if like:
                 data = [t for t in data if _like(like, t["name"])]
-            counted = await _count_unmeasured(stream, data) if counts else {}
+            counted, count_problems = await _count_unmeasured(stream, data) if counts else ({}, [])
             for t in data:
                 if t["row_count"] is None and t["name"] in counted:
                     t["row_count"] = counted[t["name"]]
@@ -641,6 +753,8 @@ def make_server(name: str, client_id: str, key_env_name: str) -> tuple[MCPServer
                    "next": "lakehouse_sql_catalog(stream, table) for a table's columns and statistics" + ("" if inline else "; columns are not inline because the stream has more than 40 tables")}
             if not counts and out["unmeasured"]:
                 out["note"] = f"{out['unmeasured']} tables have no row_count from Marina yet; counts=true counts them now (a scan)."
+            if count_problems:
+                out["count_problems"] = count_problems
             out = _fit(out, [("tables", 150), ("tables", 60)])
             if out.get("left_out"):
                 out["left_out"] = [f"{len(rows) - len(out['tables'])} tables not listed here: narrow by name with like, or ask for one by name with (stream, table)"]
@@ -651,6 +765,8 @@ def make_server(name: str, client_id: str, key_env_name: str) -> tuple[MCPServer
     @mcp.tool(name="lakehouse_sql", annotations=_READ_ONLY)
     async def lakehouse_sql(sql: str, limit: int = 200) -> dict:
         """One SQL statement over the lakehouse through Marina: a SELECT or WITH over one stream's views, or SHOW SCHEMAS, SHOW TABLES IN a schema, SHOW COLUMNS, SHOW PROFILE IN a schema, DESCRIBE a view. Any Trino built-in function. Views are fully qualified as lakehouse."client_<id>__<stream>"."<view>" (lakehouse_sql_catalog gives the names). A LIMIT is added when a SELECT has none. Read only: Marina refuses anything else and says why.
+
+        Row counts of several tables are one statement, not one call per table: SELECT DISTINCT table_name, row_count FROM lakehouse."client_<id>__<stream>"."_stats" WHERE table_name LIKE '%word%' gives Marina's counts where measured; for the tables it has not measured, one UNION ALL of SELECT 'a' AS t, count(*) AS n FROM <schema>."a" branches, fifty at most.
 
         Args:
             sql: The statement, one only, no trailing statements.

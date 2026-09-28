@@ -818,7 +818,9 @@ submitting streams that accept records and files. `lakehouse_streams` lists
 both; `lakehouse_schema` gives a querying stream's tables and columns;
 `lakehouse_query` reads one table with Marina's own filter syntax (equality,
 `gte`, `in`, `ilike`, `is_null` and the rest), paging with a total count,
-and grouped aggregates (COUNT, SUM, AVG, MIN, MAX); `lakehouse_files` and
+and aggregates (COUNT, SUM, AVG, MIN, MAX) per group, or as one row of
+totals when no `group_by` is given, which the tool runs as one SELECT through
+the SQL gateway; `lakehouse_files` and
 `lakehouse_file` read a stream's file catalog and one file as text. Rows are
 capped at 500 and 30,000 characters a call. Nothing is written: the
 submitting streams are listed but not used, because a remote write would run
@@ -840,7 +842,9 @@ answers page by page through `nextUri`. Two tools sit on it:
 
 - `lakehouse_sql_catalog` is the survey, in three layers so any answer fits a
   conversation: with no arguments, every querying stream with its table count
-  and total rows and the largest tables across all streams; with `stream`, that
+  and total rows (`rows` is null and `rows_measured` given while Marina has
+  tables it has not measured, since a partial sum is not a size) and the
+  largest tables across all streams; with `stream`, that
   stream's tables by row count (column names inline when it has 40 tables or
   fewer), and with `like` as well only the tables whose names match a SQL LIKE
   pattern, since the listing keeps 150 of a stream's tables and the subaward
@@ -855,7 +859,8 @@ answers page by page through `nextUri`. Two tools sit on it:
   TABLES` and `DESCRIBE` per view, which would be thousands of SQL calls on a
   large client. `counts=true` counts only the tables Marina has not measured
   yet, with `count(*)` statements of at most fifty views each (Trino fails
-  past a hundred UNION branches). Tables whose names start with `_` (`_stats`)
+  past a hundred UNION branches); a chunk that fails is reported under
+  `count_problems` with Marina's message and the others still count. Tables whose names start with `_` (`_stats`)
   are metadata, read by the gateway, and are never listed as data.
 - `lakehouse_sql` runs one statement: a `SELECT` or `WITH`, or `SHOW SCHEMAS`,
   `SHOW TABLES IN`, `SHOW COLUMNS`, `SHOW PROFILE IN`, `DESCRIBE`. One
@@ -864,8 +869,18 @@ answers page by page through `nextUri`. Two tools sit on it:
   wrapped in one (never a statement on a `_` table, which the gateway
   evaluates). Rows are capped at 500 and 30,000 characters; a statement that
   passes the cap or `AI4RA_MCP_LAKEHOUSE_SQL_TIMEOUT_S` (60 seconds) is
-  cancelled with `DELETE`. Marina's refusals come back word for word: they are
-  written for a model and name the discovery statements.
+  cancelled with `DELETE`; each HTTP exchange with the gateway is allowed that
+  budget too, since Marina may run the whole statement before its first
+  answer. Marina's refusals come back word for word: they are written for a
+  model and name the discovery statements. Every failure has a message: the
+  REST endpoints' `{"error": "…"}` and the gateway's Trino error (`message`,
+  `errorName` or `failureInfo.message`) are passed through, an httpx timeout
+  (which stringifies to nothing) is named with the seconds allowed, and a
+  status without a message is given a fixed reading. Row counts of many
+  tables are one statement, which the tool descriptions and the skill say:
+  `SELECT DISTINCT table_name, row_count FROM …"_stats" WHERE table_name LIKE`
+  for what Marina has measured, one `UNION ALL` of `count(*)` branches for the
+  rest.
 
 Nothing is cached on this server. The conversation is the cache: a catalog
 result stays in the transcript and the model refers back to it, so each

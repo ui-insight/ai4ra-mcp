@@ -205,10 +205,32 @@ async def test_lakehouse_query_validates_and_builds_the_request(monkeypatch):
                                  "aggregate": [{"fn": "COUNT", "column": "*", "alias": "n"}]}
     bad = await lakehouse.lakehouse_query("s", "awards", filters={"x": {"between": [1, 2]}})
     assert "unknown filter operator" in bad["error"]
-    bad = await lakehouse.lakehouse_query("s", "awards", aggregate=[{"fn": "COUNT", "column": "*"}])
-    assert "needs group_by" in bad["error"]
     bad = await lakehouse.lakehouse_query("s", "awards", group_by=["status"], aggregate=[{"fn": "count_non_null", "column": "x"}])
     assert "count_non_null" in bad["error"] and "lakehouse_sql" in bad["error"]
+
+
+@pytest.mark.asyncio
+async def test_lakehouse_query_aggregate_without_group_by_is_one_sql_statement(monkeypatch):
+    """The skill promises that COUNT on * counts every row; the tool refused an aggregate with no group_by. Now it runs the
+    totals as one SELECT through Marina's SQL gateway, the filters as its WHERE, and one row comes back."""
+    ran = {}
+
+    async def fake_sql(client, sql, budget_s=None):
+        ran["sql"] = sql; return {"columns": ["cnt", "total"], "types": ["bigint", "double"], "rows": [[42, 7.5]], "row_count": 1, "truncated": False, "state": "FINISHED", "elapsed_ms": 3}
+
+    async def no_rest(*a, **k):
+        raise AssertionError("/query must not be called for an ungrouped aggregate")
+
+    monkeypatch.setattr(lakehouse, "_sql", fake_sql)
+    monkeypatch.setattr(lakehouse, "_call", no_rest)
+    out = await lakehouse.lakehouse_query("subaward", "docs", filters={"fiscal_year": {"gte": 2023}, "status": "Active", "title": {"ilike": "%o'brien%"}, "kind": {"in": ["a", "b"]}, "ended": {"is_null": True}},
+                                          aggregate=[{"fn": "count", "column": "*", "alias": "cnt"}, {"fn": "SUM", "column": "amount", "alias": "total"}])
+    assert out["rows"] == [[42, 7.5]] and out["columns"] == ["cnt", "total"] and out["returned"] == 1 and out["table"] == "docs"
+    assert ran["sql"] == ('SELECT COUNT(*) AS "cnt", SUM("amount") AS "total" FROM lakehouse."client_mr-365__subaward"."docs" WHERE '
+                          '"fiscal_year" >= 2023 AND "status" = \'Active\' AND lower(CAST("title" AS varchar)) LIKE lower(\'%o\'\'brien%\') AND "kind" IN (\'a\', \'b\') AND "ended" IS NULL')
+    assert out["sql_run"] == ran["sql"]
+    plain = await lakehouse.lakehouse_query("subaward", "docs", aggregate=[{"fn": "COUNT", "column": "*"}])
+    assert ran["sql"] == 'SELECT COUNT(*) AS "count_all" FROM lakehouse."client_mr-365__subaward"."docs"' and plain["returned"] == 1
 
 
 @pytest.mark.asyncio
@@ -271,8 +293,10 @@ async def test_lakehouse_catalog_overview_lists_marinas_streams(monkeypatch):
     _fake_marina(monkeypatch, calls)
     out = await lakehouse.lakehouse_sql_catalog()
     assert [s["stream"] for s in out["streams"]] == ["subaward"]
-    assert out["streams"][0]["tables"] == 3 and out["streams"][0]["rows"] == 1303 and out["streams"][0]["unmeasured"] == 2
-    assert out["largest_tables"][0]["rows"] == 1303
+    st = out["streams"][0]
+    assert st["tables"] == 3 and st["measured"] == 1 and st["unmeasured"] == 2
+    assert st["rows"] is None and st["rows_measured"] == 1303   # the sum of one measured table is not the stream's size
+    assert out["largest_tables"][0]["rows"] == 1303 and "rows_measured" in out["note"] and "_stats" in out["note"]
 
 
 @pytest.mark.asyncio

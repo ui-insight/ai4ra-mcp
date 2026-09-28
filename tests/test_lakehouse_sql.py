@@ -108,6 +108,82 @@ async def test_sql_passes_marina_failure_message_verbatim(monkeypatch):
     assert out == {"error": "Only SELECT, WITH, SHOW and DESCRIBE are accepted."}
 
 
+async def test_sql_reads_a_trino_error_from_failure_info_and_from_a_poll(monkeypatch):
+    calls = []
+    make_client(monkeypatch, {
+        STMT: [Resp(200, {"id": "q1", "nextUri": NEXT1, "stats": {"state": "RUNNING"}})],
+        NEXT1: [Resp(200, {"id": "q1", "stats": {"state": "FAILED"}, "error": {"message": "", "errorName": "", "failureInfo": {"type": "x", "message": "line 1:8: Column 'nope' cannot be resolved"}}})],
+    }, calls)
+    out = await lh.lakehouse_sql("SELECT nope FROM lakehouse.\"client_mr-365__s\".\"v\"")
+    assert out == {"error": "line 1:8: Column 'nope' cannot be resolved"}
+
+
+class Timeout(Exception):
+    pass
+
+
+async def test_sql_timeout_is_named_and_allows_the_statement_budget(monkeypatch):
+    """A slow count came back as {"error": ""}: httpx's timeout stringifies to nothing, and the SQL client used the shared
+    30-second HTTP timeout, so the 60-second statement budget was never reached."""
+    seen = {}
+
+    class Client:
+        def __init__(self, **kw): seen["timeout"] = kw.get("timeout"); self.headers = kw.get("headers") or {}
+        async def __aenter__(self): return self
+        async def __aexit__(self, *a): return False
+        async def post(self, url, auth=None, data=None, content=None, headers=None):
+            if url.endswith("/auth/token"):
+                return Resp(200, {"access_token": "tok", "expires_in": 3600})
+            raise lh.httpx.ReadTimeout("")
+
+    monkeypatch.setattr(lh.httpx, "AsyncClient", Client)
+    lh._tokens.clear()
+    monkeypatch.setenv("AI4RA_MCP_LAKEHOUSE_SECRET", "s3")
+    out = await lh.lakehouse_sql('SELECT count(*) FROM lakehouse."client_mr-365__s"."v"')
+    assert out["error"].startswith("Marina gave no answer to the statement within 60 seconds") and "ReadTimeout" in out["error"] and "_stats" in out["error"]
+    assert seen["timeout"].read == pytest.approx(lh.SQL_TIMEOUT_S + 10) and seen["timeout"].connect == 10
+
+
+def test_report_never_returns_an_empty_error():
+    client = {"id": "mr-365", "key_env": "AI4RA_MCP_LAKEHOUSE_SECRET"}
+    assert lh._report(client, lh.httpx.ReadTimeout(""))["error"].startswith("the lakehouse at ") and "ReadTimeout" in lh._report(client, lh.httpx.ReadTimeout(""))["error"]
+    assert lh._report(client, ValueError(""))["error"] == "ValueError from the lakehouse call, with no message"
+    assert lh._report(client, ValueError("Marina says so"))["error"] == "Marina says so"
+    assert "not reachable" in lh._report(client, lh.httpx.ConnectError(""))["error"]
+
+
+async def test_rest_failures_carry_marinas_message_verbatim(monkeypatch):
+    """Marina's REST endpoints answer a 4xx or 5xx with {"error": "<message>"}; the message is the answer, not the status."""
+    calls = []
+    msg = "stream 'subaward' requires the filters fiscal_year and org_code; add them to the request"
+    make_client(monkeypatch, {f"{lh.BASE}/query": [Resp(400, {"error": msg})]}, calls)
+    out = await lh.lakehouse_query("subaward", "docs", filters={"x": 1})
+    assert out == {"error": msg}
+    make_client(monkeypatch, {f"{lh.BASE}/query/schema": [Resp(403, {"error": ""})]}, calls)
+    out = await lh.lakehouse_schema("secret")
+    assert out == {"error": "403 from the lakehouse: this client is not authorized for that stream, table or file"}
+    make_client(monkeypatch, {f"{lh.BASE}/query/schema": [Resp(502, text="<html>bad gateway</html>")]}, calls)
+    out = await lh.lakehouse_schema("subaward")
+    assert out == {"error": "502 from the lakehouse with no message"}
+
+
+async def test_rest_timeout_is_named(monkeypatch):
+    class Client:
+        def __init__(self, **kw): self.headers = kw.get("headers") or {}
+        async def __aenter__(self): return self
+        async def __aexit__(self, *a): return False
+        async def post(self, url, auth=None, data=None, content=None, headers=None):
+            return Resp(200, {"access_token": "tok", "expires_in": 3600})
+        async def request(self, method, url, params=None, json=None):
+            raise lh.httpx.ReadTimeout("")
+
+    monkeypatch.setattr(lh.httpx, "AsyncClient", Client)
+    lh._tokens.clear()
+    monkeypatch.setenv("AI4RA_MCP_LAKEHOUSE_SECRET", "s3")
+    out = await lh.lakehouse_schema("subaward")
+    assert out["error"] == "the lakehouse gave no answer to GET /query/schema within 30 seconds (ReadTimeout); ask for less in one call"
+
+
 async def test_sql_mints_again_once_on_401_mid_poll(monkeypatch):
     calls = []
     make_client(monkeypatch, {
@@ -163,7 +239,8 @@ async def test_catalog_overview_ranks_largest_tables_across_streams_and_skips_me
     }, calls)
     out = await lh.lakehouse_sql_catalog()
     assert [s["stream"] for s in out["streams"]] == ["subaward", "personnel"]
-    assert out["streams"][0] == {"stream": "subaward", "schema": "client_mr-365__subaward", "tables": 2, "rows": 5000, "unmeasured": 1, "stats_table": 'lakehouse."client_mr-365__subaward"."_stats"'}
+    assert out["streams"][0] == {"stream": "subaward", "schema": "client_mr-365__subaward", "tables": 2, "measured": 1, "unmeasured": 1, "rows": None, "rows_measured": 5000, "stats_table": 'lakehouse."client_mr-365__subaward"."_stats"'}
+    assert out["streams"][1] == {"stream": "personnel", "schema": "client_mr-365__personnel", "tables": 2, "measured": 2, "unmeasured": 0, "rows": 90040, "stats_table": 'lakehouse."client_mr-365__personnel"."_stats"'}
     assert [t["rows"] for t in out["largest_tables"]] == [90000, 5000, 40] and out["largest_tables"][0]["table"] == 'lakehouse."client_mr-365__personnel"."people"'
     assert out["metadata_tables"] == 1 and out["stats_source"] == "marina"
     assert [c for c in calls if c[0] == "GET" and "/query/schema" in c[1]][0][3] == {"stream": "subaward"}
@@ -212,6 +289,22 @@ async def test_catalog_counts_only_unmeasured_tables_in_chunks_of_fifty(monkeypa
     assert "measured" not in posts[0][4] and posts[0][4].startswith("SELECT 'u0' AS view, count(*) AS n FROM lakehouse.\"client_mr-365__subaward\".\"u0\"")
     by = {t["table"]: t for t in out["tables"]}
     assert by["u59"]["rows"] == 59 and by["u59"]["counted_now"] is True and "counted_now" not in by["measured"] and out["unmeasured"] == 0
+    assert "count_problems" not in out
+
+
+async def test_catalog_counts_report_a_failed_chunk_and_keep_the_rest(monkeypatch):
+    calls = []
+    tables = [table(f"u{i}", None) for i in range(60)]
+    rows2 = [[f"u{i}", i] for i in range(50, 60)]
+    make_client(monkeypatch, {
+        SCHEMA: [Resp(200, schema_body(tables))],
+        STMT: [Resp(200, {"id": "c1", "stats": {"state": "FAILED"}, "error": {"message": "Query exceeded the maximum number of stages"}}),
+               Resp(200, {"id": "c2", "columns": [{"name": "view", "type": "varchar"}, {"name": "n", "type": "bigint"}], "data": rows2, "stats": {"state": "FINISHED"}})],
+    }, calls)
+    out = await lh.lakehouse_sql_catalog(stream="subaward", like="u", counts=True)
+    by = {t["table"]: t for t in out["tables"]}
+    assert by["u59"]["rows"] == 59 and by["u0"]["rows"] is None and out["unmeasured"] == 50
+    assert out["count_problems"] == ["50 tables (u0 through u49) were not counted: Query exceeded the maximum number of stages"]
 
 
 def test_fit_trims_lists_and_says_so():

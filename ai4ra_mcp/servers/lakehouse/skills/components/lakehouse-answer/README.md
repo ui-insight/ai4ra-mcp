@@ -1,8 +1,8 @@
 # Lakehouse Answer
 
-Answers a question from the University of Idaho data lakehouse: discovers the streams the client may query, reads each candidate stream's schema, then queries the table that holds the answer with the question's facts as filters, or as a grouped aggregate for a count or a total. Every figure carries its stream, table, filters and the date of the call.
+Answers a question from the University of Idaho data lakehouse: discovers the streams the client may query, reads each candidate stream's schema, then queries the table that holds the answer with the question's facts as filters, or as an aggregate (grouped or one row of totals) for a count or a total; row counts across many tables come from the stream's `_stats` table or one `UNION ALL` statement, never one call per table. Every figure carries its stream, table, filters and the date of the call.
 
-**Version:** 0.1.0 · **Category:** research · **Status:** experimental · **Output:** the reply
+**Version:** 0.3.0 · **Category:** research · **Status:** experimental · **Output:** the reply
 
 ## Inputs
 

@@ -2,6 +2,12 @@
 
 All notable changes to this component. Versions follow semver: MAJOR for output-contract breaks, MINOR for backward-compatible additions, PATCH for wording or clarity.
 
+## [0.3.0] — 2026-09-28
+
+- Step 3: a plain count is `aggregate` with no `group_by` (the tool now runs it as one SQL statement and returns one row), so the prompt's promise that COUNT on `*` counts every row holds.
+- Step 4 (new): row counts across many tables are one statement, never one call per table: first the stream's `_stats` table by `table_name LIKE`, then one `UNION ALL` of `COUNT(*)` branches for the tables Marina has not measured, or the catalog's `counts=true`. A session asked which of 2,467 tables held documents and queued forty single counts, which the client's calls-per-round cap stopped.
+- Step 5 (new): a failed call carries Marina's message, which says what to change; the same call is never repeated unchanged, and a timeout is narrowed or split rather than retried.
+
 ## [0.2.1] — 2026-09-28
 
 - Step 2 says to narrow a large stream's listing by name with the catalog's `like` pattern instead of reading it whole.
