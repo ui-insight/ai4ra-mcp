@@ -160,8 +160,14 @@ def _check_aggregate(aggregate) -> str | None:
     if not isinstance(aggregate, list):
         return "aggregate must be a list of {fn, column, alias}"
     for a in aggregate:
-        if not isinstance(a, dict) or str(a.get("fn", "")).upper() not in _AGG_FUNCS or not a.get("column"):
+        if not isinstance(a, dict) or not a.get("column"):
             return f"each aggregate is {{fn: one of {', '.join(_AGG_FUNCS)}, column: a column or *, alias: a name}}"
+        fn = str(a.get("fn", "")).upper()
+        if fn not in _AGG_FUNCS:
+            return (f"fn {a.get('fn')!r} is not an aggregate here: the only ones are {', '.join(_AGG_FUNCS)}. "
+                    "COUNT on a column counts its non-null rows and COUNT on * counts every row, so a count of "
+                    "filled values is COUNT on that column; a count with a condition, or any other function, is one "
+                    "lakehouse_sql SELECT.")
     return None
 
 
@@ -370,7 +376,7 @@ def make_server(name: str, client_id: str, key_env_name: str) -> tuple[MCPServer
             "model": "A client is an application identity authorized for streams; everyone using it sees the same views. A querying stream reads a set of tables through a wrapper view (columns masked and rows filtered as the admin set on the stream) and a set of files by tag. A submitting stream accepts records and files; those are listed here but not written to. In SQL, a stream is the schema lakehouse.\"client_" + client["id"] + "__<stream>\" and each table a view in it.",
             "workflow": ["lakehouse_sql_catalog(): the streams this client sees with their sizes and the largest tables across them; (stream): that stream's tables by row count; (stream, table): every column with Marina's statistics (null_count, distinct_count, min, max, mean, true_count, rows_by_year and the rest, where measured). Read this before writing SQL; the conversation keeps it. counts=true scans only the tables Marina has not measured yet.",
                          "lakehouse_sql(sql, limit): one SELECT or WITH over one stream's views, fully qualified as lakehouse.\"client_" + client["id"] + "__<stream>\".\"<view>\"; any Trino function; SHOW PROFILE IN a schema and SELECT * FROM its _stats give statistics; a LIMIT is added when missing. Marina refuses DML, DDL, EXPLAIN and multi-statement requests, and its message says what to do.",
-                         "lakehouse_query(stream, table, limit, filters, offset, group_by, aggregate): a simple filtered read of one table without SQL, or grouped aggregates (COUNT, SUM, AVG, MIN, MAX)",
+                         "lakehouse_query(stream, table, limit, filters, offset, group_by, aggregate): a simple filtered read of one table without SQL, or grouped aggregates (exactly COUNT, SUM, AVG, MIN, MAX; COUNT on a column is its non-null count). Anything else is lakehouse_sql.",
                          "lakehouse_streams and lakehouse_schema(stream): the plain lists behind the catalog",
                          "lakehouse_files(stream): the files a stream may read, with their hashes",
                          "lakehouse_file(stream, hash): one file as text, in pages"],
@@ -431,7 +437,7 @@ def make_server(name: str, client_id: str, key_env_name: str) -> tuple[MCPServer
             filters: Column filters combined with AND. A bare value is equality: {"fiscal_year": 2024, "status": "Active"}. An object is operators: {"amount": {"gte": 50000, "lte": 200000}, "status": {"in": ["Active", "Pending"]}, "title": {"ilike": "%climate%"}, "ended": {"is_null": true}}; operators eq, neq, gt, gte, lt, lte, in (a list, at most 1000), like, ilike, is_null.
             offset: Row offset for paging, 0-based; when given, the result carries total_count, the matching rows before paging.
             group_by: Column names to group by. Alone, it returns the distinct combinations; with aggregate, the computed values, ordered by the first aggregate descending.
-            aggregate: With group_by: [{"fn": "COUNT", "column": "*", "alias": "cnt"}, {"fn": "SUM", "column": "amount", "alias": "total"}]; fn is COUNT, SUM, AVG, MIN or MAX.
+            aggregate: With group_by: [{"fn": "COUNT", "column": "*", "alias": "cnt"}, {"fn": "SUM", "column": "amount", "alias": "total"}]. fn is exactly one of COUNT, SUM, AVG, MIN, MAX; nothing else exists. COUNT on * counts every row of the group and COUNT on a column counts its non-null rows (SQL semantics), so "how many have a file" is COUNT on the file column. A count with a condition, a distinct count or any other function is a lakehouse_sql SELECT instead.
         Returns: stream, table, columns, rows, returned, row_count, total_count (when offset was given), truncated.
         """
         stream, table = (stream or "").strip(), (table or "").strip()
