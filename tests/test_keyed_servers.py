@@ -228,3 +228,75 @@ def test_lakehouse_second_client_names():
     assert lakehouse.mount_name(0, "mr-365") == "lakehouse" and lakehouse.key_env(0, "mr-365") == "AI4RA_MCP_LAKEHOUSE_SECRET"
     assert lakehouse.mount_name(1, "OSP Reports") == "lakehouse-osp-reports"
     assert lakehouse.key_env(1, "OSP Reports") == "AI4RA_MCP_LAKEHOUSE_SECRET_OSP_REPORTS"
+
+
+def test_lakehouse_stream_names_read_marinas_key():
+    """Marina lists a querying stream as {stream_name, enabled, table_count}: the overview read only name/stream and came back empty."""
+    assert lakehouse._stream_names({"querying": [{"stream_name": "subaward", "enabled": True}, "awards", {"name": "x"}]}) == ["subaward", "awards", "x"]
+
+
+def test_lakehouse_like_is_sql_like_on_names():
+    assert lakehouse._like("%doc%", "veras_sample__post_award_subrecip_doc")
+    assert lakehouse._like("doc", "veras_sample__post_award_subrecip_DOC")
+    assert lakehouse._like("veras_sample__post_award%", "veras_sample__post_award_subrecip")
+    assert not lakehouse._like("veras_sample__post_award%", "veras_sample__a_post_award_subrecip")
+    assert not lakehouse._like("%animal%", "veras_sample__post_award_subrecip_doc")
+
+
+SCHEMA = {"tables": [
+    {"name": "veras_sample__post_award_subrecip_doc", "row_count": 1303, "columns": []},
+    {"name": "veras_sample__a_animal_document", "row_count": None, "columns": [{"name": "pk_index", "type": "integer"}, {"name": "title", "type": "varchar"}]},
+    {"name": "veras_sample__a_animal", "row_count": None, "columns": [{"name": "pk_index", "type": "integer"}]},
+    {"name": "_stats", "row_count": None, "columns": []},
+]}
+
+
+def _fake_marina(monkeypatch, calls):
+    async def fake_call(client, method, path, params=None, payload=None, raw=False):
+        calls.append((method, path, params, payload))
+        if path == "/streams":
+            return {"client_id": "mr-365", "querying": [{"stream_name": "subaward", "enabled": True, "table_count": 3}], "submitting": []}
+        if path == "/query/schema":
+            return SCHEMA
+        if path == "/query":
+            t = payload["tables"][0]["table"]
+            return {t: {"columns": ["doc_id", "title", "file_name"], "rows": [{"doc_id": 1, "title": "t", "file_name": "f"}], "rowCount": 1}}
+        raise AssertionError(path)
+    monkeypatch.setattr(lakehouse, "_call", fake_call)
+
+
+@pytest.mark.asyncio
+async def test_lakehouse_catalog_overview_lists_marinas_streams(monkeypatch):
+    calls = []
+    _fake_marina(monkeypatch, calls)
+    out = await lakehouse.lakehouse_sql_catalog()
+    assert [s["stream"] for s in out["streams"]] == ["subaward"]
+    assert out["streams"][0]["tables"] == 3 and out["streams"][0]["rows"] == 1303 and out["streams"][0]["unmeasured"] == 2
+    assert out["largest_tables"][0]["rows"] == 1303
+
+
+@pytest.mark.asyncio
+async def test_lakehouse_catalog_table_layer_reads_one_row_when_marina_has_no_columns(monkeypatch):
+    """The six tables Marina has counted come with no columns; the catalog names them from one row rather than answering with nothing."""
+    calls = []
+    _fake_marina(monkeypatch, calls)
+    out = await lakehouse.lakehouse_sql_catalog("subaward", "veras_sample__post_award_subrecip_doc")
+    assert [c["name"] for c in out["columns"]] == ["doc_id", "title", "file_name"]
+    assert out["row_count"] == 1303 and out["stats_source"] is None and "not profiled" in out["note"]
+    assert calls[-1][1] == "/query" and calls[-1][3] == {"stream": "subaward", "tables": [{"table": "veras_sample__post_award_subrecip_doc", "limit": 1}]}
+    # a table Marina did profile is answered from the schema alone
+    calls.clear()
+    out = await lakehouse.lakehouse_sql_catalog("subaward", "veras_sample__a_animal_document")
+    assert [c["name"] for c in out["columns"]] == ["pk_index", "title"] and "note" not in out
+    assert all(c[1] != "/query" for c in calls)
+
+
+@pytest.mark.asyncio
+async def test_lakehouse_catalog_stream_layer_narrows_by_like(monkeypatch):
+    calls = []
+    _fake_marina(monkeypatch, calls)
+    out = await lakehouse.lakehouse_sql_catalog("subaward", like="%doc%")
+    assert [t["table"] for t in out["tables"]] == ["veras_sample__post_award_subrecip_doc", "veras_sample__a_animal_document"]
+    assert out["table_count"] == 2 and out["stream_table_count"] == 3 and out["like"] == "%doc%"
+    out = await lakehouse.lakehouse_sql_catalog("subaward")
+    assert out["table_count"] == 3 and "like" not in out

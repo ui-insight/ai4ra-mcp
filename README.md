@@ -842,11 +842,15 @@ answers page by page through `nextUri`. Two tools sit on it:
   conversation: with no arguments, every querying stream with its table count
   and total rows and the largest tables across all streams; with `stream`, that
   stream's tables by row count (column names inline when it has 40 tables or
-  fewer); with `stream` and `table`, every column with its type, description
+  fewer), and with `like` as well only the tables whose names match a SQL LIKE
+  pattern, since the listing keeps 150 of a stream's tables and the subaward
+  stream has 1,656; with `stream` and `table`, every column with its type, description
   and Marina's statistics under Marina's own keys (`null_count`,
   `distinct_count`, `min`, `max`, `mean`, `stddev`, `sum`, `min_length`,
   `max_length`, `empty_count`, `true_count`, `rows_by_year`, each present only
-  where measured). It is built on `GET /query/schema?stream=` (one call per
+  where measured). A table Marina has counted but not profiled comes back from
+  `/query/schema` with no columns at all, so the table layer then reads one row
+  through `/query` and names the columns from it, saying so. It is built on `GET /query/schema?stream=` (one call per
   stream, Marina's counts and statistics since its PR #357), never on `SHOW
   TABLES` and `DESCRIBE` per view, which would be thousands of SQL calls on a
   large client. `counts=true` counts only the tables Marina has not measured

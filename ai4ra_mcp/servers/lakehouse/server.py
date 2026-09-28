@@ -314,9 +314,20 @@ def _stream_names(body) -> list[str]:
     for q in (body or {}).get("querying") or []:
         if isinstance(q, str):
             out.append(q)
-        elif isinstance(q, dict) and (q.get("name") or q.get("stream")):
-            out.append(str(q.get("name") or q.get("stream")))
+        elif isinstance(q, dict) and (q.get("stream_name") or q.get("name") or q.get("stream")):
+            out.append(str(q.get("stream_name") or q.get("name") or q.get("stream")))
     return out
+
+
+def _like(pattern: str, name: str) -> bool:
+    """SQL LIKE on a table name, case-insensitive: % is any run, _ one character; a bare word matches anywhere."""
+    pat = pattern.strip()
+    if not pat:
+        return True
+    if "%" not in pat:
+        pat = f"%{pat}%"
+    rx = "".join(".*" if ch == "%" else "." if ch == "_" else re.escape(ch) for ch in pat)
+    return re.fullmatch(rx, name, flags=re.IGNORECASE) is not None
 
 
 def _schema_tables(body) -> list[dict]:
@@ -383,7 +394,7 @@ def make_server(name: str, client_id: str, key_env_name: str) -> tuple[MCPServer
             "key": {"on_this_request": bool(api_key(client["key_env"])), "per_user": "send this client's shared secret as a bearer token; the server holds none unless the deployment set " + client["key_env"],
                         "how": key_how(client["id"])},
             "model": "A client is an application identity authorized for streams; everyone using it sees the same views. A querying stream reads a set of tables through a wrapper view (columns masked and rows filtered as the admin set on the stream) and a set of files by tag. A submitting stream accepts records and files; those are listed here but not written to. In SQL, a stream is the schema lakehouse.\"client_" + client["id"] + "__<stream>\" and each table a view in it.",
-            "workflow": ["lakehouse_sql_catalog(): the streams this client sees with their sizes and the largest tables across them; (stream): that stream's tables by row count; (stream, table): every column with Marina's statistics (null_count, distinct_count, min, max, mean, true_count, rows_by_year and the rest, where measured). Read this before writing SQL; the conversation keeps it. counts=true scans only the tables Marina has not measured yet.",
+            "workflow": ["lakehouse_sql_catalog(): the streams this client sees with their sizes and the largest tables across them; (stream): that stream's tables by row count, or with like='%doc%' only the tables whose names match; (stream, table): every column with Marina's statistics (null_count, distinct_count, min, max, mean, true_count, rows_by_year and the rest, where measured). Read this before writing SQL; the conversation keeps it. counts=true scans only the tables Marina has not measured yet.",
                          "lakehouse_sql(sql, limit): one SELECT or WITH over one stream's views, fully qualified as lakehouse.\"client_" + client["id"] + "__<stream>\".\"<view>\"; any Trino function; SHOW PROFILE IN a schema and SELECT * FROM its _stats give statistics; a LIMIT is added when missing. Marina refuses DML, DDL, EXPLAIN and multi-statement requests, and its message says what to do.",
                          "lakehouse_query(stream, table, limit, filters, offset, group_by, aggregate): a simple filtered read of one table without SQL, or grouped aggregates (exactly COUNT, SUM, AVG, MIN, MAX; COUNT on a column is its non-null count). Anything else is lakehouse_sql.",
                          "lakehouse_streams and lakehouse_schema(stream): the plain lists behind the catalog",
@@ -550,17 +561,18 @@ def make_server(name: str, client_id: str, key_env_name: str) -> tuple[MCPServer
         return counts
 
     @mcp.tool(name="lakehouse_sql_catalog", annotations=_READ_ONLY)
-    async def lakehouse_sql_catalog(stream: str = "", table: str = "", counts: bool = False) -> dict:
-        """The visible schema with Marina's statistics, in three layers so any answer fits a conversation. No arguments: every querying stream with its table count and total rows, and the largest tables across all streams. stream: that stream's tables by row count (columns inline when the stream has 40 tables or fewer). stream and table: every column with type, description and statistics where measured (null_count, distinct_count, min, max, mean, stddev, sum, min_length, max_length, empty_count, true_count, rows_by_year).
+    async def lakehouse_sql_catalog(stream: str = "", table: str = "", like: str = "", counts: bool = False) -> dict:
+        """The visible schema with Marina's statistics, in three layers so any answer fits a conversation. No arguments: every querying stream with its table count and total rows, and the largest tables across all streams. stream: that stream's tables by row count (columns inline when the stream has 40 tables or fewer), and with like, only the tables whose names match. stream and table: every column with type, description and statistics where measured (null_count, distinct_count, min, max, mean, stddev, sum, min_length, max_length, empty_count, true_count, rows_by_year).
 
-        Read this before writing SQL: it gives the fully qualified names. Nothing is cached here, so call it once and refer back.
+        Read this before writing SQL: it gives the fully qualified names. Nothing is cached here, so call it once and refer back. A stream can hold over a thousand tables and the listing keeps 150, so find a table by name with like before reading the whole stream.
 
         Args:
             stream: A querying stream name; empty for the overview.
             table: A table (view) name in that stream, for its columns and statistics.
+            like: With stream and no table: a SQL LIKE pattern on the table name, case-insensitive, % for any run and _ for one character ("%doc%", "veras_sample__post_award%"); a bare word matches anywhere in the name.
             counts: true = for tables Marina has not measured yet, count rows now with count(*) statements (one per 50 tables). Needs stream. Off by default because it scans.
         """
-        stream, table = (stream or "").strip(), (table or "").strip()
+        stream, table, like = (stream or "").strip(), (table or "").strip(), (like or "").strip()
         try:
             if not stream:
                 names = _stream_names(await _call(client, "GET", "/streams"))
@@ -594,8 +606,17 @@ def make_server(name: str, client_id: str, key_env_name: str) -> tuple[MCPServer
                     cols.append(col)
                 out = {"client": client["id"], "stream": stream, "table": hit["name"], "qualified": qualified(client["id"], stream, hit["name"]),
                        "description": hit["description"], "row_count": hit["row_count"], "columns": cols, "stats_source": "marina" if any(c["stats"] for c in hit["columns"]) else None}
+                if not cols:
+                    # Marina's schema lists no columns for a table it has counted but not profiled: one row through /query names them.
+                    body = await _call(client, "POST", "/query", payload={"stream": stream, "tables": [{"table": hit["name"], "limit": 1}]})
+                    got = body.get(hit["name"]) if isinstance(body, dict) else None
+                    names = (got or {}).get("columns") or []
+                    out["columns"] = [{"name": str(n)} for n in names]
+                    out["note"] = "Marina has not profiled this table, so these are the column names from one row and carry no types or statistics; lakehouse_query with a small limit shows the values."
                 return _fit(out, [("columns", 80)])
             data = [t for t in tables if not is_meta_table(t["name"])]
+            if like:
+                data = [t for t in data if _like(like, t["name"])]
             counted = await _count_unmeasured(stream, data) if counts else {}
             for t in data:
                 if t["row_count"] is None and t["name"] in counted:
@@ -614,12 +635,16 @@ def make_server(name: str, client_id: str, key_env_name: str) -> tuple[MCPServer
                     r["column_list"] = [f"{c['name']} {c['type']}".strip() for c in t["columns"]]
                 rows.append(r)
             out = {"client": client["id"], "stream": stream, "schema": schema_name(client["id"], stream), "tables": rows, "table_count": len(rows),
+                   **({"like": like, "stream_table_count": len([t for t in tables if not is_meta_table(t["name"])])} if like else {}),
                    "unmeasured": sum(1 for t in data if t["row_count"] is None), "stats_source": "marina" if any(t["row_count"] is not None and not t.get("counted_now") for t in data) else None,
                    "metadata_tables": [t["name"] for t in tables if is_meta_table(t["name"])],
                    "next": "lakehouse_sql_catalog(stream, table) for a table's columns and statistics" + ("" if inline else "; columns are not inline because the stream has more than 40 tables")}
             if not counts and out["unmeasured"]:
                 out["note"] = f"{out['unmeasured']} tables have no row_count from Marina yet; counts=true counts them now (a scan)."
-            return _fit(out, [("tables", 150), ("tables", 60)])
+            out = _fit(out, [("tables", 150), ("tables", 60)])
+            if out.get("left_out"):
+                out["left_out"] = [f"{len(rows) - len(out['tables'])} tables not listed here: narrow by name with like, or ask for one by name with (stream, table)"]
+            return out
         except Exception as e:
             return _report(client, e)
 
