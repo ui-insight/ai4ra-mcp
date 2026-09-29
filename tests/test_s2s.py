@@ -180,3 +180,18 @@ def test_describe_certificate_and_issuer_acceptance():
     assert v["issuer_accepted_by_endpoint"] is False and "NOT on the CA list" in v["issuer_note"] and v["client_auth_eku"] is None
     both = s2s.accepted_issuers(s2s.TRAINING), s2s.accepted_issuers(s2s.PRODUCTION)
     assert all(len(x) > 150 for x in both) and any(a.get("CN") == "InCommon RSA Server CA" for a in both[0])
+
+
+async def test_check_failure_hint_matches_issuer_knowledge(monkeypatch):
+    monkeypatch.setattr(s2s, "DEFAULT_ENDPOINT", "https://grants-gov-s2s-mock:8443/x")
+    pem = _self_signed("untrusted-client", "nobody")
+    monkeypatch.setattr(credentials, "from_env", lambda: credentials.Bundle(pem, KEY, None, source="environment"))
+    async def boom(*a, **k):
+        raise httpx.ReadError("")
+    monkeypatch.setattr(httpx.AsyncClient, "get", boom)
+    monkeypatch.setattr(credentials.Bundle, "ssl_context", lambda self, ca_file=None: None)
+    r = await s2s.s2s_check()
+    assert r["ok"] is False and r["class"] == "certificate" and "not known here" in r["likely"]
+    monkeypatch.setattr(s2s, "DEFAULT_ENDPOINT", s2s.TRAINING)
+    r = await s2s.s2s_check()
+    assert r["class"] == "certificate" and "not accepted" in r["likely"]

@@ -303,8 +303,10 @@ async def s2s_check(endpoint: str = "", opportunity_number: str = "") -> dict:
             b = credentials.from_token(request_key.get()) or credentials.from_env()
             if b and rep.get("class") == "certificate":
                 rep["certificate"] = certificate_verdict(b.cert, _endpoint(endpoint))
-                rep["likely"] = ("the issuer is not accepted by this endpoint" if rep["certificate"].get("issuer_accepted_by_endpoint") is False
-                                 else "the issuer is accepted, so the certificate is not registered with Grants.gov or no AOR is authorized for it yet (the Certificate Request Form and E-Biz POC steps)")
+                acc = rep["certificate"].get("issuer_accepted_by_endpoint")
+                rep["likely"] = ("the issuer is not accepted by this endpoint" if acc is False
+                                 else "the issuer is accepted, so the certificate is not registered with Grants.gov or no AOR is authorized for it yet (the Certificate Request Form and E-Biz POC steps)" if acc
+                                 else "this endpoint's accepted-CA list is not known here; the mock accepts only certificates minted by its own CA (scripts/make-client-cert.sh)")
         except Exception:  # noqa: BLE001
             pass
         return rep
