@@ -1,0 +1,1503 @@
+<?xml version='1.0' encoding='UTF-8'?><wsdl:definitions xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:tns="http://apply.grants.gov/services/ApplicantWebServices-V2.0" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns1="http://schemas.xmlsoap.org/soap/http" name="ApplicantWebServices-V2.0" targetNamespace="http://apply.grants.gov/services/ApplicantWebServices-V2.0">
+  <wsdl:types>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns1="http://schemas.xmlsoap.org/wsdl/" elementFormDefault="qualified" targetNamespace="http://schemas.xmlsoap.org/wsdl/soap/" version="1.0">
+
+  <xs:import namespace="http://schemas.xmlsoap.org/wsdl/"/>
+
+  <xs:element name="address" type="tns:tAddress"/>
+
+  <xs:element name="binding" type="tns:tBinding"/>
+
+  <xs:element name="body" type="tns:tBody"/>
+
+  <xs:element name="fault" type="tns:tFault"/>
+
+  <xs:element name="header" type="tns:tHeader"/>
+
+  <xs:element name="headerfault" type="tns:tHeaderFault"/>
+
+  <xs:element name="operation" type="tns:tOperation"/>
+
+  <xs:complexType name="tFault">
+    <xs:complexContent>
+      <xs:extension base="tns:tFaultRes">
+        <xs:sequence/>
+        <xs:attribute name="name" type="xs:NCName" use="required"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType abstract="true" name="tFaultRes">
+    <xs:complexContent>
+      <xs:extension base="tns:tBody">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="tBody">
+    <xs:complexContent>
+      <xs:extension base="ns1:tExtensibilityElement">
+        <xs:sequence/>
+        <xs:attribute name="parts">
+          <xs:simpleType>
+            <xs:list itemType="xs:NMTOKENS"/>
+          </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="encodingStyle">
+          <xs:simpleType>
+            <xs:list itemType="xs:string"/>
+          </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="use" type="tns:useChoice"/>
+        <xs:attribute name="namespace" type="xs:anyURI"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="tBinding">
+    <xs:complexContent>
+      <xs:extension base="ns1:tExtensibilityElement">
+        <xs:sequence/>
+        <xs:attribute name="transport" type="xs:anyURI" use="required"/>
+        <xs:attribute name="style" type="tns:tStyleChoice"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="tOperation">
+    <xs:complexContent>
+      <xs:extension base="ns1:tExtensibilityElement">
+        <xs:sequence/>
+        <xs:attribute name="soapAction" type="xs:anyURI"/>
+        <xs:attribute name="style" type="tns:tStyleChoice"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="tHeader">
+    <xs:complexContent>
+      <xs:extension base="ns1:tExtensibilityElement">
+        <xs:sequence>
+          <xs:element maxOccurs="unbounded" minOccurs="0" name="headerfault" nillable="true" type="tns:tHeaderFault"/>
+        </xs:sequence>
+        <xs:attribute name="message" type="xs:QName" use="required"/>
+        <xs:attribute name="part" type="xs:NMTOKEN" use="required"/>
+        <xs:attribute name="use" type="tns:useChoice" use="required"/>
+        <xs:attribute name="encodingStyle">
+          <xs:simpleType>
+            <xs:list itemType="xs:string"/>
+          </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="namespace" type="xs:anyURI"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="tHeaderFault">
+    <xs:sequence/>
+    <xs:attribute name="message" type="xs:QName" use="required"/>
+    <xs:attribute name="part" type="xs:NMTOKEN" use="required"/>
+    <xs:attribute name="use" type="tns:useChoice" use="required"/>
+    <xs:attribute name="encodingStyle">
+      <xs:simpleType>
+        <xs:list itemType="xs:string"/>
+      </xs:simpleType>
+    </xs:attribute>
+    <xs:attribute name="namespace" type="xs:anyURI"/>
+  </xs:complexType>
+
+  <xs:complexType name="tAddress">
+    <xs:complexContent>
+      <xs:extension base="ns1:tExtensibilityElement">
+        <xs:sequence/>
+        <xs:attribute name="location" type="xs:anyURI" use="required"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:simpleType name="useChoice">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="literal"/>
+      <xs:enumeration value="encoded"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="tStyleChoice">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="rpc"/>
+      <xs:enumeration value="document"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+</xs:schema>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://schemas.xmlsoap.org/wsdl/" elementFormDefault="qualified" targetNamespace="http://schemas.xmlsoap.org/wsdl/" version="1.0">
+
+  <xs:element name="definitions" type="tns:tDefinitions"/>
+
+  <xs:complexType abstract="true" name="tExtensibilityElement">
+    <xs:sequence/>
+    <xs:attribute ref="tns:required"/>
+  </xs:complexType>
+
+  <xs:complexType name="tDefinitions">
+    <xs:complexContent>
+      <xs:extension base="tns:tExtensibleDocumented">
+        <xs:sequence>
+          <xs:choice maxOccurs="unbounded" minOccurs="0">
+            <xs:element name="import" type="tns:tImport"/>
+            <xs:element name="types" type="tns:tTypes"/>
+            <xs:element name="message" type="tns:tMessage"/>
+            <xs:element name="portType" type="tns:tPortType"/>
+            <xs:element name="binding" type="tns:tBinding"/>
+            <xs:element name="service" type="tns:tService"/>
+          </xs:choice>
+        </xs:sequence>
+        <xs:attribute name="targetNamespace" type="xs:anyURI"/>
+        <xs:attribute name="name" type="xs:NCName"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType abstract="true" name="tExtensibleDocumented">
+    <xs:complexContent>
+      <xs:extension base="tns:tDocumented">
+        <xs:sequence>
+          <xs:any maxOccurs="unbounded" minOccurs="0" namespace="##other" processContents="lax"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="tDocumented">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="documentation" type="tns:tDocumentation"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="tImport">
+    <xs:complexContent>
+      <xs:extension base="tns:tExtensibleAttributesDocumented">
+        <xs:sequence/>
+        <xs:attribute name="namespace" type="xs:anyURI" use="required"/>
+        <xs:attribute name="location" type="xs:anyURI" use="required"/>
+        <xs:anyAttribute namespace="##other" processContents="skip"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType abstract="true" name="tExtensibleAttributesDocumented">
+    <xs:complexContent>
+      <xs:extension base="tns:tDocumented">
+        <xs:sequence/>
+        <xs:anyAttribute namespace="##other" processContents="skip"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType mixed="true" name="tDocumentation">
+    <xs:sequence>
+      <xs:any maxOccurs="unbounded" minOccurs="0" namespace="##other" processContents="lax"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="tTypes">
+    <xs:complexContent>
+      <xs:extension base="tns:tExtensibleDocumented">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="tMessage">
+    <xs:complexContent>
+      <xs:extension base="tns:tExtensibleDocumented">
+        <xs:sequence>
+          <xs:element maxOccurs="unbounded" minOccurs="0" name="part" nillable="true" type="tns:tPart"/>
+        </xs:sequence>
+        <xs:attribute name="name" type="xs:NCName" use="required"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="tPart">
+    <xs:complexContent>
+      <xs:extension base="tns:tExtensibleAttributesDocumented">
+        <xs:sequence/>
+        <xs:attribute name="name" type="xs:NCName" use="required"/>
+        <xs:attribute name="element" type="xs:QName"/>
+        <xs:attribute name="type" type="xs:QName"/>
+        <xs:anyAttribute namespace="##other" processContents="skip"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="tOperation">
+    <xs:complexContent>
+      <xs:extension base="tns:tExtensibleDocumented">
+        <xs:sequence>
+          <xs:choice maxOccurs="unbounded" minOccurs="0">
+            <xs:element name="output" type="tns:tParam"/>
+            <xs:element name="input" type="tns:tParam"/>
+            <xs:element name="fault" type="tns:tFault"/>
+          </xs:choice>
+        </xs:sequence>
+        <xs:attribute name="name" type="xs:NCName" use="required"/>
+        <xs:attribute name="parameterOrder">
+          <xs:simpleType>
+            <xs:list itemType="xs:NMTOKENS"/>
+          </xs:simpleType>
+        </xs:attribute>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="tBinding">
+    <xs:complexContent>
+      <xs:extension base="tns:tExtensibleDocumented">
+        <xs:sequence>
+          <xs:element maxOccurs="unbounded" minOccurs="0" name="operation" nillable="true" type="tns:tBindingOperation"/>
+        </xs:sequence>
+        <xs:attribute name="name" type="xs:NCName" use="required"/>
+        <xs:attribute name="type" type="xs:QName" use="required"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="tBindingOperation">
+    <xs:complexContent>
+      <xs:extension base="tns:tExtensibleDocumented">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="input" type="tns:tBindingOperationMessage"/>
+          <xs:element minOccurs="0" name="output" type="tns:tBindingOperationMessage"/>
+          <xs:element maxOccurs="unbounded" minOccurs="0" name="fault" nillable="true" type="tns:tBindingOperationFault"/>
+        </xs:sequence>
+        <xs:attribute name="name" type="xs:NCName" use="required"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="tBindingOperationMessage">
+    <xs:complexContent>
+      <xs:extension base="tns:tExtensibleDocumented">
+        <xs:sequence/>
+        <xs:attribute name="name" type="xs:NCName"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="tBindingOperationFault">
+    <xs:complexContent>
+      <xs:extension base="tns:tExtensibleDocumented">
+        <xs:sequence/>
+        <xs:attribute name="name" type="xs:NCName" use="required"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="tService">
+    <xs:complexContent>
+      <xs:extension base="tns:tExtensibleDocumented">
+        <xs:sequence>
+          <xs:element maxOccurs="unbounded" minOccurs="0" name="port" nillable="true" type="tns:tPort"/>
+        </xs:sequence>
+        <xs:attribute name="name" type="xs:NCName" use="required"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="tPort">
+    <xs:complexContent>
+      <xs:extension base="tns:tExtensibleDocumented">
+        <xs:sequence/>
+        <xs:attribute name="name" type="xs:NCName" use="required"/>
+        <xs:attribute name="binding" type="xs:QName" use="required"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="tPortType">
+    <xs:complexContent>
+      <xs:extension base="tns:tExtensibleAttributesDocumented">
+        <xs:sequence>
+          <xs:element maxOccurs="unbounded" minOccurs="0" name="operation" nillable="true" type="tns:tOperation"/>
+        </xs:sequence>
+        <xs:attribute name="name" type="xs:NCName" use="required"/>
+        <xs:anyAttribute namespace="##other" processContents="skip"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="tParam">
+    <xs:complexContent>
+      <xs:extension base="tns:tExtensibleAttributesDocumented">
+        <xs:sequence/>
+        <xs:attribute name="name" type="xs:NCName"/>
+        <xs:attribute name="message" type="xs:QName" use="required"/>
+        <xs:anyAttribute namespace="##other" processContents="skip"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="tFault">
+    <xs:complexContent>
+      <xs:extension base="tns:tExtensibleAttributesDocumented">
+        <xs:sequence/>
+        <xs:attribute name="name" type="xs:NCName" use="required"/>
+        <xs:attribute name="message" type="xs:QName" use="required"/>
+        <xs:anyAttribute namespace="##other" processContents="skip"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:attribute name="required" type="xs:boolean"/>
+
+</xs:schema>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://apply.grants.gov/system/GrantsCommonTypes-V1.0" version="1.0">
+
+  <xs:simpleType name="AORStatusType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="AUTHORIZED"/>
+      <xs:enumeration value="UNAUTHORIZED"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="GrantsGovApplicationStatusType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Receiving"/>
+      <xs:enumeration value="Received"/>
+      <xs:enumeration value="Processing"/>
+      <xs:enumeration value="Validated"/>
+      <xs:enumeration value="Rejected with Errors"/>
+      <xs:enumeration value="Download Preparation"/>
+      <xs:enumeration value="Received by Agency"/>
+      <xs:enumeration value="Agency Tracking Number Assigned"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="ExpandedApplicationFilterType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Status"/>
+      <xs:enumeration value="FundingOpportunityNumber"/>
+      <xs:enumeration value="CFDANumber"/>
+      <xs:enumeration value="SubmissionTitle"/>
+      <xs:enumeration value="GrantsGovTrackingNumber"/>
+      <xs:enumeration value="OpportunityID"/>
+      <xs:enumeration value="AgencyCode"/>
+      <xs:enumeration value="CompetitionID"/>
+      <xs:enumeration value="PackageID"/>
+      <xs:enumeration value="SubmissionMethod"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="YesNoType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Y"/>
+      <xs:enumeration value="N"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="ActiveExclusionsType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Yes"/>
+      <xs:enumeration value="No"/>
+      <xs:enumeration value="Not Available"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="DelinquentFederalDebtType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Yes"/>
+      <xs:enumeration value="No"/>
+      <xs:enumeration value="Not Available"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="OperationStatusType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Success"/>
+      <xs:enumeration value="Partial"/>
+      <xs:enumeration value="Fail"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="SubmissionMethodType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="PDF"/>
+      <xs:enumeration value="Workspace"/>
+      <xs:enumeration value="S2S"/>
+      <xs:enumeration value="Third Party S2S"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="OpportunityCategoryType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="D"/>
+      <xs:enumeration value="M"/>
+      <xs:enumeration value="C"/>
+      <xs:enumeration value="E"/>
+      <xs:enumeration value="O"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+</xs:schema>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xmime="http://www.w3.org/2005/05/xmlmime" xmlns:ns1="http://apply.grants.gov/system/GrantsCommonTypes-V1.0" elementFormDefault="qualified" targetNamespace="http://apply.grants.gov/system/GrantsCommonElements-V1.0" version="1.0">
+
+  <xs:import namespace="http://apply.grants.gov/system/GrantsCommonTypes-V1.0"/>
+
+  <xs:import namespace="http://www.w3.org/2005/05/xmlmime"/>
+  <xs:element name="AORStatus" type="ns1:AORStatusType"/>
+
+  <xs:element name="AORUserFullName" type="xs:string"/>
+
+  <xs:element name="ActiveExclusions" type="ns1:ActiveExclusionsType"/>
+
+  <xs:element name="AgencyCode" type="xs:string"/>
+
+  <xs:element name="AgencyContactInfo" type="xs:string"/>
+
+  <xs:element name="AgencyName" type="xs:string"/>
+
+  <xs:element name="AgencyNotes" type="xs:string"/>
+
+  <xs:element name="AgencyTrackingNumber" type="xs:string"/>
+
+  <xs:element name="ApplicationFilter">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="Filter" type="xs:string"/>
+        <xs:element minOccurs="0" name="FilterValue" type="xs:string"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="ArchiveDate" type="xs:string"/>
+
+  <xs:element name="Attachment">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="FileContentId" type="xs:string"/>
+        <xs:element name="FileDataHandler" type="xs:base64Binary" xmime:expectedContentTypes="application/octet-stream"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="CFDADescription" type="xs:string"/>
+
+  <xs:element name="CFDANumber" type="xs:string"/>
+
+  <xs:element name="ClosingDate" type="xs:string"/>
+
+  <xs:element name="CompetitionID" type="xs:string"/>
+
+  <xs:element name="CompetitionInfo">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="CompetitionID" type="xs:string"/>
+        <xs:element name="CompetitionTitle" type="xs:string"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="CompetitionTitle" type="xs:string"/>
+
+  <xs:element name="CompletionStatus" type="ns1:OperationStatusType"/>
+
+  <xs:element name="DUNS" type="xs:string"/>
+
+  <xs:element name="DeleteComments" type="xs:string"/>
+
+  <xs:element name="DelinquentFederalDebt" type="ns1:DelinquentFederalDebtType"/>
+
+  <xs:element name="ErrorDetails">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Code" type="xs:string"/>
+        <xs:element minOccurs="0" name="Message" type="xs:string"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="ExpandedApplicationFilter">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="FilterType" type="xs:string"/>
+        <xs:element name="FilterValue" type="xs:string"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="FileID" type="xs:string"/>
+
+  <xs:element name="FileMIMEType" type="xs:string"/>
+
+  <xs:element name="FileName" type="xs:string"/>
+
+  <xs:element name="FileSizeInKB" type="xs:string"/>
+
+  <xs:element name="FolderID" type="xs:string"/>
+
+  <xs:element name="FundingOpportunityNumber" type="xs:string"/>
+
+  <xs:element name="FundingOpportunityTitle" type="xs:string"/>
+
+  <xs:element name="GrantsGovApplicationStatus" type="ns1:GrantsGovApplicationStatusType"/>
+
+  <xs:element name="GrantsGovTrackingNumber" type="xs:string"/>
+
+  <xs:element name="InstructionFileInfo">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="FileName" type="xs:string"/>
+        <xs:element name="FileExtension" type="xs:string"/>
+        <xs:element name="FileContentId" type="xs:string"/>
+        <xs:element name="FileDataHandler" type="xs:base64Binary" xmime:expectedContentTypes="application/octet-stream"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="InstructionFileLastUpdatedTimestamp" type="xs:anySimpleType"/>
+
+  <xs:element name="InstructionsURL" type="xs:string"/>
+
+  <xs:element name="LastUpdatedTimestamp" type="xs:anySimpleType"/>
+
+  <xs:element name="LastUpdatedTimestampRangeFilter">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="BeginValue" type="xs:dateTime"/>
+        <xs:element minOccurs="0" name="EndValue" type="xs:dateTime"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="LinkDescription" type="xs:string"/>
+
+  <xs:element name="LinkID" type="xs:string"/>
+
+  <xs:element name="LinkURL" type="xs:string"/>
+
+  <xs:element name="ModificationComments" type="xs:string"/>
+
+  <xs:element name="NullifyMissingOptionalElements" type="ns1:YesNoType"/>
+
+  <xs:element name="NumberOfNotificationsSent" type="xs:string"/>
+
+  <xs:element name="OfferingAgency" type="xs:string"/>
+
+  <xs:element name="OpportunityCategory" type="ns1:OpportunityCategoryType"/>
+
+  <xs:element name="OpportunityCategoryExplanation" type="xs:string"/>
+
+  <xs:element name="OpportunityID" type="xs:string"/>
+
+  <xs:element name="OtherOpportunityCategoryExplanation" type="xs:string"/>
+
+  <xs:element name="PackageID" type="xs:string"/>
+
+  <xs:element name="PostingDate" type="xs:string"/>
+
+  <xs:element name="PreviousGrantsGovTrackingNumber" type="xs:string"/>
+
+  <xs:element name="ResponseMessage" type="xs:string"/>
+
+  <xs:element name="SchemaURL" type="xs:string"/>
+
+  <xs:element name="SecurityMessage">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="MessageCode" type="xs:string"/>
+        <xs:element name="MessageText" type="xs:string"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="SendChangeNotificationEmail" type="xs:string"/>
+
+  <xs:element name="SendDeleteNotificationEmail" type="ns1:YesNoType"/>
+
+  <xs:element name="SendUpdateNotificationEmail" type="ns1:YesNoType"/>
+
+  <xs:element name="StatusDetail" type="xs:string"/>
+
+  <xs:element name="SubmissionMethod" type="ns1:SubmissionMethodType"/>
+
+  <xs:element name="SubmissionTitle" type="xs:string"/>
+
+  <xs:element name="Token">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="UserID" type="xs:string"/>
+        <xs:element minOccurs="0" name="TokenId" type="xs:string"/>
+        <xs:element name="DUNS" type="xs:string"/>
+        <xs:element minOccurs="0" name="FullName" type="xs:string"/>
+        <xs:element name="AORStatus" type="xs:string"/>
+        <xs:element minOccurs="0" name="TokenExpiration" type="xs:dateTime"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="TokenInfo">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="TokenID" type="xs:string"/>
+        <xs:element name="TokenExpirationDate" type="xs:dateTime"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="UEI" type="xs:string"/>
+
+  <xs:element name="UpdateComments" type="xs:string"/>
+
+  <xs:element name="UserID" type="xs:string"/>
+
+  <xs:element name="Version" type="xs:string"/>
+
+</xs:schema>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://apply.grants.gov/system/ApplicantCommonElements-V1.0" xmlns:ns2="http://apply.grants.gov/system/GrantsCommonTypes-V1.0" xmlns:ns1="http://apply.grants.gov/system/GrantsCommonElements-V1.0" elementFormDefault="qualified" targetNamespace="http://apply.grants.gov/system/ApplicantCommonElements-V1.0" version="1.0">
+
+  <xs:import namespace="http://apply.grants.gov/system/GrantsCommonElements-V1.0"/>
+
+  <xs:import namespace="http://apply.grants.gov/system/GrantsCommonTypes-V1.0"/>
+
+  <xs:element name="CFDADetails">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="Number" type="xs:string"/>
+        <xs:element minOccurs="0" name="Title" type="xs:string"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="OpportunityDetails">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="FundingOpportunityNumber" type="xs:string"/>
+        <xs:element minOccurs="0" name="FundingOpportunityTitle" type="xs:string"/>
+        <xs:element minOccurs="0" name="CompetitionID" type="xs:string"/>
+        <xs:element minOccurs="0" name="CompetitionTitle" type="xs:string"/>
+        <xs:element minOccurs="0" name="PackageID" type="xs:string"/>
+        <xs:element maxOccurs="unbounded" minOccurs="0" ref="tns:CFDADetails"/>
+        <xs:element minOccurs="0" name="OpeningDate" type="xs:date"/>
+        <xs:element minOccurs="0" name="ClosingDate" type="xs:date"/>
+        <xs:element minOccurs="0" name="OfferingAgency" type="xs:string"/>
+        <xs:element minOccurs="0" name="AgencyContactInfo" type="xs:string"/>
+        <xs:element minOccurs="0" name="SchemaURL" type="xs:string"/>
+        <xs:element minOccurs="0" name="InstructionsURL" type="xs:string"/>
+        <xs:element minOccurs="0" name="IsMultiProject" type="xs:boolean"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="OpportunityFilter">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="FundingOpportunityNumber" type="xs:string"/>
+        <xs:element minOccurs="0" name="CFDANumber" type="xs:string"/>
+        <xs:element minOccurs="0" name="CompetitionID" type="xs:string"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="SubmissionDetails">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="GrantsGovTrackingNumber" type="xs:string"/>
+        <xs:element minOccurs="0" name="AgencyTrackingNumber" type="xs:string"/>
+        <xs:element minOccurs="0" name="GrantsGovApplicationStatus" type="xs:string"/>
+        <xs:element minOccurs="0" name="ReceivedDateTime" type="xs:dateTime"/>
+        <xs:element minOccurs="0" name="StatusDateTime" type="xs:dateTime"/>
+        <xs:element minOccurs="0" name="FundingOpportunityNumber" type="xs:string"/>
+        <xs:element minOccurs="0" name="SubmissionTitle" type="xs:string"/>
+        <xs:element minOccurs="0" name="PackageID" type="xs:string"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="SubmissionFilter">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Type" type="xs:string"/>
+        <xs:element name="Value" type="xs:string"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:simpleType name="SubmissionFilterType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="FundingOpportunityNumber"/>
+      <xs:enumeration value="GrantsGovTrackingNumber"/>
+      <xs:enumeration value="PackageID"/>
+      <xs:enumeration value="SubmissionTitle"/>
+      <xs:enumeration value="Status"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+</xs:schema>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xmime="http://www.w3.org/2005/05/xmlmime" xmlns:ns3="http://apply.grants.gov/system/GrantsCommonTypes-V1.0" xmlns:ns2="http://apply.grants.gov/system/ApplicantCommonElements-V1.0" xmlns:ns1="http://apply.grants.gov/system/GrantsCommonElements-V1.0" elementFormDefault="qualified" targetNamespace="http://apply.grants.gov/services/ApplicantWebServices-V2.0" version="1.0">
+
+  <xs:import namespace="http://apply.grants.gov/system/GrantsCommonElements-V1.0"/>
+
+  <xs:import namespace="http://apply.grants.gov/system/ApplicantCommonElements-V1.0"/>
+
+  <xs:import namespace="http://apply.grants.gov/system/GrantsCommonTypes-V1.0"/>
+
+  <xs:import namespace="http://www.w3.org/2005/05/xmlmime"/>
+  <xs:element name="AuthenticateAORExpandedRequest">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="AORUserID" type="xs:string"/>
+        <xs:element name="AORPassword" type="xs:string"/>
+        <xs:element minOccurs="0" name="DUNS" type="xs:string"/>
+        <xs:element minOccurs="0" name="UEI" type="xs:string"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="AuthenticateAORExpandedResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="AORStatus" type="xs:string"/>
+        <xs:element minOccurs="0" name="AORUserFullName" type="xs:string"/>
+        <xs:element minOccurs="0" ref="ns1:TokenInfo"/>
+        <xs:element minOccurs="0" ref="ns1:SecurityMessage"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="AuthenticateAORRequest">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="AORUserID" type="xs:string"/>
+        <xs:element name="AORPassword" type="xs:string"/>
+        <xs:element minOccurs="0" name="DUNS" type="xs:string"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="AuthenticateAORResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="ns1:Token"/>
+        <xs:element minOccurs="0" ref="ns1:SecurityMessage"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="GetApplicationInfoAsThirdPartyRequest">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="GrantsGovTrackingNumber" type="xs:string"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="GetApplicationInfoAsThirdPartyResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="GrantsGovTrackingNumber" type="xs:string"/>
+        <xs:element name="StatusDetail" type="xs:string"/>
+        <xs:element minOccurs="0" name="AgencyTrackingNumber" type="xs:string"/>
+        <xs:element minOccurs="0" name="AgencyNotes" type="xs:string"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="GetApplicationInfoRequest">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="GrantsGovTrackingNumber" type="xs:string"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="GetApplicationInfoResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="GrantsGovTrackingNumber" type="xs:string"/>
+        <xs:element name="StatusDetail" type="xs:string"/>
+        <xs:element minOccurs="0" name="AgencyNotes" type="xs:string"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="GetApplicationListAsThirdPartyRequest">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" minOccurs="0" ref="ns1:ApplicationFilter"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="GetApplicationListAsThirdPartyResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="AvailableApplicationNumber" type="xs:int"/>
+        <xs:element maxOccurs="unbounded" minOccurs="0" name="ApplicationInfo">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element minOccurs="0" name="CFDANumber" type="xs:string"/>
+              <xs:element minOccurs="0" name="FundingOpportunityNumber" type="xs:string"/>
+              <xs:element minOccurs="0" name="CompetitionID" type="xs:string"/>
+              <xs:element name="GrantsGovTrackingNumber" type="xs:string"/>
+              <xs:element minOccurs="0" name="ReceivedDateTime" type="xs:dateTime"/>
+              <xs:element name="GrantsGovApplicationStatus" type="xs:string"/>
+              <xs:element minOccurs="0" name="StatusDateTime" type="xs:dateTime"/>
+              <xs:element minOccurs="0" name="AgencyTrackingNumber" type="xs:string"/>
+              <xs:element minOccurs="0" name="SubmissionTitle" type="xs:string"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="GetApplicationListRequest">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" minOccurs="0" ref="ns1:ApplicationFilter"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="GetApplicationListResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="AvailableApplicationNumber" type="xs:int"/>
+        <xs:element maxOccurs="unbounded" minOccurs="0" name="ApplicationInfo">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element minOccurs="0" name="CFDANumber" type="xs:string"/>
+              <xs:element minOccurs="0" name="FundingOpportunityNumber" type="xs:string"/>
+              <xs:element minOccurs="0" name="CompetitionID" type="xs:string"/>
+              <xs:element name="GrantsGovTrackingNumber" type="xs:string"/>
+              <xs:element minOccurs="0" name="ReceivedDateTime" type="xs:dateTime"/>
+              <xs:element name="GrantsGovApplicationStatus" type="xs:string"/>
+              <xs:element minOccurs="0" name="StatusDateTime" type="xs:dateTime"/>
+              <xs:element minOccurs="0" name="AgencyTrackingNumber" type="xs:string"/>
+              <xs:element minOccurs="0" name="SubmissionTitle" type="xs:string"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="GetApplicationStatusDetailRequest">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="GrantsGovTrackingNumber" type="xs:string"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="GetApplicationStatusDetailResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="GrantsGovTrackingNumber" type="xs:string"/>
+        <xs:element name="DetailedStatus" type="xs:string"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="GetApplicationZipRequest">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="GrantsGovTrackingNumber" type="xs:string"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="GetApplicationZipResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="FileDataHandler" type="xs:base64Binary" xmime:expectedContentTypes="application/octet-stream"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="GetOpportunitiesExpandedRequest">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="FundingOpportunityNumber" type="xs:string"/>
+        <xs:element minOccurs="0" name="CFDANumber" type="xs:string"/>
+        <xs:element minOccurs="0" name="CompetitionID" type="xs:string"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="GetOpportunitiesExpandedResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" minOccurs="0" name="OpportunityInfo">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="FundingOpportunityNumber" type="xs:string"/>
+              <xs:element minOccurs="0" name="CFDANumber" type="xs:string"/>
+              <xs:element minOccurs="0" name="CompetitionID" type="xs:string"/>
+              <xs:element minOccurs="0" name="CompetitionTitle" type="xs:string"/>
+              <xs:element minOccurs="0" name="OpeningDate" type="xs:date"/>
+              <xs:element name="ClosingDate" type="xs:date"/>
+              <xs:element minOccurs="0" name="FundingOpportunityTitle" type="xs:string"/>
+              <xs:element minOccurs="0" name="OfferingAgency" type="xs:string"/>
+              <xs:element minOccurs="0" name="AgencyContactInfo" type="xs:string"/>
+              <xs:element minOccurs="0" name="CFDADescription" type="xs:string"/>
+              <xs:element minOccurs="0" name="SchemaURL" type="xs:string"/>
+              <xs:element minOccurs="0" name="InstructionsURL" type="xs:string"/>
+              <xs:element minOccurs="0" name="IsMultiProject" type="xs:boolean"/>
+              <xs:element minOccurs="0" name="PackageID" type="xs:string"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="GetOpportunityListRequest">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="PackageID" type="xs:string"/>
+        <xs:element minOccurs="0" ref="ns2:OpportunityFilter"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="GetOpportunityListResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" minOccurs="0" ref="ns2:OpportunityDetails"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="GetSubmissionListAsThirdPartyRequest">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" minOccurs="0" ref="ns2:SubmissionFilter"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="GetSubmissionListAsThirdPartyResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="AvailableApplicationNumber" type="xs:int"/>
+        <xs:element maxOccurs="unbounded" minOccurs="0" ref="ns2:SubmissionDetails"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="GetSubmissionListRequest">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" minOccurs="0" ref="ns2:SubmissionFilter"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="GetSubmissionListResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="AvailableApplicationNumber" type="xs:int"/>
+        <xs:element maxOccurs="unbounded" minOccurs="0" ref="ns2:SubmissionDetails"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="SubmitApplicationAsThirdPartyExpandedRequest">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="ns1:TokenInfo"/>
+        <xs:element minOccurs="0" name="GrantsGovTrackingNumber" type="xs:string"/>
+        <xs:element name="ApplicationXML" type="xs:string"/>
+        <xs:element maxOccurs="unbounded" minOccurs="0" ref="ns1:Attachment"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="SubmitApplicationAsThirdPartyExpandedResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="GrantsGovTrackingNumber" type="xs:string"/>
+        <xs:element name="ReceivedDateTime" type="xs:dateTime"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="SubmitApplicationAsThirdPartyRequest">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="GrantsGovTrackingNumber" type="xs:string"/>
+        <xs:element ref="ns1:Token"/>
+        <xs:element name="ApplicationXML" type="xs:string"/>
+        <xs:element maxOccurs="unbounded" minOccurs="0" ref="ns1:Attachment"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="SubmitApplicationAsThirdPartyResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="GrantsGovTrackingNumber" type="xs:string"/>
+        <xs:element name="ReceivedDateTime" type="xs:dateTime"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="SubmitApplicationRequest">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="GrantsGovTrackingNumber" type="xs:string"/>
+        <xs:element name="GrantApplicationXML" type="xs:string"/>
+        <xs:element maxOccurs="unbounded" minOccurs="0" ref="ns1:Attachment"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="SubmitApplicationResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="GrantsGovTrackingNumber" type="xs:string"/>
+        <xs:element name="ReceivedDateTime" type="xs:dateTime"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+</xs:schema>
+  </wsdl:types>
+  <wsdl:message name="GetApplicationInfo">
+    <wsdl:part element="tns:GetApplicationInfoRequest" name="GetApplicationInfoRequest">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="GetSubmissionListAsThirdPartyResponse">
+    <wsdl:part element="tns:GetSubmissionListAsThirdPartyResponse" name="GetSubmissionListAsThirdPartyResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="GetOpportunityList">
+    <wsdl:part element="tns:GetOpportunityListRequest" name="GetOpportunityListRequest">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="SubmitApplicationAsThirdParty">
+    <wsdl:part element="tns:SubmitApplicationAsThirdPartyRequest" name="SubmitApplicationAsThirdPartyRequest">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="SubmitApplicationAsThirdPartyResponse">
+    <wsdl:part element="tns:SubmitApplicationAsThirdPartyResponse" name="SubmitApplicationAsThirdPartyResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="GetOpportunitiesExpanded">
+    <wsdl:part element="tns:GetOpportunitiesExpandedRequest" name="GetOpportunitiesExpandedRequest">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="GetApplicationInfoAsThirdParty">
+    <wsdl:part element="tns:GetApplicationInfoAsThirdPartyRequest" name="GetApplicationInfoAsThirdPartyRequest">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="SubmitApplication">
+    <wsdl:part element="tns:SubmitApplicationRequest" name="SubmitApplicationRequest">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="AuthenticateAORExpandedResponse">
+    <wsdl:part element="tns:AuthenticateAORExpandedResponse" name="AuthenticateAORExpandedResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="SubmitApplicationResponse">
+    <wsdl:part element="tns:SubmitApplicationResponse" name="SubmitApplicationResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="GetApplicationZipResponse">
+    <wsdl:part element="tns:GetApplicationZipResponse" name="GetApplicationZipResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="GetApplicationInfoResponse">
+    <wsdl:part element="tns:GetApplicationInfoResponse" name="GetApplicationInfoResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="AuthenticateAORExpanded">
+    <wsdl:part element="tns:AuthenticateAORExpandedRequest" name="AuthenticateAORExpandedRequest">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="GetApplicationListAsThirdPartyResponse">
+    <wsdl:part element="tns:GetApplicationListAsThirdPartyResponse" name="GetApplicationListAsThirdPartyResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="GetApplicationListAsThirdParty">
+    <wsdl:part element="tns:GetApplicationListAsThirdPartyRequest" name="GetApplicationListAsThirdPartyRequest">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="GetOpportunityListResponse">
+    <wsdl:part element="tns:GetOpportunityListResponse" name="GetOpportunityListResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="GetOpportunitiesExpandedResponse">
+    <wsdl:part element="tns:GetOpportunitiesExpandedResponse" name="GetOpportunitiesExpandedResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="GetApplicationInfoAsThirdPartyResponse">
+    <wsdl:part element="tns:GetApplicationInfoAsThirdPartyResponse" name="GetApplicationInfoAsThirdPartyResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="GetApplicationZip">
+    <wsdl:part element="tns:GetApplicationZipRequest" name="GetApplicationZipRequest">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="AuthenticateAOR">
+    <wsdl:part element="tns:AuthenticateAORRequest" name="AuthenticateAORRequest">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="GetSubmissionList">
+    <wsdl:part element="tns:GetSubmissionListRequest" name="GetSubmissionListRequest">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="GetApplicationListResponse">
+    <wsdl:part element="tns:GetApplicationListResponse" name="GetApplicationListResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="GetApplicationList">
+    <wsdl:part element="tns:GetApplicationListRequest" name="GetApplicationListRequest">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="SubmitApplicationAsThirdPartyExpanded">
+    <wsdl:part element="tns:SubmitApplicationAsThirdPartyExpandedRequest" name="SubmitApplicationAsThirdPartyExpandedRequest">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="GetSubmissionListAsThirdParty">
+    <wsdl:part element="tns:GetSubmissionListAsThirdPartyRequest" name="GetSubmissionListAsThirdPartyRequest">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="SubmitApplicationAsThirdPartyExpandedResponse">
+    <wsdl:part element="tns:SubmitApplicationAsThirdPartyExpandedResponse" name="SubmitApplicationAsThirdPartyExpandedResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="AuthenticateAORResponse">
+    <wsdl:part element="tns:AuthenticateAORResponse" name="AuthenticateAORResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="GetApplicationStatusDetailResponse">
+    <wsdl:part element="tns:GetApplicationStatusDetailResponse" name="GetApplicationStatusDetailResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="GetSubmissionListResponse">
+    <wsdl:part element="tns:GetSubmissionListResponse" name="GetSubmissionListResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="ErrorMessage">
+    <wsdl:part element="soap:fault" name="ErrorMessage">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="GetApplicationStatusDetail">
+    <wsdl:part element="tns:GetApplicationStatusDetailRequest" name="GetApplicationStatusDetailRequest">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="ApplicantWebServicesPortType">
+    <wsdl:operation name="GetApplicationInfo">
+      <wsdl:input message="tns:GetApplicationInfo" name="GetApplicationInfo" wsam:Action="https://trainingws.grants.gov/grantsws-applicant/services/v2/ApplicantWebServicesSoapPort/GetApplicationInfo" wsaw:Action="https://trainingws.grants.gov/grantsws-applicant/services/v2/ApplicantWebServicesSoapPort/GetApplicationInfo">
+    </wsdl:input>
+      <wsdl:output message="tns:GetApplicationInfoResponse" name="GetApplicationInfoResponse" wsam:Action="http://apply.grants.gov/services/ApplicantWebServices-V2.0/ApplicantWebServicesPortType/GetApplicationInfoResponse" wsaw:Action="http://apply.grants.gov/services/ApplicantWebServices-V2.0/ApplicantWebServicesPortType/GetApplicationInfoResponse">
+    </wsdl:output>
+      <wsdl:fault message="tns:ErrorMessage" name="ErrorMessage" wsam:Action="http://apply.grants.gov/services/ApplicantWebServices-V2.0/ApplicantWebServicesPortType/GetApplicationInfo/Fault/ErrorMessage" wsaw:Action="http://apply.grants.gov/services/ApplicantWebServices-V2.0/ApplicantWebServicesPortType/GetApplicationInfo/Fault/ErrorMessage">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="GetOpportunityList">
+      <wsdl:input message="tns:GetOpportunityList" name="GetOpportunityList" wsam:Action="https://trainingws.grants.gov/grantsws-applicant/services/v2/ApplicantWebServicesSoapPort/GetOpportunityList" wsaw:Action="https://trainingws.grants.gov/grantsws-applicant/services/v2/ApplicantWebServicesSoapPort/GetOpportunityList">
+    </wsdl:input>
+      <wsdl:output message="tns:GetOpportunityListResponse" name="GetOpportunityListResponse" wsam:Action="http://apply.grants.gov/services/ApplicantWebServices-V2.0/ApplicantWebServicesPortType/GetOpportunityListResponse" wsaw:Action="http://apply.grants.gov/services/ApplicantWebServices-V2.0/ApplicantWebServicesPortType/GetOpportunityListResponse">
+    </wsdl:output>
+      <wsdl:fault message="tns:ErrorMessage" name="ErrorMessage" wsam:Action="http://apply.grants.gov/services/ApplicantWebServices-V2.0/ApplicantWebServicesPortType/GetOpportunityList/Fault/ErrorMessage" wsaw:Action="http://apply.grants.gov/services/ApplicantWebServices-V2.0/ApplicantWebServicesPortType/GetOpportunityList/Fault/ErrorMessage">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="GetApplicationZip">
+      <wsdl:input message="tns:GetApplicationZip" name="GetApplicationZip" wsam:Action="https://trainingws.grants.gov/grantsws-agency/services/v2/AgencyWebServicesSoapPort/GetApplicationZip" wsaw:Action="https://trainingws.grants.gov/grantsws-agency/services/v2/AgencyWebServicesSoapPort/GetApplicationZip">
+    </wsdl:input>
+      <wsdl:output message="tns:GetApplicationZipResponse" name="GetApplicationZipResponse" wsam:Action="http://apply.grants.gov/services/ApplicantWebServices-V2.0/ApplicantWebServicesPortType/GetApplicationZipResponse" wsaw:Action="http://apply.grants.gov/services/ApplicantWebServices-V2.0/ApplicantWebServicesPortType/GetApplicationZipResponse">
+    </wsdl:output>
+      <wsdl:fault message="tns:ErrorMessage" name="ErrorMessage" wsam:Action="http://apply.grants.gov/services/ApplicantWebServices-V2.0/ApplicantWebServicesPortType/GetApplicationZip/Fault/ErrorMessage" wsaw:Action="http://apply.grants.gov/services/ApplicantWebServices-V2.0/ApplicantWebServicesPortType/GetApplicationZip/Fault/ErrorMessage">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="SubmitApplicationAsThirdParty">
+      <wsdl:input message="tns:SubmitApplicationAsThirdParty" name="SubmitApplicationAsThirdParty" wsam:Action="https://trainingws.grants.gov/grantsws-applicant/services/v2/ApplicantWebServicesSoapPort/SubmitApplicationAsThirdParty" wsaw:Action="https://trainingws.grants.gov/grantsws-applicant/services/v2/ApplicantWebServicesSoapPort/SubmitApplicationAsThirdParty">
+    </wsdl:input>
+      <wsdl:output message="tns:SubmitApplicationAsThirdPartyResponse" name="SubmitApplicationAsThirdPartyResponse" wsam:Action="http://apply.grants.gov/services/ApplicantWebServices-V2.0/ApplicantWebServicesPortType/SubmitApplicationAsThirdPartyResponse" wsaw:Action="http://apply.grants.gov/services/ApplicantWebServices-V2.0/ApplicantWebServicesPortType/SubmitApplicationAsThirdPartyResponse">
+    </wsdl:output>
+      <wsdl:fault message="tns:ErrorMessage" name="ErrorMessage" wsam:Action="http://apply.grants.gov/services/ApplicantWebServices-V2.0/ApplicantWebServicesPortType/SubmitApplicationAsThirdParty/Fault/ErrorMessage" wsaw:Action="http://apply.grants.gov/services/ApplicantWebServices-V2.0/ApplicantWebServicesPortType/SubmitApplicationAsThirdParty/Fault/ErrorMessage">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="AuthenticateAOR">
+      <wsdl:input message="tns:AuthenticateAOR" name="AuthenticateAOR" wsam:Action="https://trainingws.grants.gov/grantsws-applicant/services/v2/ApplicantWebServicesSoapPort/AuthenticateAOR" wsaw:Action="https://trainingws.grants.gov/grantsws-applicant/services/v2/ApplicantWebServicesSoapPort/AuthenticateAOR">
+    </wsdl:input>
+      <wsdl:output message="tns:AuthenticateAORResponse" name="AuthenticateAORResponse" wsam:Action="http://apply.grants.gov/services/ApplicantWebServices-V2.0/ApplicantWebServicesPortType/AuthenticateAORResponse" wsaw:Action="http://apply.grants.gov/services/ApplicantWebServices-V2.0/ApplicantWebServicesPortType/AuthenticateAORResponse">
+    </wsdl:output>
+      <wsdl:fault message="tns:ErrorMessage" name="ErrorMessage" wsam:Action="http://apply.grants.gov/services/ApplicantWebServices-V2.0/ApplicantWebServicesPortType/AuthenticateAOR/Fault/ErrorMessage" wsaw:Action="http://apply.grants.gov/services/ApplicantWebServices-V2.0/ApplicantWebServicesPortType/AuthenticateAOR/Fault/ErrorMessage">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="GetOpportunitiesExpanded">
+      <wsdl:input message="tns:GetOpportunitiesExpanded" name="GetOpportunitiesExpanded" wsam:Action="https://trainingws.grants.gov/grantsws-applicant/services/v2/ApplicantWebServicesSoapPort/GetOpportunitiesExpanded" wsaw:Action="https://trainingws.grants.gov/grantsws-applicant/services/v2/ApplicantWebServicesSoapPort/GetOpportunitiesExpanded">
+    </wsdl:input>
+      <wsdl:output message="tns:GetOpportunitiesExpandedResponse" name="GetOpportunitiesExpandedResponse" wsam:Action="http://apply.grants.gov/services/ApplicantWebServices-V2.0/ApplicantWebServicesPortType/GetOpportunitiesExpandedResponse" wsaw:Action="http://apply.grants.gov/services/ApplicantWebServices-V2.0/ApplicantWebServicesPortType/GetOpportunitiesExpandedResponse">
+    </wsdl:output>
+      <wsdl:fault message="tns:ErrorMessage" name="ErrorMessage" wsam:Action="http://apply.grants.gov/services/ApplicantWebServices-V2.0/ApplicantWebServicesPortType/GetOpportunitiesExpanded/Fault/ErrorMessage" wsaw:Action="http://apply.grants.gov/services/ApplicantWebServices-V2.0/ApplicantWebServicesPortType/GetOpportunitiesExpanded/Fault/ErrorMessage">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="GetApplicationInfoAsThirdParty">
+      <wsdl:input message="tns:GetApplicationInfoAsThirdParty" name="GetApplicationInfoAsThirdParty" wsam:Action="https://trainingws.grants.gov/grantsws-applicant/services/v2/ApplicantWebServicesSoapPort/GetApplicationInfoAsThirdParty" wsaw:Action="https://trainingws.grants.gov/grantsws-applicant/services/v2/ApplicantWebServicesSoapPort/GetApplicationInfoAsThirdParty">
+    </wsdl:input>
+      <wsdl:output message="tns:GetApplicationInfoAsThirdPartyResponse" name="GetApplicationInfoAsThirdPartyResponse" wsam:Action="http://apply.grants.gov/services/ApplicantWebServices-V2.0/ApplicantWebServicesPortType/GetApplicationInfoAsThirdPartyResponse" wsaw:Action="http://apply.grants.gov/services/ApplicantWebServices-V2.0/ApplicantWebServicesPortType/GetApplicationInfoAsThirdPartyResponse">
+    </wsdl:output>
+      <wsdl:fault message="tns:ErrorMessage" name="ErrorMessage" wsam:Action="http://apply.grants.gov/services/ApplicantWebServices-V2.0/ApplicantWebServicesPortType/GetApplicationInfoAsThirdParty/Fault/ErrorMessage" wsaw:Action="http://apply.grants.gov/services/ApplicantWebServices-V2.0/ApplicantWebServicesPortType/GetApplicationInfoAsThirdParty/Fault/ErrorMessage">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="SubmitApplication">
+      <wsdl:input message="tns:SubmitApplication" name="SubmitApplication" wsam:Action="https://trainingws.grants.gov/grantsws-applicant/services/v2/ApplicantWebServicesSoapPort/SubmitApplication" wsaw:Action="https://trainingws.grants.gov/grantsws-applicant/services/v2/ApplicantWebServicesSoapPort/SubmitApplication">
+    </wsdl:input>
+      <wsdl:output message="tns:SubmitApplicationResponse" name="SubmitApplicationResponse" wsam:Action="http://apply.grants.gov/services/ApplicantWebServices-V2.0/ApplicantWebServicesPortType/SubmitApplicationResponse" wsaw:Action="http://apply.grants.gov/services/ApplicantWebServices-V2.0/ApplicantWebServicesPortType/SubmitApplicationResponse">
+    </wsdl:output>
+      <wsdl:fault message="tns:ErrorMessage" name="ErrorMessage" wsam:Action="http://apply.grants.gov/services/ApplicantWebServices-V2.0/ApplicantWebServicesPortType/SubmitApplication/Fault/ErrorMessage" wsaw:Action="http://apply.grants.gov/services/ApplicantWebServices-V2.0/ApplicantWebServicesPortType/SubmitApplication/Fault/ErrorMessage">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="GetSubmissionList">
+      <wsdl:input message="tns:GetSubmissionList" name="GetSubmissionList" wsam:Action="https://trainingws.grants.gov/grantsws-applicant/services/v2/ApplicantWebServicesSoapPort/GetSubmissionList" wsaw:Action="https://trainingws.grants.gov/grantsws-applicant/services/v2/ApplicantWebServicesSoapPort/GetSubmissionList">
+    </wsdl:input>
+      <wsdl:output message="tns:GetSubmissionListResponse" name="GetSubmissionListResponse" wsam:Action="http://apply.grants.gov/services/ApplicantWebServices-V2.0/ApplicantWebServicesPortType/GetSubmissionListResponse" wsaw:Action="http://apply.grants.gov/services/ApplicantWebServices-V2.0/ApplicantWebServicesPortType/GetSubmissionListResponse">
+    </wsdl:output>
+      <wsdl:fault message="tns:ErrorMessage" name="ErrorMessage" wsam:Action="http://apply.grants.gov/services/ApplicantWebServices-V2.0/ApplicantWebServicesPortType/GetSubmissionList/Fault/ErrorMessage" wsaw:Action="http://apply.grants.gov/services/ApplicantWebServices-V2.0/ApplicantWebServicesPortType/GetSubmissionList/Fault/ErrorMessage">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="GetApplicationList">
+      <wsdl:input message="tns:GetApplicationList" name="GetApplicationList" wsam:Action="https://trainingws.grants.gov/grantsws-applicant/services/v2/ApplicantWebServicesSoapPort/GetApplicationList" wsaw:Action="https://trainingws.grants.gov/grantsws-applicant/services/v2/ApplicantWebServicesSoapPort/GetApplicationList">
+    </wsdl:input>
+      <wsdl:output message="tns:GetApplicationListResponse" name="GetApplicationListResponse" wsam:Action="http://apply.grants.gov/services/ApplicantWebServices-V2.0/ApplicantWebServicesPortType/GetApplicationListResponse" wsaw:Action="http://apply.grants.gov/services/ApplicantWebServices-V2.0/ApplicantWebServicesPortType/GetApplicationListResponse">
+    </wsdl:output>
+      <wsdl:fault message="tns:ErrorMessage" name="ErrorMessage" wsam:Action="http://apply.grants.gov/services/ApplicantWebServices-V2.0/ApplicantWebServicesPortType/GetApplicationList/Fault/ErrorMessage" wsaw:Action="http://apply.grants.gov/services/ApplicantWebServices-V2.0/ApplicantWebServicesPortType/GetApplicationList/Fault/ErrorMessage">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="SubmitApplicationAsThirdPartyExpanded">
+      <wsdl:input message="tns:SubmitApplicationAsThirdPartyExpanded" name="SubmitApplicationAsThirdPartyExpanded" wsam:Action="https://trainingws.grants.gov/grantsws-applicant/services/v2/ApplicantWebServicesSoapPort/SubmitApplicationAsThirdPartyExpanded" wsaw:Action="https://trainingws.grants.gov/grantsws-applicant/services/v2/ApplicantWebServicesSoapPort/SubmitApplicationAsThirdPartyExpanded">
+    </wsdl:input>
+      <wsdl:output message="tns:SubmitApplicationAsThirdPartyExpandedResponse" name="SubmitApplicationAsThirdPartyExpandedResponse" wsam:Action="http://apply.grants.gov/services/ApplicantWebServices-V2.0/ApplicantWebServicesPortType/SubmitApplicationAsThirdPartyExpandedResponse" wsaw:Action="http://apply.grants.gov/services/ApplicantWebServices-V2.0/ApplicantWebServicesPortType/SubmitApplicationAsThirdPartyExpandedResponse">
+    </wsdl:output>
+      <wsdl:fault message="tns:ErrorMessage" name="ErrorMessage" wsam:Action="http://apply.grants.gov/services/ApplicantWebServices-V2.0/ApplicantWebServicesPortType/SubmitApplicationAsThirdPartyExpanded/Fault/ErrorMessage" wsaw:Action="http://apply.grants.gov/services/ApplicantWebServices-V2.0/ApplicantWebServicesPortType/SubmitApplicationAsThirdPartyExpanded/Fault/ErrorMessage">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="GetSubmissionListAsThirdParty">
+      <wsdl:input message="tns:GetSubmissionListAsThirdParty" name="GetSubmissionListAsThirdParty" wsam:Action="https://trainingws.grants.gov/grantsws-applicant/services/v2/ApplicantWebServicesSoapPort/GetSubmissionListAsThirdParty" wsaw:Action="https://trainingws.grants.gov/grantsws-applicant/services/v2/ApplicantWebServicesSoapPort/GetSubmissionListAsThirdParty">
+    </wsdl:input>
+      <wsdl:output message="tns:GetSubmissionListAsThirdPartyResponse" name="GetSubmissionListAsThirdPartyResponse" wsam:Action="http://apply.grants.gov/services/ApplicantWebServices-V2.0/ApplicantWebServicesPortType/GetSubmissionListAsThirdPartyResponse" wsaw:Action="http://apply.grants.gov/services/ApplicantWebServices-V2.0/ApplicantWebServicesPortType/GetSubmissionListAsThirdPartyResponse">
+    </wsdl:output>
+      <wsdl:fault message="tns:ErrorMessage" name="ErrorMessage" wsam:Action="http://apply.grants.gov/services/ApplicantWebServices-V2.0/ApplicantWebServicesPortType/GetSubmissionListAsThirdParty/Fault/ErrorMessage" wsaw:Action="http://apply.grants.gov/services/ApplicantWebServices-V2.0/ApplicantWebServicesPortType/GetSubmissionListAsThirdParty/Fault/ErrorMessage">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="AuthenticateAORExpanded">
+      <wsdl:input message="tns:AuthenticateAORExpanded" name="AuthenticateAORExpanded" wsam:Action="https://trainingws.grants.gov/grantsws-applicant/services/v2/ApplicantWebServicesSoapPort/AuthenticateAORExpanded" wsaw:Action="https://trainingws.grants.gov/grantsws-applicant/services/v2/ApplicantWebServicesSoapPort/AuthenticateAORExpanded">
+    </wsdl:input>
+      <wsdl:output message="tns:AuthenticateAORExpandedResponse" name="AuthenticateAORExpandedResponse" wsam:Action="http://apply.grants.gov/services/ApplicantWebServices-V2.0/ApplicantWebServicesPortType/AuthenticateAORExpandedResponse" wsaw:Action="http://apply.grants.gov/services/ApplicantWebServices-V2.0/ApplicantWebServicesPortType/AuthenticateAORExpandedResponse">
+    </wsdl:output>
+      <wsdl:fault message="tns:ErrorMessage" name="ErrorMessage" wsam:Action="http://apply.grants.gov/services/ApplicantWebServices-V2.0/ApplicantWebServicesPortType/AuthenticateAORExpanded/Fault/ErrorMessage" wsaw:Action="http://apply.grants.gov/services/ApplicantWebServices-V2.0/ApplicantWebServicesPortType/AuthenticateAORExpanded/Fault/ErrorMessage">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="GetApplicationListAsThirdParty">
+      <wsdl:input message="tns:GetApplicationListAsThirdParty" name="GetApplicationListAsThirdParty" wsam:Action="https://trainingws.grants.gov/grantsws-applicant/services/v2/ApplicantWebServicesSoapPort/GetApplicationListAsThirdParty" wsaw:Action="https://trainingws.grants.gov/grantsws-applicant/services/v2/ApplicantWebServicesSoapPort/GetApplicationListAsThirdParty">
+    </wsdl:input>
+      <wsdl:output message="tns:GetApplicationListAsThirdPartyResponse" name="GetApplicationListAsThirdPartyResponse" wsam:Action="http://apply.grants.gov/services/ApplicantWebServices-V2.0/ApplicantWebServicesPortType/GetApplicationListAsThirdPartyResponse" wsaw:Action="http://apply.grants.gov/services/ApplicantWebServices-V2.0/ApplicantWebServicesPortType/GetApplicationListAsThirdPartyResponse">
+    </wsdl:output>
+      <wsdl:fault message="tns:ErrorMessage" name="ErrorMessage" wsam:Action="http://apply.grants.gov/services/ApplicantWebServices-V2.0/ApplicantWebServicesPortType/GetApplicationListAsThirdParty/Fault/ErrorMessage" wsaw:Action="http://apply.grants.gov/services/ApplicantWebServices-V2.0/ApplicantWebServicesPortType/GetApplicationListAsThirdParty/Fault/ErrorMessage">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="GetApplicationStatusDetail">
+      <wsdl:input message="tns:GetApplicationStatusDetail" name="GetApplicationStatusDetail" wsam:Action="https://trainingws.grants.gov/grantsws-applicant/services/v2/ApplicantWebServicesSoapPort/GetApplicationStatusDetail" wsaw:Action="https://trainingws.grants.gov/grantsws-applicant/services/v2/ApplicantWebServicesSoapPort/GetApplicationStatusDetail">
+    </wsdl:input>
+      <wsdl:output message="tns:GetApplicationStatusDetailResponse" name="GetApplicationStatusDetailResponse" wsam:Action="http://apply.grants.gov/services/ApplicantWebServices-V2.0/ApplicantWebServicesPortType/GetApplicationStatusDetailResponse" wsaw:Action="http://apply.grants.gov/services/ApplicantWebServices-V2.0/ApplicantWebServicesPortType/GetApplicationStatusDetailResponse">
+    </wsdl:output>
+      <wsdl:fault message="tns:ErrorMessage" name="ErrorMessage" wsam:Action="http://apply.grants.gov/services/ApplicantWebServices-V2.0/ApplicantWebServicesPortType/GetApplicationStatusDetail/Fault/ErrorMessage" wsaw:Action="http://apply.grants.gov/services/ApplicantWebServices-V2.0/ApplicantWebServicesPortType/GetApplicationStatusDetail/Fault/ErrorMessage">
+    </wsdl:fault>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="ApplicantWebServices-V2.0SoapBinding" type="tns:ApplicantWebServicesPortType">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="GetApplicationInfo">
+      <soap:operation soapAction="https://trainingws.grants.gov/grantsws-applicant/services/v2/ApplicantWebServicesSoapPort/GetApplicationInfo" style="document"/>
+      <wsdl:input name="GetApplicationInfo">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="GetApplicationInfoResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="ErrorMessage">
+        <soap:fault name="ErrorMessage" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="GetOpportunityList">
+      <soap:operation soapAction="https://trainingws.grants.gov/grantsws-applicant/services/v2/ApplicantWebServicesSoapPort/GetOpportunityList" style="document"/>
+      <wsdl:input name="GetOpportunityList">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="GetOpportunityListResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="ErrorMessage">
+        <soap:fault name="ErrorMessage" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="GetApplicationZip">
+      <soap:operation soapAction="https://trainingws.grants.gov/grantsws-agency/services/v2/AgencyWebServicesSoapPort/GetApplicationZip" style="document"/>
+      <wsdl:input name="GetApplicationZip">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="GetApplicationZipResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="ErrorMessage">
+        <soap:fault name="ErrorMessage" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="SubmitApplicationAsThirdParty">
+      <soap:operation soapAction="https://trainingws.grants.gov/grantsws-applicant/services/v2/ApplicantWebServicesSoapPort/SubmitApplicationAsThirdParty" style="document"/>
+      <wsdl:input name="SubmitApplicationAsThirdParty">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="SubmitApplicationAsThirdPartyResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="ErrorMessage">
+        <soap:fault name="ErrorMessage" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="AuthenticateAOR">
+      <soap:operation soapAction="https://trainingws.grants.gov/grantsws-applicant/services/v2/ApplicantWebServicesSoapPort/AuthenticateAOR" style="document"/>
+      <wsdl:input name="AuthenticateAOR">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="AuthenticateAORResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="ErrorMessage">
+        <soap:fault name="ErrorMessage" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="GetOpportunitiesExpanded">
+      <soap:operation soapAction="https://trainingws.grants.gov/grantsws-applicant/services/v2/ApplicantWebServicesSoapPort/GetOpportunitiesExpanded" style="document"/>
+      <wsdl:input name="GetOpportunitiesExpanded">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="GetOpportunitiesExpandedResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="ErrorMessage">
+        <soap:fault name="ErrorMessage" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="GetApplicationInfoAsThirdParty">
+      <soap:operation soapAction="https://trainingws.grants.gov/grantsws-applicant/services/v2/ApplicantWebServicesSoapPort/GetApplicationInfoAsThirdParty" style="document"/>
+      <wsdl:input name="GetApplicationInfoAsThirdParty">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="GetApplicationInfoAsThirdPartyResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="ErrorMessage">
+        <soap:fault name="ErrorMessage" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="SubmitApplication">
+      <soap:operation soapAction="https://trainingws.grants.gov/grantsws-applicant/services/v2/ApplicantWebServicesSoapPort/SubmitApplication" style="document"/>
+      <wsdl:input name="SubmitApplication">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="SubmitApplicationResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="ErrorMessage">
+        <soap:fault name="ErrorMessage" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="GetSubmissionList">
+      <soap:operation soapAction="https://trainingws.grants.gov/grantsws-applicant/services/v2/ApplicantWebServicesSoapPort/GetSubmissionList" style="document"/>
+      <wsdl:input name="GetSubmissionList">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="GetSubmissionListResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="ErrorMessage">
+        <soap:fault name="ErrorMessage" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="GetApplicationList">
+      <soap:operation soapAction="https://trainingws.grants.gov/grantsws-applicant/services/v2/ApplicantWebServicesSoapPort/GetApplicationList" style="document"/>
+      <wsdl:input name="GetApplicationList">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="GetApplicationListResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="ErrorMessage">
+        <soap:fault name="ErrorMessage" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="SubmitApplicationAsThirdPartyExpanded">
+      <soap:operation soapAction="https://trainingws.grants.gov/grantsws-applicant/services/v2/ApplicantWebServicesSoapPort/SubmitApplicationAsThirdPartyExpanded" style="document"/>
+      <wsdl:input name="SubmitApplicationAsThirdPartyExpanded">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="SubmitApplicationAsThirdPartyExpandedResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="ErrorMessage">
+        <soap:fault name="ErrorMessage" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="GetSubmissionListAsThirdParty">
+      <soap:operation soapAction="https://trainingws.grants.gov/grantsws-applicant/services/v2/ApplicantWebServicesSoapPort/GetSubmissionListAsThirdParty" style="document"/>
+      <wsdl:input name="GetSubmissionListAsThirdParty">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="GetSubmissionListAsThirdPartyResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="ErrorMessage">
+        <soap:fault name="ErrorMessage" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="AuthenticateAORExpanded">
+      <soap:operation soapAction="https://trainingws.grants.gov/grantsws-applicant/services/v2/ApplicantWebServicesSoapPort/AuthenticateAORExpanded" style="document"/>
+      <wsdl:input name="AuthenticateAORExpanded">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="AuthenticateAORExpandedResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="ErrorMessage">
+        <soap:fault name="ErrorMessage" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="GetApplicationListAsThirdParty">
+      <soap:operation soapAction="https://trainingws.grants.gov/grantsws-applicant/services/v2/ApplicantWebServicesSoapPort/GetApplicationListAsThirdParty" style="document"/>
+      <wsdl:input name="GetApplicationListAsThirdParty">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="GetApplicationListAsThirdPartyResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="ErrorMessage">
+        <soap:fault name="ErrorMessage" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="GetApplicationStatusDetail">
+      <soap:operation soapAction="https://trainingws.grants.gov/grantsws-applicant/services/v2/ApplicantWebServicesSoapPort/GetApplicationStatusDetail" style="document"/>
+      <wsdl:input name="GetApplicationStatusDetail">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="GetApplicationStatusDetailResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="ErrorMessage">
+        <soap:fault name="ErrorMessage" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="ApplicantWebServices-V2.0">
+    <wsdl:port binding="tns:ApplicantWebServices-V2.0SoapBinding" name="ApplicantWebServicesSoapPort">
+      <soap:address location="https://ws07.grants.gov/grantsws-applicant/services/v2/ApplicantWebServicesSoapPort"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

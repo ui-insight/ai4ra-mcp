@@ -52,6 +52,7 @@ from ai4ra_mcp.servers.propublica.server import mcp as propublica
 from ai4ra_mcp.servers.pubmed.server import mcp as pubmed
 from ai4ra_mcp.servers.regulations.server import mcp as regulations
 from ai4ra_mcp.servers.ror.server import mcp as ror
+from ai4ra_mcp.servers.s2s.server import mcp as s2s
 from ai4ra_mcp.servers.sam.server import mcp as sam
 from ai4ra_mcp.servers.uidaho.server import mcp as uidaho
 from ai4ra_mcp.servers.usaspending.server import mcp as usaspending
@@ -61,7 +62,7 @@ from ai4ra_mcp.servers.usaspending.server import mcp as usaspending
 # budget figures, the scholarly record, the project trackers), and last the one institution's own servers.
 SERVERS: dict[str, MCPServer] = {
     "general": general, "ai4ra": ai4ra,
-    "ecfr": ecfr, "fedreg": fedreg, "regulations": regulations, "grants": grants,
+    "ecfr": ecfr, "fedreg": fedreg, "regulations": regulations, "grants": grants, "s2s": s2s,
     "nih": nih, "nsf": nsf, "usaspending": usaspending,
     "sam": sam, "fac": fac, "csl": csl, "oig": oig, "propublica": propublica, "ror": ror,
     "perdiem": perdiem, "bls": bls,
@@ -76,6 +77,8 @@ WEB = "https://github.com/ui-insight/ai4ra-mcp/blob/main/ai4ra_mcp/servers/"
 META: dict[str, dict] = {
     "ecfr": {"label": "eCFR", "description": "Federal regulations from the eCFR: search, read a section on a date, compare versions."},
     "grants": {"label": "grants.gov", "description": "Federal funding opportunities: search, then one opportunity's record with its attachments."},
+    "s2s": {"label": "Grants.gov S2S", "description": "The Grants.gov Applicant System-to-System service with the person's own certificate: an opportunity's package, a GrantApplication checked against the schemas, its submission (where the deployment allows), and the status of what was submitted. The deployment's default endpoint is a mock unless configured otherwise.",
+            "key": {"required": False, "hint": "Paste your S2S credential bundle: the base64url JSON of your client certificate and key, made with `python -m ai4ra_mcp.servers.s2s.credentials cert.pem key.pem`. Without one the deployment's fallback certificate is used, which only the mock accepts."}},
     "uidaho": {"label": "University of Idaho", "description": "University policy for sponsored projects (APM, FSH) by number and title, the F&A and fringe rates and a Rates sheet from them; the award skills that read Banner exports; the proposal workbook."},
     "general": {"label": "General", "description": "Any office, any document: search the open web, read a page or PDF as text; ask the person a question, remove AI writing tells, draw a project timeline as a Gantt chart."},
     "ai4ra": {"label": "AI4RA", "description": "Research-administration skills, no tools: an RFA sheet, a narrative, a work plan, a budget outline and the NSF budget form, a PI memo, cost-allowability checks and budget justifications."},

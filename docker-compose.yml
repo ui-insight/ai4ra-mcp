@@ -12,11 +12,22 @@ services:
     restart: unless-stopped
     ports:
       - "127.0.0.1:8000:8000"           # localhost only; Caddy is the public face
+    volumes:
+      - ../grants-gov-s2s-mock/certs:/srv/s2s-certs:ro   # the mock's CA and a client cert, for the s2s server's default
     environment:
       AI4RA_MCP_CONTACT: osp@uidaho.edu
       AI4RA_MCP_SEARXNG_URL: http://searxng:8080   # the web_search tool's backend, on the compose network
+      # The s2s server's default endpoint is the mock's mutual-TLS port on this network, verified against the
+      # mock's CA; the mock-minted client cert is the fallback for a request that sends no bearer bundle.
+      # Writes (s2s_submit) are on; production stays refused until AI4RA_MCP_S2S_PRODUCTION=1.
+      AI4RA_MCP_S2S_ENDPOINT: https://grants-gov-s2s-mock:8443/grantsws-applicant/services/v2/ApplicantWebServicesSoapPort
+      AI4RA_MCP_S2S_CA_FILE: /srv/s2s-certs/ca.crt
+      AI4RA_MCP_S2S_CERT_FILE: /srv/s2s-certs/client.crt
+      AI4RA_MCP_S2S_KEY_FILE: /srv/s2s-certs/client.key
+      AI4RA_MCP_S2S_WRITES: "1"
     depends_on:
       - searxng
+      - grants-gov-s2s-mock
 
   # grants-gov-s2s-mock: the throwaway Grants.gov Applicant S2S mock OpenERA develops against
   # (AI4RA/grants-gov-s2s-mock, cloned beside this repo). Plain HTTP inside; Caddy serves it under
@@ -26,12 +37,15 @@ services:
     build: ../grants-gov-s2s-mock
     container_name: grants-gov-s2s-mock
     restart: unless-stopped
-    command: ["--plain"]
+    command: ["--both"]                 # plain :8080 for Caddy and mutual TLS :8443 for this network, one shared state
     ports:
       - "127.0.0.1:8081:8080"           # localhost only; Caddy is the public face
+    volumes:
+      - ../grants-gov-s2s-mock/certs:/srv/certs   # made on first start if empty (CA, server cert, a client cert)
     environment:
       MOCK_PUBLIC_URL: ${S2S_MOCK_PUBLIC_URL:-https://localhost/s2s-mock}   # what its WSDL and SchemaURL advertise
       MOCK_STEP_SECONDS: "20"
+      MOCK_CERT_HOSTS: grants-gov-s2s-mock   # extra SAN for the server cert, so the s2s server can verify it
 
   # SearXNG answers web_search: a self-hosted metasearch over Google, Bing, DuckDuckGo, Brave and others,
   # no key, reachable only from this compose network (no host port). Set SEARXNG_SECRET in the environment

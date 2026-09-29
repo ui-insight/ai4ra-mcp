@@ -8,6 +8,7 @@ from starlette.testclient import TestClient
 
 from ai4ra_mcp.app import SERVERS, build_app
 from ai4ra_mcp.common.skills import load_catalog
+from ai4ra_mcp.servers.s2s import server as s2s
 from ai4ra_mcp.servers.uidaho import server as uidaho
 
 EXPECTED_TOOLS = {
@@ -37,6 +38,7 @@ EXPECTED_TOOLS = {
     "orcid": {"orcid_index", "orcid_search", "orcid_record"},
     "osti": {"osti_index", "osti_search", "osti_record"},
     "clinicaltrials": {"clinicaltrials_index", "clinicaltrials_search", "clinicaltrials_study"},
+    "s2s": {"s2s_index", "s2s_check", "s2s_opportunity", "s2s_validate_package", "s2s_submissions", "s2s_application_info"} | ({"s2s_submit"} if s2s.WRITES_ON else set()),
 }
 
 

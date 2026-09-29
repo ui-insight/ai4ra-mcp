@@ -52,6 +52,7 @@ works without one and a key raises its quota.
 | `/fedreg/mcp` | Federal Register | none | `federal_register_index`, `federal_register_search`, `federal_register_document`, `federal_register_agencies` | none |
 | `/regulations/mcp` | Regulations.gov | **required** (api.data.gov) | `regulations_gov_index`, `regulations_gov_documents_search`, `regulations_gov_document`, `regulations_gov_docket`, `regulations_gov_comments_search` | none |
 | `/grants/mcp` | grants.gov | none | `grants_gov_search`, `grants_gov_opportunity` | `funding-opportunity-finder` |
+| `/s2s/mcp` | the Grants.gov Applicant System-to-System (S2S) SOAP service, at any endpoint: training, production, or the deployment's default (a mock) | optional (the person's own S2S certificate and key as a bearer bundle; a deployment may hold a fallback that only the mock accepts) | `s2s_index`, `s2s_check`, `s2s_opportunity`, `s2s_validate_package`, `s2s_submissions`, `s2s_application_info`; with `AI4RA_MCP_S2S_WRITES=1` also `s2s_submit` (off by default) | none yet |
 
 **Awards held**
 
@@ -434,6 +435,40 @@ for narrowing; `grants_gov_opportunity` fetches one record by the id a hit
 carries, with its synopsis, dates, ceiling, cost sharing, eligibility and
 attachment links. An attachment is read with `fetch_document` on the
 `general` server. The `funding-opportunity-finder` skill runs that sequence.
+
+### s2s
+
+The Grants.gov Applicant System-to-System web services, V2.0: SOAP over
+mutual TLS, the contract Grants.gov publishes as a WSDL and form XSDs (vendored
+under `servers/s2s/contract/`, copied from
+[AI4RA/grants-gov-s2s-mock](https://github.com/AI4RA/grants-gov-s2s-mock)).
+Grants.gov runs it at `trainingws.grants.gov` and `ws07.grants.gov`; every tool
+takes an `endpoint`, and the deployment's default (`AI4RA_MCP_S2S_ENDPOINT`) is
+the mock on the compose network, so the same tools reach all three and the
+switch to the real service is a URL and a certificate, not code. The
+credential is the person's: their client certificate and private key as the
+bearer token, base64url of `{"cert": PEM, "key": PEM, "ca": PEM?}` (printed by
+`python -m ai4ra_mcp.servers.s2s.credentials cert.pem key.pem`), held for the
+request only; the key never appears in a tool argument. A deployment may hold
+a fallback pair in `AI4RA_MCP_S2S_CERT_FILE` and `AI4RA_MCP_S2S_KEY_FILE`.
+
+`s2s_check` proves the connection (the WSDL, then a package lookup) and names
+which of the error classes a failure is: configuration, certificate,
+transport, rejected, not_found. `s2s_opportunity` is GetOpportunityList by
+opportunity number, CFDA, competition id or package id, with each package's
+forms read from its package schema. `s2s_validate_package` checks a
+GrantApplication offline against the form schemas and lists the attachments it
+references. `s2s_submit` (writes on only; production only with
+`AI4RA_MCP_S2S_PRODUCTION=1`) validates the package, fetches each attachment
+from a public URL, checks its SHA-1 against the form's HashValue, sends
+SubmitApplication as MTOM and returns the tracking number; it requires
+`confirm_environment` to equal the endpoint's environment name.
+`s2s_submissions` is GetSubmissionList by the five filter types the schema
+allows; `s2s_application_info` is GetApplicationInfo. Every request is
+checked against the WSDL types before it leaves and every response as it
+arrives; the index tool lists the status values and the error classes.
+`tests/test_s2s_live.py` runs the whole sequence, including a submission,
+against any endpoint named in `S2S_LIVE_ENDPOINT`.
 
 ### nih
 
@@ -974,6 +1009,11 @@ no keys.
 | `AI4RA_MCP_LAKEHOUSE_CLIENTS` | The lakehouse client ids to mount, comma separated; the first at `/lakehouse`, the rest at `/lakehouse-<id>` | `mr-365` |
 | `AI4RA_MCP_LAKEHOUSE_SECRET`, `AI4RA_MCP_LAKEHOUSE_SECRET_<ID>` | Fallback shared secrets, the first client's and each other client's | unset |
 | `AI4RA_MCP_LAKEHOUSE_SQL_TIMEOUT_S` | Seconds a `lakehouse_sql` statement may run before it is cancelled | `60` |
+| `AI4RA_MCP_S2S_ENDPOINT` | The s2s server's default endpoint, used when a call passes none. The compose file sets it to the mock's mutual-TLS port on the compose network | unset: every call must pass one |
+| `AI4RA_MCP_S2S_CA_FILE` | The CA that signs the default endpoint's server certificate (the mock's `ca.crt`); other endpoints use the system trust store or the bundle's own `ca` | unset |
+| `AI4RA_MCP_S2S_CERT_FILE`, `AI4RA_MCP_S2S_KEY_FILE` | Fallback client certificate and key for a request that sends no bearer bundle; the compose file points them at a mock-minted pair | unset |
+| `AI4RA_MCP_S2S_WRITES` | `1` registers `s2s_submit` | unset: read only |
+| `AI4RA_MCP_S2S_PRODUCTION` | `1` lets `s2s_submit` reach `ws07.grants.gov`; otherwise production is refused | unset |
 | `SEARXNG_SECRET` | SearXNG's own secret, read by the compose file from the environment or a `.env` file beside it | a placeholder that should be changed |
 
 ## Hosting
@@ -1007,14 +1047,21 @@ tool name, and was one more origin to trust.
 One thing on the same host is not an MCP server: **grants-gov-s2s-mock**
 ([AI4RA/grants-gov-s2s-mock](https://github.com/AI4RA/grants-gov-s2s-mock)),
 the throwaway Grants.gov Applicant S2S mock that OpenERA's submission code is
-built against. It is cloned beside this repo, runs as one more compose
-service on plain HTTP at localhost:8081, and Caddy serves it under
-`/s2s-mock/` with the campus certificate (`deploy/Caddyfile`), so no new
-hostname, certificate or port. Set `S2S_MOCK_PUBLIC_URL` in the `.env` to the
-public base (`https://<host>/s2s-mock`) so the WSDL it hands out points back
-at itself. Its control API has no auth and is limited to campus addresses by
-a Caddy matcher. It is retired, and its blocks removed, the day the
-university's real certificate works against training.grants.gov.
+built against and that the `s2s` server here talks to by default. It is cloned
+beside this repo and runs as one more compose service with two listeners from
+one process: plain HTTP on localhost:8081, which Caddy serves under
+`/s2s-mock/` with the campus certificate (`deploy/Caddyfile`; no new hostname,
+certificate or port), and mutual TLS on port 8443 of the compose network,
+which the `s2s` server uses so that a caller without a mock-issued certificate
+is refused as Grants.gov would refuse one. The mock mints its own CA and
+certificates into `../grants-gov-s2s-mock/certs` on first start; this process
+mounts that folder read-only for the CA and its fallback client pair. Set
+`S2S_MOCK_PUBLIC_URL` in the `.env` to the public base
+(`https://<host>/s2s-mock`) so the WSDL it hands out points back at itself.
+Its control API has no auth and is limited to campus addresses by a Caddy
+matcher. It is retired, and its blocks and the `AI4RA_MCP_S2S_*` defaults
+repointed at training, the day the university's real certificate works
+against training.grants.gov.
 
 Clients such as the Office add-in call these servers from inside a browser
 engine, so the process answers CORS itself: any origin, any method, and the
@@ -1081,7 +1128,9 @@ plan it is the organization's, shared by everyone who connects.
   is judgment, and judgment lives in a skill, never in a tool.
 - **Tools read.** Every tool is read-only and annotated so. Nothing here
   writes to an upstream, including the lakehouse's submitting streams, which
-  are listed and left alone.
+  are listed and left alone. Two exceptions, each off unless the deployment
+  turns it on and each annotated as a write: ClickUp's task writes, and the
+  s2s server's `s2s_submit`, which is the one thing that service is for.
 - **One server, one upstream, one audience.** Everything that reads ecfr.gov
   is one server; everything that reads uidaho.edu is another. A federal
   server has no Idaho defaults; the Idaho server hard-codes uidaho.edu.

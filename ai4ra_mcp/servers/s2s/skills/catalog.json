@@ -1,0 +1,7 @@
+{
+  "catalog_version": "1.0",
+  "repo": "ui-insight/ai4ra-mcp",
+  "server": "s2s",
+  "note": "Skills that use the s2s server's tools. Same shape as AI4RA/prompt-library's component_catalog.json, hand-maintained.",
+  "components": []
+}
