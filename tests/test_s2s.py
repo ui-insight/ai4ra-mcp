@@ -149,3 +149,34 @@ def test_index_says_what_is_on():
     import asyncio
     idx = asyncio.run(s2s.s2s_index())
     assert idx["writes"] == s2s.WRITES_ON and "s2s_check" in idx["workflow"][0] and idx["endpoints"]["training"] == s2s.TRAINING
+
+
+def _self_signed(issuer_cn: str, issuer_o: str, client_auth: bool = True):
+    from datetime import datetime, timedelta, timezone
+    from cryptography import x509
+    from cryptography.hazmat.primitives import hashes, serialization
+    from cryptography.hazmat.primitives.asymmetric import rsa
+    key = rsa.generate_private_key(public_exponent=65537, key_size=2048)
+    name = x509.Name([x509.NameAttribute(x509.oid.NameOID.COUNTRY_NAME, "US"), x509.NameAttribute(x509.oid.NameOID.ORGANIZATION_NAME, issuer_o), x509.NameAttribute(x509.oid.NameOID.COMMON_NAME, issuer_cn)])
+    now = datetime.now(timezone.utc)
+    b = (x509.CertificateBuilder().subject_name(name).issuer_name(name).public_key(key.public_key()).serial_number(0xABC123)
+         .not_valid_before(now - timedelta(days=1)).not_valid_after(now + timedelta(days=100)))
+    if client_auth:
+        b = b.add_extension(x509.ExtendedKeyUsage([x509.oid.ExtendedKeyUsageOID.CLIENT_AUTH]), critical=False)
+    return b.sign(key, hashes.SHA256()).public_bytes(serialization.Encoding.PEM).decode()
+
+
+def test_describe_certificate_and_issuer_acceptance():
+    pem = _self_signed("InCommon RSA Server CA 2", "Internet2")
+    d = credentials.describe(pem)
+    assert d["issuer"]["CN"] == "InCommon RSA Server CA 2" and d["serial_hex"] == "ABC123" and d["key"] == "RSA 2048" and d["client_auth_eku"] is True
+    assert d["meets_grants_gov_minimums"] and 98 <= d["days_left"] <= 100 and not d["expired"]
+    assert s2s.issuer_accepted(d["issuer"], s2s.TRAINING) is True and s2s.issuer_accepted(d["issuer"], s2s.PRODUCTION) is True
+    assert s2s.issuer_accepted({"CN": "grants-gov-s2s-mock CA"}, s2s.TRAINING) is False
+    assert s2s.issuer_accepted(d["issuer"], "https://grants-gov-s2s-mock:8443/x") is None
+    v = s2s.certificate_verdict(pem, s2s.TRAINING)
+    assert v["issuer_accepted_by_endpoint"] is True and "not registered" in v["issuer_note"]
+    v = s2s.certificate_verdict(_self_signed("Some Corporate CA", "Acme", client_auth=False), s2s.PRODUCTION)
+    assert v["issuer_accepted_by_endpoint"] is False and "NOT on the CA list" in v["issuer_note"] and v["client_auth_eku"] is None
+    both = s2s.accepted_issuers(s2s.TRAINING), s2s.accepted_issuers(s2s.PRODUCTION)
+    assert all(len(x) > 150 for x in both) and any(a.get("CN") == "InCommon RSA Server CA" for a in both[0])

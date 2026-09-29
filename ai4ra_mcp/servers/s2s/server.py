@@ -32,7 +32,7 @@ from ai4ra_mcp.common.http import HEADERS, request_key
 from ai4ra_mcp.common.skills import register_prompts
 
 from . import credentials, soap
-from .contract import NS_ACE, NS_GCE, NS_WS, check_element, validate_application
+from .contract import CONTRACT, NS_ACE, NS_GCE, NS_WS, check_element, validate_application
 
 _READ_ONLY = {"readOnlyHint": True, "destructiveHint": False, "idempotentHint": True, "openWorldHint": True}
 _WRITES = {"readOnlyHint": False, "destructiveHint": False, "idempotentHint": False, "openWorldHint": True}
@@ -113,6 +113,54 @@ def _report(e: Exception) -> dict:
 
 
 # ---- endpoint and credential ----
+
+def accepted_issuers(endpoint: str) -> list[dict] | None:
+    """The CA names the endpoint announced in its TLS handshake when we probed it (contract/acceptable-client-cas.<host>.txt),
+    as {C, O, CN, ...} dicts; None for an endpoint we have not probed (the mock accepts its own CA)."""
+    host = urlsplit(endpoint).hostname or ""
+    f = CONTRACT / f"acceptable-client-cas.{host}.txt"
+    if not f.exists():
+        return None
+    out = []
+    for line in f.read_text().splitlines():
+        if not line or line.startswith("#"):
+            continue
+        d = {}
+        for part in line.split(", "):
+            k, _, v = part.partition("=")
+            d[k.strip()] = v.strip()
+        out.append(d)
+    return out
+
+
+def issuer_accepted(issuer: dict, endpoint: str) -> bool | None:
+    """Whether the certificate's issuer matches one the endpoint accepts, on CN and O; None when unknown."""
+    accepted = accepted_issuers(endpoint)
+    if accepted is None:
+        return None
+    return any(a.get("CN") == issuer.get("CN") and (a.get("O") or "").lower() == (issuer.get("O") or "").lower() for a in accepted)
+
+
+def certificate_verdict(cert_pem: str, endpoint: str) -> dict:
+    """The caller's certificate described, and what its issuer means for this endpoint."""
+    try:
+        d = credentials.describe(cert_pem)
+    except Exception as e:  # noqa: BLE001
+        return {"error": f"the credential's certificate could not be parsed: {e}"}
+    ok = issuer_accepted(d["issuer"], endpoint)
+    d["issuer_accepted_by_endpoint"] = ok
+    if ok is None:
+        d["issuer_note"] = "this endpoint's acceptable-CA list has not been probed (the mock accepts certificates from its own CA only)"
+    elif ok:
+        d["issuer_note"] = "the issuer is on the CA list this endpoint announced in its TLS handshake (probed 2026-09-28); a certificate failure here means the certificate is not registered to the organization or no AOR is authorized for it, not the CA"
+    else:
+        d["issuer_note"] = f"the issuer ({d['issuer'].get('CN')}) is NOT on the CA list this endpoint announced in its TLS handshake (probed 2026-09-28); the handshake will fail whatever the registration says. Grants.gov accepts InCommon, Sectigo/USERTrust, DigiCert, Entrust, GoDaddy, IdenTrust and the federal PKI among others"
+    if d["expired"]:
+        d["issuer_note"] += "; the certificate has EXPIRED"
+    elif d["days_left"] < 30:
+        d["issuer_note"] += f"; the certificate expires in {d['days_left']} days"
+    return d
+
 
 def _endpoint(given: str) -> str:
     url = (given or "").strip() or DEFAULT_ENDPOINT
@@ -221,7 +269,7 @@ async def s2s_index() -> dict:
                       "note": "The same tools reach all three; only the endpoint and the credential change. " + ("Production is enabled here." if PRODUCTION_ON else "Production submissions are refused in this deployment (AI4RA_MCP_S2S_PRODUCTION is not set).")},
         "credential": {"how": KEY_HOW, "on_this_request": bool(request_key.get()), "fallback_configured": credentials.from_env() is not None if os.environ.get(credentials.CERT_FILE_ENV) else False},
         "writes": WRITES_ON, "production": PRODUCTION_ON,
-        "error_classes": {"configuration": "no endpoint or credential, or a refused URL: fix the setup", "certificate": "the TLS handshake was refused or the AOR is not authorized for this certificate: the registration, not the package",
+        "error_classes": {"configuration": "no endpoint or credential, or a refused URL: fix the setup", "certificate": "the TLS handshake was refused or the AOR is not authorized for this certificate. s2s_check says which: an issuer the endpoint does not accept, or an accepted issuer that is not yet registered/authorized",
                           "transport": "timeout, connection failure, or a fault that is not about the package: retry later or report", "rejected": "Grants.gov refused the request or the package, with its own message verbatim: fix the package",
                           "not_found": "no such opportunity package or tracking number", "invalid_request": "the request this server built did not match the WSDL types: a bug or a bad argument"},
         "statuses": STATUSES,
@@ -234,8 +282,8 @@ async def s2s_check(endpoint: str = "", opportunity_number: str = "") -> dict:
     """Connectivity check (Grants.gov test case 2.1): fetch the WSDL, then GetOpportunityList for `opportunity_number` if given. Reports the environment and, on failure, which error class it is."""
     try:
         url = _endpoint(endpoint)
-        out = {"endpoint": url, "environment": _environment(url), "credential_source": _bundle().source}
         bundle = _bundle()
+        out = {"endpoint": url, "environment": _environment(url), "credential_source": bundle.source, "certificate": certificate_verdict(bundle.cert, url)}
         ctx = bundle.ssl_context(DEFAULT_CA_FILE if url == DEFAULT_ENDPOINT else None)
         async with httpx.AsyncClient(verify=ctx, timeout=30.0, headers=HEADERS) as client:
             r = await client.get(url + "?wsdl")
@@ -250,7 +298,16 @@ async def s2s_check(endpoint: str = "", opportunity_number: str = "") -> dict:
         out["ok"] = True
         return out
     except Exception as e:  # noqa: BLE001
-        return {**_report(e), "endpoint": (endpoint or DEFAULT_ENDPOINT), "ok": False}
+        rep = {**_report(e), "endpoint": (endpoint or DEFAULT_ENDPOINT), "ok": False}
+        try:
+            b = credentials.from_token(request_key.get()) or credentials.from_env()
+            if b and rep.get("class") == "certificate":
+                rep["certificate"] = certificate_verdict(b.cert, _endpoint(endpoint))
+                rep["likely"] = ("the issuer is not accepted by this endpoint" if rep["certificate"].get("issuer_accepted_by_endpoint") is False
+                                 else "the issuer is accepted, so the certificate is not registered with Grants.gov or no AOR is authorized for it yet (the Certificate Request Form and E-Biz POC steps)")
+        except Exception:  # noqa: BLE001
+            pass
+        return rep
 
 
 @mcp.tool(name="s2s_opportunity", annotations=_READ_ONLY)

@@ -1,0 +1,180 @@
+# Acceptable client certificate CA names announced by trainingws.grants.gov in the TLS 1.2 handshake (openssl s_client, no client cert), probed 2026-09-28.
+# One distinguished name per line as OpenSSL prints it. Re-probe: echo | openssl s_client -connect trainingws.grants.gov:443 -servername trainingws.grants.gov -tls1_2
+Acceptable client certificate CA names
+C=BE, O=GlobalSign nv-sa, CN=GlobalSign PersonalSign 2 CA - SHA256 - G3
+C=BE, O=GlobalSign nv-sa, OU=Root CA, CN=GlobalSign Root CA
+C=BM, O=QuoVadis Limited, CN=QuoVadis Root CA 2
+C=BM, O=QuoVadis Limited, CN=QuoVadis Root CA 3
+C=BM, O=QuoVadis Limited, OU=Root Certification Authority, CN=QuoVadis Root Certification Authority
+C=CA, O=Entrust Limited, CN=Entrust DV TLS Issuing RSA CA 2
+C=CA, O=Entrust Limited, CN=Entrust EV TLS Issuing RSA CA 2
+C=CA, O=Entrust Limited, CN=Entrust OV TLS Issuing RSA CA 2
+C=CH, O=SwissSign AG, CN=SwissSign Gold CA - G2
+C=CH, O=SwissSign AG, CN=SwissSign Platinum CA - G2
+C=CH, O=SwissSign AG, CN=SwissSign Silver CA - G2
+C=DE, O=T-Systems Enterprise Services GmbH, OU=T-Systems Trust Center, CN=T-TeleSec GlobalRoot Class 2
+C=DE, O=T-Systems Enterprise Services GmbH, OU=T-Systems Trust Center, CN=T-TeleSec GlobalRoot Class 3
+C=DE, O=TC TrustCenter GmbH, OU=TC TrustCenter Class 2 CA, CN=TC TrustCenter Class 2 CA II
+C=DE, O=TC TrustCenter GmbH, OU=TC TrustCenter Class 4 CA, CN=TC TrustCenter Class 4 CA II
+C=DE, O=TC TrustCenter GmbH, OU=TC TrustCenter Universal CA, CN=TC TrustCenter Universal CA I
+C=EU, L=Madrid (see current address at www.camerfirma.com/address), serialNumber=A82743287, O=AC Camerfirma S.A., CN=Chambers of Commerce Root - 2008
+C=EU, L=Madrid (see current address at www.camerfirma.com/address), serialNumber=A82743287, O=AC Camerfirma S.A., CN=Global Chambersign Root - 2008
+C=EU, O=AC Camerfirma SA CIF A82743287, OU=http://www.chambersign.org, CN=Chambers of Commerce Root
+C=FI, O=Sonera, CN=Sonera Class1 CA
+C=FR, O=KEYNECTIS, OU=ROOT, CN=KEYNECTIS ROOT CA
+C=GB, O=Sectigo Limited, CN=Sectigo Public Code Signing CA EV R36
+C=GB, O=Sectigo Limited, CN=Sectigo Public Code Signing CA R36
+C=GB, O=Sectigo Limited, CN=Sectigo Public Code Signing Root R46
+C=GB, O=Sectigo Limited, CN=Sectigo Public Server Authentication CA OV E36
+C=GB, O=Sectigo Limited, CN=Sectigo Public Server Authentication CA OV R36
+C=GB, O=Sectigo Limited, CN=Sectigo Public Server Authentication CA OV R40
+C=GB, O=Sectigo Limited, CN=Sectigo Public Server Authentication Root R46
+C=GB, ST=Greater Manchester, L=Salford, O=Comodo CA Limited, CN=AAA Certificate Services
+C=GB, ST=Greater Manchester, L=Salford, O=COMODO CA Limited, CN=COMODO RSA Certification Authority
+C=GB, ST=Greater Manchester, L=Salford, O=COMODO CA Limited, CN=COMODO RSA Client Authentication and Secure Email CA
+C=GB, ST=Greater Manchester, L=Salford, O=COMODO CA Limited, CN=COMODO RSA Domain Validation Secure Server CA
+C=GB, ST=Greater Manchester, L=Salford, O=COMODO CA Limited, CN=COMODO RSA Extended Validation Secure Server CA
+C=GB, ST=Greater Manchester, L=Salford, O=COMODO CA Limited, CN=COMODO RSA Organization Validation Secure Server CA
+C=GB, ST=Greater Manchester, L=Salford, O=COMODO CA Limited, CN=COMODO SHA-256 Client Authentication and Secure Email CA
+C=GB, ST=Greater Manchester, L=Salford, O=Sectigo Limited, CN=Sectigo RSA Client Authentication and Secure Email CA
+C=GB, ST=Greater Manchester, L=Salford, O=Sectigo Limited, CN=Sectigo RSA Domain Validation Secure Server CA
+C=GB, ST=Greater Manchester, L=Salford, O=Sectigo Limited, CN=Sectigo RSA Extended Validation Secure Server CA
+C=GB, ST=Greater Manchester, L=Salford, O=Sectigo Limited, CN=Sectigo RSA Organization Validation Secure Server CA
+C=IE, O=Baltimore, OU=CyberTrust, CN=Baltimore CyberTrust Code Signing Root
+C=IE, O=Baltimore, OU=CyberTrust, CN=Baltimore CyberTrust Root
+C=JP, O=SECOM Trust Systems CO.,LTD., OU=Security Communication EV RootCA1
+C=JP, O=SECOM Trust Systems CO.,LTD., OU=Security Communication RootCA2
+C=NO, O=Buypass AS-983163327, CN=Buypass Class 2 Root CA
+C=NO, O=Buypass AS-983163327, CN=Buypass Class 3 Root CA
+C=PL, O=Unizeto Sp. z o.o., CN=Certum CA
+C=PL, O=Unizeto Technologies S.A., OU=Certum Certification Authority, CN=Certum Trusted Network CA
+C=TW, O=Chunghwa Telecom Co., Ltd., OU=ePKI Root Certification Authority
+C=US, O=AffirmTrust, CN=AffirmTrust Commercial
+C=US, O=AffirmTrust, CN=AffirmTrust Networking
+C=US, O=AffirmTrust, CN=AffirmTrust Premium
+C=US, O=AffirmTrust, CN=AffirmTrust Premium ECC
+C=US, O=Amazon, CN=Amazon Root CA 1
+C=US, O=Amazon, CN=Amazon RSA 2048 M03
+C=US, O=America Online Inc., CN=America Online Root Certification Authority 1
+C=US, O=America Online Inc., CN=America Online Root Certification Authority 2
+C=US, O=DigiCert Inc, CN=DigiCert Global G2 TLS RSA SHA256 2020 CA1
+C=US, O=DigiCert Inc, CN=DigiCert SHA2 Secure Server CA
+C=US, O=DigiCert Inc, CN=DigiCert TLS RSA SHA256 2020 CA1
+C=US, O=DigiCert Inc, CN=GeoTrust TLS DV RSA Mixed SHA256 2020 CA-1
+C=US, O=DigiCert Inc, CN=RapidSSL TLS DV RSA Mixed SHA256 2020 CA-1
+C=US, O=DigiCert Inc, OU=www.digicert.com, CN=DigiCert Assured ID Client CA G2
+C=US, O=DigiCert Inc, OU=www.digicert.com, CN=DigiCert Assured ID Root CA
+C=US, O=DigiCert Inc, OU=www.digicert.com, CN=DigiCert Assured ID Root G2
+C=US, O=DigiCert Inc, OU=www.digicert.com, CN=DigiCert Global Root CA
+C=US, O=DigiCert Inc, OU=www.digicert.com, CN=DigiCert Global Root G2
+C=US, O=DigiCert Inc, OU=www.digicert.com, CN=DigiCert High Assurance EV Root CA
+C=US, O=DigiCert Inc, OU=www.digicert.com, CN=DigiCert SHA2 Assured ID CA
+C=US, O=DigiCert Inc, OU=www.digicert.com, CN=DigiCert SHA2 High Assurance Server CA
+C=US, O=DigiCert Inc, OU=www.digicert.com, CN=GeoTrust TLS RSA CA G1
+C=US, O=DigiCert Inc, OU=www.digicert.com, CN=RapidSSL RSA CA 2018
+C=US, O=DigiCert Inc, OU=www.digicert.com, CN=RapidSSL TLS RSA CA G1
+C=US, O=DigiCert Inc, OU=www.digicert.com, CN=Thawte RSA CA 2018
+C=US, O=DigiCert Inc, OU=www.digicert.com, CN=Thawte TLS RSA CA G1
+C=US, O=DigiCert, Inc., CN=DigiCert Assured G2 SMIME RSA4096 SHA384 2024 CA1
+C=US, O=DigiCert, Inc., CN=DigiCert ECC P384 Root G5
+C=US, O=DigiCert, Inc., CN=DigiCert RSA4096 Root G5
+C=US, O=DigiCert, Inc., CN=DigiCert SMIME RSA4096 Root G5
+C=US, O=DigiCert, Inc., CN=GeoTrust Global TLS RSA4096 SHA256 2022 CA1
+C=US, O=DigiCert, Inc., CN=RapidSSL Global TLS RSA4096 SHA256 2022 CA1
+C=US, O=Entrust, Inc., OU=See www.entrust.net/legal-terms, OU=(c) 2009 Entrust, Inc. - for authorized use only, CN=Entrust Root Certification Authority - G2
+C=US, O=Entrust, Inc., OU=See www.entrust.net/legal-terms, OU=(c) 2012 Entrust, Inc. - for authorized use only, CN=Entrust Certification Authority - L1K
+C=US, O=Entrust, Inc., OU=www.entrust.net/CPS is incorporated by reference, OU=(c) 2006 Entrust, Inc., CN=Entrust Root Certification Authority
+C=US, O=Entrust, Inc., OU=www.entrust.net/CPS is incorporated by reference, OU=(c) 2010 Entrust, Inc., CN=Entrust Class 1 Client CA
+C=US, O=Entrust, OU=Certification Authorities, CN=Entrust Derived Credential SSP CA
+C=US, O=Entrust, OU=Certification Authorities, OU=Entrust Managed Services Root CA
+C=US, O=Entrust, OU=Certification Authorities, OU=Entrust Managed Services SSP CA
+C=US, O=Equifax Secure Inc., CN=Equifax Secure Global eBusiness CA-1
+C=US, O=GeoTrust Inc., CN=GeoTrust Primary Certification Authority
+C=US, O=GeoTrust Inc., CN=GeoTrust Universal CA
+C=US, O=GeoTrust Inc., OU=(c) 2007 GeoTrust Inc. - For authorized use only, CN=GeoTrust Primary Certification Authority - G2
+C=US, O=GeoTrust Inc., OU=(c) 2008 GeoTrust Inc. - For authorized use only, CN=GeoTrust Primary Certification Authority - G3
+C=US, O=GeoTrust Inc., OU=Domain Validated SSL, CN=GeoTrust DV SSL CA - G4
+C=US, O=IdenTrust, CN=IdenTrust Commercial Root CA 1
+C=US, O=IdenTrust, OU=HydrantID Trusted Certificate Service, CN=HydrantID Server CA O1
+C=US, O=InCommon, LLC, CN=InCommon RSA OV SSL CA 3
+C=US, O=Internet2, CN=InCommon RSA Server CA 2
+C=US, O=SecureTrust Corporation, CN=SecureTrust CA
+C=US, O=SSL Corporation, CN=Entrust DV TLS Issuing RSA CA 1
+C=US, O=SSL Corporation, CN=Entrust EV TLS Issuing RSA CA 1
+C=US, O=SSL Corporation, CN=Entrust OV TLS Issuing RSA CA 1
+C=US, O=SSL Corporation, CN=SSL.com TLS RSA Root CA 2022
+C=US, O=Starfield Technologies, Inc., OU=Starfield Class 2 Certification Authority
+C=US, O=thawte, Inc., OU=(c) 2007 thawte, Inc. - For authorized use only, CN=thawte Primary Root CA - G2
+C=US, O=thawte, Inc., OU=Certification Services Division, OU=(c) 2006 thawte, Inc. - For authorized use only, CN=thawte Primary Root CA
+C=US, O=thawte, Inc., OU=Certification Services Division, OU=(c) 2008 thawte, Inc. - For authorized use only, CN=thawte Primary Root CA - G3
+C=US, O=thawte, Inc., OU=Domain Validated SSL, CN=thawte DV SSL CA - G2
+C=US, O=thawte, Inc., OU=Domain Validated SSL, CN=thawte DV SSL SHA256 CA
+C=US, O=The Go Daddy Group, Inc., OU=Go Daddy Class 2 Certification Authority
+C=US, O=U.S. Government, OU=Department of the Treasury, OU=Certification Authorities, OU=OCIO CA
+C=US, O=U.S. Government, OU=Department of the Treasury, OU=Certification Authorities, OU=US Treasury Root CA
+C=US, O=U.S. Government, OU=Department of Veterans Affairs, OU=Certification Authorities, OU=Department of Veterans Affairs CA
+C=US, O=U.S. Government, OU=DoD, OU=PKI, CN=DoD CLASS 3 Root CA
+C=US, O=U.S. Government, OU=DoD, OU=PKI, CN=DOD ID CA-59
+C=US, O=U.S. Government, OU=DoD, OU=PKI, CN=DOD ID CA-62
+C=US, O=U.S. Government, OU=DoD, OU=PKI, CN=DOD ID CA-63
+C=US, O=U.S. Government, OU=DoD, OU=PKI, CN=DOD ID CA-64
+C=US, O=U.S. Government, OU=DoD, OU=PKI, CN=DOD ID CA-65
+C=US, O=U.S. Government, OU=DoD, OU=PKI, CN=DOD ID CA-70
+C=US, O=U.S. Government, OU=DoD, OU=PKI, CN=DOD ID CA-71
+C=US, O=U.S. Government, OU=DoD, OU=PKI, CN=DOD ID CA-72
+C=US, O=U.S. Government, OU=DoD, OU=PKI, CN=DOD ID CA-73
+C=US, O=U.S. Government, OU=DoD, OU=PKI, CN=DOD ID SW CA-37
+C=US, O=U.S. Government, OU=DoD, OU=PKI, CN=DOD ID SW CA-38
+C=US, O=U.S. Government, OU=DoD, OU=PKI, CN=DoD Interoperability Root CA 2
+C=US, O=U.S. Government, OU=DoD, OU=PKI, CN=DoD Root CA 2
+C=US, O=U.S. Government, OU=DoD, OU=PKI, CN=DoD Root CA 3
+C=US, O=U.S. Government, OU=DoD, OU=PKI, CN=DOD SW CA-60
+C=US, O=U.S. Government, OU=DoD, OU=PKI, CN=DOD SW CA-61
+C=US, O=U.S. Government, OU=DoD, OU=PKI, CN=DOD SW CA-66
+C=US, O=U.S. Government, OU=DoD, OU=PKI, CN=DOD SW CA-67
+C=US, O=U.S. Government, OU=DoD, OU=PKI, CN=DOD SW CA-68
+C=US, O=U.S. Government, OU=DoD, OU=PKI, CN=DOD SW CA-69
+C=US, O=U.S. Government, OU=DoD, OU=PKI, CN=DOD SW CA-74
+C=US, O=U.S. Government, OU=DoD, OU=PKI, CN=DOD SW CA-75
+C=US, O=U.S. Government, OU=DoD, OU=PKI, CN=DOD SW CA-76
+C=US, O=U.S. Government, OU=DoD, OU=PKI, CN=DOD SW CA-77
+C=US, O=U.S. Government, OU=DoD, OU=PKI, OU=USN, CN=intfc-test.nerp.navy.mil
+C=US, O=U.S. Government, OU=DoD, OU=PKI, OU=USN, CN=webm-prod.erp.navy.mil
+C=us, O=U.S. Government, OU=FBCA, CN=Common Policy
+C=US, O=U.S. Government, OU=FPKI, CN=Federal Bridge CA G4
+C=US, O=U.S. Government, OU=FPKI, CN=Federal Common Policy CA
+C=US, O=U.S. Government, OU=FPKI, CN=Federal Common Policy CA G2
+C=US, O=U.S. Government, OU=HHS, OU=Certification Authorities, CN=HHS-FPKI-Intermediate-CA-E1
+C=US, O=U.S. Government, OU=HHS, OU=NIH, OU=Devices, CN=eracert137.era.nih.gov
+C=US, O=VeriSign, Inc., OU=Class 1 Public Primary Certification Authority
+C=US, O=VeriSign, Inc., OU=Class 1 Public Primary Certification Authority - G2, OU=(c) 1998 VeriSign, Inc. - For authorized use only, OU=VeriSign Trust Network
+C=US, O=VeriSign, Inc., OU=Class 2 Public Primary Certification Authority - G2, OU=(c) 1998 VeriSign, Inc. - For authorized use only, OU=VeriSign Trust Network
+C=US, O=VeriSign, Inc., OU=Class 3 Public Primary Certification Authority
+C=US, O=VeriSign, Inc., OU=Class 3 Public Primary Certification Authority - G2, OU=(c) 1998 VeriSign, Inc. - For authorized use only, OU=VeriSign Trust Network
+C=US, O=VeriSign, Inc., OU=VeriSign Trust Network, OU=(c) 1999 VeriSign, Inc. - For authorized use only, CN=VeriSign Class 1 Public Primary Certification Authority - G3
+C=US, O=VeriSign, Inc., OU=VeriSign Trust Network, OU=(c) 1999 VeriSign, Inc. - For authorized use only, CN=VeriSign Class 2 Public Primary Certification Authority - G3
+C=US, O=VeriSign, Inc., OU=VeriSign Trust Network, OU=(c) 1999 VeriSign, Inc. - For authorized use only, CN=VeriSign Class 3 Public Primary Certification Authority - G3
+C=US, O=VeriSign, Inc., OU=VeriSign Trust Network, OU=(c) 2006 VeriSign, Inc. - For authorized use only, CN=VeriSign Class 3 Public Primary Certification Authority - G5
+C=US, O=VeriSign, Inc., OU=VeriSign Trust Network, OU=(c) 2007 VeriSign, Inc. - For authorized use only, CN=VeriSign Class 3 Public Primary Certification Authority - G4
+C=US, O=VeriSign, Inc., OU=VeriSign Trust Network, OU=(c) 2008 VeriSign, Inc. - For authorized use only, CN=VeriSign Universal Root Certification Authority
+C=US, O=X9 Financial PKI, CN=X9 Financial PKI - RSA 4096 ICA
+C=US, O=X9 Financial PKI, CN=X9 Financial PKI - RSA 4096 Root
+C=US, OU=www.xrampsecurity.com, O=XRamp Security Services Inc, CN=XRamp Global Certification Authority
+C=US, ST=Arizona, L=Scottsdale, O=GoDaddy.com, Inc., CN=Go Daddy Root Certificate Authority - G2
+C=US, ST=Arizona, L=Scottsdale, O=GoDaddy.com, Inc., OU=http://certs.godaddy.com/repository/, CN=Go Daddy Secure Certificate Authority - G2
+C=US, ST=Arizona, L=Scottsdale, O=Starfield Technologies, Inc., CN=Starfield Root Certificate Authority - G2
+C=US, ST=Arizona, L=Scottsdale, O=Starfield Technologies, Inc., OU=http://certs.starfieldtech.com/repository/, CN=Starfield Secure Certificate Authority - G2
+C=US, ST=District of Columbia, O=Assistant Secretary for Financial Resources, CN=hhs-acf.grantsolutions.gov
+C=US, ST=District of Columbia, O=Assistant Secretary for Financial Resources, CN=hud-training.grantsolutions.gov
+C=US, ST=MI, L=Ann Arbor, O=Internet2, OU=InCommon, CN=InCommon RSA Server CA
+C=US, ST=New Jersey, L=Jersey City, O=The USERTRUST Network, CN=USERTrust RSA Certification Authority
+C=US, ST=New Jersey, L=Jersey City, O=The USERTRUST Network, CN=USERTrust RSA Domain Validation Secure Server CA
+C=US, ST=New York, L=Albany, O=InfoEd Global, CN=subcert.infoedglobal.com
+C=US, ST=Texas, L=Houston, O=SSL Corporation, CN=SSL.com EV Root Certification Authority RSA R2
+Client Certificate Types: ECDSA sign, RSA sign, DSA sign
+CN=DOIRootCA2
+DC=gov, DC=hhs, O=U.S. Government, CN=HHS Domain Device Root CA
+DC=local, DC=HHS-ITSC, DC=ITSC, CN=ITSC-ITIOPKLINFCRT02-CA
+O=Entrust.net, OU=www.entrust.net/CPS_2048 incorp. by ref. (limits liab.), OU=(c) 1999 Entrust.net Limited, CN=Entrust.net Certification Authority (2048)
+OU=GlobalSign Root CA - R2, O=GlobalSign, CN=GlobalSign
+OU=GlobalSign Root CA - R3, O=GlobalSign, CN=GlobalSign

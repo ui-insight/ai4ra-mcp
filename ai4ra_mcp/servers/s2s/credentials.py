@@ -13,7 +13,11 @@ import ssl
 import sys
 import tempfile
 from dataclasses import dataclass
+from datetime import datetime, timezone
 from pathlib import Path
+
+from cryptography import x509
+from cryptography.hazmat.primitives.asymmetric import ec, rsa
 
 CERT_FILE_ENV = "AI4RA_MCP_S2S_CERT_FILE"
 KEY_FILE_ENV = "AI4RA_MCP_S2S_KEY_FILE"
@@ -79,6 +83,44 @@ def from_env() -> Bundle | None:
         return Bundle(Path(c).read_text(), Path(k).read_text(), None, source="environment")
     except OSError as exc:
         raise ValueError(f"the deployment's fallback certificate could not be read: {exc}") from exc
+
+
+def _dn(name: x509.Name) -> dict:
+    """A distinguished name as {attribute: value}, keyed the way OpenSSL prints it (C, ST, L, O, OU, CN)."""
+    short = {"countryName": "C", "stateOrProvinceName": "ST", "localityName": "L", "organizationName": "O", "organizationalUnitName": "OU", "commonName": "CN"}
+    return {short.get(a.oid._name, a.oid._name): str(a.value) for a in name}
+
+
+def describe(cert_pem: str) -> dict:
+    """What Grants.gov and eRA support ask for when a certificate misbehaves: subject, issuer, serial,
+    validity, key, signature algorithm, and whether the Client Authentication EKU is present (some CAs
+    have dropped it; Grants.gov does not require it, a vendor's stack might)."""
+    cert = x509.load_pem_x509_certificate(cert_pem.encode())
+    now = datetime.now(timezone.utc)
+    nb, na = cert.not_valid_before_utc, cert.not_valid_after_utc
+    key = cert.public_key()
+    if isinstance(key, rsa.RSAPublicKey):
+        key_desc = f"RSA {key.key_size}"
+    elif isinstance(key, ec.EllipticCurvePublicKey):
+        key_desc = f"EC {key.curve.name}"
+    else:
+        key_desc = type(key).__name__
+    try:
+        eku = cert.extensions.get_extension_for_class(x509.ExtendedKeyUsage).value
+        client_auth = x509.oid.ExtendedKeyUsageOID.CLIENT_AUTH in eku
+    except x509.ExtensionNotFound:
+        client_auth = None
+    try:
+        sans = [str(n.value) for n in cert.extensions.get_extension_for_class(x509.SubjectAlternativeName).value]
+    except x509.ExtensionNotFound:
+        sans = []
+    return {
+        "subject": _dn(cert.subject), "issuer": _dn(cert.issuer), "serial_hex": format(cert.serial_number, "x").upper(),
+        "not_before": nb.isoformat(), "not_after": na.isoformat(), "days_left": (na - now).days, "expired": na < now, "not_yet_valid": nb > now,
+        "key": key_desc, "signature_algorithm": cert.signature_algorithm_oid._name, "version": cert.version.name,
+        "client_auth_eku": client_auth, "subject_alt_names": sans,
+        "meets_grants_gov_minimums": isinstance(key, rsa.RSAPublicKey) and key.key_size >= 2048 and "sha1" not in cert.signature_algorithm_oid._name.lower() and cert.version.name == "v3",
+    }
 
 
 def make_token(cert_path: str, key_path: str, ca_path: str | None = None) -> str:

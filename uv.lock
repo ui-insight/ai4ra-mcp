@@ -11,6 +11,7 @@ name = "ai4ra-mcp"
 version = "0.1.0"
 source = { editable = "." }
 dependencies = [
+    { name = "cryptography" },
     { name = "httpx" },
     { name = "lxml" },
     { name = "mcp" },
@@ -28,6 +29,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
+    { name = "cryptography" },
     { name = "httpx" },
     { name = "lxml" },
     { name = "mcp", specifier = ">=1.27" },

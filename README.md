@@ -454,7 +454,13 @@ a fallback pair in `AI4RA_MCP_S2S_CERT_FILE` and `AI4RA_MCP_S2S_KEY_FILE`.
 
 `s2s_check` proves the connection (the WSDL, then a package lookup) and names
 which of the error classes a failure is: configuration, certificate,
-transport, rejected, not_found. `s2s_opportunity` is GetOpportunityList by
+transport, rejected, not_found. It also describes the caller's certificate
+(subject, issuer, serial, validity, key, Client Authentication EKU) and, for
+training and production, whether its issuer is on the CA list that endpoint
+announced in its TLS handshake when we probed it on 2026-09-28
+(`contract/acceptable-client-cas.<host>.txt`, about 180 names each, InCommon
+and Sectigo among them), so a certificate failure is reported as either an
+unaccepted issuer or an accepted one that is not yet registered. `s2s_opportunity` is GetOpportunityList by
 opportunity number, CFDA, competition id or package id, with each package's
 forms read from its package schema. `s2s_validate_package` checks a
 GrantApplication offline against the form schemas and lists the attachments it
