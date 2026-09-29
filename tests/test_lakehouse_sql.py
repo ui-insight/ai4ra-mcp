@@ -307,6 +307,23 @@ async def test_catalog_counts_report_a_failed_chunk_and_keep_the_rest(monkeypatc
     assert out["count_problems"] == ["50 tables (u0 through u49) were not counted: Query exceeded the maximum number of stages"]
 
 
+async def test_catalog_reads_marinas_column_keys(monkeypatch):
+    """Marina's /query/schema names a column {column_name, data_type, description, stats}; once the profiling job had run, every
+    column came back here as {"name": null, "type": null} with its statistics beside it, because the parser read name and type."""
+    calls = []
+    cols = [{"column_name": "pk_index", "data_type": "bigint", "description": "", "stats": {"null_count": 0, "distinct_count": 3212, "min": "1", "max": "3212"}},
+            {"column_name": "ibc_number", "data_type": "varchar", "description": "The IBC protocol number", "stats": {"null_count": 0, "distinct_count": 237}}]
+    body = schema_body([{"name": "veras_sample__a_study_ibc_submission", "description": "", "row_count": 3212, "columns": cols}])
+    make_client(monkeypatch, {SCHEMA: [Resp(200, body)]}, calls)
+    out = await lh.lakehouse_sql_catalog(stream="subaward", table="veras_sample__a_study_ibc_submission")
+    assert out["columns"] == [{"name": "pk_index", "type": "bigint", "null_count": 0, "distinct_count": 3212, "min": "1", "max": "3212"},
+                              {"name": "ibc_number", "type": "varchar", "description": "The IBC protocol number", "null_count": 0, "distinct_count": 237}]
+    assert "note" not in out and not any(c[0] == "POST" for c in calls)
+    make_client(monkeypatch, {SCHEMA: [Resp(200, body)]}, calls)
+    out = await lh.lakehouse_sql_catalog(stream="subaward")
+    assert out["tables"][0]["column_list"] == ["pk_index bigint", "ibc_number varchar"]
+
+
 def test_fit_trims_lists_and_says_so():
     obj = {"largest_tables": [{"table": "x" * 200, "rows": i} for i in range(400)], "streams": [1, 2, 3]}
     out = lh._fit(obj, [("largest_tables", 10), ("streams", 20)])

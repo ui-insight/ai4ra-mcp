@@ -445,8 +445,10 @@ def _schema_tables(body) -> list[dict]:
                 elif isinstance(c, str):
                     cols.append({"name": c})
         rc = t.get("row_count")
+        # Marina names a column {column_name, data_type, description, stats}; name and type are accepted too.
         out.append({"name": str(t["name"]), "description": t.get("description") or "", "row_count": rc if isinstance(rc, (int, float)) else None,
-                    "columns": [{"name": c.get("name"), "type": c.get("type"), "description": c.get("description") or "", "stats": c.get("stats") if isinstance(c.get("stats"), dict) else None} for c in cols]})
+                    "columns": [{"name": c.get("column_name") or c.get("name") or c.get("column"), "type": c.get("data_type") or c.get("type"),
+                                 "description": c.get("description") or "", "stats": c.get("stats") if isinstance(c.get("stats"), dict) else None} for c in cols]})
     return out
 
 
@@ -744,7 +746,7 @@ def make_server(name: str, client_id: str, key_env_name: str) -> tuple[MCPServer
                 if t.get("counted_now"):
                     r["counted_now"] = True
                 if inline:
-                    r["column_list"] = [f"{c['name']} {c['type']}".strip() for c in t["columns"]]
+                    r["column_list"] = [f"{c['name'] or ''} {c['type'] or ''}".strip() for c in t["columns"]]
                 rows.append(r)
             out = {"client": client["id"], "stream": stream, "schema": schema_name(client["id"], stream), "tables": rows, "table_count": len(rows),
                    **({"like": like, "stream_table_count": len([t for t in tables if not is_meta_table(t["name"])])} if like else {}),
