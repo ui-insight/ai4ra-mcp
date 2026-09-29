@@ -1004,6 +1004,18 @@ home, a Hugging
 Face Space behind Gradio, is retired: it slept when idle, prefixed every
 tool name, and was one more origin to trust.
 
+One thing on the same host is not an MCP server: **grants-gov-s2s-mock**
+([AI4RA/grants-gov-s2s-mock](https://github.com/AI4RA/grants-gov-s2s-mock)),
+the throwaway Grants.gov Applicant S2S mock that OpenERA's submission code is
+built against. It is cloned beside this repo, runs as one more compose
+service on plain HTTP at localhost:8081, and Caddy serves it under
+`/s2s-mock/` with the campus certificate (`deploy/Caddyfile`), so no new
+hostname, certificate or port. Set `S2S_MOCK_PUBLIC_URL` in the `.env` to the
+public base (`https://<host>/s2s-mock`) so the WSDL it hands out points back
+at itself. Its control API has no auth and is limited to campus addresses by
+a Caddy matcher. It is retired, and its blocks removed, the day the
+university's real certificate works against training.grants.gov.
+
 Clients such as the Office add-in call these servers from inside a browser
 engine, so the process answers CORS itself: any origin, any method, and the
 `Mcp-Session-Id` header exposed. Public content needs nothing narrower. A
@@ -1184,3 +1196,6 @@ because its API refuses every caller.
   the design record for this repository.
 - [AI4RA/prompt-library](https://github.com/AI4RA/prompt-library): the
   component and catalog shape the skills folders follow.
+- [AI4RA/grants-gov-s2s-mock](https://github.com/AI4RA/grants-gov-s2s-mock):
+  the Grants.gov S2S test surface hosted beside this process (see Hosting).
+  OpenERA #1418.

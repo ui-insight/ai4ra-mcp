@@ -11,6 +11,25 @@
 mcp.example.uidaho.edu {
     encode gzip
 
+    # grants-gov-s2s-mock (see docker-compose.yml): OpenERA's S2S test surface, under /s2s-mock/.
+    # Plain HTTP behind Caddy; the mock does not verify client certificates here, only when run
+    # locally with its own CA. Its control API (/s2s-mock/_control/*) has no auth: the remote_ip
+    # matcher keeps it to campus. Drop this block when the mock is retired.
+    @s2s_control path /s2s-mock/_control/*
+    handle @s2s_control {
+        @offcampus not remote_ip 129.101.0.0/16 private_ranges
+        respond @offcampus 403
+        uri strip_prefix /s2s-mock
+        reverse_proxy 127.0.0.1:8081
+    }
+    handle_path /s2s-mock/* {
+        reverse_proxy 127.0.0.1:8081 {
+            transport http {
+                read_timeout 300s      # an armed timeout is the point
+            }
+        }
+    }
+
     reverse_proxy 127.0.0.1:8000 {
         flush_interval -1              # stream responses as they arrive
         transport http {
@@ -30,6 +49,9 @@ mcp.example.uidaho.edu {
 # resolve under the prefix on their own.
 #
 # example.uidaho.edu {
+#     handle_path /s2s-mock/* {           # the S2S mock, same as in Form 1
+#         reverse_proxy 127.0.0.1:8081
+#     }
 #     handle_path /mcp/* {
 #         reverse_proxy 127.0.0.1:8000 {
 #             flush_interval -1

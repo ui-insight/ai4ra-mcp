@@ -18,6 +18,21 @@ services:
     depends_on:
       - searxng
 
+  # grants-gov-s2s-mock: the throwaway Grants.gov Applicant S2S mock OpenERA develops against
+  # (AI4RA/grants-gov-s2s-mock, cloned beside this repo). Plain HTTP inside; Caddy serves it under
+  # /s2s-mock/ with the campus certificate (deploy/Caddyfile). Not an MCP server; it shares the host,
+  # nothing else. Remove this block the day the real certificate works against training.grants.gov.
+  grants-gov-s2s-mock:
+    build: ../grants-gov-s2s-mock
+    container_name: grants-gov-s2s-mock
+    restart: unless-stopped
+    command: ["--plain"]
+    ports:
+      - "127.0.0.1:8081:8080"           # localhost only; Caddy is the public face
+    environment:
+      MOCK_PUBLIC_URL: ${S2S_MOCK_PUBLIC_URL:-https://localhost/s2s-mock}   # what its WSDL and SchemaURL advertise
+      MOCK_STEP_SECONDS: "20"
+
   # SearXNG answers web_search: a self-hosted metasearch over Google, Bing, DuckDuckGo, Brave and others,
   # no key, reachable only from this compose network (no host port). Set SEARXNG_SECRET in the environment
   # or a .env file next to this compose file.
