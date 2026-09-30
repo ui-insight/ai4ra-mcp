@@ -19,3 +19,7 @@ All notable changes to this component. Versions follow semver: MAJOR for output-
 ## [0.1.0] — 2026-09-23
 
 - Initial version: streams, schema, then a filtered or aggregated query; sourced and dated.
+
+## [0.3.1] — 2026-09-30
+
+- Step 4 addresses the stats table by the stream alone (`lakehouse."<stream>"."_stats"`), the form Marina accepts, and says the stats table takes only SELECT with WHERE, ORDER BY, LIMIT and simple aggregates over itself (#13).

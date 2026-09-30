@@ -253,6 +253,12 @@ def qualified(client_id: str, stream: str, view: str) -> str:
     return f'lakehouse."{schema_name(client_id, stream)}"."{view}"'
 
 
+def stats_qualified(stream: str) -> str:
+    """The stream's stats table, which the gateway reads itself and addresses by the stream alone: Marina refuses the
+    client_<id>__ form there (#13, seen 2026-09-30). Data views keep the long form until a probe says otherwise."""
+    return f'lakehouse."{stream}"."_stats"'
+
+
 def is_meta_table(name: str) -> bool:
     return str(name or "").startswith("_")
 
@@ -483,7 +489,7 @@ def make_server(name: str, client_id: str, key_env_name: str) -> tuple[MCPServer
                         "how": key_how(client["id"])},
             "model": "A client is an application identity authorized for streams; everyone using it sees the same views. A querying stream reads a set of tables through a wrapper view (columns masked and rows filtered as the admin set on the stream) and a set of files by tag. A submitting stream accepts records and files; those are listed here but not written to. In SQL, a stream is the schema lakehouse.\"client_" + client["id"] + "__<stream>\" and each table a view in it.",
             "workflow": ["lakehouse_sql_catalog(): the streams this client sees with their sizes and the largest tables across them; (stream): that stream's tables by row count, or with like='%doc%' only the tables whose names match; (stream, table): every column with Marina's statistics (null_count, distinct_count, min, max, mean, true_count, rows_by_year and the rest, where measured). Read this before writing SQL; the conversation keeps it. counts=true scans only the tables Marina has not measured yet.",
-                         "lakehouse_sql(sql, limit): one SELECT or WITH over one stream's views, fully qualified as lakehouse.\"client_" + client["id"] + "__<stream>\".\"<view>\"; any Trino function; SHOW PROFILE IN a schema and SELECT * FROM its _stats give statistics; a LIMIT is added when missing. Marina refuses DML, DDL, EXPLAIN and multi-statement requests, and its message says what to do. Row counts of many tables are one statement, never one call per table: SELECT DISTINCT table_name, row_count FROM the stream's _stats WHERE table_name LIKE '%word%', or one UNION ALL of SELECT 'a' AS t, count(*) FROM s.\"a\" branches (fifty at most) for tables _stats has not measured.",
+                         "lakehouse_sql(sql, limit): one SELECT or WITH over one stream's views, fully qualified as lakehouse.\"client_" + client["id"] + "__<stream>\".\"<view>\" (the catalog gives the names); any Trino function over data views; a LIMIT is added when missing. Marina refuses DML, DDL, EXPLAIN and multi-statement requests, and its message says what to do. The stats table is different: it is read by the gateway, addressed by the stream alone as lakehouse.\"<stream>\".\"_stats\" (Marina refuses the client_<id>__ form there), and takes only SELECT with WHERE, ORDER BY, LIMIT and simple aggregates (count, sum, min, max, avg) over that table alone, no other functions and no joins. Row counts of many tables are one statement, never one call per table: SELECT DISTINCT table_name, row_count FROM lakehouse.\"<stream>\".\"_stats\" WHERE table_name LIKE '%word%', or one UNION ALL of SELECT 'a' AS t, count(*) FROM s.\"a\" branches (fifty at most) for tables _stats has not measured.",
                          "lakehouse_query(stream, table, limit, filters, offset, group_by, aggregate): a simple filtered read of one table without SQL, or aggregates (exactly COUNT, SUM, AVG, MIN, MAX; COUNT on a column is its non-null count) per group with group_by or as one row of totals without it. Anything else is lakehouse_sql.",
                          "lakehouse_streams and lakehouse_schema(stream): the plain lists behind the catalog",
                          "lakehouse_files(stream): the files a stream may read, with their hashes",
@@ -687,7 +693,7 @@ def make_server(name: str, client_id: str, key_env_name: str) -> tuple[MCPServer
                     meta += len(tables) - len(data)
                     measured = [t["row_count"] for t in data if isinstance(t["row_count"], (int, float))]
                     entry = {"stream": st, "schema": schema_name(client["id"], st), "tables": len(data), "measured": len(measured), "unmeasured": len(data) - len(measured),
-                             "stats_table": qualified(client["id"], st, "_stats")}
+                             "stats_table": stats_qualified(st)}
                     if entry["unmeasured"]:
                         # The sum of the measured tables is not the stream's size: it is named for what it is, and rows stays unknown.
                         entry["rows"], entry["rows_measured"] = None, sum(measured)
@@ -768,7 +774,7 @@ def make_server(name: str, client_id: str, key_env_name: str) -> tuple[MCPServer
     async def lakehouse_sql(sql: str, limit: int = 200) -> dict:
         """One SQL statement over the lakehouse through Marina: a SELECT or WITH over one stream's views, or SHOW SCHEMAS, SHOW TABLES IN a schema, SHOW COLUMNS, SHOW PROFILE IN a schema, DESCRIBE a view. Any Trino built-in function. Views are fully qualified as lakehouse."client_<id>__<stream>"."<view>" (lakehouse_sql_catalog gives the names). A LIMIT is added when a SELECT has none. Read only: Marina refuses anything else and says why.
 
-        Row counts of several tables are one statement, not one call per table: SELECT DISTINCT table_name, row_count FROM lakehouse."client_<id>__<stream>"."_stats" WHERE table_name LIKE '%word%' gives Marina's counts where measured; for the tables it has not measured, one UNION ALL of SELECT 'a' AS t, count(*) AS n FROM <schema>."a" branches, fifty at most.
+        The stats table is addressed by the stream alone, lakehouse."<stream>"."_stats" (Marina refuses the client_<id>__ form there), and takes only SELECT with WHERE, ORDER BY, LIMIT and simple aggregates over that table alone: no other functions, no joins. Row counts of several tables are one statement, not one call per table: SELECT DISTINCT table_name, row_count FROM lakehouse."<stream>"."_stats" WHERE table_name LIKE '%word%' gives Marina's counts where measured; for the tables it has not measured, one UNION ALL of SELECT 'a' AS t, count(*) AS n FROM <schema>."a" branches, fifty at most.
 
         Args:
             sql: The statement, one only, no trailing statements.

@@ -1,6 +1,6 @@
 ---
 name: ai-tells-guide
-version: 0.1.0
+version: 0.2.0
 category: guide
 domain: general
 status: experimental
@@ -13,19 +13,15 @@ updated: 2026-09-30
 
 # AI Writing Tells — Guide
 
-> **Purpose:** How prose is edited so it no longer reads like machine output: the twenty-nine families of tells, the method (read and mark, then rewrite by paragraph, then a grammar pass), and the report, with every fact, claim and citation kept and the author's meaning and register left alone. Names no client: how the edits are applied, in an editor's own change tracking or as a rewritten copy, is the caller's.
+> **Purpose:** The reference material for editing prose so it no longer reads like machine output: the twenty-nine families of tells with their word lists, the invariants an edit keeps, and what a report of the edit contains. Facts and reference only; the order of work is the placement skill's. Names no client.
 > **Expected input:** Text: a document, a selection, or pasted prose.
-> **Expected output:** The text with the tells removed, one paragraph at a time, and a report of what was found and changed.
+> **Expected output:** Reference for a placement skill: the families, the invariants, the report's contents.
 
 ---
 
 ## Prompt
 
-You are a copy editor whose one job is to make prose read as if a particular person wrote it, by removing the habits that large language models leave behind. You never say or imply the text was machine-written. You change wording, sentence shape, structure and formatting; you never change facts, names, numbers, citations, quotations, code, or the author's meaning. One or two tells in a document prove nothing; fix what is present and leave clean text alone.
-
-### First pass: read and mark
-
-Read the whole text you were given. Then, before changing anything, go through it paragraph by paragraph and note for yourself which of the families below each paragraph shows. Read the families across paragraphs too: rhythm, restating, the rule of three and negative parallelism often span sentences, and a sentence-by-sentence reading misses them.
+The habits large language models leave behind in prose, in twenty-nine families, with the invariants an edit keeps. An editor removing them changes wording, sentence shape, structure and formatting, and never facts, names, numbers, citations, quotations, code, or the author's meaning.
 
 ### The families
 
@@ -70,20 +66,19 @@ Residue
 
 When you rewrite, prefer simple is and has, plain verbs, a concrete detail the text already contains, and the occasional definite statement or single hedge a person would make. Add none of these where the author had none.
 
-### Second pass: rewrite by paragraph
+### The invariants
 
-- The paragraph is the unit. For each paragraph you marked, write its replacement in full, so that the change is one edit the author accepts or rejects as a whole. Never rewrite a span of paragraphs as one change. A single word or short phrase in an otherwise clean paragraph is changed on its own.
-- Rewrite only paragraphs that show a tell; never reword a clean paragraph. Do not merge or split paragraphs, change heading levels, reorder sections, or touch tables, captions, references, quotations, code, or anything inside quotation marks.
-- Keep the length within about ten percent of the original unless the text was padded, in which case shorter is the fix. A sentence that carries a tell and nothing else is deleted.
-- Add no comments or notes into the text; the changes are the record. If the text is clean, say so and change nothing.
+- Meaning is preserved: no fact, number, name, claim, citation or quotation changes.
+- The paragraph is the unit of change, and only a paragraph that shows a tell is changed; a clean paragraph is never reworded, and one or two tells in a document prove nothing.
+- Paragraphs are never merged, split, reordered or re-levelled; tables, captions, references, quotations, code and anything inside quotation marks are untouched.
+- Length stays within about ten percent of the original unless the text was padded, in which case shorter is the fix; a sentence that carries a tell and nothing else is deleted.
+- Grammar fixes are limited to: subject-verb agreement, tense drift, dangling modifiers, comma splices and run-ons, missing or doubled words, doubled spaces, its and it's, consistent quote style; the text's spelling variety, quotations, citations, headings, deliberate fragments, and punctuation inside code, addresses and numbers are left alone.
+- No comments or notes are added into the text.
+- The text is never said or implied to be machine-written.
 
-### Grammar pass, last
+### What a report of the edit contains
 
-Read the paragraphs you touched once more, and the rest of the text if it is short, for grammar only, and fix what you find: subject-verb agreement, tense drift, dangling modifiers, comma splices and run-ons, missing or doubled words, doubled spaces, its and it's, consistent quote style. Keep the text's spelling variety; do not correct quotations, citations, headings or deliberate fragments; do not change punctuation inside code, addresses or numbers. Report grammar fixes as their own count.
-
-### Report
-
-A few lines: how many paragraphs changed out of how many read; the families found, most frequent first, with one example each (before → after); the grammar fixes; and anything left alone on purpose (a quotation, a heading, a placeholder). Do not say or imply that the text was written by AI.
+How many paragraphs changed out of how many read; the families found, most frequent first, with one example each (before → after); the grammar fixes as their own count; anything left alone on purpose (a quotation, a heading, a placeholder).
 
 ---
 

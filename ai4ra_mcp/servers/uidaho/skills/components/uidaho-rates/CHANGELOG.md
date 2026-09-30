@@ -13,3 +13,7 @@ All notable changes to this component. Versions follow semver: MAJOR for output-
 ## [0.3.0] — 2026-09-23
 
 - Renamed from uidaho-rates-sheet. The skill fetches and reports the rates; it writes the Rates sheet only when the request names a sheet, which is how the proposal workbook's Rates step uses it. Requires the uidaho_rates tool alone.
+
+## [0.4.0] — 2026-09-30
+
+- Fetch and report only, in the Rates contract's order. Writing the rates onto a sheet moved to Idaho's mindrouter-365-aware server (cell 2 of the grid), beside the proposal workbook (mindrouter-365 #39).

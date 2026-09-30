@@ -1,8 +1,8 @@
 # UIdaho Rates
 
-Fetches the University of Idaho's current F&A and fringe rates from the rate agreement and the fringe-rate page with `uidaho_rates` and reports them, each with its effective period, its document and the address it was read from. When the request names a sheet, it writes them onto it, one row per rate. The first seven rows carry fixed labels (Location, F&A rate, F&A base, Fringe faculty, Fringe staff, Fringe students, Fringe temporary) and the last row, Source, is one line of provenance, so a budget form skill can take its rates from the sheet and say where they came from.
+Fetches the University of Idaho's current F&A and fringe rates from the rate agreement and the fringe-rate page with `uidaho_rates` and reports them in the Rates contract's order, each with its effective period, its document and the address it was read from: seven labelled items (Location, F&A rate, F&A base, Fringe faculty, Fringe staff, Fringe students, Fringe temporary), the reference rates, and one Source line of provenance, so a client that lays them down keeps the contract a budget form reads. Writing them onto a sheet is a client's job; Idaho's mindrouter-365-aware server holds that skill.
 
-**Version:** 0.3.0 · **Category:** research · **Status:** experimental · **Output:** the reply, or a sheet when the request names one
+**Version:** 0.4.0 · **Category:** research · **Status:** experimental · **Output:** the reply
 
 ## Inputs
 

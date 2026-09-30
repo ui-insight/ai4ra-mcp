@@ -41,9 +41,9 @@ works without one and a key raises its quota.
 
 | Path | Upstream | Key | Tools | Skills |
 |---|---|---|---|---|
-| `/general/mcp` | the open web, through a SearXNG beside the process | none | `web_search`, `fetch_document`, `general_guide` | `ask`, `remove-ai-tells`, `ai-tells-guide` (the guide), `project-timeline-gantt` (Excel only), `code-change` and `actions-check` (use GitHub's own MCP server, reached by the Office pane through its host's proxy; see mindrouter-365's README, "GitHub through the proxy") |
-| `/ai4ra/mcp` | none: skills and guides | none | `ai4ra_guide` | `rfa-sheet`, `proposal-narrative`, `work-plan`, `budget-outline`, `budget-nsf`, `udm-sheet` (a workbook's sheet as a UDM table; calls the udm server's tools), the guides `rfa-guide`, `narrative-guide`, `work-plan-guide`, `budget-outline-guide`, `nsf-budget-guide`, and seventeen cost-allowability, extraction and budget-justification prompts copied from AI4RA/prompt-library |
-| `/udm/mcp` | the AI4RA Unified Data Model's published schema (ui-insight.github.io/AI4RA-UDM) | none | `udm_index`, `udm_schema`, `udm_guide` | `udm-conversion-guide` (the guide; `udm-sheet` is on `ai4ra`) |
+| `/general/mcp` | the open web, through a SearXNG beside the process | none | `web_search`, `fetch_document`, `general_guide` | `ai-tells-guide` (the guide), `code-change` and `actions-check` (use GitHub's own MCP server; a browser client reaches it through a proxy, see mindrouter-365's README) |
+| `/ai4ra/mcp` | none: guides and prompts | none | `ai4ra_guide` | the guides `rfa-guide`, `narrative-guide`, `work-plan-guide`, `budget-outline-guide`, `nsf-budget-guide`, and seventeen cost-allowability, extraction and budget-justification prompts copied from AI4RA/prompt-library |
+| `/udm/mcp` | the AI4RA Unified Data Model's published schema (ui-insight.github.io/AI4RA-UDM) | none | `udm_index`, `udm_schema`, `udm_guide` | `udm-conversion-guide` (the guide) |
 
 **Rules and announcements**
 
@@ -110,7 +110,7 @@ REST API.
 
 | Path | Upstream | Key | Tools | Skills |
 |---|---|---|---|---|
-| `/uidaho/mcp` | uidaho.edu policy pages and rate documents | none | `uidaho_guide`, `uidaho_guidance_index`, `uidaho_guidance_search`, `uidaho_guidance_get`, `uidaho_rates` | `uidaho-lookup`, `uidaho-rates`, `proposal-workbook` |
+| `/uidaho/mcp` | uidaho.edu policy pages and rate documents | none | `uidaho_guide`, `uidaho_guidance_index`, `uidaho_guidance_search`, `uidaho_guidance_get`, `uidaho_rates` | `uidaho-lookup`, `uidaho-rates` |
 | `/lakehouse/mcp` (one per configured client; the others at `/lakehouse-<id>/mcp`) | the University of Idaho data lakehouse, through Marina | **required** (the client's shared secret) | `lakehouse_guide`, `lakehouse_index`, `lakehouse_sql_catalog`, `lakehouse_sql`, `lakehouse_streams`, `lakehouse_schema`, `lakehouse_query`, `lakehouse_files`, `lakehouse_file` | `lakehouse-answer` |
 
 Tool names carry their upstream (`ecfr_`, `grants_gov_`, `uidaho_`) and
@@ -372,25 +372,16 @@ narrative), `work-plan-guide` (activities with lead, start and duration),
 `budget-outline-guide` (eleven categories, the split, the estimates, the
 loaded share of the ceiling) and `nsf-budget-guide` (lines A to M, the
 inputs and their origin, the Rates contract, the checks). Each is the
-judgment of the matching sheet skill with the placement taken out; the sheet
-skills stay beside them until their placement halves move to the client
-(mindrouter-365 #36), and are then removed. The proposal sheets (`rfa-sheet`, `proposal-narrative`,
-`work-plan`, `budget-outline`, `budget-nsf`) were written for the Office
-add-in and moved here on 2026-09-22; each catalog entry's `source`
-says so. `budget-nsf` is institution-agnostic: its template ships no rates,
-and the skill reads them from a sheet named Rates when the workbook has one
-(seven fixed-label rows: Location, F&A rate, F&A base, Fringe faculty, Fringe
-staff, Fringe students, Fringe temporary, and a Source row), writes the
-Source row beside the rates as provenance, and estimates a rate the sheet
-lacks, filled yellow and marked so. An institution provides the Rates
-sheet with a skill of its own; `uidaho-rates` is Idaho's, and writes the
-sheet only when the request names one (the proposal workbook's Rates step
-does).
-
-`udm-sheet` lays a sheet of records out as one Unified Data
-Model table on a new sheet, by formula, after one round of confirmed
-decisions; the schema and the conversion guide come from the `udm`
-server's tools, and its description is under [udm](#udm).
+judgment of a sheet skill with the placement taken out. The sheet skills
+themselves (rfa-sheet, proposal-narrative, work-plan, budget-outline,
+budget-nsf, and udm-sheet) were the pane's from the start, moved here on
+2026-09-22 and moved back on 2026-09-30 once the pane served its own
+(mindrouter-365 #36, #37); they are in git history. `nsf-budget-guide`
+carries the Rates contract a budget form reads: seven labelled items in a
+fixed order (Location, F&A rate, F&A base, Fringe faculty, Fringe staff,
+Fringe students, Fringe temporary) and a Source line of provenance; an
+institution's rates skill reports in that form (`uidaho-rates` is Idaho's)
+and a client lays it down.
 
 The other seventeen components are copies of AI4RA/prompt-library at commit
 `eef6fd3d818037ab51ece87f61806c448d51f40d`, files unchanged, each catalog
@@ -445,26 +436,14 @@ an institution's data has names the schema never heard of, which is why the
 mapping is the model's judgment over the data it can see and not a match
 the server computes.
 
-Any MCP client can convert with these two tools alone. `udm-sheet`, on the
-`ai4ra` server with the other research-administration skills, is the
-workbook side: it reads the records, follows the guide, asks once, and
-lays the sheet out as one UDM table on a new sheet named `UDM <Table>`,
-every column of the table in the spec's order and the audit columns, each
-data cell a formula on the source cell (a reference, a split, a join, a
-parsed date, a `SWITCH` over the vocabulary, a generated key when the
-source has no identifier), `_Date` and `_Amount` columns formatted, and
-the header of a required column with no source filled light yellow. Before
-it reports, it tests the row count with `assert_cells` (the key column
-nonblank on every source row, and the row below empty), since a catalog
-assertion cannot name a count only known at run time; the catalog's own
-assertions hold the header and the first key. One
-table a run: the leftover headers are named with the table each belongs
-to, and a second run naming that table writes the next. Where that
-placement skill finally lives is open: the base client is the plan's answer
-(mindrouter-365 #37), but the data model it targets is one consortium's, and
-an institution with a data model of its own may want the conversion skill in
-its own client instead; noted in the plan and mindrouter-365 #43, not a
-change.
+Any MCP client can convert with these two tools alone. The workbook side,
+a placement skill that reads the records, follows the guide, asks once, and
+lays the sheet out as one UDM table by formula, is the pane's own skill
+(mindrouter-365 #37); it was served from here until 2026-09-30 and is in
+git history. Where it finally lives is open: the base client is the plan's
+answer, but the data model it targets is one consortium's, and an
+institution with a data model of its own may want the conversion skill in
+its own mindrouter-365-aware server instead (mindrouter-365 #43).
 
 ### ecfr
 
@@ -902,12 +881,13 @@ The skills follow the same rule, decided 2026-09-23: nothing from memory.
 `uidaho-lookup` answers a policy or rate question from what the tools
 return, with the address of every figure and passage, and gives no figure
 for a page that could not be read. `uidaho-rates` fetches the F&A and fringe
-rates and reports them with their dates and addresses; when the request
-names a sheet (the proposal workbook's Rates step does), it writes them
-onto it in the layout the budget form reads, and a document that could not
-be read leaves its rows without values, marked "not fetched". Neither skill
-carries fallback figures. `proposal-workbook` is the eight-step workflow
-that runs skills from the general, ai4ra and uidaho servers in order. The
+rates and reports them in the Rates contract's order with their dates and
+addresses; a document that could not be read leaves its items without
+values, marked "not fetched". Neither skill carries fallback figures.
+Writing the rates onto a sheet, and the eight-step proposal workbook that
+ran skills from the general, ai4ra and uidaho servers in order, are Idaho's
+mindrouter-365-aware server's (cell 2 of the grid; mindrouter-365 #39) and
+left here on 2026-09-30. The
 award skills that read Banner exports (award-facts, award-lines,
 award-status, award-review, pi-awards, current-pending,
 current-pending-support, and pi-memo on ai4ra) were removed on 2026-09-30
@@ -1043,36 +1023,34 @@ as static files under `/<server>/skills/`.
 
 The catalog entry follows AI4RA/prompt-library's shape (`slug`, `summary`,
 `version`, `category`, `status`, `paths`, `contracts.output.format`,
-`evaluation`) and adds the fields a client acts on:
+`evaluation`) and adds three fields:
 
 | Field | What it says |
 |---|---|
-| `requires` | The tools the skill calls: a tool name here (`uidaho_rates`), `<host>:<name>` for a client's own tool (`excel:write_values`), or `skill_<slug>` for another skill a workflow runs |
+| `requires` | The server tools the skill calls, by name (`uidaho_rates`, `udm_schema`); a guide may name another server's tool. Never a client's tool name |
 | `triggers` | Words in a request that point at the skill |
-| `hosts` | The clients the skill is offered in (`["excel"]`); absent means all |
-| `fold` | `"host"` lists the skill beside that client's own tools instead of in this server's fold (the Gantt chart, in Excel) |
-| `paths.template` | A `template.json` the client lays down before the skill runs: a sheet of values, formats, `locked` ranges and `from_context` cells |
-| `assertions` | The skill's definition of done, tested by the client on its output sheet: `[{address, rule, min, max, value, of, sheet, label}]` |
-| `stages` | For a workflow, the table of steps: `[{name, skill, context, sources, required_tools}]`; a step's skill may live on any server |
 | `source` | Where a copied or moved component came from: repository, commit, path |
 
 A client caches the prompt text by version, so a change to a skill bumps
-the version in the front matter and the catalog together.
+the version in the front matter and the catalog together. The fields a
+client acts on for its own skills (`hosts`, `fold`, `template`,
+`assertions`, `stages`, `from_context`, `locked`, `excel:` and `skill_`
+requirements) are not carried here: a catalog served by an institution's
+mindrouter-365-aware server may carry them, and this one never does, which
+`tests/test_guides.py` checks for every guide (ai4ra-mcp #10).
 
-**The Rates sheet contract.** A budget form skill is institution-agnostic:
-it takes its rates from a sheet named Rates when the workbook has one. An
-institution's rates skill writes that sheet with a header row (Item, Value,
-Basis, Effective, Source, Link), then seven rows with these labels in column
-A: Location, F&A rate, F&A base, Fringe faculty, Fringe staff, Fringe
-students, Fringe temporary, values as fractions, each with the address it
-was read from; reference rows after them; and a last row labelled Source,
+**The Rates contract.** A budget form is institution-agnostic: it takes its
+rates in one fixed form, wherever a client keeps them. An institution's
+rates skill reports seven labelled items in this order, Location, F&A rate,
+F&A base, Fringe faculty, Fringe staff, Fringe students, Fringe temporary,
+values as fractions, each with the document, the period and the address it
+was read from; reference items after them; and a last item labelled Source,
 one line naming the documents, their periods and their addresses, which the
 form copies beside its rates as provenance. A rate the skill could not read
-is a row with its label and no value, marked "not fetched", never a figure
-from memory. The form estimates a rate the sheet lacks, fills it yellow and
-marks it "estimate", so the highlight means exactly that. `uidaho-rates`
-is Idaho's: it fetches and reports the rates, and writes the sheet when the
-request names one; another institution writes its own to the same labels.
+is present with its label and no value, marked "not fetched", never a figure
+from memory. `nsf-budget-guide` says how the form uses it and what it
+estimates when an item is missing; `uidaho-rates` is Idaho's reporter;
+laying the items onto a sheet is a client's skill.
 
 ## Running
 
@@ -1291,11 +1269,11 @@ plan it is the organization's, shared by everyone who connects.
   Desktop? Then it is row 1 or 2 and moves. Dependence runs one way: a
   change in a client never requires a change here.
 - **Skills stay with their tools.** A skill lives in the server whose tools it
-  uses; a skill that uses only a client's own document tools lives on `ai4ra`
-  (research administration) or `general` (any office). A skill that needs
-  one client only says so with `hosts` in its catalog entry, and `fold:
-  "host"` when that client should list it beside its own tools (the Gantt
-  chart, in Excel).
+  uses; a guide with no tool of its own lives on `ai4ra` (research
+  administration) or `general` (any office). No catalog entry here says
+  where a client should list it or which client may run it: `hosts`, `fold`,
+  `template`, `assertions`, `stages` and `from_context` are a client's
+  fields, and `requires` names only server tools.
 - **Be a polite upstream client.** One `User-Agent` naming this project and a
   contact on every request; cache what does not change; on a 429, tell the
   model to wait rather than retrying blindly; one request at a time where
@@ -1316,7 +1294,7 @@ ai4ra_mcp/
       server.py               MCPServer("ecfr"): tools with read-only annotations, the index tool, prompts
       skills/
         catalog.json          the components, in AI4RA/prompt-library's catalog shape
-        components/<slug>/    prompt.md, README.md, CHANGELOG.md, evals/, template.json where the skill has one
+        components/<slug>/    prompt.md, README.md, CHANGELOG.md, evals/
     general/  ai4ra/  grants/  nih/  sam/  uidaho/  lakehouse/       same shape, with skills (ai4ra has no tools)
     udm/                      schema.py serves the published UDM schema in portions; skills/ holds the conversion guide
     fedreg/  regulations/  nsf/  usaspending/  fac/  csl/  oig/
@@ -1362,7 +1340,7 @@ version in the front matter and the catalog together.
 
 ## Status
 
-2026-09-30: the server-and-client rule; log no keys; the Banner family removed; guides as catalogued components with a `<server>_guide` tool per server (the UDM guide, five proposal guides, the AI-tells guide). 2026-09-29: twenty-six servers; the `udm` server and the `udm-sheet` skill on `ai4ra` were added that day, offline-tested against a fixture in the published schema's shape and tried against the real schema. 2026-09-25: twenty-five servers. The eCFR and grants.gov code moved in from
+2026-09-30: the server-and-client rule and the grid; log no keys; the Banner family removed; guides as catalogued components with a `<server>_guide` tool per server (the UDM guide, five proposal guides, the AI-tells guide); once the pane served its own placement skills (mindrouter-365 #34 to #39), the ten it had been carrying here (Gantt, ask, remove-ai-tells, the five proposal sheets, udm-sheet, proposal-workbook) were removed and the rates skill became report-only, so no catalog here carries a client's fields. 2026-09-29: twenty-six servers; the `udm` server and the `udm-sheet` skill on `ai4ra` were added that day, offline-tested against a fixture in the published schema's shape and tried against the real schema. 2026-09-25: twenty-five servers. The eCFR and grants.gov code moved in from
 mcp-ecfr on 2026-09-22 with the Office add-in's skills, and the NIH, NSF,
 SAM.gov, USAspending and Federal Audit Clearinghouse servers were verified
 against the live APIs that day (SAM.gov and FAC with a person's own key).
