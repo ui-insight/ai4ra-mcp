@@ -3,7 +3,7 @@
 Two tools: the page reader, and a web search answered by a SearXNG instance beside this process
 (AI4RA_MCP_SEARXNG_URL, default http://127.0.0.1:8080). Its skills are the ones any office uses
 with any document: ask (a question put to the person), remove-ai-tells, and a project timeline
-drawn as a Gantt chart (Excel only, which its catalog entry says with `hosts`).
+drawn as a Gantt chart.
 """
 
 from __future__ import annotations

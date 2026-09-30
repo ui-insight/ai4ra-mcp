@@ -5,8 +5,8 @@ component_catalog.json; each `components/<slug>/prompt.md` has YAML front
 matter and a preamble, then the prompt under `## Prompt`. `register_prompts`
 puts each one on the server as an MCP prompt named by its slug, so a client
 that speaks MCP gets the skill with the tools. `app.py` also serves the folder
-as static files, so a client that reads catalogs by URL (the Office add-in)
-gets the same components unchanged.
+as static files, so a client that reads catalogs by URL gets the same
+components unchanged.
 """
 
 from __future__ import annotations

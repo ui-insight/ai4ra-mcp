@@ -193,7 +193,7 @@ def _bundle() -> credentials.Bundle:
     except ValueError as e:
         raise S2SError("configuration", str(e)) from e
     if b is None:
-        raise S2SError("configuration", f"no S2S credential on this request: send your own as a bearer token (in the Office pane, paste it into this server's i dialog). {KEY_HOW}")
+        raise S2SError("configuration", f"no S2S credential on this request: send your own as a bearer token. {KEY_HOW}")
     return b
 
 

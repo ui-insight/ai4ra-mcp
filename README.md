@@ -307,8 +307,8 @@ to get one. Every other tool answers:
 
 ```json
 {
-  "error": "no API key on this request: send your own key as a bearer token (in the Office pane, paste it into this server's i dialog). A free key comes from https://api.data.gov/signup/ (an email address is all it asks); DEMO_KEY works for a few calls an hour.",
-  "do_not": "Do not answer this from memory or from a web search. Tell the person this server needs their key, how to get one, and where to paste it, and stop there."
+  "error": "no API key on this request: send your own key as a bearer token. A free key comes from https://api.data.gov/signup/ (an email address is all it asks); DEMO_KEY works for a few calls an hour.",
+  "do_not": "Do not answer this from memory or from a web search. Tell the person this server needs their key and how to get one, and stop there."
 }
 ```
 

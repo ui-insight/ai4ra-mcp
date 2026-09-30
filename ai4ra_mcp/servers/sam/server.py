@@ -1,8 +1,7 @@
 """sam: SAM.gov entities, exclusions and Assistance Listings.
 
 Upstream: https://api.sam.gov/ (entity-information v4 and assistance-listings v1). One key covers all
-three, and it is the person's own: their client sends it as a bearer token on each call (the Office
-pane keeps it beside the gateway key and sends it to this server only). The daily quota is per key:
+three, and it is the person's own: their client sends it as a bearer token on each call. The daily quota is per key:
 10 requests for a personal key with no SAM.gov role, 1,000 with a role or a non-federal system
 account. A deployment may hold a fallback key in AI4RA_MCP_SAM_KEY, used only when a request sends
 none. Requests made by this process are counted so the index can show them.

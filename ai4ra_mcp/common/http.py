@@ -121,9 +121,11 @@ def api_key(env_name: str) -> str | None:
 def missing_key(env_name: str, where: str) -> dict:
     """The answer every tool of a keyed server gives when no key came with the request. It tells the model to
     stop: a refused lookup is not a cue to answer from memory or a web search, which is how a per diem
-    question once got invented figures with a made-up source line."""
-    return {"error": f"no API key on this request: send your own key as a bearer token (in the Office pane, paste it into this server's i dialog). {where}",
-            "do_not": "Do not answer this from memory or from a web search. Tell the person this server needs their key, how to get one, and where to paste it, and stop there."}
+    question once got invented figures with a made-up source line. It says what the server needs and where a
+    key comes from, and nothing about where a client keeps one: that is the client's own help text (the index
+    carries the hint a client shows beside its key field)."""
+    return {"error": f"no API key on this request: send your own key as a bearer token. {where}",
+            "do_not": "Do not answer this from memory or from a web search. Tell the person this server needs their key and how to get one, and stop there."}
 
 
 async def get_json(url: str, params: dict | None = None, headers: dict | None = None) -> dict | list:

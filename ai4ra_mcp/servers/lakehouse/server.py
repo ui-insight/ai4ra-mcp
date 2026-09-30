@@ -2,7 +2,7 @@
 
 Upstream: http://nlayman.nkn.uidaho.edu:7010 (AI4RA_MCP_LAKEHOUSE_URL), reachable on campus, so this process
 reads it and a browser client never does. Marina authorizes a *client* (an id and a shared secret) for a set
-of streams, so each client is its own server here, with its own fold and its own secret in a pane:
+of streams, so each client is its own server here, with its own secret:
 AI4RA_MCP_LAKEHOUSE_CLIENTS lists the client ids to mount, comma separated (default mr-365); the first is
 mounted as `lakehouse`, the others as `lakehouse-<id>`. Every call needs an OAuth 2.0 bearer from /auth/token,
 minted with HTTP Basic (client id, secret): the secret the person's client sends as its bearer token, else
