@@ -1180,16 +1180,13 @@ is, and it is the Marina behind them that answers on campus only.
 ## Connecting a client
 
 Three kinds of client read these servers, and the servers tell them apart
-in no way: **mindrouter-365**, the base Office client, which ships the
-document tools, the orchestration and the skills any institution using it
-wants; **an institution's mindrouter-365-specific client**, built on the
-pane and knowing its tools and catalog format, which adds that
-institution's own skills (Idaho's, when it exists, holds what is Idaho's
-about a document, and nothing here does); and **any other MCP client**.
-A skill that needs only a host's document tools and a server's guide
-belongs in the base client; one that needs an institution's own sources or
-vocabularies belongs in that institution's client; what a correct result is
-belongs here, as a guide.
+in no way: **mindrouter-365**, the base Office client (cell 1 of the grid
+under [Rules](#rules)); **an institution's mindrouter-365-aware server**,
+built on the pane and adding that institution's own document skills (cell
+2; Idaho's does not exist yet); and **any other MCP client**. A skill that
+needs only a host's document tools and a server's guide is cell 1; one that
+needs an institution's own sources or vocabularies as well is cell 2; what a
+correct result is belongs here, as a guide, in cell 3 or 4.
 
 - **The Office add-in (mindrouter-365):** one `indexes` entry in the
   deployment's `sources.json` with the URL of `/`; the pane reads the index
@@ -1276,18 +1273,23 @@ plan it is the organization's, shared by everyone who connects.
 - **Nothing from memory.** A tool that cannot reach its upstream, or has no
   key for it, says so and tells the model to stop there. A skill reports
   only what the tools returned, with the address of every figure.
-- **Anything that depends on knowledge of the client lives in the client.**
-  The server holds access to the data and what a correct result looks like
-  (tools and guides); the client decides what to do with it. The test for
-  any line here: would it be wrong if the caller were Claude Desktop instead
-  of the Office pane? Then it moves. Decided 2026-09-30; the plan and the
-  issues (#6 to #12 here, #33 to #42 on mindrouter-365) follow from it.
-  A client is any of: mindrouter-365, the base Office client; an
-  institution's own client built on mindrouter-365, which knows the pane's
-  tools and catalog format and adds the skills the pane does not ship; and
-  any other MCP client (Claude Desktop, Claude Code, Claude.ai). The server
-  knows none of them apart, and an institution's client is a client in its
-  own right, not a layer the server serves (mindrouter-365 #43).
+- **Where a thing lives is decided by two questions.** Does it call a host's
+  document tools, and does it need one institution's own knowledge? Decided
+  2026-09-30 (mindrouter-365 #33 and #43, #10 here), not to be drifted from:
+
+  |                       | Needs the institution's own knowledge: no | Needs the institution's own knowledge: yes |
+  |-----------------------|-------------------------------------------|--------------------------------------------|
+  | Calls host tools: yes | 1. The base client (mindrouter-365)       | 2. The institution's mindrouter-365-aware server (Idaho's) |
+  | Calls host tools: no  | 4. ai4ra-mcp, a general server            | 3. ai4ra-mcp, the institution's server (`uidaho`, `lakehouse`) |
+
+  This repository is cells 3 and 4: tools over one upstream each, and
+  guides that say what a correct result is in terms that name no client.
+  The servers tell clients apart in no way: the base pane, an institution's
+  mindrouter-365-aware server (from here a client in its own right, since it
+  only ever calls in), and any other MCP client all get the same answers.
+  The test for any line: would it be wrong if the caller were Claude
+  Desktop? Then it is row 1 or 2 and moves. Dependence runs one way: a
+  change in a client never requires a change here.
 - **Skills stay with their tools.** A skill lives in the server whose tools it
   uses; a skill that uses only a client's own document tools lives on `ai4ra`
   (research administration) or `general` (any office). A skill that needs
