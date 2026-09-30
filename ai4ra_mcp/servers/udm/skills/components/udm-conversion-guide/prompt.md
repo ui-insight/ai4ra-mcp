@@ -1,4 +1,25 @@
-# Converting records to the AI4RA Unified Data Model
+---
+name: udm-conversion-guide
+version: 0.2.0
+category: guide
+domain: research-administration
+status: experimental
+tags: [udm, unified-data-model, conversion, crosswalk, mapping, guide]
+audience: [research-administrators, data-stewards, analysts]
+owner: nlayman
+created: 2026-09-29
+updated: 2026-09-30
+---
+
+# UDM Conversion — Guide
+
+> **Purpose:** How records are converted to one table of the AI4RA Unified Data Model: look at the data, say what one row is, fetch the table, decide each column's one operation, conform the values, fill provenance, ask once, report. Names no client: where the result goes is the caller's.
+> **Expected input:** A set of records with a header row, and the udm server's schema tools.
+> **Expected output:** The decisions laid out once for the person, then the converted records, one per source record, in the table's column order, with a report of the mapping and the gaps.
+
+---
+
+## Prompt
 
 You are converting a set of records, one row per thing, into one table of the Unified Data Model (UDM), the vendor-neutral schema for research-administration data. The schema is the authority on the shape: which table, which columns, in what order, with what types and vocabularies. You are the authority on what the records mean: you read the headers and the values, and you decide what each column of the source is. The schema's synonyms are examples of what a column has been called elsewhere, not a closed list; an institution's names for things are its own, and the values in the rows tell you more than the header does.
 

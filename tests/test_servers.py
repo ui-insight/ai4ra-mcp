@@ -12,17 +12,17 @@ from ai4ra_mcp.servers.s2s import server as s2s
 from ai4ra_mcp.servers.uidaho import server as uidaho
 
 EXPECTED_TOOLS = {
-    "ecfr": {"ecfr_regulatory_index", "ecfr_search", "ecfr_list_titles", "ecfr_list_agencies",
+    "ecfr": {"ecfr_guide", "ecfr_regulatory_index", "ecfr_search", "ecfr_list_titles", "ecfr_list_agencies",
              "ecfr_get_title_versions", "ecfr_get_regulation", "ecfr_get_title_structure", "ecfr_compare_regulations"},
-    "grants": {"grants_gov_search", "grants_gov_opportunity"},
-    "uidaho": {"uidaho_guidance_index", "uidaho_guidance_search", "uidaho_guidance_get", "uidaho_rates"},
-    "lakehouse": {"lakehouse_index", "lakehouse_streams", "lakehouse_schema", "lakehouse_query", "lakehouse_files", "lakehouse_file", "lakehouse_sql_catalog", "lakehouse_sql"},
-    "general": {"fetch_document", "web_search"},
-    "ai4ra": set(),   # skills only
-    "udm": {"udm_index", "udm_schema", "udm_conversion_guide"},
-    "nih": {"nih_index", "nih_projects_search", "nih_project", "nih_publications"},
+    "grants": {"grants_guide", "grants_gov_search", "grants_gov_opportunity"},
+    "uidaho": {"uidaho_guide", "uidaho_guidance_index", "uidaho_guidance_search", "uidaho_guidance_get", "uidaho_rates"},
+    "lakehouse": {"lakehouse_guide", "lakehouse_index", "lakehouse_streams", "lakehouse_schema", "lakehouse_query", "lakehouse_files", "lakehouse_file", "lakehouse_sql_catalog", "lakehouse_sql"},
+    "general": {"general_guide", "fetch_document", "web_search"},
+    "ai4ra": {"ai4ra_guide"},   # skills and guides only
+    "udm": {"udm_index", "udm_schema", "udm_guide"},
+    "nih": {"nih_guide", "nih_index", "nih_projects_search", "nih_project", "nih_publications"},
     "nsf": {"nsf_index", "nsf_awards_search", "nsf_award", "nsf_award_outcomes"},
-    "sam": {"sam_index", "sam_entity", "sam_exclusions_search", "sam_assistance_listing", "sam_assistance_listings_search"},
+    "sam": {"sam_guide", "sam_index", "sam_entity", "sam_exclusions_search", "sam_assistance_listing", "sam_assistance_listings_search"},
     "usaspending": {"usaspending_index", "usaspending_recipients", "usaspending_recipient", "usaspending_awards_search", "usaspending_subawards_search", "usaspending_award"},
     "fac": {"fac_index", "fac_audits_search", "fac_findings", "fac_federal_awards"},
     "fedreg": {"federal_register_index", "federal_register_search", "federal_register_document", "federal_register_agencies"},

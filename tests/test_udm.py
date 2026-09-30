@@ -81,7 +81,7 @@ def test_model_folds_modules_taxonomies_and_synonyms():
 
 async def test_tools_serve_the_schema_in_portions(fixture_file):
     idx = await udm.udm_index()
-    assert idx["udm_version"] == "2.3.0" and len(idx["tables"]) == 3 and idx["workflow"][0].startswith("udm_conversion_guide")
+    assert idx["udm_version"] == "2.3.0" and len(idx["tables"]) == 3 and idx["workflow"][0].startswith("udm_guide")
     t = await udm.udm_schema(table="award")
     assert t["table"] == "Award" and t["columns"]["Award_Status"]["allowed_values"][0] == "Pending" and t["link"].endswith("#table=Award")
     sec = await udm.udm_schema(section="universal_patterns")
@@ -93,9 +93,11 @@ async def test_tools_serve_the_schema_in_portions(fixture_file):
     assert (await udm.udm_schema(table="Award", section="x"))["error"].startswith("give table or section")
 
 
-async def test_guide_is_served_as_text(fixture_file):
-    g = await udm.udm_conversion_guide()
-    assert g["udm_version"] == "2.3.0" and g["then"].startswith("udm_schema")
+async def test_guide_is_served_as_a_component(fixture_file):
+    from ai4ra_mcp.common.skills import guide_get, guide_list
+    assert [g["name"] for g in guide_list(udm.SKILLS_DIR)] == ["udm-conversion-guide"]
+    g = guide_get(udm.SKILLS_DIR, "UDM conversion guide")
+    assert g["version"] == "0.2.0" and g["category"] == "guide"
     text = g["guide"]
     for phrase in ("Rename", "Split", "Combine", "Transform", "Default", "Derive", "Resolve", "Route", "Generate", "Drop", "exactly one row per source row", "Source_System", "Ask once", "not a closed list", "Never invent a value"):
         assert phrase in text, phrase
@@ -105,5 +107,3 @@ async def test_unreadable_schema_is_reported_not_invented(tmp_path, monkeypatch)
     monkeypatch.setenv(schema.FILE_ENV, str(tmp_path / "missing.json"))
     r = await udm.udm_index()
     assert r["error"].startswith("the UDM schema could not be read") and "memory" in r["do_not"]
-    g = await udm.udm_conversion_guide()
-    assert g["udm_version"] is None and "Rename" in g["guide"]

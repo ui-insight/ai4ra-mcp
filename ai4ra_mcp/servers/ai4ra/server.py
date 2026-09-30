@@ -1,4 +1,4 @@
-"""ai4ra: research-administration skills, with no tools of their own.
+"""ai4ra: research-administration skills and guides, with one tool, ai4ra_guide, that serves them.
 
 The skills here (an RFA sheet, a narrative, a work plan, a budget outline and the NSF budget form,
 a PI memo, udm-sheet, the cost-allowability checks and budget-justification prompts copied from
@@ -17,7 +17,7 @@ from ai4ra_mcp.common.skills import register_prompts
 
 mcp = MCPServer(
     "ai4ra",
-    instructions="Research-administration skills (proposal sheets, budgets, cost checks). No tools: each skill is a prompt that works with the client's own document tools.",
+    instructions="Research-administration skills and guides (an RFA record, a narrative, a work plan, a budget outline, the NSF budget form, a UDM sheet, cost checks). ai4ra_guide lists the guides and returns one by name; fetch the guide that covers the job before doing it.",
 )
 
 SKILLS_DIR = Path(__file__).parent / "skills"

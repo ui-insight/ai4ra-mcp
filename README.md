@@ -41,25 +41,25 @@ works without one and a key raises its quota.
 
 | Path | Upstream | Key | Tools | Skills |
 |---|---|---|---|---|
-| `/general/mcp` | the open web, through a SearXNG beside the process | none | `web_search`, `fetch_document` | `ask`, `remove-ai-tells`, `project-timeline-gantt` (Excel only), `code-change` and `actions-check` (use GitHub's own MCP server, reached by the Office pane through its host's proxy; see mindrouter-365's README, "GitHub through the proxy") |
-| `/ai4ra/mcp` | none: skills only | none | none | `rfa-sheet`, `proposal-narrative`, `work-plan`, `budget-outline`, `budget-nsf`, `udm-sheet` (a workbook's sheet as a UDM table; calls the udm server's tools), and seventeen cost-allowability, extraction and budget-justification prompts copied from AI4RA/prompt-library |
-| `/udm/mcp` | the AI4RA Unified Data Model's published schema (ui-insight.github.io/AI4RA-UDM) | none | `udm_index`, `udm_schema`, `udm_conversion_guide` | none (`udm-sheet` is on `ai4ra`) |
+| `/general/mcp` | the open web, through a SearXNG beside the process | none | `web_search`, `fetch_document`, `general_guide` | `ask`, `remove-ai-tells`, `ai-tells-guide` (the guide), `project-timeline-gantt` (Excel only), `code-change` and `actions-check` (use GitHub's own MCP server, reached by the Office pane through its host's proxy; see mindrouter-365's README, "GitHub through the proxy") |
+| `/ai4ra/mcp` | none: skills and guides | none | `ai4ra_guide` | `rfa-sheet`, `proposal-narrative`, `work-plan`, `budget-outline`, `budget-nsf`, `udm-sheet` (a workbook's sheet as a UDM table; calls the udm server's tools), the guides `rfa-guide`, `narrative-guide`, `work-plan-guide`, `budget-outline-guide`, `nsf-budget-guide`, and seventeen cost-allowability, extraction and budget-justification prompts copied from AI4RA/prompt-library |
+| `/udm/mcp` | the AI4RA Unified Data Model's published schema (ui-insight.github.io/AI4RA-UDM) | none | `udm_index`, `udm_schema`, `udm_guide` | `udm-conversion-guide` (the guide; `udm-sheet` is on `ai4ra`) |
 
 **Rules and announcements**
 
 | Path | Upstream | Key | Tools | Skills |
 |---|---|---|---|---|
-| `/ecfr/mcp` | ecfr.gov | none | `ecfr_regulatory_index`, `ecfr_search`, `ecfr_list_titles`, `ecfr_list_agencies`, `ecfr_get_title_versions`, `ecfr_get_regulation`, `ecfr_get_title_structure`, `ecfr_compare_regulations` | `ecfr-research-admin` |
+| `/ecfr/mcp` | ecfr.gov | none | `ecfr_guide`, `ecfr_regulatory_index`, `ecfr_search`, `ecfr_list_titles`, `ecfr_list_agencies`, `ecfr_get_title_versions`, `ecfr_get_regulation`, `ecfr_get_title_structure`, `ecfr_compare_regulations` | `ecfr-research-admin` |
 | `/fedreg/mcp` | Federal Register | none | `federal_register_index`, `federal_register_search`, `federal_register_document`, `federal_register_agencies` | none |
 | `/regulations/mcp` | Regulations.gov | **required** (api.data.gov) | `regulations_gov_index`, `regulations_gov_documents_search`, `regulations_gov_document`, `regulations_gov_docket`, `regulations_gov_comments_search` | none |
-| `/grants/mcp` | grants.gov | none | `grants_gov_search`, `grants_gov_opportunity` | `funding-opportunity-finder` |
+| `/grants/mcp` | grants.gov | none | `grants_gov_search`, `grants_gov_opportunity`, `grants_guide` | `funding-opportunity-finder` |
 | `/s2s/mcp` | the Grants.gov Applicant System-to-System (S2S) SOAP service, at any endpoint: training, production, or the deployment's default (a mock) | optional (the person's own S2S certificate and key as a bearer bundle; a deployment may hold a fallback that only the mock accepts) | `s2s_index`, `s2s_check`, `s2s_opportunity`, `s2s_validate_package`, `s2s_submissions`, `s2s_application_info`; with `AI4RA_MCP_S2S_WRITES=1` also `s2s_submit` (off by default) | none yet |
 
 **Awards held**
 
 | Path | Upstream | Key | Tools | Skills |
 |---|---|---|---|---|
-| `/nih/mcp` | NIH RePORTER | none | `nih_index`, `nih_projects_search`, `nih_project`, `nih_publications` | `funding-history` |
+| `/nih/mcp` | NIH RePORTER | none | `nih_guide`, `nih_index`, `nih_projects_search`, `nih_project`, `nih_publications` | `funding-history` |
 | `/nsf/mcp` | NSF Award Search | none | `nsf_index`, `nsf_awards_search`, `nsf_award`, `nsf_award_outcomes` | none |
 | `/usaspending/mcp` | USAspending | none | `usaspending_index`, `usaspending_recipients`, `usaspending_recipient`, `usaspending_awards_search`, `usaspending_subawards_search`, `usaspending_award` | none |
 
@@ -67,7 +67,7 @@ works without one and a key raises its quota.
 
 | Path | Upstream | Key | Tools | Skills |
 |---|---|---|---|---|
-| `/sam/mcp` | SAM.gov | **required** (SAM.gov personal key) | `sam_index`, `sam_entity`, `sam_exclusions_search`, `sam_assistance_listing`, `sam_assistance_listings_search` | `subrecipient-check` |
+| `/sam/mcp` | SAM.gov | **required** (SAM.gov personal key) | `sam_guide`, `sam_index`, `sam_entity`, `sam_exclusions_search`, `sam_assistance_listing`, `sam_assistance_listings_search` | `subrecipient-check` |
 | `/fac/mcp` | Federal Audit Clearinghouse | **required** (api.data.gov) | `fac_index`, `fac_audits_search`, `fac_findings`, `fac_federal_awards` | none |
 | `/csl/mcp` | trade.gov Consolidated Screening List | **required** (trade.gov subscription key) | `csl_index`, `csl_search`, `csl_sources` | none |
 | `/oig/mcp` | HHS OIG LEIE, from its daily CSV | none | `oig_leie_index`, `oig_leie_search`, `oig_leie_status` | none |
@@ -110,11 +110,13 @@ REST API.
 
 | Path | Upstream | Key | Tools | Skills |
 |---|---|---|---|---|
-| `/uidaho/mcp` | uidaho.edu policy pages and rate documents | none | `uidaho_guidance_index`, `uidaho_guidance_search`, `uidaho_guidance_get`, `uidaho_rates` | `uidaho-lookup`, `uidaho-rates`, `proposal-workbook` |
-| `/lakehouse/mcp` (one per configured client; the others at `/lakehouse-<id>/mcp`) | the University of Idaho data lakehouse, through Marina | **required** (the client's shared secret) | `lakehouse_index`, `lakehouse_sql_catalog`, `lakehouse_sql`, `lakehouse_streams`, `lakehouse_schema`, `lakehouse_query`, `lakehouse_files`, `lakehouse_file` | `lakehouse-answer` |
+| `/uidaho/mcp` | uidaho.edu policy pages and rate documents | none | `uidaho_guide`, `uidaho_guidance_index`, `uidaho_guidance_search`, `uidaho_guidance_get`, `uidaho_rates` | `uidaho-lookup`, `uidaho-rates`, `proposal-workbook` |
+| `/lakehouse/mcp` (one per configured client; the others at `/lakehouse-<id>/mcp`) | the University of Idaho data lakehouse, through Marina | **required** (the client's shared secret) | `lakehouse_guide`, `lakehouse_index`, `lakehouse_sql_catalog`, `lakehouse_sql`, `lakehouse_streams`, `lakehouse_schema`, `lakehouse_query`, `lakehouse_files`, `lakehouse_file` | `lakehouse-answer` |
 
 Tool names carry their upstream (`ecfr_`, `grants_gov_`, `uidaho_`) and
-nothing else; a client shows them as they are. Every server except `ai4ra`
+nothing else; a client shows them as they are. Every server with skills
+has a `<server>_guide` tool that lists them and returns one by name (see
+[Skills](#skills)). Every server except `ai4ra`
 has an index tool (`<upstream>_index`, or `ecfr_regulatory_index`) that a
 model reads first: what the server offers, the tools in the order to use
 them, the upstream's limits, the date formats and the citation rule. A
@@ -362,7 +364,17 @@ says so (`tls_unverified`).
 
 ### ai4ra
 
-Skills only. The proposal sheets (`rfa-sheet`, `proposal-narrative`,
+Skills and guides, and one tool, `ai4ra_guide`, that lists the components
+and returns one by name. Five guides say what a correct result is with no
+client named: `rfa-guide` (a funding opportunity's facts and requirements,
+the ceiling as a number), `narrative-guide` (the sections of a proposal
+narrative), `work-plan-guide` (activities with lead, start and duration),
+`budget-outline-guide` (eleven categories, the split, the estimates, the
+loaded share of the ceiling) and `nsf-budget-guide` (lines A to M, the
+inputs and their origin, the Rates contract, the checks). Each is the
+judgment of the matching sheet skill with the placement taken out; the sheet
+skills stay beside them until their placement halves move to the client
+(mindrouter-365 #36), and are then removed. The proposal sheets (`rfa-sheet`, `proposal-narrative`,
 `work-plan`, `budget-outline`, `budget-nsf`) were written for the Office
 add-in and moved here on 2026-09-22; each catalog entry's `source`
 says so. `budget-nsf` is institution-agnostic: its template ships no rates,
@@ -411,8 +423,9 @@ file keeps apart), description and synonyms, then the audit columns every
 table carries and the cross-row constraints on it; `udm_schema` with a
 section name is one top-level section verbatim (`universal_patterns`,
 `semantic_conventions`, `status_taxonomies`, `derived_values`). **The
-conversion guide**: `udm_conversion_guide` returns `guide.md`, the way the
-job is done written once as text: look at the data before the schema and
+conversion guide**: `udm_guide` with the name `udm-conversion-guide` (a
+catalogued component, also an MCP prompt) returns the way the job is done
+written once as text: look at the data before the schema and
 say what one row is; fetch the table; decide each source column's one
 operation (rename, split or extract, combine or coalesce, transform,
 recode or blank, default, derive, resolve, route, generate, drop, or keep
@@ -1001,6 +1014,20 @@ client or stream.
 
 ## Skills
 
+A **guide** is a component that says what a correct result is in terms
+that name no client: no host, no tool names, no cells, no fills. What a
+client does with it, which sheet, which tools, what is confirmed, is the
+client's (the server-and-client rule, decided 2026-09-30: anything that
+depends on knowledge of the client lives in the client). Its category is
+`guide`, and `tests/test_guides.py` holds every guide to that. A guide
+reaches a model two ways from the same file: as an MCP prompt named by its
+slug, and through the server's `<server>_guide` tool, which lists the
+server's components without a name and returns one with a name, so a
+client that lists tools but not prompts still gets it and the model can
+fetch the guide at the moment the job comes up. The UDM conversion guide
+(`udm_guide`), the five proposal guides on `ai4ra` (`ai4ra_guide`) and the
+AI-tells guide on `general` (`general_guide`) are the guides so far.
+
 A skill is a prompt with a contract: what it needs, what it produces, which
 tools it calls. Each lives in its server's `skills/components/<slug>/` as
 `prompt.md` (YAML front matter, a preamble with **Purpose**, **Expected
@@ -1232,6 +1259,12 @@ plan it is the organization's, shared by everyone who connects.
 - **Nothing from memory.** A tool that cannot reach its upstream, or has no
   key for it, says so and tells the model to stop there. A skill reports
   only what the tools returned, with the address of every figure.
+- **Anything that depends on knowledge of the client lives in the client.**
+  The server holds access to the data and what a correct result looks like
+  (tools and guides); the client decides what to do with it. The test for
+  any line here: would it be wrong if the caller were Claude Desktop instead
+  of the Office pane? Then it moves. Decided 2026-09-30; the plan and the
+  issues (#6 to #12 here, #33 to #42 on mindrouter-365) follow from it.
 - **Skills stay with their tools.** A skill lives in the server whose tools it
   uses; a skill that uses only a client's own document tools lives on `ai4ra`
   (research administration) or `general` (any office). A skill that needs
@@ -1252,7 +1285,7 @@ ai4ra_mcp/
   common/
     http.py                   User-Agent and contact, TTL cache, get_json/post_json, the request key and the no-key answer
     fetch.py                  the page reader and grants.gov client
-    skills.py                 a skills folder as MCP prompts
+    skills.py                 a skills folder as MCP prompts and as the server's <server>_guide tool
   servers/
     ecfr/
       server.py               MCPServer("ecfr"): tools with read-only annotations, the index tool, prompts
@@ -1260,7 +1293,7 @@ ai4ra_mcp/
         catalog.json          the components, in AI4RA/prompt-library's catalog shape
         components/<slug>/    prompt.md, README.md, CHANGELOG.md, evals/, template.json where the skill has one
     general/  ai4ra/  grants/  nih/  sam/  uidaho/  lakehouse/       same shape, with skills (ai4ra has no tools)
-    udm/                      schema.py serves the published UDM schema in portions; guide.md is the conversion guide; no skills of its own
+    udm/                      schema.py serves the published UDM schema in portions; skills/ holds the conversion guide
     fedreg/  regulations/  nsf/  usaspending/  fac/  csl/  oig/
     propublica/  ror/  perdiem/  bls/  openalex/  pubmed/  crossref/
     orcid/  osti/  clinicaltrials/                                   same shape, an empty catalog
@@ -1304,7 +1337,7 @@ version in the front matter and the catalog together.
 
 ## Status
 
-2026-09-29: twenty-six servers; the `udm` server and the `udm-sheet` skill on `ai4ra` were added that day, offline-tested against a fixture in the published schema's shape and tried against the real schema. 2026-09-25: twenty-five servers. The eCFR and grants.gov code moved in from
+2026-09-30: the server-and-client rule; log no keys; the Banner family removed; guides as catalogued components with a `<server>_guide` tool per server (the UDM guide, five proposal guides, the AI-tells guide). 2026-09-29: twenty-six servers; the `udm` server and the `udm-sheet` skill on `ai4ra` were added that day, offline-tested against a fixture in the published schema's shape and tried against the real schema. 2026-09-25: twenty-five servers. The eCFR and grants.gov code moved in from
 mcp-ecfr on 2026-09-22 with the Office add-in's skills, and the NIH, NSF,
 SAM.gov, USAspending and Federal Audit Clearinghouse servers were verified
 against the live APIs that day (SAM.gov and FAC with a person's own key).

@@ -29,7 +29,7 @@ The source is the sheet the request names, else the active sheet. From the workb
 
 ### Fetch
 
-`udm_index` for the version and the tables; `udm_conversion_guide` for how the job is done; then, once you know what one row is, `udm_schema` with that table's name. Follow the guide: it says how to choose the table, how to decide each column's operation (rename, split, combine, transform) from its name, synonyms, description and values, how to conform dates, booleans, vocabularies and amounts, what goes in the provenance columns, and what to ask. Nothing about the model comes from memory.
+`udm_index` for the version and the tables; `udm_guide` with the name `udm-conversion-guide` for how the job is done; then, once you know what one row is, `udm_schema` with that table's name. Follow the guide: it says how to choose the table, how to decide each column's operation (rename, split, combine, transform) from its name, synonyms, description and values, how to conform dates, booleans, vocabularies and amounts, what goes in the provenance columns, and what to ask. Nothing about the model comes from memory.
 
 ### Ask, once
 

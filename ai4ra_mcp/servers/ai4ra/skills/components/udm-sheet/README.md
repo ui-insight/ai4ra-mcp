@@ -1,6 +1,6 @@
 # UDM Sheet
 
-Converts a sheet of research-administration records (an award list, a personnel export, a subaward register) into a new sheet laid out as one table of the AI4RA Unified Data Model. The udm server holds the two things the job needs, the schema (`udm_index`, `udm_schema`) and the conversion guide (`udm_conversion_guide`); this skill is the workbook side: read the records, follow the guide, ask once, write the sheet.
+Converts a sheet of research-administration records (an award list, a personnel export, a subaward register) into a new sheet laid out as one table of the AI4RA Unified Data Model. The udm server holds the two things the job needs, the schema (`udm_index`, `udm_schema`) and the conversion guide (`udm_guide`); this skill is the workbook side: read the records, follow the guide, ask once, write the sheet.
 
 **Version:** 0.2.0 · **Category:** data · **Status:** experimental · **Output:** a sheet named `UDM <Table>`, and a reply reporting the mapping and the gaps
 
