@@ -17,7 +17,7 @@ def test_prepare_sql_wraps_a_bare_select_and_leaves_the_rest_alone():
     assert lh.prepare_sql("SELECT a FROM t LIMIT 10 OFFSET 20", 200) == "SELECT a FROM t LIMIT 10 OFFSET 20"
     assert lh.prepare_sql('SHOW PROFILE IN lakehouse."client_mr-365__subaward"', 200) == 'SHOW PROFILE IN lakehouse."client_mr-365__subaward"'
     assert lh.prepare_sql('DESCRIBE lakehouse."client_mr-365__subaward"."v"', 200).startswith("DESCRIBE")
-    meta = 'SELECT * FROM lakehouse."client_mr-365__subaward"."_stats"'
+    meta = 'SELECT * FROM lakehouse."subaward"."_stats"'
     assert lh.prepare_sql(meta, 200) == meta   # gateway-evaluated: never wrapped
 
 
@@ -239,8 +239,8 @@ async def test_catalog_overview_ranks_largest_tables_across_streams_and_skips_me
     }, calls)
     out = await lh.lakehouse_sql_catalog()
     assert [s["stream"] for s in out["streams"]] == ["subaward", "personnel"]
-    assert out["streams"][0] == {"stream": "subaward", "schema": "client_mr-365__subaward", "tables": 2, "measured": 1, "unmeasured": 1, "rows": None, "rows_measured": 5000, "stats_table": 'lakehouse."client_mr-365__subaward"."_stats"'}
-    assert out["streams"][1] == {"stream": "personnel", "schema": "client_mr-365__personnel", "tables": 2, "measured": 2, "unmeasured": 0, "rows": 90040, "stats_table": 'lakehouse."client_mr-365__personnel"."_stats"'}
+    assert out["streams"][0] == {"stream": "subaward", "schema": "client_mr-365__subaward", "tables": 2, "measured": 1, "unmeasured": 1, "rows": None, "rows_measured": 5000, "stats_table": 'lakehouse."subaward"."_stats"'}
+    assert out["streams"][1] == {"stream": "personnel", "schema": "client_mr-365__personnel", "tables": 2, "measured": 2, "unmeasured": 0, "rows": 90040, "stats_table": 'lakehouse."personnel"."_stats"'}
     assert [t["rows"] for t in out["largest_tables"]] == [90000, 5000, 40] and out["largest_tables"][0]["table"] == 'lakehouse."client_mr-365__personnel"."people"'
     assert out["metadata_tables"] == 1 and out["stats_source"] == "marina"
     assert [c for c in calls if c[0] == "GET" and "/query/schema" in c[1]][0][3] == {"stream": "subaward"}
