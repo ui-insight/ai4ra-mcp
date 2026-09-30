@@ -1,7 +1,7 @@
 """perdiem: GSA per diem rates, the lodging and M&IE ceilings for federal travel within the continental US.
 
 Upstream: https://api.gsa.gov/travel/perdiem/v2/ (rates/city/{city}/state/{ST}/year/{YYYY}, rates/state/{ST}/year/{YYYY},
-rates/zip/{zip}/year/{YYYY}, rates/conus/mie/{YYYY}). A free api.data.gov key as the query param api_key; DEMO_KEY
+rates/zip/{zip}/year/{YYYY}, rates/conus/mie/{YYYY}). A free api.data.gov key, sent as the X-Api-Key header; DEMO_KEY
 works for a handful of calls an hour. Years are federal fiscal years (October 1 to September 30). Lodging is a
 per-night ceiling by calendar month; M&IE (meals) is per day.
 """
@@ -41,8 +41,9 @@ async def _get(path: str) -> dict | list:
     key = api_key(KEY_ENV)
     if not key:
         raise LookupError(KEY_ENV)
-    # The cache key is the path alone, so a key never sits in memory beside the data it fetched.
-    return await _cache.remember(path, DAY, lambda: get_json(f"{BASE}/{path}", {"api_key": key}))
+    # The key goes as the X-Api-Key header api.data.gov accepts, never in the URL, so it is in no log line;
+    # the cache key is the path alone, so a key never sits in memory beside the data it fetched.
+    return await _cache.remember(path, DAY, lambda: get_json(f"{BASE}/{path}", None, {"X-Api-Key": key}))
 
 
 def slim_location(r: dict, state: str, year: int) -> dict:

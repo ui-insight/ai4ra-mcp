@@ -47,13 +47,13 @@ async def test_rates_builds_the_path_for_city_state_and_zip(monkeypatch):
     seen = {}
 
     async def fake_get_json(url, params=None, headers=None):
-        seen["url"], seen["params"] = url, params
+        seen["url"], seen["params"], seen["headers"] = url, params, headers
         return CITY_BODY
 
     monkeypatch.setattr(p, "get_json", fake_get_json)
     p._cache._d.clear()
     out = await p.gsa_perdiem_rates(2026, city="Boise", state="id")
-    assert seen["url"].endswith("/rates/city/Boise/state/ID/year/2026") and seen["params"] == {"api_key": "k"}
+    assert seen["url"].endswith("/rates/city/Boise/state/ID/year/2026") and seen["params"] is None and seen["headers"] == {"X-Api-Key": "k"}
     assert out["returned"] == 1 and out["locations"][0]["city"] == "Boise" and out["link"].startswith("https://www.gsa.gov/") and "note" not in out
     p._cache._d.clear()
     await p.gsa_perdiem_rates(2026, state="ID")

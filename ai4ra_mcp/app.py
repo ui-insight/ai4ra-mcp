@@ -28,7 +28,7 @@ from starlette.responses import JSONResponse
 from starlette.routing import Mount, Route
 from starlette.staticfiles import StaticFiles
 
-from ai4ra_mcp.common.http import request_key
+from ai4ra_mcp.common.http import log_no_keys, request_key
 from ai4ra_mcp.servers.ai4ra.server import mcp as ai4ra
 from ai4ra_mcp.servers.bls.server import mcp as bls
 from ai4ra_mcp.servers.clickup.server import mcp as clickup
@@ -159,6 +159,7 @@ def build_app(only: list[str] | None = None) -> Starlette:
     unknown = [n for n in names if n not in SERVERS]
     if unknown:
         raise SystemExit(f"unknown server {', '.join(unknown)}; choose from {', '.join(SERVERS)}")
+    log_no_keys()
     security = _transport_security()
     routes, mounted = [], []
     for name in names:
@@ -203,6 +204,7 @@ def main() -> None:
     parser.add_argument("--only", action="append", metavar="NAME", help="mount only this server (repeatable)")
     parser.add_argument("--stdio", metavar="NAME", help="run one server over stdio instead of HTTP")
     args = parser.parse_args()
+    log_no_keys()
     if args.stdio:
         if args.stdio not in SERVERS:
             raise SystemExit(f"unknown server {args.stdio}; choose from {', '.join(SERVERS)}")

@@ -9,7 +9,9 @@ changes, and a policy page changes a few times a year.
 
 from __future__ import annotations
 
+import logging
 import os
+import re
 import time
 from contextvars import ContextVar
 from typing import Any, Awaitable, Callable
@@ -51,6 +53,46 @@ class TTLCache:
         if value is None:
             value = self.put(key, await make(), ttl)
         return value
+
+
+# ---- log no keys ----
+
+# A key an upstream wants in the URL (SAM.gov, GSA per diem and PubMed take api_key as a query parameter) would
+# land in the process log, because httpx logs every request's full URL at INFO. Nothing a person sent as their
+# credential appears in any log line: the httpx and httpcore loggers are held at WARNING, and a filter blanks
+# key-like parameters from whatever those loggers, or the root handlers, still emit.
+_KEY_PARAMS = re.compile(r"((?:api[_-]?key|key|token|secret|subscription-key|registrationkey|access_token|password)=)[^&\s\"']+", re.I)
+
+
+class RedactKeys(logging.Filter):
+    """Replaces the value of any key-like query parameter in a log record with [redacted]."""
+
+    def filter(self, record: logging.LogRecord) -> bool:
+        try:
+            msg = record.getMessage()
+        except Exception:
+            return True
+        cleaned = _KEY_PARAMS.sub(r"\1[redacted]", msg)
+        if cleaned != msg:
+            record.msg, record.args = cleaned, ()
+        return True
+
+
+def log_no_keys() -> None:
+    """Hold the HTTP client loggers at WARNING and put the redacting filter on them and on the root handlers.
+    Called at import and again at startup, since a logging configuration applied later may add handlers."""
+    for name in ("httpx", "httpcore"):
+        logger = logging.getLogger(name)
+        if logger.level < logging.WARNING:
+            logger.setLevel(logging.WARNING)
+        if not any(isinstance(f, RedactKeys) for f in logger.filters):
+            logger.addFilter(RedactKeys())
+    for handler in logging.getLogger().handlers:
+        if not any(isinstance(f, RedactKeys) for f in handler.filters):
+            handler.addFilter(RedactKeys())
+
+
+log_no_keys()
 
 
 # ---- upstream calls ----

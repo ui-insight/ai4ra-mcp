@@ -1218,6 +1218,16 @@ plan it is the organization's, shared by everyone who connects.
 - **Keys are the person's.** A keyed upstream is called with the key the
   client sent, for that request only. The environment fallback exists for a
   client that cannot send one, and a deployment may leave it unset.
+- **Log no keys.** Nothing a person sent as their credential appears in
+  any log line at any level. The `httpx` and `httpcore` loggers are held at
+  WARNING, since their INFO line is the request's full URL, and a filter
+  blanks key-like query parameters from whatever they or the root handlers
+  still emit (`log_no_keys` in `common/http.py`, applied at import and at
+  startup, with a test in `tests/test_log_no_keys.py`). An upstream that
+  accepts a header gets the key there (api.data.gov's `X-Api-Key` for per
+  diem); SAM.gov and PubMed want it in the URL, so the filter is what
+  keeps it out of the log. Decided 2026-09-30, after the per diem key was
+  found in the demo host's container log.
 - **Nothing from memory.** A tool that cannot reach its upstream, or has no
   key for it, says so and tells the model to stop there. A skill reports
   only what the tools returned, with the address of every figure.
