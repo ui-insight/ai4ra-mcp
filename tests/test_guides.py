@@ -56,7 +56,7 @@ def test_the_guide_tools_answer_the_list_and_one_guide():
 
 @pytest.mark.parametrize("server,component,skills", [(n, c, s) for n, c, s in guides()], ids=[c["slug"] for _, c, _ in guides()])
 def test_a_guide_names_no_client(server, component, skills):
-    text = prompt_text(skills, component)
+    text = prompt_text(skills, component).replace("Future Outlook", "")   # a heading the tells guide quotes, not the mail client
     hits = sorted({m.group(0) for m in HOSTS.finditer(text)} | {m.group(0) for m in CLIENT_WORDS.finditer(text)})
     assert not hits, f"{server}/{component['slug']} names a client: {hits}"
     cells = sorted({m.group(0) for m in CELL.finditer(text)})
