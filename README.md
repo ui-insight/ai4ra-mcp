@@ -459,7 +459,12 @@ nonblank on every source row, and the row below empty), since a catalog
 assertion cannot name a count only known at run time; the catalog's own
 assertions hold the header and the first key. One
 table a run: the leftover headers are named with the table each belongs
-to, and a second run naming that table writes the next.
+to, and a second run naming that table writes the next. Where that
+placement skill finally lives is open: the base client is the plan's answer
+(mindrouter-365 #37), but the data model it targets is one consortium's, and
+an institution with a data model of its own may want the conversion skill in
+its own client instead; noted in the plan and mindrouter-365 #43, not a
+change.
 
 ### ecfr
 
@@ -1174,6 +1179,18 @@ is, and it is the Marina behind them that answers on campus only.
 
 ## Connecting a client
 
+Three kinds of client read these servers, and the servers tell them apart
+in no way: **mindrouter-365**, the base Office client, which ships the
+document tools, the orchestration and the skills any institution using it
+wants; **an institution's mindrouter-365-specific client**, built on the
+pane and knowing its tools and catalog format, which adds that
+institution's own skills (Idaho's, when it exists, holds what is Idaho's
+about a document, and nothing here does); and **any other MCP client**.
+A skill that needs only a host's document tools and a server's guide
+belongs in the base client; one that needs an institution's own sources or
+vocabularies belongs in that institution's client; what a correct result is
+belongs here, as a guide.
+
 - **The Office add-in (mindrouter-365):** one `indexes` entry in the
   deployment's `sources.json` with the URL of `/`; the pane reads the index
   and lists every server as one fold holding its tools, skills and
@@ -1265,6 +1282,12 @@ plan it is the organization's, shared by everyone who connects.
   any line here: would it be wrong if the caller were Claude Desktop instead
   of the Office pane? Then it moves. Decided 2026-09-30; the plan and the
   issues (#6 to #12 here, #33 to #42 on mindrouter-365) follow from it.
+  A client is any of: mindrouter-365, the base Office client; an
+  institution's own client built on mindrouter-365, which knows the pane's
+  tools and catalog format and adds the skills the pane does not ship; and
+  any other MCP client (Claude Desktop, Claude Code, Claude.ai). The server
+  knows none of them apart, and an institution's client is a client in its
+  own right, not a layer the server serves (mindrouter-365 #43).
 - **Skills stay with their tools.** A skill lives in the server whose tools it
   uses; a skill that uses only a client's own document tools lives on `ai4ra`
   (research administration) or `general` (any office). A skill that needs
