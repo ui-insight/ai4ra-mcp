@@ -42,7 +42,7 @@ works without one and a key raises its quota.
 | Path | Upstream | Key | Tools | Skills |
 |---|---|---|---|---|
 | `/general/mcp` | the open web, through a SearXNG beside the process | none | `web_search`, `fetch_document` | `ask`, `remove-ai-tells`, `project-timeline-gantt` (Excel only), `code-change` and `actions-check` (use GitHub's own MCP server, reached by the Office pane through its host's proxy; see mindrouter-365's README, "GitHub through the proxy") |
-| `/ai4ra/mcp` | none: skills only | none | none | `rfa-sheet`, `proposal-narrative`, `work-plan`, `budget-outline`, `budget-nsf`, `pi-memo`, `udm-sheet` (a workbook's sheet as a UDM table; calls the udm server's tools), and seventeen cost-allowability, extraction and budget-justification prompts copied from AI4RA/prompt-library |
+| `/ai4ra/mcp` | none: skills only | none | none | `rfa-sheet`, `proposal-narrative`, `work-plan`, `budget-outline`, `budget-nsf`, `udm-sheet` (a workbook's sheet as a UDM table; calls the udm server's tools), and seventeen cost-allowability, extraction and budget-justification prompts copied from AI4RA/prompt-library |
 | `/udm/mcp` | the AI4RA Unified Data Model's published schema (ui-insight.github.io/AI4RA-UDM) | none | `udm_index`, `udm_schema`, `udm_conversion_guide` | none (`udm-sheet` is on `ai4ra`) |
 
 **Rules and announcements**
@@ -110,7 +110,7 @@ REST API.
 
 | Path | Upstream | Key | Tools | Skills |
 |---|---|---|---|---|
-| `/uidaho/mcp` | uidaho.edu policy pages and rate documents | none | `uidaho_guidance_index`, `uidaho_guidance_search`, `uidaho_guidance_get`, `uidaho_rates` | `uidaho-lookup`, `uidaho-rates`, `award-facts`, `award-lines`, `award-status`, `award-review`, `pi-awards`, `current-pending`, `current-pending-support`, `proposal-workbook` |
+| `/uidaho/mcp` | uidaho.edu policy pages and rate documents | none | `uidaho_guidance_index`, `uidaho_guidance_search`, `uidaho_guidance_get`, `uidaho_rates` | `uidaho-lookup`, `uidaho-rates`, `proposal-workbook` |
 | `/lakehouse/mcp` (one per configured client; the others at `/lakehouse-<id>/mcp`) | the University of Idaho data lakehouse, through Marina | **required** (the client's shared secret) | `lakehouse_index`, `lakehouse_sql_catalog`, `lakehouse_sql`, `lakehouse_streams`, `lakehouse_schema`, `lakehouse_query`, `lakehouse_files`, `lakehouse_file` | `lakehouse-answer` |
 
 Tool names carry their upstream (`ecfr_`, `grants_gov_`, `uidaho_`) and
@@ -363,8 +363,8 @@ says so (`tls_unverified`).
 ### ai4ra
 
 Skills only. The proposal sheets (`rfa-sheet`, `proposal-narrative`,
-`work-plan`, `budget-outline`, `budget-nsf`) and `pi-memo` were written for
-the Office add-in and moved here on 2026-09-22; each catalog entry's `source`
+`work-plan`, `budget-outline`, `budget-nsf`) were written for the Office
+add-in and moved here on 2026-09-22; each catalog entry's `source`
 says so. `budget-nsf` is institution-agnostic: its template ships no rates,
 and the skill reads them from a sheet named Rates when the workbook has one
 (seven fixed-label rows: Location, F&A rate, F&A base, Fringe faculty, Fringe
@@ -582,8 +582,7 @@ cached for a day, searches for an hour.
 
 SAM.gov, https://api.sam.gov/: entities and exclusions (entity-information
 v4) and Assistance Listings (v1). One key covers all three, and it is the
-person's own: the client sends it as a bearer token on each call, and the
-Office pane keeps it beside the gateway key and sends it to this server only.
+person's own: the client sends it as a bearer token on each call.
 **The daily quota is per key:** 10 requests for a personal key without a role
 in SAM.gov, 1,000 with a role or a non-federal system account. The index tool
 says whether the request carried a key and how many requests this process
@@ -889,11 +888,13 @@ rates and reports them with their dates and addresses; when the request
 names a sheet (the proposal workbook's Rates step does), it writes them
 onto it in the layout the budget form reads, and a document that could not
 be read leaves its rows without values, marked "not fetched". Neither skill
-carries fallback figures. The award skills (`award-facts`, `award-lines`,
-`award-status`, `award-review`, `pi-awards`, `current-pending`,
-`current-pending-support`) read Banner exports (FRIGITD, FRIPSTG) already
-open in Excel; `proposal-workbook` is the eight-step workflow that runs
-skills from the general, ai4ra and uidaho servers in order.
+carries fallback figures. `proposal-workbook` is the eight-step workflow
+that runs skills from the general, ai4ra and uidaho servers in order. The
+award skills that read Banner exports (award-facts, award-lines,
+award-status, award-review, pi-awards, current-pending,
+current-pending-support, and pi-memo on ai4ra) were removed on 2026-09-30
+(#12): none of them worked, and all were Excel-bound, which under the
+server-and-client rule is client code; they are in git history.
 
 ### lakehouse
 

@@ -2,7 +2,7 @@
   "catalog_version": "1.0",
   "repo": "ui-insight/ai4ra-mcp",
   "server": "ai4ra",
-  "note": "Research-administration skills with no tools of their own: the proposal sheets (RFA, narrative, work plan, budget outline, NSF budget form), a PI memo, udm-sheet (a sheet laid out as one Unified Data Model table, with the udm server's tools), and the cost-allowability and budget-justification prompts copied from AI4RA/prompt-library at a pinned commit (each entry's source says which). They use the client's document tools and, for the web, the general server's. Same shape as AI4RA/prompt-library's component_catalog.json, hand-maintained.",
+  "note": "Research-administration skills with no tools of their own: the proposal sheets (RFA, narrative, work plan, budget outline, NSF budget form), udm-sheet (a sheet laid out as one Unified Data Model table, with the udm server's tools), and the cost-allowability and budget-justification prompts copied from AI4RA/prompt-library at a pinned commit (each entry's source says which). They use the client's document tools and, for the web, the general server's. Same shape as AI4RA/prompt-library's component_catalog.json, hand-maintained.",
   "components": [
     {
       "slug": "rfa-sheet",
@@ -276,59 +276,6 @@
       "source": {
         "repo": "ui-insight/mindrouter-365",
         "path": "skills/components/budget-nsf",
-        "moved": "2026-09-22"
-      }
-    },
-    {
-      "slug": "pi-memo",
-      "name": "pi-memo",
-      "summary": "Assemble the email to the principal investigator from the sentences the Award status sheet builds by formula, opener, flagged accounts, charges with no budget line, runway and closeout, F&A and pace against budget, facts only, adding only a greeting and a sign-off: Subject and Body labelled in column A, the text in column B, ready to paste. Copying only.",
-      "version": "2.1.2",
-      "category": "post-award",
-      "domain": "research-administration",
-      "status": "experimental",
-      "paths": {
-        "component_dir": "components/pi-memo",
-        "readme": "components/pi-memo/README.md",
-        "prompt": "components/pi-memo/prompt.md",
-        "evals_dir": "components/pi-memo/evals"
-      },
-      "manifestations": [
-        {
-          "type": "prompt",
-          "path": "components/pi-memo/prompt.md",
-          "version": "2.1.2",
-          "role": "canonical_prompt"
-        }
-      ],
-      "contracts": {
-        "output": {
-          "format": "spreadsheet",
-          "scope": "repo_local",
-          "schema_path": null
-        }
-      },
-      "evaluation": {
-        "case_count": 0,
-        "report_count": 0,
-        "last_fully_evaluated_version": null,
-        "current_version_is_fully_evaluated": false
-      },
-      "requires": [
-        "excel:read_range",
-        "excel:add_sheet",
-        "excel:write_values"
-      ],
-      "assertions": [
-        {
-          "address": "B1:B2",
-          "rule": "nonblank",
-          "label": "a subject in B1 and a body in B2"
-        }
-      ],
-      "source": {
-        "repo": "ui-insight/mindrouter-365",
-        "path": "skills/components/pi-memo",
         "moved": "2026-09-22"
       }
     },
