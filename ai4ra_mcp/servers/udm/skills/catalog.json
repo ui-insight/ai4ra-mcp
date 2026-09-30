@@ -1,0 +1,7 @@
+{
+  "catalog_version": "1.0",
+  "repo": "ui-insight/ai4ra-mcp",
+  "server": "udm",
+  "note": "No skills of its own: the udm-sheet skill lives on the ai4ra server with the other research-administration skills and calls this server's tools. Same shape as AI4RA/prompt-library's component_catalog.json.",
+  "components": []
+}

@@ -42,7 +42,8 @@ works without one and a key raises its quota.
 | Path | Upstream | Key | Tools | Skills |
 |---|---|---|---|---|
 | `/general/mcp` | the open web, through a SearXNG beside the process | none | `web_search`, `fetch_document` | `ask`, `remove-ai-tells`, `project-timeline-gantt` (Excel only), `code-change` and `actions-check` (use GitHub's own MCP server, reached by the Office pane through its host's proxy; see mindrouter-365's README, "GitHub through the proxy") |
-| `/ai4ra/mcp` | none: skills only | none | none | `rfa-sheet`, `proposal-narrative`, `work-plan`, `budget-outline`, `budget-nsf`, `pi-memo`, and seventeen cost-allowability, extraction and budget-justification prompts copied from AI4RA/prompt-library |
+| `/ai4ra/mcp` | none: skills only | none | none | `rfa-sheet`, `proposal-narrative`, `work-plan`, `budget-outline`, `budget-nsf`, `pi-memo`, `udm-sheet` (a workbook's sheet as a UDM table; calls the udm server's tools), and seventeen cost-allowability, extraction and budget-justification prompts copied from AI4RA/prompt-library |
+| `/udm/mcp` | the AI4RA Unified Data Model's published schema (ui-insight.github.io/AI4RA-UDM) | none | `udm_index`, `udm_schema`, `udm_conversion_guide` | none (`udm-sheet` is on `ai4ra`) |
 
 **Rules and announcements**
 
@@ -374,11 +375,78 @@ sheet with a skill of its own; `uidaho-rates` is Idaho's, and writes the
 sheet only when the request names one (the proposal workbook's Rates step
 does).
 
+`udm-sheet` lays a sheet of records out as one Unified Data
+Model table on a new sheet, by formula, after one round of confirmed
+decisions; the schema and the conversion guide come from the `udm`
+server's tools, and its description is under [udm](#udm).
+
 The other seventeen components are copies of AI4RA/prompt-library at commit
 `eef6fd3d818037ab51ece87f61806c448d51f40d`, files unchanged, each catalog
 entry carrying a `source` with the repository, commit and path. They are not
 edited here: a change goes to the prompt library and is copied in again at a
 new commit.
+
+### udm
+
+The AI4RA Unified Data Model, the vendor-neutral specification for
+research-administration data, read from the schema JSON its repository
+publishes on GitHub Pages
+(https://ui-insight.github.io/AI4RA-UDM/data/udm_schema_v2.json; the prose
+spec is in the AI4RA-UDM repository). No key. `AI4RA_MCP_UDM_SCHEMA_URL`
+points at another copy and `AI4RA_MCP_UDM_SCHEMA_FILE` reads a local file
+instead, which is how a checkout ahead of the published release is served;
+the published copy is cached a day, and every answer carries the version it
+came from.
+
+Two things a model needs to convert records to the UDM, and nothing that
+interprets the records for it. **The schema, in portions**, since the file
+is a few hundred kilobytes: `udm_index` is the overview (the version, the
+47 core tables in their six modules, the two implementation tables, the
+optional modules' tables each marked with its module, every table with a
+line, the audit columns, and the file's other sections by name);
+`udm_schema` with a table name is that table as the file has it, its
+columns in the spec's order with type, required flag, primary-key flag,
+references, allowed values (the column's own, or the status taxonomy the
+file keeps apart), description and synonyms, then the audit columns every
+table carries and the cross-row constraints on it; `udm_schema` with a
+section name is one top-level section verbatim (`universal_patterns`,
+`semantic_conventions`, `status_taxonomies`, `derived_values`). **The
+conversion guide**: `udm_conversion_guide` returns `guide.md`, the way the
+job is done written once as text: look at the data before the schema and
+say what one row is; fetch the table; decide each source column's one
+operation (rename, split or extract, combine or coalesce, transform,
+recode or blank, default, derive, resolve, route, generate, drop, or keep
+flagged) from its name, the synonyms, the description and above all the
+values, with the patterns that
+recur (the key, sponsor versus internal numbers, references held as names,
+original versus current, lifecycle stages, two-way attachment, columns the
+source lacks or the table lacks); conform dates, booleans, vocabularies,
+amounts and text; fill provenance; ask once with the decisions laid out and
+at most three questions; report. And what it never does: the output has
+exactly one row per source row in the source's order, never filtered,
+deduplicated, aggregated, sorted, pivoted or split; a grain that is not
+the table's means another table or a reshape first, not fewer or more
+rows. The synonyms are examples of what a
+column has been called elsewhere, not a closed list, and the guide says so:
+an institution's data has names the schema never heard of, which is why the
+mapping is the model's judgment over the data it can see and not a match
+the server computes.
+
+Any MCP client can convert with these two tools alone. `udm-sheet`, on the
+`ai4ra` server with the other research-administration skills, is the
+workbook side: it reads the records, follows the guide, asks once, and
+lays the sheet out as one UDM table on a new sheet named `UDM <Table>`,
+every column of the table in the spec's order and the audit columns, each
+data cell a formula on the source cell (a reference, a split, a join, a
+parsed date, a `SWITCH` over the vocabulary, a generated key when the
+source has no identifier), `_Date` and `_Amount` columns formatted, and
+the header of a required column with no source filled light yellow. Before
+it reports, it tests the row count with `assert_cells` (the key column
+nonblank on every source row, and the row below empty), since a catalog
+assertion cannot name a count only known at run time; the catalog's own
+assertions hold the header and the first key. One
+table a run: the leftover headers are named with the table each belongs
+to, and a second run naming that table writes the next.
 
 ### ecfr
 
@@ -1181,6 +1249,7 @@ ai4ra_mcp/
         catalog.json          the components, in AI4RA/prompt-library's catalog shape
         components/<slug>/    prompt.md, README.md, CHANGELOG.md, evals/, template.json where the skill has one
     general/  ai4ra/  grants/  nih/  sam/  uidaho/  lakehouse/       same shape, with skills (ai4ra has no tools)
+    udm/                      schema.py serves the published UDM schema in portions; guide.md is the conversion guide; no skills of its own
     fedreg/  regulations/  nsf/  usaspending/  fac/  csl/  oig/
     propublica/  ror/  perdiem/  bls/  openalex/  pubmed/  crossref/
     orcid/  osti/  clinicaltrials/                                   same shape, an empty catalog
@@ -1224,7 +1293,7 @@ version in the front matter and the catalog together.
 
 ## Status
 
-2026-09-25: twenty-five servers. The eCFR and grants.gov code moved in from
+2026-09-29: twenty-six servers; the `udm` server and the `udm-sheet` skill on `ai4ra` were added that day, offline-tested against a fixture in the published schema's shape and tried against the real schema. 2026-09-25: twenty-five servers. The eCFR and grants.gov code moved in from
 mcp-ecfr on 2026-09-22 with the Office add-in's skills, and the NIH, NSF,
 SAM.gov, USAspending and Federal Audit Clearinghouse servers were verified
 against the live APIs that day (SAM.gov and FAC with a person's own key).

@@ -1,9 +1,9 @@
 """ai4ra: research-administration skills, with no tools of their own.
 
 The skills here (an RFA sheet, a narrative, a work plan, a budget outline and the NSF budget form,
-a PI memo, the cost-allowability checks and budget-justification prompts copied from
+a PI memo, udm-sheet, the cost-allowability checks and budget-justification prompts copied from
 AI4RA/prompt-library) are institution-agnostic text. They use the document tools of whatever client
-runs them and, where they read the web, the general server's tools. A client that lists this server
+runs them and, where they read the web or the UDM, the general and udm servers' tools. A client that lists this server
 gets its catalog and its prompts; there is nothing to call.
 """
 

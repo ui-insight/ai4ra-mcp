@@ -54,6 +54,7 @@ from ai4ra_mcp.servers.regulations.server import mcp as regulations
 from ai4ra_mcp.servers.ror.server import mcp as ror
 from ai4ra_mcp.servers.s2s.server import mcp as s2s
 from ai4ra_mcp.servers.sam.server import mcp as sam
+from ai4ra_mcp.servers.udm.server import mcp as udm
 from ai4ra_mcp.servers.uidaho.server import mcp as uidaho
 from ai4ra_mcp.servers.usaspending.server import mcp as usaspending
 
@@ -61,7 +62,7 @@ from ai4ra_mcp.servers.usaspending.server import mcp as usaspending
 # upstreams grouped by the job they serve (the rules and announcements, the awards held, the vetting lists, the
 # budget figures, the scholarly record, the project trackers), and last the one institution's own servers.
 SERVERS: dict[str, MCPServer] = {
-    "general": general, "ai4ra": ai4ra,
+    "general": general, "ai4ra": ai4ra, "udm": udm,
     "ecfr": ecfr, "fedreg": fedreg, "regulations": regulations, "grants": grants, "s2s": s2s,
     "nih": nih, "nsf": nsf, "usaspending": usaspending,
     "sam": sam, "fac": fac, "csl": csl, "oig": oig, "propublica": propublica, "ror": ror,
@@ -81,7 +82,8 @@ META: dict[str, dict] = {
             "key": {"required": False, "hint": "Paste your S2S credential bundle: the base64url JSON of your client certificate and key, made with `python -m ai4ra_mcp.servers.s2s.credentials cert.pem key.pem`. Without one the deployment's fallback certificate is used, which only the mock accepts."}},
     "uidaho": {"label": "University of Idaho", "description": "University policy for sponsored projects (APM, FSH) by number and title, the F&A and fringe rates and a Rates sheet from them; the award skills that read Banner exports; the proposal workbook."},
     "general": {"label": "General", "description": "Any office, any document: search the open web, read a page or PDF as text; ask the person a question, remove AI writing tells, draw a project timeline as a Gantt chart."},
-    "ai4ra": {"label": "AI4RA", "description": "Research-administration skills, no tools: an RFA sheet, a narrative, a work plan, a budget outline and the NSF budget form, a PI memo, cost-allowability checks and budget justifications."},
+    "ai4ra": {"label": "AI4RA", "description": "Research-administration skills, no tools: an RFA sheet, a narrative, a work plan, a budget outline and the NSF budget form, a PI memo, a sheet laid out as a UDM table, cost-allowability checks and budget justifications."},
+    "udm": {"label": "UDM", "description": "The AI4RA Unified Data Model from its published schema: an overview, one table's columns with types, vocabularies and synonyms, one section, and the guide to converting records to it."},
     "nih": {"label": "NIH RePORTER", "description": "NIH-funded projects by PI, organization or topic; one project by number; its publications."},
     "nsf": {"label": "NSF awards", "description": "NSF awards by PI, institution or keyword; one award with its abstract; its outcomes report."},
     "sam": {"label": "SAM.gov", "description": "Entity registrations, exclusions and Assistance Listings.",

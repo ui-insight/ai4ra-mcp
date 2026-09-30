@@ -19,6 +19,7 @@ EXPECTED_TOOLS = {
     "lakehouse": {"lakehouse_index", "lakehouse_streams", "lakehouse_schema", "lakehouse_query", "lakehouse_files", "lakehouse_file", "lakehouse_sql_catalog", "lakehouse_sql"},
     "general": {"fetch_document", "web_search"},
     "ai4ra": set(),   # skills only
+    "udm": {"udm_index", "udm_schema", "udm_conversion_guide"},
     "nih": {"nih_index", "nih_projects_search", "nih_project", "nih_publications"},
     "nsf": {"nsf_index", "nsf_awards_search", "nsf_award", "nsf_award_outcomes"},
     "sam": {"sam_index", "sam_entity", "sam_exclusions_search", "sam_assistance_listing", "sam_assistance_listings_search"},

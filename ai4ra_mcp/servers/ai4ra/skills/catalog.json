@@ -2,7 +2,7 @@
   "catalog_version": "1.0",
   "repo": "ui-insight/ai4ra-mcp",
   "server": "ai4ra",
-  "note": "Research-administration skills with no tools of their own: the proposal sheets (RFA, narrative, work plan, budget outline, NSF budget form), a PI memo, and the cost-allowability and budget-justification prompts copied from AI4RA/prompt-library at a pinned commit (each entry's source says which). They use the client's document tools and, for the web, the general server's. Same shape as AI4RA/prompt-library's component_catalog.json, hand-maintained.",
+  "note": "Research-administration skills with no tools of their own: the proposal sheets (RFA, narrative, work plan, budget outline, NSF budget form), a PI memo, udm-sheet (a sheet laid out as one Unified Data Model table, with the udm server's tools), and the cost-allowability and budget-justification prompts copied from AI4RA/prompt-library at a pinned commit (each entry's source says which). They use the client's document tools and, for the web, the general server's. Same shape as AI4RA/prompt-library's component_catalog.json, hand-maintained.",
   "components": [
     {
       "slug": "rfa-sheet",
@@ -333,6 +333,72 @@
       }
     },
     {
+      "slug": "udm-sheet",
+      "name": "udm-sheet",
+      "summary": "Format a sheet to the UDM standard: read the records, fetch the schema and the conversion guide from the udm server, decide the renames, splits, combines and transforms, ask the person once, then write a new sheet with the table's columns in the spec's order, every cell a formula on the source, gaps yellow.",
+      "triggers": [
+        "udm",
+        "unified data model",
+        "udm format",
+        "udm sheet",
+        "udm standard"
+      ],
+      "version": "0.2.0",
+      "category": "data",
+      "domain": "research-administration",
+      "status": "experimental",
+      "paths": {
+        "component_dir": "components/udm-sheet",
+        "readme": "components/udm-sheet/README.md",
+        "prompt": "components/udm-sheet/prompt.md",
+        "evals_dir": "components/udm-sheet/evals"
+      },
+      "manifestations": [
+        {
+          "type": "prompt",
+          "path": "components/udm-sheet/prompt.md",
+          "version": "0.2.0",
+          "role": "canonical_prompt"
+        }
+      ],
+      "contracts": {
+        "output": {
+          "format": "spreadsheet",
+          "scope": "repo_local",
+          "schema_path": null
+        }
+      },
+      "evaluation": {
+        "case_count": 0,
+        "report_count": 0,
+        "last_fully_evaluated_version": null,
+        "current_version_is_fully_evaluated": false
+      },
+      "requires": [
+        "udm_index",
+        "udm_conversion_guide",
+        "udm_schema",
+        "excel:read_range",
+        "excel:add_sheet",
+        "excel:write_values",
+        "excel:write_formulas",
+        "excel:format_range",
+        "excel:assert_cells"
+      ],
+      "assertions": [
+        {
+          "address": "A1",
+          "rule": "nonblank",
+          "label": "the header row: the table's key column first"
+        },
+        {
+          "address": "A2",
+          "rule": "nonblank",
+          "label": "the first record's key on the sheet"
+        }
+      ]
+    },
+    {
       "component_id": "prompt.cost-allowability-determination",
       "slug": "cost-allowability-determination",
       "name": "cost-allowability-determination",
@@ -491,7 +557,7 @@
       "component_id": "prompt.cost-allocability-check",
       "slug": "cost-allocability-check",
       "name": "cost-allocability-check",
-      "summary": "Checks whether a single expense is allocable to the award under 2 CFR 200.405 — that it benefits the award and is charged in reasonable proportion to that benefit. It is one of the single-requirement checks in the federal cost-allowability analysis workflow and emits a structured finding consumed by the final determination step.",
+      "summary": "Checks whether a single expense is allocable to the award under 2 CFR 200.405 \u2014 that it benefits the award and is charged in reasonable proportion to that benefit. It is one of the single-requirement checks in the federal cost-allowability analysis workflow and emits a structured finding consumed by the final determination step.",
       "version": "0.1.0",
       "category": "review",
       "domain": "research-administration",
@@ -567,7 +633,7 @@
       "component_id": "prompt.cost-consistent-treatment-check",
       "slug": "cost-consistent-treatment-check",
       "name": "cost-consistent-treatment-check",
-      "summary": "Checks whether a single expense is accorded consistent treatment under 2 CFR 200.403(d) and 200.405(c) — that it is not direct-charged to the award when costs incurred for the same purpose in like circumstances are recovered as indirect (F&A) costs. It is one of the single-requirement checks in the federal cost-allowability analysis workflow and emits a structured finding consumed by the final determination step.",
+      "summary": "Checks whether a single expense is accorded consistent treatment under 2 CFR 200.403(d) and 200.405(c) \u2014 that it is not direct-charged to the award when costs incurred for the same purpose in like circumstances are recovered as indirect (F&A) costs. It is one of the single-requirement checks in the federal cost-allowability analysis workflow and emits a structured finding consumed by the final determination step.",
       "version": "0.1.0",
       "category": "review",
       "domain": "research-administration",
@@ -1121,7 +1187,7 @@
       "component_id": "prompt.expense-transaction-extraction",
       "slug": "expense-transaction-extraction",
       "name": "expense-transaction-extraction",
-      "summary": "Normalizes one expense — receipt, invoice, purchase order, p-card line, or general-ledger detail — into a single structured transaction record covering date, vendor, amount, account coding, description, and documentation status. It is the input-normalization step of the federal cost-allowability analysis workflow.",
+      "summary": "Normalizes one expense \u2014 receipt, invoice, purchase order, p-card line, or general-ledger detail \u2014 into a single structured transaction record covering date, vendor, amount, account coding, description, and documentation status. It is the input-normalization step of the federal cost-allowability analysis workflow.",
       "version": "0.1.0",
       "category": "extraction",
       "domain": "research-administration",
@@ -1203,7 +1269,7 @@
       "component_id": "prompt.award-allowability-terms-extraction",
       "slug": "award-allowability-terms-extraction",
       "name": "award-allowability-terms-extraction",
-      "summary": "Extracts the federal award terms that govern cost allowability — period of performance, approved budget categories, caps and exclusions, sponsor prior-approval triggers, indirect-cost treatment, and institutional compliance-approval requirements — into one structured record. It is an input-normalization step of the federal cost-allowability analysis workflow.",
+      "summary": "Extracts the federal award terms that govern cost allowability \u2014 period of performance, approved budget categories, caps and exclusions, sponsor prior-approval triggers, indirect-cost treatment, and institutional compliance-approval requirements \u2014 into one structured record. It is an input-normalization step of the federal cost-allowability analysis workflow.",
       "version": "0.1.0",
       "category": "extraction",
       "domain": "research-administration",
@@ -1242,7 +1308,7 @@
         "output": {
           "format": "json_object",
           "scope": "repo_local_normalization_contract",
-          "notes": "Repo-local record of the federal award terms that govern cost allowability — period of performance, approved budget, caps and exclusions, federal prior-approval triggers, indirect-cost treatment, and institutional compliance-approval requirements. Input-normalization contract for the cost-allowability analysis workflow; not a shared AI4RA-UDM schema.",
+          "notes": "Repo-local record of the federal award terms that govern cost allowability \u2014 period of performance, approved budget, caps and exclusions, federal prior-approval triggers, indirect-cost treatment, and institutional compliance-approval requirements. Input-normalization contract for the cost-allowability analysis workflow; not a shared AI4RA-UDM schema.",
           "schema_path": "components/award-allowability-terms-extraction/schema.json",
           "schema_entrypoints": [
             "#"
@@ -1356,12 +1422,12 @@
         {
           "slug": "proposal-budget-personnel-extraction-udm",
           "relationship": "complementary_focus",
-          "notes": "proposal-budget-personnel-extraction-udm extracts the budget structure and personnel listing WITHOUT generating narrative text. budget-justification-generator-udm does both — extracts the structure and drafts the narrative."
+          "notes": "proposal-budget-personnel-extraction-udm extracts the budget structure and personnel listing WITHOUT generating narrative text. budget-justification-generator-udm does both \u2014 extracts the structure and drafts the narrative."
         }
       ],
       "triad_integration": {
         "evaluation_datasets": [],
-        "harness_notes": "Validate JSON outputs against schema.json. Canonical single-call invocation surface is prompt.md. The companion top-level workflows/budget-justification-generator Vandalizer workflow at v0.1.0 implements the contract as four parallel Extraction tasks (each both extracting data AND generating section narratives) plus a Consolidation Prompt that computes four arithmetic checks deterministically and renders final_justification_document as a single Markdown string in R&R Budget / SF-424A category order. Scoring is two-layered — structured fields validate against schema.json and arithmetic_checks; narrative strings require human review against the project narrative and budget form.",
+        "harness_notes": "Validate JSON outputs against schema.json. Canonical single-call invocation surface is prompt.md. The companion top-level workflows/budget-justification-generator Vandalizer workflow at v0.1.0 implements the contract as four parallel Extraction tasks (each both extracting data AND generating section narratives) plus a Consolidation Prompt that computes four arithmetic checks deterministically and renders final_justification_document as a single Markdown string in R&R Budget / SF-424A category order. Scoring is two-layered \u2014 structured fields validate against schema.json and arithmetic_checks; narrative strings require human review against the project narrative and budget form.",
         "udm_alignment": {
           "status": "shared_udm_semantics_repo_local_schema",
           "notes": "Leaf fields bind to UDM entities: senior_key_personnel + pi_name to Personnel; project_title to Proposal.Proposal_Title; sponsoring_agency to Organization.Organization_Name; every monetary leaf to ProposalBudget.Direct_Cost or ProposalBudget.Indirect_Cost; budget_period_summary to ProposalBudget.Period_Number; fa_rate_percentage and fa_base_type and fa_rate_type to IndirectRate (Rate_Percentage, Base_Type, Rate_Type); cost_share_required / cost_share_amount / cost_share_type to CostShare (Is_Mandatory, Committed_Amount, Commitment_Type). The seven-block drafting shape itself is repo-local."
@@ -1379,7 +1445,7 @@
       "component_id": "prompt.nsf-budget-justification-udm",
       "slug": "nsf-budget-justification-udm",
       "name": "nsf-budget-justification-udm",
-      "summary": "Drafts an NSF-format budget justification narrative from a structured budget object. Output is the eight canonical NSF sections (A..H) as an ordered array of section objects — one per section, each with a `key`, a fixed `title`, and `content` in narrative markdown. All eight sections are always emitted; zero-value categories produce a single-sentence content.",
+      "summary": "Drafts an NSF-format budget justification narrative from a structured budget object. Output is the eight canonical NSF sections (A..H) as an ordered array of section objects \u2014 one per section, each with a `key`, a fixed `title`, and `content` in narrative markdown. All eight sections are always emitted; zero-value categories produce a single-sentence content.",
       "version": "1.0.0",
       "category": "drafting",
       "domain": "research-administration",
@@ -1418,7 +1484,7 @@
           "path": "components/nsf-budget-justification-udm/skill/SKILL.md",
           "version": "1.0.0",
           "role": "claude_skill",
-          "description": "Drafts an NSF-format budget justification from a structured budget object. Input is a JSON budget (personnel detail, per-category per-year totals, indirect rate and base, and optional detail for equipment / travel / participant support / subawards / other direct costs). Output is an ordered JSON array of exactly eight section objects — the canonical NSF sections A through H (Senior Personnel, Other Personnel, Fringe Benefits, Equipment, Travel, Participant Support Costs, Other Direct Costs, Indirect Costs) — each with key, title, and a narrative markdown content field. All eight sections are always emitted; zero-value categories produce a single-sentence content stating no funds are requested. Use when pre-award staff need a first-draft budget justification to edit, when an ingest pipeline turns a structured budget into narrative for insertion into a proposal, or when a user wants to go from a budget spreadsheet to NSF-ready prose. First in an anticipated family — NIH, DoE, and foundation variants will ship as separate components; the output's eight-section shape is NSF-specific."
+          "description": "Drafts an NSF-format budget justification from a structured budget object. Input is a JSON budget (personnel detail, per-category per-year totals, indirect rate and base, and optional detail for equipment / travel / participant support / subawards / other direct costs). Output is an ordered JSON array of exactly eight section objects \u2014 the canonical NSF sections A through H (Senior Personnel, Other Personnel, Fringe Benefits, Equipment, Travel, Participant Support Costs, Other Direct Costs, Indirect Costs) \u2014 each with key, title, and a narrative markdown content field. All eight sections are always emitted; zero-value categories produce a single-sentence content stating no funds are requested. Use when pre-award staff need a first-draft budget justification to edit, when an ingest pipeline turns a structured budget into narrative for insertion into a proposal, or when a user wants to go from a budget spreadsheet to NSF-ready prose. First in an anticipated family \u2014 NIH, DoE, and foundation variants will ship as separate components; the output's eight-section shape is NSF-specific."
         }
       ],
       "contracts": {
@@ -1651,7 +1717,7 @@
       "component_id": "prompt.sponsor-doc-defaults-udm",
       "slug": "sponsor-doc-defaults-udm",
       "name": "sponsor-doc-defaults-udm",
-      "summary": "Given a sponsor organization (and optional division), emit the default set of documents that sponsor typically requires for a standard full proposal — as a structured list with page limits, format specs, required vs. optional flags, per-person indicators, and conditional triggers.",
+      "summary": "Given a sponsor organization (and optional division), emit the default set of documents that sponsor typically requires for a standard full proposal \u2014 as a structured list with page limits, format specs, required vs. optional flags, per-person indicators, and conditional triggers.",
       "version": "1.0.0",
       "category": "research",
       "domain": "research-administration",
@@ -1690,7 +1756,7 @@
           "path": "components/sponsor-doc-defaults-udm/skill/SKILL.md",
           "version": "1.0.0",
           "role": "claude_skill",
-          "description": "Emits the default set of documents a named research-funding sponsor requires for a standard full proposal — as a structured JSON list with per-document page limits, format specs, required vs. optional flags, per-person indicators, and conditional triggers. Use when a pre-award team needs to seed a proposal checklist before any solicitation-specific text is analyzed, when an ingest pipeline needs to know what NSF / NIH / DoE expects by default, or when a user asks \"what documents do I need to submit for an NSF full proposal?\". Input is a short block naming the sponsor (and optionally a division or institute); both natural language and a structured key-value block work. Output is one JSON object containing sponsor_name, sponsor_division, a knowledge_notes caveat string, and a document_requirements array of requirement objects. Uses a controlled 29-code vocabulary shared with sibling prompt-library components so downstream extractors and reviewers can dispatch on the code directly. For solicitation-specific modifications (overrides or net-new documents a specific program introduces), use solicitation-doc-modifications-udm with this component's output as input. When the sponsor is unrecognized, emits an empty requirements array and explains in knowledge_notes — never synthesizes a generic default list."
+          "description": "Emits the default set of documents a named research-funding sponsor requires for a standard full proposal \u2014 as a structured JSON list with per-document page limits, format specs, required vs. optional flags, per-person indicators, and conditional triggers. Use when a pre-award team needs to seed a proposal checklist before any solicitation-specific text is analyzed, when an ingest pipeline needs to know what NSF / NIH / DoE expects by default, or when a user asks \"what documents do I need to submit for an NSF full proposal?\". Input is a short block naming the sponsor (and optionally a division or institute); both natural language and a structured key-value block work. Output is one JSON object containing sponsor_name, sponsor_division, a knowledge_notes caveat string, and a document_requirements array of requirement objects. Uses a controlled 29-code vocabulary shared with sibling prompt-library components so downstream extractors and reviewers can dispatch on the code directly. For solicitation-specific modifications (overrides or net-new documents a specific program introduces), use solicitation-doc-modifications-udm with this component's output as input. When the sponsor is unrecognized, emits an empty requirements array and explains in knowledge_notes \u2014 never synthesizes a generic default list."
         }
       ],
       "contracts": {
