@@ -226,11 +226,11 @@ async def test_lakehouse_query_aggregate_without_group_by_is_one_sql_statement(m
     out = await lakehouse.lakehouse_query("subaward", "docs", filters={"fiscal_year": {"gte": 2023}, "status": "Active", "title": {"ilike": "%o'brien%"}, "kind": {"in": ["a", "b"]}, "ended": {"is_null": True}},
                                           aggregate=[{"fn": "count", "column": "*", "alias": "cnt"}, {"fn": "SUM", "column": "amount", "alias": "total"}])
     assert out["rows"] == [[42, 7.5]] and out["columns"] == ["cnt", "total"] and out["returned"] == 1 and out["table"] == "docs"
-    assert ran["sql"] == ('SELECT COUNT(*) AS "cnt", SUM("amount") AS "total" FROM lakehouse."client_mr-365__subaward"."docs" WHERE '
+    assert ran["sql"] == ('SELECT COUNT(*) AS "cnt", SUM("amount") AS "total" FROM lakehouse."subaward"."docs" WHERE '
                           '"fiscal_year" >= 2023 AND "status" = \'Active\' AND lower(CAST("title" AS varchar)) LIKE lower(\'%o\'\'brien%\') AND "kind" IN (\'a\', \'b\') AND "ended" IS NULL')
     assert out["sql_run"] == ran["sql"]
     plain = await lakehouse.lakehouse_query("subaward", "docs", aggregate=[{"fn": "COUNT", "column": "*"}])
-    assert ran["sql"] == 'SELECT COUNT(*) AS "count_all" FROM lakehouse."client_mr-365__subaward"."docs"' and plain["returned"] == 1
+    assert ran["sql"] == 'SELECT COUNT(*) AS "count_all" FROM lakehouse."subaward"."docs"' and plain["returned"] == 1
 
 
 @pytest.mark.asyncio

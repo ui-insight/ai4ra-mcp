@@ -23,3 +23,7 @@ All notable changes to this component. Versions follow semver: MAJOR for output-
 ## [0.3.1] — 2026-09-30
 
 - Step 4 addresses the stats table by the stream alone (`lakehouse."<stream>"."_stats"`), the form Marina accepts, and says the stats table takes only SELECT with WHERE, ORDER BY, LIMIT and simple aggregates over itself (#13).
+
+## [0.3.2] — 2026-09-30
+
+- Every table reference is lakehouse."<stream>"."<table>": Marina's schema is the stream's name since its PR #382 (2026-09-29), and the stats table allows GROUP BY and the simple aggregates (#13, settled from Marina's client reference).

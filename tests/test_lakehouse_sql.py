@@ -15,8 +15,8 @@ def test_prepare_sql_wraps_a_bare_select_and_leaves_the_rest_alone():
     assert lh.prepare_sql("select a from t;", 9000) == "SELECT * FROM (select a from t) AS q LIMIT 500"
     assert lh.prepare_sql("WITH x AS (SELECT 1) SELECT * FROM x LIMIT 5", 200) == "WITH x AS (SELECT 1) SELECT * FROM x LIMIT 5"
     assert lh.prepare_sql("SELECT a FROM t LIMIT 10 OFFSET 20", 200) == "SELECT a FROM t LIMIT 10 OFFSET 20"
-    assert lh.prepare_sql('SHOW PROFILE IN lakehouse."client_mr-365__subaward"', 200) == 'SHOW PROFILE IN lakehouse."client_mr-365__subaward"'
-    assert lh.prepare_sql('DESCRIBE lakehouse."client_mr-365__subaward"."v"', 200).startswith("DESCRIBE")
+    assert lh.prepare_sql('SHOW PROFILE IN lakehouse."subaward"', 200) == 'SHOW PROFILE IN lakehouse."subaward"'
+    assert lh.prepare_sql('DESCRIBE lakehouse."subaward"."v"', 200).startswith("DESCRIBE")
     meta = 'SELECT * FROM lakehouse."subaward"."_stats"'
     assert lh.prepare_sql(meta, 200) == meta   # gateway-evaluated: never wrapped
 
@@ -32,8 +32,8 @@ def test_prepare_sql_refuses_with_a_reason(sql, reason):
 
 
 def test_names():
-    assert lh.schema_name("mr-365", "subaward") == "client_mr-365__subaward"
-    assert lh.qualified("mr-365", "subaward", "veras") == 'lakehouse."client_mr-365__subaward"."veras"'
+    assert lh.schema_name("mr-365", "subaward") == "subaward"
+    assert lh.qualified("mr-365", "subaward", "veras") == 'lakehouse."subaward"."veras"'
     assert lh.is_meta_table("_stats") and not lh.is_meta_table("stats")
 
 
@@ -88,7 +88,7 @@ async def test_sql_uses_basic_auth_text_plain_and_follows_next_uri(monkeypatch):
         NEXT1: [Resp(200, {"id": "q1", "nextUri": NEXT2, "columns": [{"name": "state", "type": "varchar"}, {"name": "n", "type": "bigint"}], "data": [["ID", 3]], "stats": {"state": "RUNNING"}})],
         NEXT2: [Resp(200, {"id": "q1", "data": [["WA", 2]], "stats": {"state": "FINISHED"}})],
     }, calls)
-    out = await lh.lakehouse_sql('SELECT state, count(*) AS n FROM lakehouse."client_mr-365__subaward"."v" GROUP BY state')
+    out = await lh.lakehouse_sql('SELECT state, count(*) AS n FROM lakehouse."subaward"."v" GROUP BY state')
     post = next(c for c in calls if c[0] == "POST")
     assert post[2] == (lh.CLIENT_ID, "tok-1") and post[3] == "text/plain" and post[5] is None   # Basic, not a Bearer header
     assert post[4].startswith("SELECT * FROM (SELECT state") and post[4].endswith("LIMIT 200")
@@ -99,9 +99,9 @@ async def test_sql_uses_basic_auth_text_plain_and_follows_next_uri(monkeypatch):
 
 async def test_sql_passes_marina_failure_message_verbatim(monkeypatch):
     calls = []
-    msg = 'Table not found. Use SHOW TABLES IN lakehouse."client_mr-365__subaward" to list the views you may query.'
+    msg = 'Table not found. Use SHOW TABLES IN lakehouse."subaward" to list the views you may query.'
     make_client(monkeypatch, {STMT: [Resp(200, {"id": "q1", "stats": {"state": "FAILED"}, "error": {"message": msg, "errorName": "TABLE_NOT_FOUND"}})]}, calls)
-    out = await lh.lakehouse_sql('SELECT * FROM lakehouse."client_mr-365__subaward"."nope"')
+    out = await lh.lakehouse_sql('SELECT * FROM lakehouse."subaward"."nope"')
     assert out == {"error": msg}
     make_client(monkeypatch, {STMT: [Resp(400, {"error": {"message": "Only SELECT, WITH, SHOW and DESCRIBE are accepted."}})]}, calls)
     out = await lh.lakehouse_sql("SHOW SESSION")
@@ -114,7 +114,7 @@ async def test_sql_reads_a_trino_error_from_failure_info_and_from_a_poll(monkeyp
         STMT: [Resp(200, {"id": "q1", "nextUri": NEXT1, "stats": {"state": "RUNNING"}})],
         NEXT1: [Resp(200, {"id": "q1", "stats": {"state": "FAILED"}, "error": {"message": "", "errorName": "", "failureInfo": {"type": "x", "message": "line 1:8: Column 'nope' cannot be resolved"}}})],
     }, calls)
-    out = await lh.lakehouse_sql("SELECT nope FROM lakehouse.\"client_mr-365__s\".\"v\"")
+    out = await lh.lakehouse_sql("SELECT nope FROM lakehouse.\"s\".\"v\"")
     assert out == {"error": "line 1:8: Column 'nope' cannot be resolved"}
 
 
@@ -139,7 +139,7 @@ async def test_sql_timeout_is_named_and_allows_the_statement_budget(monkeypatch)
     monkeypatch.setattr(lh.httpx, "AsyncClient", Client)
     lh._tokens.clear()
     monkeypatch.setenv("AI4RA_MCP_LAKEHOUSE_SECRET", "s3")
-    out = await lh.lakehouse_sql('SELECT count(*) FROM lakehouse."client_mr-365__s"."v"')
+    out = await lh.lakehouse_sql('SELECT count(*) FROM lakehouse."s"."v"')
     assert out["error"].startswith("Marina gave no answer to the statement within 60 seconds") and "ReadTimeout" in out["error"] and "_stats" in out["error"]
     assert seen["timeout"].read == pytest.approx(lh.SQL_TIMEOUT_S + 10) and seen["timeout"].connect == 10
 
@@ -204,7 +204,7 @@ async def test_sql_stops_at_the_row_cap_and_cancels(monkeypatch):
         STMT: [Resp(200, {"id": "q1", "nextUri": NEXT1, "columns": [{"name": "i", "type": "integer"}], "data": big, "stats": {"state": "RUNNING"}})],
         NEXT1: [Resp(200, {"id": "q1", "data": [[9]], "stats": {"state": "FINISHED"}})],
     }, calls)
-    out = await lh.lakehouse_sql("SELECT i FROM lakehouse.\"client_mr-365__s\".\"v\" LIMIT 1000", limit=500)
+    out = await lh.lakehouse_sql("SELECT i FROM lakehouse.\"s\".\"v\" LIMIT 1000", limit=500)
     assert out["truncated"] is True and out["returned"] == lh.MAX_ROWS
     assert ("DELETE", NEXT1, (lh.CLIENT_ID, "tok-1")) in calls and not any(c[0] == "GET" for c in calls)
 
@@ -233,15 +233,15 @@ SCHEMA = f"{lh.BASE}/query/schema"
 async def test_catalog_overview_ranks_largest_tables_across_streams_and_skips_metadata(monkeypatch):
     calls = []
     make_client(monkeypatch, {
-        STREAMS: [Resp(200, {"client_id": "mr-365", "querying": [{"name": "subaward", "stats_table": "_stats"}, "personnel"], "submitting": ["intake"]})],
+        STREAMS: [Resp(200, {"client_id": "mr-365", "querying": [{"stream_name": "subaward", "enabled": True, "stats_table": "_stats"}, "personnel", {"stream_name": "old", "enabled": False}], "submitting": ["intake"]})],
         SCHEMA: [Resp(200, schema_body([table("awards", 5000), table("_stats", 12), table("subs", None)])),
                  Resp(200, schema_body([table("people", 90000), table("depts", 40)]))],
     }, calls)
     out = await lh.lakehouse_sql_catalog()
     assert [s["stream"] for s in out["streams"]] == ["subaward", "personnel"]
-    assert out["streams"][0] == {"stream": "subaward", "schema": "client_mr-365__subaward", "tables": 2, "measured": 1, "unmeasured": 1, "rows": None, "rows_measured": 5000, "stats_table": 'lakehouse."subaward"."_stats"'}
-    assert out["streams"][1] == {"stream": "personnel", "schema": "client_mr-365__personnel", "tables": 2, "measured": 2, "unmeasured": 0, "rows": 90040, "stats_table": 'lakehouse."personnel"."_stats"'}
-    assert [t["rows"] for t in out["largest_tables"]] == [90000, 5000, 40] and out["largest_tables"][0]["table"] == 'lakehouse."client_mr-365__personnel"."people"'
+    assert out["streams"][0] == {"stream": "subaward", "schema": "subaward", "tables": 2, "measured": 1, "unmeasured": 1, "rows": None, "rows_measured": 5000, "stats_table": 'lakehouse."subaward"."_stats"'}
+    assert out["streams"][1] == {"stream": "personnel", "schema": "personnel", "tables": 2, "measured": 2, "unmeasured": 0, "rows": 90040, "stats_table": 'lakehouse."personnel"."_stats"'}
+    assert [t["rows"] for t in out["largest_tables"]] == [90000, 5000, 40] and out["largest_tables"][0]["table"] == 'lakehouse."personnel"."people"'
     assert out["metadata_tables"] == 1 and out["stats_source"] == "marina"
     assert [c for c in calls if c[0] == "GET" and "/query/schema" in c[1]][0][3] == {"stream": "subaward"}
     assert not any(c[0] == "POST" for c in calls)   # REST only: no SQL for the overview
@@ -253,7 +253,7 @@ async def test_catalog_stream_layer_lists_tables_by_size_with_columns_inline_for
     out = await lh.lakehouse_sql_catalog(stream="subaward")
     assert [t["table"] for t in out["tables"]] == ["big", "small", "new"] and out["tables"][0]["column_list"] == ["c0 varchar", "c1 varchar", "c2 varchar"]
     assert out["tables"][0]["description"] == "the big one" and out["tables"][2]["rows"] is None and out["unmeasured"] == 1
-    assert out["metadata_tables"] == ["_stats"] and "counts=true" in out["note"] and out["schema"] == "client_mr-365__subaward"
+    assert out["metadata_tables"] == ["_stats"] and "counts=true" in out["note"] and out["schema"] == "subaward"
     many = [table(f"t{i}", i) for i in range(50)]
     make_client(monkeypatch, {SCHEMA: [Resp(200, schema_body(many))]}, calls)
     out = await lh.lakehouse_sql_catalog(stream="subaward")
@@ -265,7 +265,7 @@ async def test_catalog_table_layer_passes_marina_stats_keys_through(monkeypatch)
     stats = {"null_count": 3, "distinct_count": 40, "min": "2019-01-01", "max": "2026-09-01", "true_count": None, "rows_by_year": {"2025": 10}}
     make_client(monkeypatch, {SCHEMA: [Resp(200, schema_body([table("awards", 5000, cols=1, stats=stats, desc="Awards")]))]}, calls)
     out = await lh.lakehouse_sql_catalog(stream="subaward", table="AWARDS")
-    assert out["qualified"] == 'lakehouse."client_mr-365__subaward"."awards"' and out["row_count"] == 5000 and out["description"] == "Awards"
+    assert out["qualified"] == 'lakehouse."subaward"."awards"' and out["row_count"] == 5000 and out["description"] == "Awards"
     col = out["columns"][0]
     assert col == {"name": "c0", "type": "varchar", "null_count": 3, "distinct_count": 40, "min": "2019-01-01", "max": "2026-09-01", "rows_by_year": {"2025": 10}}
     assert out["stats_source"] == "marina"
@@ -286,7 +286,7 @@ async def test_catalog_counts_only_unmeasured_tables_in_chunks_of_fifty(monkeypa
     out = await lh.lakehouse_sql_catalog(stream="subaward", counts=True)
     posts = [c for c in calls if c[0] == "POST"]
     assert len(posts) == 2 and posts[0][4].count("UNION ALL") == 49 and posts[1][4].count("UNION ALL") == 9
-    assert "measured" not in posts[0][4] and posts[0][4].startswith("SELECT 'u0' AS view, count(*) AS n FROM lakehouse.\"client_mr-365__subaward\".\"u0\"")
+    assert "measured" not in posts[0][4] and posts[0][4].startswith("SELECT 'u0' AS view, count(*) AS n FROM lakehouse.\"subaward\".\"u0\"")
     by = {t["table"]: t for t in out["tables"]}
     assert by["u59"]["rows"] == 59 and by["u59"]["counted_now"] is True and "counted_now" not in by["measured"] and out["unmeasured"] == 0
     assert "count_problems" not in out

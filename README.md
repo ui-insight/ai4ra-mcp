@@ -940,10 +940,18 @@ in the tool's schema: `fn` (exactly COUNT, SUM, AVG, MIN or MAX), `column`
 and `alias`, so a model fills the keys from the schema rather than the prose.
 
 **SQL.** Marina also speaks v1 of the Trino HTTP statement protocol at
-`/sql/v1/statement`: one schema per querying stream, named
-`client_<client_id>__<stream>`, one view per allowed table, so a table is
-`lakehouse."client_mr-365__subaward"."<view>"`; rows are filtered and masked
-inside the views, and a statement may reference one stream's views only. The
+`/sql/v1/statement`: one schema per querying stream, named for the stream
+(since Marina's PR #382 of 2026-09-29; the earlier `client_<id>__<stream>`
+form is refused), one table per allowed source table under its own name, so
+a table is `lakehouse."subaward"."<table>"`, both parts quoted since a
+stream name may carry a hyphen; rows are filtered and columns masked by a
+policy Marina inlines at query time, and a statement may reference one
+stream's tables only. Marina's keyword guard is textual, so INSERT, SET,
+USE, CALL, ROLE and the rest are refused even inside a string literal or as
+an alias. The stats table, `lakehouse."<stream>"."_stats"`, is evaluated by
+the gateway itself and takes SELECT with WHERE, GROUP BY, ORDER BY, LIMIT
+and the simple aggregates over itself, no Trino-only function and never a
+data table in the same statement (#13). The
 endpoint takes HTTP Basic with the client id as the user and the Marina
 bearer as the password (a Bearer header is refused), a `text/plain` body, and
 answers page by page through `nextUri`. Two tools sit on it:

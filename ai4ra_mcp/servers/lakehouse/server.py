@@ -11,8 +11,10 @@ non-alphanumerics as underscores). A token is kept until it expires and never lo
 streams' tables and files. The submitting streams are listed but not written to here, because a remote write
 runs behind no confirmation card.
 
-SQL: Marina also speaks v1 of the Trino HTTP statement protocol at /sql/v1/statement, one schema per querying
-stream (`client_<client_id>__<stream>`), one view per allowed table, rows filtered and masked inside the views.
+SQL: Marina also speaks v1 of the Trino HTTP statement protocol at /sql/v1/statement (HTTP Basic, client id and
+bearer), one schema per querying stream named for the stream (lakehouse."<stream>", since Marina PR #382 of
+2026-09-29), one table per allowed source table under its own name, rows filtered and columns masked by a policy
+Marina inlines at query time.
 lakehouse_sql_catalog surveys the visible schema with Marina's own statistics (GET /query/schema per stream), in
 layers small enough to live in a conversation; lakehouse_sql runs one guarded SELECT. Nothing is cached here: the
 conversation is the cache. A client is an application identity (everyone using it sees the same views).
@@ -246,7 +248,9 @@ _TRAILING_LIMIT = re.compile(r"\bLIMIT\s+(?:\d+|ALL)(?:\s+OFFSET\s+\d+)?\s*$", r
 
 
 def schema_name(client_id: str, stream: str) -> str:
-    return f"client_{client_id}__{stream}"
+    """The SQL schema of a stream is the stream's own name (Marina PR #382, 2026-09-29); the client id is not part of it.
+    Quoted wherever it is used, since a stream name may carry a hyphen."""
+    return stream
 
 
 def qualified(client_id: str, stream: str, view: str) -> str:
@@ -254,8 +258,7 @@ def qualified(client_id: str, stream: str, view: str) -> str:
 
 
 def stats_qualified(stream: str) -> str:
-    """The stream's stats table, which the gateway reads itself and addresses by the stream alone: Marina refuses the
-    client_<id>__ form there (#13, seen 2026-09-30). Data views keep the long form until a probe says otherwise."""
+    """The stream's stats table, which the gateway evaluates itself (#13)."""
     return f'lakehouse."{stream}"."_stats"'
 
 
@@ -407,6 +410,8 @@ def _stream_names(body) -> list[str]:
         if isinstance(q, str):
             out.append(q)
         elif isinstance(q, dict) and (q.get("stream_name") or q.get("name") or q.get("stream")):
+            if q.get("enabled") is False:   # listed by /streams but not queryable, and absent from SHOW SCHEMAS
+                continue
             out.append(str(q.get("stream_name") or q.get("name") or q.get("stream")))
     return out
 
@@ -487,9 +492,9 @@ def make_server(name: str, client_id: str, key_env_name: str) -> tuple[MCPServer
             "client": client["id"],
             "key": {"on_this_request": bool(api_key(client["key_env"])), "per_user": "send this client's shared secret as a bearer token; the server holds none unless the deployment set " + client["key_env"],
                         "how": key_how(client["id"])},
-            "model": "A client is an application identity authorized for streams; everyone using it sees the same views. A querying stream reads a set of tables through a wrapper view (columns masked and rows filtered as the admin set on the stream) and a set of files by tag. A submitting stream accepts records and files; those are listed here but not written to. In SQL, a stream is the schema lakehouse.\"client_" + client["id"] + "__<stream>\" and each table a view in it.",
+            "model": "A client is an application identity authorized for streams; everyone using it sees the same views. A querying stream reads a set of tables through a wrapper view (columns masked and rows filtered as the admin set on the stream) and a set of files by tag. A submitting stream accepts records and files; those are listed here but not written to. In SQL, a stream is the schema lakehouse.\"<stream>\" and each table is in it under its own name.",
             "workflow": ["lakehouse_sql_catalog(): the streams this client sees with their sizes and the largest tables across them; (stream): that stream's tables by row count, or with like='%doc%' only the tables whose names match; (stream, table): every column with Marina's statistics (null_count, distinct_count, min, max, mean, true_count, rows_by_year and the rest, where measured). Read this before writing SQL; the conversation keeps it. counts=true scans only the tables Marina has not measured yet.",
-                         "lakehouse_sql(sql, limit): one SELECT or WITH over one stream's views, fully qualified as lakehouse.\"client_" + client["id"] + "__<stream>\".\"<view>\" (the catalog gives the names); any Trino function over data views; a LIMIT is added when missing. Marina refuses DML, DDL, EXPLAIN and multi-statement requests, and its message says what to do. The stats table is different: it is read by the gateway, addressed by the stream alone as lakehouse.\"<stream>\".\"_stats\" (Marina refuses the client_<id>__ form there), and takes only SELECT with WHERE, ORDER BY, LIMIT and simple aggregates (count, sum, min, max, avg) over that table alone, no other functions and no joins. Row counts of many tables are one statement, never one call per table: SELECT DISTINCT table_name, row_count FROM lakehouse.\"<stream>\".\"_stats\" WHERE table_name LIKE '%word%', or one UNION ALL of SELECT 'a' AS t, count(*) FROM s.\"a\" branches (fifty at most) for tables _stats has not measured.",
+                         "lakehouse_sql(sql, limit): one SELECT or WITH over one stream's tables, fully qualified as lakehouse.\"<stream>\".\"<table>\" (the catalog gives the names; quote both); joins, UNION ALL, CTEs and any Trino function within one stream; a LIMIT is added when missing. Marina refuses DML, DDL, EXPLAIN, multi-statement requests and anything touching two streams, and its message says what to do. Its keyword guard is textual: the words INSERT UPDATE DELETE MERGE UPSERT TRUNCATE CREATE DROP ALTER GRANT REVOKE CALL COMMENT REFRESH EXECUTE PREPARE DEALLOCATE RESET ROLE COMMIT ROLLBACK EXPLAIN USE SET are refused wherever they appear, even inside a string literal or as an alias, so write around them. The stats table, lakehouse.\"<stream>\".\"_stats\", is evaluated by the gateway on its own: SELECT with WHERE, GROUP BY, ORDER BY, LIMIT and count, sum, avg, min, max over _stats alone, no Trino-only functions (regexp_extract, date_trunc, approx_distinct) and never combined with a data table. Row counts of many tables are one statement, never one call per table: SELECT DISTINCT table_name, row_count FROM lakehouse.\"<stream>\".\"_stats\" WHERE table_name LIKE '%word%', or one UNION ALL of SELECT 'a' AS t, count(*) FROM s.\"a\" branches (fifty at most) for tables _stats has not measured.",
                          "lakehouse_query(stream, table, limit, filters, offset, group_by, aggregate): a simple filtered read of one table without SQL, or aggregates (exactly COUNT, SUM, AVG, MIN, MAX; COUNT on a column is its non-null count) per group with group_by or as one row of totals without it. Anything else is lakehouse_sql.",
                          "lakehouse_streams and lakehouse_schema(stream): the plain lists behind the catalog",
                          "lakehouse_files(stream): the files a stream may read, with their hashes",
@@ -772,9 +777,9 @@ def make_server(name: str, client_id: str, key_env_name: str) -> tuple[MCPServer
 
     @mcp.tool(name="lakehouse_sql", annotations=_READ_ONLY)
     async def lakehouse_sql(sql: str, limit: int = 200) -> dict:
-        """One SQL statement over the lakehouse through Marina: a SELECT or WITH over one stream's views, or SHOW SCHEMAS, SHOW TABLES IN a schema, SHOW COLUMNS, SHOW PROFILE IN a schema, DESCRIBE a view. Any Trino built-in function. Views are fully qualified as lakehouse."client_<id>__<stream>"."<view>" (lakehouse_sql_catalog gives the names). A LIMIT is added when a SELECT has none. Read only: Marina refuses anything else and says why.
+        """One SQL statement over the lakehouse through Marina: a SELECT or WITH over one stream's tables, or SHOW SCHEMAS, SHOW TABLES IN a schema, SHOW COLUMNS, SHOW PROFILE FOR or IN, DESCRIBE. Tables are lakehouse."<stream>"."<table>", both quoted (lakehouse_sql_catalog gives the names); joins, UNION ALL, CTEs and any Trino function within one stream. A LIMIT is added when a SELECT has none. Read only: Marina refuses anything else and says why.
 
-        The stats table is addressed by the stream alone, lakehouse."<stream>"."_stats" (Marina refuses the client_<id>__ form there), and takes only SELECT with WHERE, ORDER BY, LIMIT and simple aggregates over that table alone: no other functions, no joins. Row counts of several tables are one statement, not one call per table: SELECT DISTINCT table_name, row_count FROM lakehouse."<stream>"."_stats" WHERE table_name LIKE '%word%' gives Marina's counts where measured; for the tables it has not measured, one UNION ALL of SELECT 'a' AS t, count(*) AS n FROM <schema>."a" branches, fifty at most.
+        Marina's keyword guard is textual: INSERT UPDATE DELETE MERGE UPSERT TRUNCATE CREATE DROP ALTER GRANT REVOKE CALL COMMENT REFRESH EXECUTE PREPARE DEALLOCATE RESET ROLE COMMIT ROLLBACK EXPLAIN USE SET are refused wherever they appear, even inside a string literal or as an alias; write around them. The stats table, lakehouse."<stream>"."_stats", is evaluated by the gateway on its own: SELECT with WHERE, GROUP BY, ORDER BY, LIMIT and count, sum, avg, min, max over _stats alone, no Trino-only functions, never combined with a data table. Row counts of several tables are one statement, not one call per table: SELECT DISTINCT table_name, row_count FROM lakehouse."<stream>"."_stats" WHERE table_name LIKE '%word%' gives Marina's counts where measured; for the tables it has not measured, one UNION ALL of SELECT 'a' AS t, count(*) AS n FROM <schema>."a" branches, fifty at most.
 
         Args:
             sql: The statement, one only, no trailing statements.
