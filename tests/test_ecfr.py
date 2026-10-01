@@ -1,5 +1,6 @@
 """ecfr: the query a search sends when it is limited to a title and part (the eCFR's hierarchy filter), the scope kept
-in the result, the date used when none is given (the latest day the eCFR holds, never the clock's), bad input."""
+in the result, the date used when none is given (the latest day the eCFR holds, never the clock's), a long section
+as its outline and a part read by its offsets, a long section with no subheadings paged, bad input."""
 
 import json
 
@@ -103,6 +104,59 @@ async def test_a_date_past_the_latest_day_or_malformed_is_refused_in_words_a_cli
     with pytest.raises(ToolError, match="Omit date for the current text") as refused:
         await ecfr.mcp.call_tool("ecfr_get_regulation", {"title": 2, "part": "200", "section": "200.431", "date": "2026-10-01"})
     assert not isinstance(refused.value, UnexpectedToolError)
+
+
+def _section(number, paragraphs):
+    return f'<DIV8 N="{number}" TYPE="SECTION"><HEAD>§ {number} A long section.</HEAD>' + "".join(f"<P>{p}</P>" for p in paragraphs) + "</DIV8>"
+
+
+FILL = "Costs must be necessary and reasonable for the performance of the Federal award. " * 9   # 729 characters
+LONG = {   # sections longer than one window: one with the regulation's own subheadings, one with none, and an appendix
+    "200.1": _section("200.1", ["The following definitions apply:"] + [f"<I>{term}</I> means {FILL}" for term in ("Acquisition cost", "Budget", "Modified Total Direct Cost (MTDC)", "Subaward")]
+                      + [f"(1) {FILL}"] + [f"<I>Term {n}</I> means {FILL}" for n in range(14)]),
+    "50.605": _section("50.605", [f"({letter}) {FILL}" for letter in "abcdefghijklmnopqrst"]),
+}
+
+
+async def test_a_long_section_comes_back_as_its_outline_and_a_part_is_read_by_its_offsets(monkeypatch):
+    async def fake_api_get(endpoint, params=None, **kwargs):
+        return TITLES if endpoint == "versioner/v1/titles.json" else LONG.get((params or {}).get("section"), SECTION)
+
+    monkeypatch.setattr(ecfr, "api_get", fake_api_get)
+    monkeypatch.setattr(ecfr, "_titles_cache", None)
+    first = json.loads(await ecfr.ecfr_get_regulation(title=2, part="200", section="200.1"))
+    assert first["truncated"] and first["total_chars"] > 12000 and first["text"].endswith("The following definitions apply:")   # only what comes before the first subheading
+    headings = [entry.split(": ", 1) for entry in first["outline"]]
+    assert [h for _, h in headings][:4] == ["Acquisition cost", "Budget", "Modified Total Direct Cost (MTDC)", "Subaward"] and len(headings) == 18
+    start, stop = int(headings[2][0]), int(headings[3][0])
+    part = json.loads(await ecfr.ecfr_get_regulation(title=2, part="200", section="200.1", offset=start, end_offset=stop))
+    assert part["text"].startswith("Modified Total Direct Cost (MTDC) means Costs must be") and part["text"].endswith("Federal award.")
+    assert part["returned_chars"] == len(part["text"]) < 800 and part["next_offset"] == stop and "outline" not in part
+    # a subheading's part runs to the heading the caller names, so one with paragraphs under it is read whole
+    sub = json.loads(await ecfr.ecfr_get_regulation(title=2, part="200", section="200.1", offset=stop, end_offset=int(headings[4][0])))
+    assert sub["text"].startswith("Subaward means") and "\n\n(1) Costs must be" in sub["text"]
+    assert "past offset" in json.loads(await ecfr.ecfr_get_regulation(title=2, part="200", section="200.1", offset=stop, end_offset=start))["error"]["message"]
+
+
+async def test_a_long_section_with_no_subheadings_is_paged_and_a_short_one_comes_whole(monkeypatch):
+    async def fake_api_get(endpoint, params=None, **kwargs):
+        return TITLES if endpoint == "versioner/v1/titles.json" else LONG.get((params or {}).get("section"), SECTION)
+
+    monkeypatch.setattr(ecfr, "api_get", fake_api_get)
+    monkeypatch.setattr(ecfr, "_titles_cache", None)
+    whole = json.loads(await ecfr.ecfr_get_regulation(title=42, part="50", section="50.605", max_chars=40000))
+    assert not whole["truncated"] and "outline" not in whole and whole["returned_chars"] == whole["total_chars"] > 12000
+    pages, offset = [], 0
+    while True:
+        page = json.loads(await ecfr.ecfr_get_regulation(title=42, part="50", section="50.605", offset=offset))
+        assert "outline" not in page and page["returned_chars"] <= 12000 and page["offset"] == offset
+        pages.append(page["text"])
+        if not page["truncated"]:
+            break
+        offset = page["next_offset"]
+    assert len(pages) == 2 and "\n\n".join(pages) == whole["text"] and pages[0].endswith("Federal award.")   # cut on a paragraph break
+    short = json.loads(await ecfr.ecfr_get_regulation(title=2, part="200", section="200.431"))
+    assert not short["truncated"] and "outline" not in short and "next_offset" not in short and short["offset"] == 0
 
 
 async def test_search_rejects_a_part_without_a_title_and_a_subpart_without_a_part(monkeypatch):

@@ -483,6 +483,25 @@ client as the error's text instead of a bare "Error executing tool" (#16,
 items 2, 4, 5 and part of 8). A search of every version, superseded ones
 included, is `date="all"`.
 
+**A long section comes back as its outline.** A section is the smallest
+thing the eCFR serves, and some are far longer than what a caller needs
+from them: 200.1 (Definitions) is 47,153 characters and the definition of
+modified total direct cost is 659 of them. `ecfr_get_regulation` returns a
+text whole when it fits in `max_chars` (default 12,000, up to 40,000). A
+longer one comes back as an `outline`, the text's own subheadings each with
+the character offset it starts at (`"30650: Modified Total Direct Cost
+(MTDC)"`), and only the lines before the first of them; the caller chooses
+a part and calls again with `offset` and `end_offset`, two numbers copied
+from the outline. The subheadings are the ones the regulation carries: a
+paragraph's italic lead-in (the 109 defined terms of 200.1, "(a) General."
+in 200.430), an appendix's headings, each section's head when a subpart is
+fetched. They are read from the text fetched, so an earlier version's
+outline is that version's, and the server keeps no map of the regulation.
+A long text with no subheadings (42 CFR 50.605 is one) is paged instead:
+`truncated`, `next_offset`, as `uidaho_guidance_get` and `fetch_document`
+do. Every result carries `total_chars`, `offset` and `returned_chars`
+(#16 item 3).
+
 `ecfr_search` can be limited to a title, part, subpart or section (`title`,
 `part`, `subpart`, `section`, the eCFR's hierarchy filter), so a Uniform
 Guidance search is only 2 CFR 200: `title=2, part="200"`. A part, subpart or
@@ -1400,7 +1419,7 @@ version in the front matter and the catalog together.
 
 ## Status
 
-2026-10-01: `ecfr_search` limited to a title and part (#17); no date needed for the current text on any ecfr tool, the latest day read from the eCFR and not the clock, and the server's refusals readable by a client (#16 items 2, 4, 5, part of 8); `ecfr-research-admin` removed; a report-only `cfr-check` on `ecfr`, so a client keeps only the placement of findings. Open on #16: paging a long section (3), the index's size (6), compact search results (7). 2026-09-30: the server-and-client rule and the grid; log no keys; the Banner family removed; guides as catalogued components with a `<server>_guide` tool per server (the UDM guide, five proposal guides, the AI-tells guide, and the compliance-concerns vocabulary as draft 0.1, #15); once the pane served its own placement skills (mindrouter-365 #34 to #39), the ten it had been carrying here (Gantt, ask, remove-ai-tells, the five proposal sheets, udm-sheet, proposal-workbook) were removed and the rates skill became report-only, so no catalog here carries a client's fields. 2026-09-29: twenty-six servers; the `udm` server and the `udm-sheet` skill on `ai4ra` were added that day, offline-tested against a fixture in the published schema's shape and tried against the real schema. 2026-09-25: twenty-five servers. The eCFR and grants.gov code moved in from
+2026-10-01: `ecfr_search` limited to a title and part (#17); no date needed for the current text on any ecfr tool, the latest day read from the eCFR and not the clock, and the server's refusals readable by a client (#16 items 2, 4, 5, part of 8); `ecfr-research-admin` removed; a report-only `cfr-check` on `ecfr`, so a client keeps only the placement of findings. a long section returned as its outline, a part read by its offsets (#16 item 3). Open on #16: the index's size (6), compact search results (7). 2026-09-30: the server-and-client rule and the grid; log no keys; the Banner family removed; guides as catalogued components with a `<server>_guide` tool per server (the UDM guide, five proposal guides, the AI-tells guide, and the compliance-concerns vocabulary as draft 0.1, #15); once the pane served its own placement skills (mindrouter-365 #34 to #39), the ten it had been carrying here (Gantt, ask, remove-ai-tells, the five proposal sheets, udm-sheet, proposal-workbook) were removed and the rates skill became report-only, so no catalog here carries a client's fields. 2026-09-29: twenty-six servers; the `udm` server and the `udm-sheet` skill on `ai4ra` were added that day, offline-tested against a fixture in the published schema's shape and tried against the real schema. 2026-09-25: twenty-five servers. The eCFR and grants.gov code moved in from
 mcp-ecfr on 2026-09-22 with the Office add-in's skills, and the NIH, NSF,
 SAM.gov, USAspending and Federal Audit Clearinghouse servers were verified
 against the live APIs that day (SAM.gov and FAC with a person's own key).

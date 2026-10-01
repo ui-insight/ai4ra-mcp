@@ -35,6 +35,7 @@ DEFAULT_SEARCH_RESULTS = 5
 MAX_SEARCH_RESULTS = 25
 MAX_DIFF_LINES = 100
 DEFAULT_STRUCTURE_DEPTH = 2
+DEFAULT_TEXT_CHARS = 12_000           # one window of a section's text; a longer section comes with its outline
 CURRENT_TTL = 3600.0                  # seconds the titles list is kept; the eCFR adds a day at most once a day
 
 # =============================================================================
@@ -282,13 +283,25 @@ async def _resolve_title(section: str = None, part: str = None) -> dict | list |
 # XML → PLAIN TEXT
 # =============================================================================
 
+_LABELS = re.compile(r"(\([A-Za-z0-9]+\)\s*)+")   # a paragraph's own label or labels: (a), (1), (a)(1)
+
+
 def _xml_to_text(xml_str: str) -> str:
+    return _xml_to_text_and_outline(xml_str)[0]
+
+
+def _xml_to_text_and_outline(xml_str: str) -> tuple[str, List[tuple]]:
+    """The eCFR's XML as plain text, and the text's own outline: each subheading with the character offset it
+    starts at, as (offset, heading). The subheadings are the ones the regulation carries: a paragraph's italic
+    lead-in, an appendix's headings, each section's head when there are several. A text with none has no
+    outline. It is read from the text fetched, so the outline of an earlier version is that version's."""
     try:
         root = ET.fromstring(xml_str)
     except ET.ParseError:
-        return xml_str
+        return xml_str, []
 
     parts: List[str] = []
+    marks: List[tuple] = []   # (index in parts, kind, heading)
 
     def _inner_text(elem: ET.Element) -> str:
         return re.sub(r"\s+", " ", "".join(elem.itertext())).strip()
@@ -304,6 +317,18 @@ def _xml_to_text(xml_str: str) -> str:
                 if text:
                     return text.strip()
         return ""
+
+    def _lead_in(elem: ET.Element) -> str:
+        """A paragraph's italic lead-in with its label, "(a) General." or "Modified Total Direct Cost (MTDC)": the
+        paragraph opens with it, nothing before it but the label."""
+        children = list(elem)
+        if not children or children[0].tag != "I":
+            return ""
+        before = (elem.text or "").strip()
+        if before and not _LABELS.fullmatch(before):
+            return ""
+        lead = _inner_text(children[0])
+        return f"{before} {lead}".strip() if 1 < len(lead) <= 120 else ""
 
     def _process_table(table_elem: ET.Element) -> str:
         rows = []
@@ -330,12 +355,14 @@ def _xml_to_text(xml_str: str) -> str:
         if tag in ("SUBJECT", "HEAD"):
             text = _inner_text(elem)
             if text:
+                marks.append((len(parts), "head", text))
                 parts.append(text)
                 parts.append("=" * 60)
             return
-        if tag == "HD":
+        if tag == "HD" or re.fullmatch(r"HD\d", tag):
             text = _inner_text(elem)
             if text:
+                marks.append((len(parts), "heading", text))
                 parts.append(f"\n--- {text} ---")
             return
         if tag in ("TABLE", "GPOTABLE"):
@@ -346,6 +373,9 @@ def _xml_to_text(xml_str: str) -> str:
         if tag in ("P", "FP"):
             text = _inner_text(elem)
             if text:
+                lead = _lead_in(elem)
+                if lead:
+                    marks.append((len(parts), "heading", lead))
                 prefix = _paragraph_prefix(elem)
                 parts.append(f"{prefix} {text}" if prefix and not text.startswith(prefix) else text)
             return
@@ -364,18 +394,48 @@ def _xml_to_text(xml_str: str) -> str:
     _walk(root)
 
     cleaned: List[str] = []
+    starts: Dict[int, int] = {}   # index in parts -> the character offset its text starts at
+    length = 0
     seen_blank = False
-    for p in parts:
+    for i, p in enumerate(parts):
         v = p.strip()
         if not v:
             if not seen_blank:
                 cleaned.append("")
+                length += 2 if len(cleaned) > 1 else 0
                 seen_blank = True
         else:
+            length += 2 if cleaned else 0
+            starts[i] = length
             cleaned.append(v)
+            length += len(v)
             seen_blank = False
 
-    return "\n\n".join(cleaned)
+    heads = [m for m in marks if m[1] == "head"]
+    entries = [m for m in marks if m[1] == "heading"]
+    if len(heads) > 1:
+        entries = sorted(entries + heads)
+    return "\n\n".join(cleaned), [(starts[i], heading) for i, _kind, heading in entries]
+
+
+def _window(text: str, offset: int, max_chars: int, end_offset: Optional[int] = None) -> Dict[str, Any]:
+    """Part of a text: from offset to end_offset when one is given, and never more than max_chars, which
+    ends on a paragraph break when one fits."""
+    total = len(text)
+    offset = min(max(offset, 0), total)
+    stop = total if end_offset is None else min(end_offset, total)
+    end = stop
+    if stop - offset > max_chars:
+        end = offset + max_chars
+        cut = text.rfind("\n\n", offset, end)
+        if cut > offset:
+            end = cut
+    chunk = text[offset:end].rstrip()
+    out: Dict[str, Any] = {"text": chunk, "total_chars": total, "offset": offset,
+                           "returned_chars": len(chunk), "truncated": end < total}
+    if out["truncated"]:
+        out["next_offset"] = end + 2 if text.startswith("\n\n", end) else end
+    return out
 
 
 # =============================================================================
@@ -622,11 +682,19 @@ async def ecfr_get_regulation(
     chapter: Annotated[Optional[str], Field(default=None, description="Roman numeral, e.g. 'I'")] = None,
     subchapter: Annotated[Optional[str], Field(default=None, description="Requires chapter.")] = None,
     appendix: Annotated[Optional[str], Field(default=None, description="Requires subtitle, chapter, or part.")] = None,
-    text_only: Annotated[bool, Field(default=True, description="True (default): returns clean paragraph text — sufficient for policy analysis. False: returns raw XML — only needed for structural parsing.")] = True,
+    text_only: Annotated[bool, Field(default=True, description="True (default): returns clean paragraph text — sufficient for policy analysis. False: returns raw XML, whole — only needed for structural parsing.")] = True,
+    offset: Annotated[int, Field(default=0, description="Character position to start reading from: a heading's offset from the outline, or next_offset.", ge=0)] = 0,
+    end_offset: Annotated[Optional[int], Field(default=None, description="Character position to stop at: the offset of the heading where the part you want ends. Omit to read on up to max_chars.", ge=1)] = None,
+    max_chars: Annotated[int, Field(default=DEFAULT_TEXT_CHARS, description="Most characters of text to return in one call, 1000-40000. Default 12000.", ge=1000, le=40000)] = DEFAULT_TEXT_CHARS,
 ) -> str:
     """Retrieve regulatory text for a specific section or part: the current text, or the text in force on a given date.
 
     Omit date= for the current text; the result's date says which day was read.
+    A text that fits in max_chars comes back whole. A longer one comes back as an outline: its own
+    subheadings, each as "offset: heading", with only the lines before the first of them. Choose the part
+    you need and call again with offset= that heading's offset and end_offset= the offset of the heading
+    where the part ends. A long text with no subheadings comes back a page at a time instead: when
+    truncated, call again with offset = next_offset.
     Provide section= whenever possible — part-only requests return very large responses and will be blocked unless subpart= is also specified.
     Always provide title= explicitly for Parts 46 and 50, which exist in multiple titles.
 
@@ -692,16 +760,24 @@ async def ecfr_get_regulation(
         f"versioner/v1/full/{used_date}/title-{resolved_title}.xml",
         params=query_params or None,
     )
-    content_value = _xml_to_text(xml_text) if text_only else xml_text
-    content_key = "text" if text_only else "xml"
-    result = {content_key: content_value}
+    if end_offset is not None and end_offset <= offset:
+        return _finalize_response({"error": _make_error("end_offset must be past offset")})
+    if text_only:
+        text, outline = _xml_to_text_and_outline(xml_text)
+        if offset == 0 and end_offset is None and outline and len(text) > max_chars:
+            result = _window(text, 0, max_chars, outline[0][0])
+            result["outline"] = [f"{at}: {heading}" for at, heading in outline]
+        else:
+            result = _window(text, offset, max_chars, end_offset)
+    else:
+        result = {"xml": xml_text}
+        content_bytes = len(xml_text.encode("utf-8"))
+        if content_bytes > SOFT_RESPONSE_BYTES:
+            _add_warning(result, f"Response is {content_bytes:,} bytes (soft limit: 800KB). "
+                                 f"Narrow to section= if you only need a specific provision.")
     _add_canonical_fields(result, title=resolved_title, part=part, section=section, appendix=appendix, date=used_date)
     if title is None:
         result["resolved_from"] = "search"
-    content_bytes = len(content_value.encode("utf-8"))
-    if content_bytes > SOFT_RESPONSE_BYTES:
-        _add_warning(result, f"Response is {content_bytes:,} bytes (soft limit: 800KB). "
-                             f"Narrow to section= if you only need a specific provision.")
     return _finalize_response(result)
 
 
