@@ -2,13 +2,13 @@
 
 Checks a passage of a document against University of Idaho policy, the APM and the FSH, and against the university's F&A and fringe rates, as fetched from the university's policy pages and rate documents, and reports a finding for each sentence that disagrees with it. Report-only and client-neutral: the findings are in the reply. It is the university's sibling of `cfr-check` on the `ecfr` server and reports in the same form, with a `University of Idaho:` line where that one has `eCFR:`, so a client that runs both can put the two on one sentence together.
 
-**Version:** 0.5.0 · **Category:** review · **Status:** experimental · **Output:** findings
+**Version:** 0.6.0 · **Category:** review · **Status:** experimental · **Output:** findings
 
 ## Inputs
 
 A passage of text, however the client supplies it.
 
-The skill needs `uidaho_guidance_index` (a chapter's policies with what each covers), `uidaho_guidance_get`, and `uidaho_rates` for a sentence that states an F&A or fringe rate.
+The skill needs `uidaho_guidance_index` (a chapter's policies with what each covers; its first call is the listing for APM 45), `uidaho_guidance_get` (one policy for each sentence that asserts something, and of a long policy only the section that speaks to it), and `uidaho_rates` for a sentence that states an F&A or fringe rate.
 
 ## Outputs
 

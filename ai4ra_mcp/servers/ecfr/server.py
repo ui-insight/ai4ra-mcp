@@ -9,6 +9,7 @@ with a primary focus on Uniform Guidance (2 CFR Part 200) and related research r
 from mcp.server.mcpserver import MCPServer
 from mcp.server.mcpserver.exceptions import ToolError
 
+from ai4ra_mcp.common import text as _text
 from ai4ra_mcp.common.http import HEADERS as _UA_HEADERS
 from pydantic import Field
 from typing import Annotated, Optional, List, Dict, Any
@@ -438,32 +439,7 @@ def _xml_to_text_and_outline(xml_str: str) -> tuple[str, List[tuple]]:
     entries = [m for m in marks if m[1] > 0]
     if len(heads) > 1:
         entries = sorted(entries + heads)
-    outline = []
-    for k, (i, level, heading) in enumerate(entries):
-        end = next((starts[j] for j, other, _ in entries[k + 1:] if other <= level), len(text))
-        outline.append((starts[i], heading, end))
-    return text, outline
-
-
-def _window(text: str, offset: int, max_chars: int, stop: Optional[int] = None) -> Dict[str, Any]:
-    """Part of a text: from offset to stop (the end of the text when none is given), and never more than
-    max_chars, which ends on a paragraph break when one fits. truncated says the read was cut by max_chars
-    before it reached its stop; a part read to its end is not truncated, though the text goes on."""
-    total = len(text)
-    offset = min(max(offset, 0), total)
-    stop = total if stop is None else min(stop, total)
-    end = stop
-    if stop - offset > max_chars:
-        end = offset + max_chars
-        cut = text.rfind("\n\n", offset, end)
-        if cut > offset:
-            end = cut
-    chunk = text[offset:end].rstrip()
-    out: Dict[str, Any] = {"text": chunk, "total_chars": total, "offset": offset,
-                           "returned_chars": len(chunk), "truncated": end < stop}
-    if out["truncated"]:
-        out["next_offset"] = end + 2 if text.startswith("\n\n", end) else end
-    return out
+    return text, _text.with_ends([(starts[i], level, heading) for i, level, heading in entries], len(text))
 
 
 # =============================================================================
@@ -789,13 +765,7 @@ async def ecfr_get_regulation(
         params=query_params or None,
     )
     if text_only:
-        text, outline = _xml_to_text_and_outline(xml_text)
-        if offset == 0 and outline and len(text) > max_chars:
-            result = _window(text, 0, max_chars, outline[0][0])
-            result["truncated"] = True   # only the lines before the first subheading: the rest is read by the outline
-            result["outline"] = [f"{at}: {heading}" for at, heading, _end in outline]
-        else:
-            result = _window(text, offset, max_chars, next((end for at, _heading, end in outline if at == offset and offset), None))
+        result = _text.read(*_xml_to_text_and_outline(xml_text), offset, max_chars)
     else:
         result = {"xml": xml_text}
         content_bytes = len(xml_text.encode("utf-8"))

@@ -1,5 +1,6 @@
 """uidaho: a chapter's index, each policy with what it covers in its own opening words; a page that cannot be read
-is listed as unread; the opening paragraph passes over a contents list and a bare heading."""
+is listed as unread; the opening paragraph passes over a contents list and a bare heading; a long policy as an
+outline of its sections, one section read by its offset."""
 
 from ai4ra_mcp.servers.uidaho import server as uidaho
 
@@ -66,3 +67,58 @@ async def test_a_chapter_that_is_not_there_is_refused_with_the_chapters_that_are
     out = await uidaho.uidaho_guidance_index("APM 99")
     assert "no chapter 99" in out["error"] and out["chapters"] == ["APM 01: Legal Affairs", "APM 45: Research Office"]
     assert "APM 45" in (await uidaho.uidaho_guidance_index("chapter 45"))["error"]
+
+
+FILL = "The University complies with the terms of each sponsored project and with applicable federal regulation. " * 6   # 636 characters
+LONG_POLICY = "\n\n".join(
+    ["CONTENTS:", "A. Purpose", "B. Definitions", "C. Procedure"]                       # a contents list names the sections before they begin
+    + [f"A. PURPOSE. {FILL}", "B. Definitions", f"B-1. Allowable costs. {FILL}", f"B-2. Institutional Base Salary (IBS): {FILL}"]
+    + ["C. Procedure. Expenditures fall into the following categories:", "C-1. Salaries", FILL, f"A. A lettered item inside the section. {FILL}", f"B. Another. {FILL}"]
+    + [f"C-2. Fringe benefits. {FILL}"] + [f"C-{n}. Item {n}. {FILL}" for n in range(3, 16)] + [f"D. Contact information. {FILL}"])
+
+
+def _policy(monkeypatch, body):
+    async def fake_whole_text(url):
+        return "", "# 45.06 - Allowable Expenditures" + HEADER.format(date="September 19, 2024") + body + "\n\n#### APM\n\nChapter 01: Legal Affairs\n"
+
+    monkeypatch.setattr(uidaho, "_whole_text", fake_whole_text)
+    uidaho._cache._d.clear()
+
+
+async def test_a_long_policy_comes_back_as_an_outline_of_its_sections_and_one_is_read_by_its_offset(monkeypatch):
+    _policy(monkeypatch, LONG_POLICY)
+    first = await uidaho.uidaho_guidance_get("APM 45.06")
+    assert first["truncated"] and first["total_chars"] > 12000 and "next_offset" not in first and first["last_updated"] == "September 19, 2024"
+    assert first["text"] == "CONTENTS:\n\nA. Purpose\n\nB. Definitions\n\nC. Procedure"   # the lines before the first section: the policy's own contents
+    at = {heading: int(offset) for offset, heading in (entry.split(": ", 1) for entry in first["outline"])}
+    assert list(at)[:7] == ["A. PURPOSE", "B. Definitions", "B-1. Allowable costs", "B-2. Institutional Base Salary (IBS)", "C. Procedure", "C-1. Salaries", "C-2. Fringe benefits"]
+    assert list(at)[-1] == "D. Contact information" and len(at) == 21   # the lettered items inside C-1 are not sections
+    salaries = await uidaho.uidaho_guidance_get("APM 45.06", offset=at["C-1. Salaries"])
+    assert salaries["text"].startswith("C-1. Salaries") and "A lettered item inside the section" in salaries["text"] and "C-2. Fringe" not in salaries["text"]
+    assert not salaries["truncated"] and "outline" not in salaries and salaries["url"].endswith("/apm/45/06")
+    definitions = await uidaho.uidaho_guidance_get("APM 45.06", offset=at["B. Definitions"])
+    assert "B-1. Allowable costs" in definitions["text"] and "B-2. Institutional" in definitions["text"] and "C. Procedure" not in definitions["text"]   # a lettered section takes its numbered ones
+    whole = await uidaho.uidaho_guidance_get("APM 45.06", max_chars=40000)
+    assert not whole["truncated"] and "outline" not in whole and whole["returned_chars"] == whole["total_chars"]
+
+
+async def test_a_short_policy_comes_whole_and_a_long_one_with_no_sections_is_paged(monkeypatch):
+    _policy(monkeypatch, f"A. Purpose. {FILL}\n\nB. Scope. {FILL}")
+    short = await uidaho.uidaho_guidance_get("APM 45.06")
+    assert not short["truncated"] and "outline" not in short and short["text"].startswith("A. Purpose.")
+    _policy(monkeypatch, "\n\n".join([FILL.strip()] * 30))
+    pages, offset = [], 0
+    while True:
+        page = await uidaho.uidaho_guidance_get("APM 45.06", offset=offset)
+        assert "outline" not in page
+        pages.append(page["text"])
+        if not page["truncated"]:
+            break
+        offset = page["next_offset"]
+    assert len(pages) == 2 and "\n\n".join(pages) == "\n\n".join([FILL.strip()] * 30)
+
+
+def test_the_first_call_is_a_chapter_listing_wherever_the_server_says_what_to_do_first():
+    assert "start with uidaho_guidance_index and a chapter" in uidaho.USAGE_NOTES[0] and "No call without a chapter" in uidaho.USAGE_NOTES[0]
+    assert not any(note.startswith("Call uidaho_guidance_index first") for note in uidaho.USAGE_NOTES)
+    assert "READ THIS FIRST" not in (uidaho.uidaho_guidance_index.__doc__ or "") and "with a chapter" in (uidaho.uidaho_guidance_index.__doc__ or "")

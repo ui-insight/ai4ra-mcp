@@ -937,8 +937,12 @@ makes a search-and-cite layer cheap:
 | APM | `uidaho.edu/policies/apm` lists chapters 01–95 (45 is Research Office) | `uidaho.edu/policies/apm/45/06` is APM 45.06 | Owner (position, email), `Last updated: <Month D, YYYY>` |
 | FSH | `uidaho.edu/policies/fsh` lists chapters 1–6 (5 is Research Policies) | `uidaho.edu/policies/fsh/5/5100` is FSH 5100 | same |
 
-- `uidaho_guidance_index`: read first. Both sources chapter by chapter with
-  URLs, where the rate documents are, and the usage rules. With `chapter`
+- `uidaho_guidance_index`: where a policy question starts, with a chapter
+  (`APM 45` is sponsored projects); the tool, its usage notes and the
+  server's instructions all say so, since "read the index first" had a
+  check make a call with no chapter before the one it needed (#21). With no
+  chapter: both sources chapter by chapter with URLs, where the rate
+  documents are, and the usage rules. With `chapter`
   (`APM 45`, `FSH 5`, any chapter listed) it is that chapter's index: every
   policy with what it covers, its `Last updated` date and its URL. What a
   policy covers is its own opening paragraph (a Purpose, a Preamble, an
@@ -957,7 +961,17 @@ makes a search-and-cite layer cheap:
   each chapter's index. It does not search policy text; the skill reads a
   likely policy and looks there.
 - `uidaho_guidance_get`: one policy as clean text by number (`APM 45.06`,
-  `FSH 5100`), with its owner, `Last updated` date and URL, in pages.
+  `FSH 5100`), with its owner, `Last updated` date and URL. A policy up to
+  `max_chars` (default 12,000) comes back whole; a longer one as an outline
+  of its own sections, the lettered ones and the numbered ones under them
+  (`"9830: E-1. Salaries"`), read from the text; a section is then read to
+  its end by its offset, as a long section of the eCFR is. APM 45.06 is
+  17,377 characters, its first call about 1,400, and E-1 reads as 1,286. A
+  contents list at the top and a lettered list inside a section are passed
+  over, since sections come in order. The first two-source check read about
+  77,000 characters of policy for three sentences, most of it whole
+  policies for one clause each (#21). The reader is shared with the ecfr
+  server (`common/text.py`).
 - `uidaho_rates`: the F&A rate agreement PDF (`fa`) or the fringe-rate page
   (`fringe`) as text. The agreement is read at the address the F&A page
   links today, so a new agreement is picked up the day it is posted, with
@@ -1430,6 +1444,7 @@ ai4ra_mcp/
     http.py                   User-Agent and contact, TTL cache, get_json/post_json, the request key and the no-key answer
     fetch.py                  the page reader and grants.gov client
     skills.py                 a skills folder as MCP prompts and as the server's <server>_guide tool
+    text.py                   a long text read whole, as an outline of its own headings, or a page at a time; where a part ends
   servers/
     ecfr/
       server.py               MCPServer("ecfr"): tools with read-only annotations, the index tool, prompts
@@ -1481,7 +1496,7 @@ version in the front matter and the catalog together.
 
 ## Status
 
-2026-10-01: after the second run (#20) the checks label a source line with the server's name (`eCFR:`, `University of Idaho:`), search for every sentence that asserts something and fetch the section the search returned for it before calling it unchecked, name what was not checked by its own words only, and keep violates and unclear apart. After the first real run of `cfr-check` took 16 model calls for one passage (#19), a section up to 20,000 characters comes back whole, a part is read to its end by its offset alone, and both checks search once, read once and stop. The `uidaho` chapter index, each policy with what it covers in its own opening words (#18); `policy-check` on `uidaho`, the university's sibling of `cfr-check`; the findings contract both report in. `ecfr_search` limited to a title and part (#17); no date needed for the current text on any ecfr tool, the latest day read from the eCFR and not the clock, and the server's refusals readable by a client (#16 items 2, 4, 5, part of 8); `ecfr-research-admin` removed; a report-only `cfr-check` on `ecfr`, so a client keeps only the placement of findings. a long section returned as its outline, a part read by its offsets (#16 item 3). Open on #16: the index's size (6), compact search results (7). 2026-09-30: the server-and-client rule and the grid; log no keys; the Banner family removed; guides as catalogued components with a `<server>_guide` tool per server (the UDM guide, five proposal guides, the AI-tells guide, and the compliance-concerns vocabulary as draft 0.1, #15); once the pane served its own placement skills (mindrouter-365 #34 to #39), the ten it had been carrying here (Gantt, ask, remove-ai-tells, the five proposal sheets, udm-sheet, proposal-workbook) were removed and the rates skill became report-only, so no catalog here carries a client's fields. 2026-09-29: twenty-six servers; the `udm` server and the `udm-sheet` skill on `ai4ra` were added that day, offline-tested against a fixture in the published schema's shape and tried against the real schema. 2026-09-25: twenty-five servers. The eCFR and grants.gov code moved in from
+2026-10-01: after the first two-source run (#21) a long policy comes back as an outline of its sections and is read one section at a time, a policy question starts with a chapter's listing, and both checks quote the clause on the sentence's own subject and take no general principle as grounds for a finding. After the second run (#20) the checks label a source line with the server's name (`eCFR:`, `University of Idaho:`), search for every sentence that asserts something and fetch the section the search returned for it before calling it unchecked, name what was not checked by its own words only, and keep violates and unclear apart. After the first real run of `cfr-check` took 16 model calls for one passage (#19), a section up to 20,000 characters comes back whole, a part is read to its end by its offset alone, and both checks search once, read once and stop. The `uidaho` chapter index, each policy with what it covers in its own opening words (#18); `policy-check` on `uidaho`, the university's sibling of `cfr-check`; the findings contract both report in. `ecfr_search` limited to a title and part (#17); no date needed for the current text on any ecfr tool, the latest day read from the eCFR and not the clock, and the server's refusals readable by a client (#16 items 2, 4, 5, part of 8); `ecfr-research-admin` removed; a report-only `cfr-check` on `ecfr`, so a client keeps only the placement of findings. a long section returned as its outline, a part read by its offsets (#16 item 3). Open on #16: the index's size (6), compact search results (7). 2026-09-30: the server-and-client rule and the grid; log no keys; the Banner family removed; guides as catalogued components with a `<server>_guide` tool per server (the UDM guide, five proposal guides, the AI-tells guide, and the compliance-concerns vocabulary as draft 0.1, #15); once the pane served its own placement skills (mindrouter-365 #34 to #39), the ten it had been carrying here (Gantt, ask, remove-ai-tells, the five proposal sheets, udm-sheet, proposal-workbook) were removed and the rates skill became report-only, so no catalog here carries a client's fields. 2026-09-29: twenty-six servers; the `udm` server and the `udm-sheet` skill on `ai4ra` were added that day, offline-tested against a fixture in the published schema's shape and tried against the real schema. 2026-09-25: twenty-five servers. The eCFR and grants.gov code moved in from
 mcp-ecfr on 2026-09-22 with the Office add-in's skills, and the NIH, NSF,
 SAM.gov, USAspending and Federal Audit Clearinghouse servers were verified
 against the live APIs that day (SAM.gov and FAC with a person's own key).

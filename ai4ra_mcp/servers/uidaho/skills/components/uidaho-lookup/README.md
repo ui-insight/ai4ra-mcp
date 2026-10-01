@@ -2,7 +2,7 @@
 
 Answers questions about the University of Idaho's sponsored-research facts (F&A and fringe rates, budget rules, policies, contacts) with the uidaho server's tools, quoting each figure or passage with its policy number, revision date or effective period, and page.
 
-**Version:** 0.5.0 · **Category:** research · **Status:** experimental · **Output:** Markdown
+**Version:** 0.5.1 · **Category:** research · **Status:** experimental · **Output:** Markdown
 
 ## Inputs
 

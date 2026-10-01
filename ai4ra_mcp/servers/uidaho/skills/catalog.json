@@ -16,7 +16,7 @@
         "fringe rate",
         "UI policy"
       ],
-      "version": "0.5.0",
+      "version": "0.5.1",
       "category": "research",
       "domain": "research-administration",
       "status": "experimental",
@@ -30,7 +30,7 @@
         {
           "type": "prompt",
           "path": "components/uidaho-lookup/prompt.md",
-          "version": "0.5.0",
+          "version": "0.5.1",
           "role": "canonical_prompt"
         }
       ],
@@ -107,7 +107,7 @@
         "check against university policy",
         "policy check"
       ],
-      "version": "0.5.0",
+      "version": "0.6.0",
       "category": "review",
       "domain": "research-administration",
       "status": "experimental",
@@ -121,7 +121,7 @@
         {
           "type": "prompt",
           "path": "components/policy-check/prompt.md",
-          "version": "0.5.0",
+          "version": "0.6.0",
           "role": "canonical_prompt"
         }
       ],

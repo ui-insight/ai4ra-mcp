@@ -21,3 +21,11 @@ Versions follow semver: MAJOR for output-contract breaks, MINOR for backward-com
 ## [0.5.0] — 2026-10-01
 
 - Before reporting, a sentence that asserts something and has no fetched policy behind it gets the policy the index offers for it, read then, as `cfr-check` 0.4.0 does with the section its search returned (#20, item 2 as revised). Not checked is only a sentence the index offers nothing for, or that a limit on calls cut off.
+
+## [0.6.0] — 2026-10-01
+
+From the first two-source run, where the check fetched about 77,000 characters for three sentences (#21).
+
+- The first call is the listing for APM 45; the index with no chapter and the title search are not used, and another chapter is listed only for a sentence APM 45 plainly does not cover.
+- One policy for each sentence that asserts something, and no more. A long policy now comes back as an outline of its sections, and the check reads the section that speaks to the sentence by its offset, not the whole policy.
+- The same judgment lines as `cfr-check` 0.5.0: the clause that speaks most directly to the sentence's subject; a general principle alone is not grounds for a finding; a sentence is checked when any fetched text speaks to it; a sentence with a finding is never listed as not checked.

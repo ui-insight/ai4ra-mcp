@@ -24,3 +24,11 @@ From the second real run (#20).
 ## [0.4.0] — 2026-10-01
 
 - Before reporting, a sentence that asserts something and has no fetched section behind it gets the section its search returned, fetched then (#20, item 2 as revised). In the second run the search had returned 200.413 for a sentence on an administrative assistant's effort; only 200.430 and 200.431 were read and the sentence was listed as not checked, one fetch away. Not checked is now only a sentence whose search returned nothing, or that a limit on calls cut off.
+
+## [0.5.0] — 2026-10-01
+
+From the first two-source run (#21).
+
+- A finding quotes the clause that speaks most directly to the sentence's own subject, and a general principle alone is not grounds for one.
+- unclear names its cue: a clause that allows something "only if" or "provided that", with the passage silent on the condition. The run had called such a sentence a violation.
+- Before reporting, a sentence counts as checked when any fetched text speaks to it, whichever sentence it was fetched for; and a sentence that has a finding is never listed as not checked.

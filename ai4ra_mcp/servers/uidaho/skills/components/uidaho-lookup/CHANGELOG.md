@@ -25,3 +25,7 @@ Versions follow semver: MAJOR for output-contract breaks, MINOR for backward-com
 ## [0.5.0] — 2026-10-01
 
 - A policy is found by what it covers: the chapter's index (`uidaho_guidance_index` with `chapter`) lists each policy with its own opening paragraph, and the skill chooses from that; the title search is for a title word or a number. The starter citations, a list kept by hand, are gone from the index (#18).
+
+## [0.5.1] — 2026-10-01
+
+- Wording follows the tools: a policy question starts with a chapter's listing, and a long policy is read one section at a time from its outline (#21).

@@ -19,6 +19,7 @@ import httpx
 from mcp.server.mcpserver import MCPServer
 
 from ai4ra_mcp.common import fetch as _fetch
+from ai4ra_mcp.common import text as _text
 from ai4ra_mcp.common.http import DAY, USER_AGENT, TTLCache
 from ai4ra_mcp.common.skills import register_prompts
 
@@ -75,8 +76,9 @@ _FRINGE_SECTION = re.compile(r"^## Consolidated fringe rates by fiscal year[ \t]
 COVERS_CHARS = 500   # the most of a policy's opening paragraph a chapter's index carries
 INDEX_FETCHES = 6    # policy pages read at once when a chapter's index is built
 USAGE_NOTES = [
-    "Call uidaho_guidance_index first; it lists every chapter with its URL.",
-    "To find the policy that governs something, call uidaho_guidance_index with chapter ('APM 45' is sponsored projects, 'FSH 5' is research policy): it lists each policy of the chapter with what it covers, in the policy's own opening words. Choose by what a policy covers, then read it with uidaho_guidance_get.",
+    "To find the policy that governs something, start with uidaho_guidance_index and a chapter ('APM 45' is sponsored projects, 'FSH 5' is research policy): it lists each policy of the chapter with what it covers, in the policy's own opening words. Choose by what a policy covers, then read it with uidaho_guidance_get. No call without a chapter is needed first.",
+    "uidaho_guidance_index with no chapter lists every chapter with its URL and where the rate documents are: for a matter whose chapter is not known.",
+    "uidaho_guidance_get returns a short policy whole and a long one as an outline of its sections (A., E-1.) with their offsets: read the section you need by its offset, not the whole policy.",
     "uidaho_guidance_search matches policy numbers and titles, not full text: use it when you have a title word or a number.",
     "uidaho_guidance_get takes a policy number ('APM 45.06', 'FSH 5100'); every result carries the page URL and its 'Last updated' date. Cite both.",
     "uidaho_rates reads the F&A rate agreement PDF or the fringe-rate page; quote figures with their effective period.",
@@ -91,11 +93,13 @@ _POLICY_REF = re.compile(r"^\s*(APM|FSH)?\s*(\d{2}\.\d{2}|\d{4})\s*$", re.I)
 # Where a page's own text ends and the site's navigation begins: a heading that is only "APM", "FSH" or "Footer".
 # A heading inside a policy that merely opens with one of those words ("### APM 70.04 is under revision.") is text.
 _NAV_HEADING = re.compile(r"^#{2,4} (APM|FSH|Footer)[ \t]*$", re.M)
+# A policy's own sections: a lettered one (A. Purpose.) and a numbered one under it (E-1. Salaries), at the start of a line.
+_SECTION = re.compile(r"^(?:#+[ \t]*)?([A-Z])(-\d+)?\.[ \t]+(\S.*)$", re.M)
 _CHAPTER_REF = re.compile(r"^\s*(APM|FSH)\s*(\d{1,2})\s*$", re.I)
 
 mcp = MCPServer(
     "uidaho",
-    instructions="University of Idaho policy for sponsored projects: the APM and FSH, found by what each policy covers (uidaho_guidance_index with a chapter) or by number and title, and the F&A and fringe rates. Read uidaho_guidance_index first.",
+    instructions="University of Idaho policy for sponsored projects: the APM and FSH, found by what each policy covers (start with uidaho_guidance_index and a chapter: 'APM 45' is sponsored projects) or by number and title, read whole or one section at a time, and the F&A and fringe rates.",
 )
 
 
@@ -185,6 +189,27 @@ def opening_paragraph(body: str) -> str:
     return next((b[:COVERS_CHARS] for b in blocks if not b.endswith(":")), "")
 
 
+def policy_outline(text: str) -> list[tuple[int, str, int]]:
+    """A policy's own sections as (offset, heading, end): the lettered ones (A. Purpose) and the numbered ones under
+    them (E-1. Salaries), each with where its part ends. Read from the text itself, so it follows the policy when
+    the policy changes. Sections come in order, so a label that does not follow the last one is a list item
+    inside a section and is passed over; and when the labels start again at A after a run of bare titles, that
+    run was a contents list and the sections begin at the second A."""
+    found: list[tuple[int, int, str]] = []
+    last, bare = ("", 0), True
+    for m in _SECTION.finditer(text):
+        key = (m.group(1), int(m.group(2)[1:]) if m.group(2) else 0)
+        rest = m.group(3).strip()
+        if key <= last:
+            if key != ("A", 0) or not bare:
+                continue
+            found, bare = [], True   # a contents list came first
+        title = re.split(r"(?<=\w{3})\.(?: |$)|: | – ", rest, maxsplit=1)[0][:80].rstrip(". ")
+        found.append((m.start(), 2 if m.group(2) else 1, f"{m.group(1)}{m.group(2) or ''}. {title}"))
+        last, bare = key, bare and not re.search(r"\.( |$)|:", rest)
+    return _text.with_ends(found, len(text))
+
+
 def parse_policy_ref(policy: str) -> tuple[str, str, str] | None:
     """'APM 45.06' -> ('APM', '45', '06'); 'FSH 5100' or '5100' -> ('FSH', '5', '5100')."""
     m = _POLICY_REF.match(policy or "")
@@ -254,16 +279,17 @@ async def _all_policies(source_filter: str = "") -> list[dict]:
 
 @mcp.tool(name="uidaho_guidance_index", annotations=_READ_ONLY)
 async def uidaho_guidance_index(chapter: str = "") -> dict:
-    """University of Idaho policy sources for sponsored projects. READ THIS FIRST.
+    """University of Idaho policy for sponsored projects: find the policy that governs something. START HERE, with a chapter.
 
-    With no chapter: the APM and FSH with every chapter and its URL, where the F&A and fringe rates are,
-    and the rules for using the other uidaho tools.
     With a chapter: every policy of that chapter with what it covers (the policy's own opening paragraph),
-    its 'Last updated' date and its URL. This is how to find the policy that governs something: choose by
-    what a policy covers, then read it with uidaho_guidance_get.
+    its 'Last updated' date and its URL. Choose by what a policy covers, then read it with
+    uidaho_guidance_get. 'APM 45' is sponsored projects: proposals, allowable costs, cost sharing, effort,
+    F&A, subawards. No call without a chapter is needed first.
+    With no chapter: the APM and FSH with every chapter and its URL, where the F&A and fringe rates are,
+    and the rules for using the other uidaho tools. For a matter whose chapter you do not know.
 
     Args:
-        chapter: 'APM 45' (sponsored projects), 'FSH 5' (research policy), or any chapter the index lists. Empty for the chapters.
+        chapter: 'APM 45' (sponsored projects), 'FSH 5' (research policy), or any chapter the index lists. Empty for the list of chapters.
     """
     if (chapter or "").strip():
         m = _CHAPTER_REF.match(chapter)
@@ -314,15 +340,20 @@ async def uidaho_guidance_search(query: str, source: str = "", limit: int = 20) 
 
 @mcp.tool(name="uidaho_guidance_get", annotations=_READ_ONLY)
 async def uidaho_guidance_get(policy: str, offset: int = 0, max_chars: int = 12000) -> dict:
-    """Read one University of Idaho policy as clean text by its number.
+    """Read one University of Idaho policy as clean text by its number: all of it, or one section of it.
 
     Returns the title, owner, 'Last updated' date, URL and text. Cite the policy number, the URL and
-    the date. Long policies come back in pages: when truncated, call again with offset = next_offset.
+    the date. A policy that fits in max_chars comes back whole. A longer one comes back as an outline:
+    its own sections, each as "offset: heading" (A. Purpose, E-1. Salaries), with only the lines before
+    the first of them. Choose the section you need and call again with offset = that heading's offset:
+    the section is read to its end, with the numbered sections under a lettered one. Ask for several
+    sections in one round of calls. A long policy with no such sections comes back a page at a time:
+    when truncated, call again with offset = next_offset.
 
     Args:
         policy: 'APM 45.06', '45.06', 'FSH 5100' or '5100'.
-        offset: Character position to start from. Default 0.
-        max_chars: Characters to return, 1000-40000. Default 12000.
+        offset: Character position to start from: a heading's offset from the outline, or next_offset. Default 0.
+        max_chars: Most characters to return in one call, 1000-40000. Default 12000.
     """
     ref = parse_policy_ref(policy)
     if not ref:
@@ -338,13 +369,9 @@ async def uidaho_guidance_get(policy: str, offset: int = 0, max_chars: int = 120
     max_chars = max(1_000, min(int(max_chars or 12_000), 40_000))
     offset = max(0, int(offset or 0))
     text = page["text"]
-    chunk = text[offset: offset + max_chars]
     label = f"{source} {chapter}.{number}" if source == "APM" else f"FSH {number}"
-    out = {"policy": label, "title": page["title"], "owner": page["owner"], "last_updated": page["last_updated"], "url": url,
-           "total_chars": len(text), "offset": offset, "returned_chars": len(chunk), "truncated": offset + len(chunk) < len(text), "text": chunk}
-    if out["truncated"]:
-        out["next_offset"] = offset + len(chunk)
-    return out
+    return {"policy": label, "title": page["title"], "owner": page["owner"], "last_updated": page["last_updated"], "url": url,
+            **_text.read(text, policy_outline(text), offset, max_chars)}
 
 
 @mcp.tool(name="uidaho_rates", annotations=_READ_ONLY)
