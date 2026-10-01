@@ -139,7 +139,8 @@ def _long_texts(monkeypatch):
 
 
 def _outline(result):
-    return {heading: int(at) for at, heading in (entry.split(": ", 1) for entry in result["outline"])}
+    """heading -> offset, from lines of the form "offset: heading (size chars)"."""
+    return {heading.rsplit(" (", 1)[0]: int(at) for at, heading in (entry.split(": ", 1) for entry in result["outline"])}
 
 
 async def test_a_long_section_comes_back_as_its_outline_and_a_part_is_read_by_its_offset(monkeypatch):
@@ -171,6 +172,13 @@ async def test_a_part_ends_where_the_next_subheading_of_its_level_begins(monkeyp
     # a part read says which paragraph it is, from the labels of the headings it sits under, so a finding cites what it quotes (#23)
     assert one["pinpoint"] == "2 CFR 200.430(i)(5)" and i["pinpoint"] == "2 CFR 200.430(i)"
     assert json.loads(await ecfr.ecfr_get_regulation(title=2, part="200", section="200.430", offset=at["(g) Heading g."]))["pinpoint"] == "2 CFR 200.430(g)"
+    # the outline says how big each part is, so a heading that holds others is seen to
+    lines = json.loads(await ecfr.ecfr_get_regulation(title=2, part="200", section="200.430"))["outline"]
+    sizes = {line.split(": ", 1)[1].rsplit(" (", 1)[0]: int(line.rsplit("(", 1)[1].split(" ")[0].replace(",", "")) for line in lines}
+    assert all(line.endswith(" chars)") for line in lines) and sizes["(i) Institutions."] > 10 * sizes["(5) Item 5."] > 5000
+    # an offset that is no heading's (here one inside (b)) reads the part it falls in, from its heading, with its pinpoint
+    inside = json.loads(await ecfr.ecfr_get_regulation(title=2, part="200", section="200.430", offset=at["(b) Heading b."] + 300))
+    assert inside["offset"] == at["(b) Heading b."] and inside["text"].startswith("(b) Heading b.") and inside["pinpoint"] == "2 CFR 200.430(b)" and not inside["truncated"]
     app = _outline(json.loads(await ecfr.ecfr_get_regulation(title=2, part="200", appendix="Appendix III to Part 200")))
     a = json.loads(await ecfr.ecfr_get_regulation(title=2, part="200", appendix="Appendix III to Part 200", offset=app["A. General"]))["text"]
     assert "--- 1. Major functions ---" in a and "--- 2. Criteria ---" in a and "B. Identification" not in a   # a heading takes the lower headings under it

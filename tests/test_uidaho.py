@@ -90,7 +90,8 @@ async def test_a_long_policy_comes_back_as_an_outline_of_its_sections_and_one_is
     first = await uidaho.uidaho_guidance_get("APM 45.06")
     assert first["truncated"] and first["total_chars"] > 12000 and "next_offset" not in first and first["last_updated"] == "September 19, 2024"
     assert first["text"] == "CONTENTS:\n\nA. Purpose\n\nB. Definitions\n\nC. Procedure"   # the lines before the first section: the policy's own contents
-    at = {heading: int(offset) for offset, heading in (entry.split(": ", 1) for entry in first["outline"])}
+    at = {heading.rsplit(" (", 1)[0]: int(offset) for offset, heading in (entry.split(": ", 1) for entry in first["outline"])}
+    assert all(entry.endswith(" chars)") for entry in first["outline"])   # each section's size, so a lettered one that holds others is seen to
     assert list(at)[:7] == ["A. PURPOSE", "B. Definitions", "B-1. Allowable costs", "B-2. Institutional Base Salary (IBS)", "C. Procedure", "C-1. Salaries", "C-2. Fringe benefits"]
     assert list(at)[-1] == "D. Contact information" and len(at) == 21   # the lettered items inside C-1 are not sections
     salaries = await uidaho.uidaho_guidance_get("APM 45.06", offset=at["C-1. Salaries"])

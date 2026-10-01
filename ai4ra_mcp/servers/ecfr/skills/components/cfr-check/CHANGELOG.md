@@ -52,3 +52,12 @@ From the run after 0.6.0 (#23), which read 14,505 characters and still left the 
 - `Fix:` has a form: it opens with Add, Change or Remove, is one clause, and ends at the change, with no reason after it.
 - A sentence not checked is one line, `not checked: "<the sentence's words, copied exactly>"`, with nothing after it, so a client can match it to a sentence.
 - The date is no longer a step of its own.
+
+## [0.8.0] — 2026-10-01
+
+From the first whole-document run (run 0c6f044f), where a passage of about seventeen asserting sentences drew one finding and sixteen "not checked" lines.
+
+- A sentence that was not numbered is never mentioned, and "not checked" is never a sentence that was checked and drew nothing: the run had listed the project summary and the sentences it held the text for.
+- The read names its arguments: `title` 2, `part` "200" and the section, every time. Five fetches had left the title out and three came back ambiguous, since Title 17 has a Part 200.
+- An offset is a number from that section's own outline (one was taken from another section's), and a heading is not read together with the heading above it.
+- A call refused because a round held too many is made in the next round; a limit that stopped the reading gets one line of its own in the closing.

@@ -46,3 +46,11 @@ From the run after 0.7.0 (#23), where the fringe sentence, whose figures match n
 - A sentence that states a rate has been checked once the rate document is read and is never listed as not checked: the figure on the page for the class named, in any year shown, is no finding; the figure in none is unclear, quoting the current year's line, a second class on a second line, with a Fix that asks for the rate and its fiscal year.
 - The sentences are numbered first and each ends as a finding, nothing, or not checked; one policy a sentence; a clause read for another sentence is used only when it names this one's subject.
 - The pinpoint of a section read by its offset is copied from the `pinpoint` the read returns. `Fix:` opens with Add, Change or Remove and ends at the change. A sentence not checked is one line, `not checked: "<the sentence's words, copied exactly>"`.
+
+## [0.9.0] — 2026-10-01
+
+From the first whole-document run (run 0c6f044f), where both passages ran past a client's 60,000-character limit on fetches.
+
+- A lettered section is not read together with the numbered ones under it: the run read APM 45.06 E-2, E-6 and E-8 and then E whole, which holds them. The outline now shows each section's size, and an offset is a number from that policy's own outline.
+- A sentence that was not numbered is never mentioned, "not checked" is never a sentence that was checked and drew nothing, and a limit that stopped the reading gets one line of its own in the closing.
+- A policy is listed as read only if its text was fetched: the closing had named one that only the index mentioned.

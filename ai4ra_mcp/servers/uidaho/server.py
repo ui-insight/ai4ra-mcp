@@ -345,13 +345,14 @@ async def uidaho_guidance_get(policy: str, offset: int = 0) -> dict:
     """Read one University of Idaho policy as clean text by its number: all of it, or one section of it.
 
     Returns the title, owner, 'Last updated' date, URL and text. Cite the policy number, the URL and
-    the date. A policy up to 12,000 characters comes back whole; there is no size to set. A longer one comes back as an outline:
-    its own sections, each as "offset: heading" (A. Purpose, E-1. Salaries), with only the lines before
-    the first of them. Choose the section you need and call again with offset = that heading's offset:
-    the section is read to its end, with the numbered sections under a lettered one, and the result's
-    pinpoint cites it ("APM 45.06 E-1"). Ask for several
-    sections in one round of calls. A long policy with no such sections comes back a page at a time:
-    when truncated, call again with offset = next_offset.
+    the date. A policy up to 12,000 characters comes back whole; there is no size to set. A longer one
+    comes back as an outline: its own sections, each as "offset: heading (size of the section)"
+    (A. Purpose, E-1. Salaries), with only the lines before the first of them. Choose the section you
+    need and call again with offset = that heading's offset, a number from this policy's own outline:
+    the section is read to its end, and the result's pinpoint cites it ("APM 45.06 E-1"). A lettered
+    section holds the numbered ones under it (E holds E-1 to E-9): read the numbered one you need, not
+    it and the letter above it. Ask for several sections in one round of calls. A long policy with no
+    such sections comes back a page at a time: when truncated, call again with offset = next_offset.
 
     Args:
         policy: 'APM 45.06', '45.06', 'FSH 5100' or '5100'.

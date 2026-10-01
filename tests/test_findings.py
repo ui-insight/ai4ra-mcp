@@ -37,6 +37,8 @@ def test_every_check_writes_the_form_with_its_own_source_label():
         # bounded work, by numbered sentences (#19, #23)
         assert "Number the sentences" in text and "in one round of calls" in text and "stop reading and report" in text and "Before you report" in text
         assert "is left not checked" in text and "used only when it does" in text
+        # at the scale of a whole page: only a numbered sentence is ever listed, a heading is not read with the one above it
+        assert "is never mentioned" in text and "found nothing against" in text and "is made in the next round" in text and "own outline" in text
         # judgment: the clause on the sentence's own subject, no finding on a general principle, verdicts that do not overlap (#20, #21, #22)
         assert "forbids" in text and "does not show" in text and "speaks most directly" in text and "not by itself grounds for a finding" in text
         assert "Test each finding" in text and "there is no finding: drop it" in text and "is not mentioned" in text

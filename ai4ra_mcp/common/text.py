@@ -59,17 +59,27 @@ def with_ends(entries: list[tuple], total: int) -> list[tuple[int, str, int, str
 
 def read(text: str, outline: list[tuple[int, str, int, str]], offset: int, max_chars: int = WHOLE_CHARS) -> dict[str, Any]:
     """What a fetch of a long text returns. Whole when it fits; when it does not and it has an outline, the
-    outline with only the lines before the first heading (the first part itself when the text opens with a
-    heading, since offset 0 asks for the outline); from a heading's offset, that part to its end, with its pin;
-    from any other offset, a page."""
+    outline, each heading with its offset and the size of its part, and only the lines before the first heading
+    (the first part itself when the text opens with a heading, since offset 0 asks for the outline); from a
+    heading's offset, that part to its end, with its pin. An offset that is no heading's falls inside some part:
+    it reads that part, from its heading when the part fits in one read (so the text is whole and the pin true),
+    from the offset to the part's end when it does not (a long part being paged). With no outline, a page."""
     if offset == 0 and outline and len(text) > max_chars:
         out = window(text, 0, max_chars, outline[0][0] or outline[0][2])
         out["truncated"] = True   # only the lines before the first heading: the rest is read by the outline
         out.pop("next_offset", None)
-        out["outline"] = [f"{entry[0]}: {entry[1]}" for entry in outline]
+        out["outline"] = [f"{entry[0]}: {entry[1]} ({entry[2] - entry[0]:,} chars)" for entry in outline]
         return out
-    part = next((entry for entry in outline if offset and entry[0] == offset), None)
-    out = window(text, offset, max_chars, part[2] if part else None)
+    part = None
+    if offset and outline and len(text) > max_chars:
+        part = next((entry for entry in outline if entry[0] == offset), None)
+        if part is None:   # not a heading's offset: the innermost part it falls in, the one that starts last
+            holding = [entry for entry in outline if entry[0] < offset < entry[2]]
+            part = max(holding, key=lambda entry: entry[0]) if holding else None
+            if part and part[2] - part[0] <= max_chars:
+                offset = part[0]
+    stop = part[2] if part else (outline[0][0] if outline and len(text) > max_chars and 0 < offset < outline[0][0] else None)
+    out = window(text, offset, max_chars, stop)
     if part and part[3]:
         out["pin"] = part[3]
     return out
