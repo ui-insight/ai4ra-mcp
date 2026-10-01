@@ -190,7 +190,7 @@ def opening_paragraph(body: str) -> str:
 
 
 def policy_outline(text: str) -> list[tuple[int, str, int]]:
-    """A policy's own sections as (offset, heading, end): the lettered ones (A. Purpose) and the numbered ones under
+    """A policy's own sections as (offset, heading, end, label): the lettered ones (A. Purpose) and the numbered ones under
     them (E-1. Salaries), each with where its part ends. Read from the text itself, so it follows the policy when
     the policy changes. Sections come in order, so a label that does not follow the last one is a list item
     inside a section and is passed over; and when the labels start again at A after a run of bare titles, that
@@ -205,9 +205,11 @@ def policy_outline(text: str) -> list[tuple[int, str, int]]:
                 continue
             found, bare = [], True   # a contents list came first
         title = re.split(r"(?<=\w{3})\.(?: |$)|: | – ", rest, maxsplit=1)[0][:80].rstrip(". ")
-        found.append((m.start(), 2 if m.group(2) else 1, f"{m.group(1)}{m.group(2) or ''}. {title}"))
+        label = f"{m.group(1)}{m.group(2) or ''}"
+        found.append((m.start(), 2 if m.group(2) else 1, f"{label}. {title}", label))
         last, bare = key, bare and not re.search(r"\.( |$)|:", rest)
-    return _text.with_ends(found, len(text))
+    # a policy cites a numbered section by its own label alone ("E-1"), so the letter above it is not put in front
+    return [(at, heading, end, label) for (at, heading, end, _pin), (_at, _level, _heading, label) in zip(_text.with_ends(found, len(text)), found)]
 
 
 def parse_policy_ref(policy: str) -> tuple[str, str, str] | None:
@@ -346,7 +348,8 @@ async def uidaho_guidance_get(policy: str, offset: int = 0) -> dict:
     the date. A policy up to 12,000 characters comes back whole; there is no size to set. A longer one comes back as an outline:
     its own sections, each as "offset: heading" (A. Purpose, E-1. Salaries), with only the lines before
     the first of them. Choose the section you need and call again with offset = that heading's offset:
-    the section is read to its end, with the numbered sections under a lettered one. Ask for several
+    the section is read to its end, with the numbered sections under a lettered one, and the result's
+    pinpoint cites it ("APM 45.06 E-1"). Ask for several
     sections in one round of calls. A long policy with no such sections comes back a page at a time:
     when truncated, call again with offset = next_offset.
 
@@ -368,8 +371,11 @@ async def uidaho_guidance_get(policy: str, offset: int = 0) -> dict:
     offset = max(0, int(offset or 0))
     text = page["text"]
     label = f"{source} {chapter}.{number}" if source == "APM" else f"FSH {number}"
-    return {"policy": label, "title": page["title"], "owner": page["owner"], "last_updated": page["last_updated"], "url": url,
-            **_text.read(text, policy_outline(text), offset)}
+    out = {"policy": label, "title": page["title"], "owner": page["owner"], "last_updated": page["last_updated"], "url": url,
+           **_text.read(text, policy_outline(text), offset)}
+    if "pin" in out:
+        out["pinpoint"] = f"{label} {out.pop('pin')}"   # the section read, as a finding cites it: "APM 45.06 E-1"
+    return out
 
 
 @mcp.tool(name="uidaho_rates", annotations=_READ_ONLY)

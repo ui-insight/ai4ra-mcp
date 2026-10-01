@@ -8,7 +8,8 @@ from ai4ra_mcp.app import META, SERVERS
 from ai4ra_mcp.common.skills import load_catalog, prompt_text
 
 SERVERS_DIR = Path(__file__).parent.parent / "ai4ra_mcp" / "servers"
-FORM = re.compile(r'''^\s*(violates|unclear)\. \S.*\n\s*Statement: "<[^"\n]+>"\n\s*([A-Za-z][\w ]*): "<[^"\n]+>" <[^>\n]+>\n\s*Fix: <[^>\n]+>$''', re.M)
+FORM = re.compile(r'''^\s*(violates|unclear)\. \S.*\n\s*Statement: "<[^"\n]+>"\n\s*([A-Za-z][\w ]*): "<[^"\n]+>" <[^>\n]+>\n\s*Fix: <Add \| Change \| Remove> <[^>\n]+>$''', re.M)
+NOT_CHECKED = '`not checked: "<the sentence\'s words, copied exactly>"`'
 
 
 def checks():
@@ -30,18 +31,20 @@ def test_every_check_writes_the_form_with_its_own_source_label():
     for server, c, text in checks():
         m = FORM.search(text)
         assert m, f"{server}/{c['slug']} does not show the four lines of a finding in order"
-        labels[c["slug"]] = m.group(2)
-        assert m.group(2) == META[server]["label"]   # the source line carries the name a client shows for the server it was fetched from
-        assert "by its own words" in text and "forbids" in text and "does not show" in text
-        assert "Before you report" in text and "is left not checked" in text   # a sentence one fetch away is fetched, not listed
-        assert "speaks most directly" in text and "not by itself grounds for a finding" in text and "never a sentence that has a finding" in text
-        # the Fix line says what to change and states no rule; each finding's clause is tested against the sentence (#22)
-        assert "Test each finding" in text and "there is no finding: drop it" in text and "it states no rule" in text and "is or is not allowable" in text
-        assert "exactly as it stands" in text and "nothing after them" in text
-        assert "violates" in text and "unclear" in text and "copied exactly" in text and "not checked" in text
+        assert "violates" in text and "unclear" in text and "copied exactly" in text
         # the sample finding names no real section or policy, since a model took one for a lead and fetched it (#19)
         assert re.search(r"^\s*(violates|unclear)\. [^\n]*<[^\n]+>", text, re.M), f"{c['slug']}: the sample pinpoint should be a form, not a real citation"
-        assert "stop reading and report" in text and "in one round of calls" in text and "is not mentioned" in text
+        # bounded work, by numbered sentences (#19, #23)
+        assert "Number the sentences" in text and "in one round of calls" in text and "stop reading and report" in text and "Before you report" in text
+        assert "is left not checked" in text and "used only when it does" in text
+        # judgment: the clause on the sentence's own subject, no finding on a general principle, verdicts that do not overlap (#20, #21, #22)
+        assert "forbids" in text and "does not show" in text and "speaks most directly" in text and "not by itself grounds for a finding" in text
+        assert "Test each finding" in text and "there is no finding: drop it" in text and "is not mentioned" in text
+        # forms a client can hold a reply to: the quotation, the Fix line, the pinpoint a read returned, the not-checked line (#22, #23)
+        assert "exactly as it stands" in text and "opens with Add, Change or Remove" in text and "states no rule" in text and "is or is not allowable" in text
+        assert "copy the `pinpoint` that read returned" in text and NOT_CHECKED in text and "never a sentence that has a finding" in text
+        assert m.group(2) == META[server]["label"]   # the source line carries the name a client shows for the server it was fetched from
+        labels[c["slug"]] = m.group(2)
         assert not any(r.startswith(("excel:", "word:", "skill_")) for r in c["requires"])   # report-only: no client's tools
     assert labels == {"cfr-check": "eCFR", "policy-check": "University of Idaho"}
 

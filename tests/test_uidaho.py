@@ -96,6 +96,7 @@ async def test_a_long_policy_comes_back_as_an_outline_of_its_sections_and_one_is
     salaries = await uidaho.uidaho_guidance_get("APM 45.06", offset=at["C-1. Salaries"])
     assert salaries["text"].startswith("C-1. Salaries") and "A lettered item inside the section" in salaries["text"] and "C-2. Fringe" not in salaries["text"]
     assert not salaries["truncated"] and "outline" not in salaries and salaries["url"].endswith("/apm/45/06")
+    assert salaries["pinpoint"] == "APM 45.06 C-1" and "pin" not in salaries and "pinpoint" not in first   # the section read, as a finding cites it
     definitions = await uidaho.uidaho_guidance_get("APM 45.06", offset=at["B. Definitions"])
     assert "B-1. Allowable costs" in definitions["text"] and "B-2. Institutional" in definitions["text"] and "C. Procedure" not in definitions["text"]   # a lettered section takes its numbered ones
     tool = next(t for t in await uidaho.mcp.list_tools() if t.name == "uidaho_guidance_get")

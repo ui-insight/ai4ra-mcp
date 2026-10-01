@@ -42,3 +42,13 @@ From the run after 0.5.0 (#22).
 - The quotation is one sentence or clause exactly as it stands, nothing left out and nothing joined: a finding was withheld for a dropped phrase.
 - No second search after reading, and no general section read for its own sake. A long section now comes back as an outline (the server's threshold is 12,000), so 200.431 is read by its part.
 - A not-checked line has nothing after the sentence's words, no reason.
+
+## [0.7.0] — 2026-10-01
+
+From the run after 0.6.0 (#23), which read 14,505 characters and still left the administrative assistant sentence without its section.
+
+- The sentences that assert something are numbered first, and the search, the read and the report go by the numbers: one search per sentence on its own subject, with a second in the plainer word for the cost when the subject is a job title or a name, since the search matches words and "administrative assistant" does not find 200.413. A clause from a section read for another sentence is used only when it names this sentence's subject.
+- The pinpoint is copied from the `pinpoint` a part read returns, or built from the labels in front of the quoted words when a section came whole. Two findings had named a paragraph other than the one quoted.
+- `Fix:` has a form: it opens with Add, Change or Remove, is one clause, and ends at the change, with no reason after it.
+- A sentence not checked is one line, `not checked: "<the sentence's words, copied exactly>"`, with nothing after it, so a client can match it to a sentence.
+- The date is no longer a step of its own.

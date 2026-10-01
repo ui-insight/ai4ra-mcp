@@ -2,8 +2,10 @@
 
 A tool that serves a long text (a section of a regulation, a policy) returns it whole when it fits, as an outline
 of its own headings when it does not, and a page at a time when it has no headings. The outline is a list of
-(offset, heading, end): a part runs from its heading to where the next heading of the same level, or a higher
-one, begins, so a heading comes with what is under it.
+(offset, heading, end, pin): a part runs from its heading to where the next heading of the same level, or a higher
+one, begins, so a heading comes with what is under it; pin is the part's place in the text as a citation writes
+it, the labels of the headings above it and its own ("(i)(5)", "E-1"), which a read of the part gives back so a
+caller cites the paragraph without working it out.
 """
 
 from __future__ import annotations
@@ -38,25 +40,36 @@ def window(text: str, offset: int, max_chars: int, stop: Optional[int] = None) -
     return out
 
 
-def with_ends(entries: list[tuple[int, int, str]], total: int) -> list[tuple[int, str, int]]:
-    """(offset, level, heading) in the order they come, as (offset, heading, end): each part ends where the next
-    heading of its level or a higher one (a lower number) begins, or with the text."""
+def with_ends(entries: list[tuple], total: int) -> list[tuple[int, str, int, str]]:
+    """(offset, level, heading) or (offset, level, heading, label) in the order they come, as (offset, heading,
+    end, pin): each part ends where the next heading of its level or a higher one (a lower number) begins, or with
+    the text; its pin is the labels of the headings it sits under, outermost first, and its own."""
     out = []
-    for k, (at, level, heading) in enumerate(entries):
-        end = next((other_at for other_at, other_level, _ in entries[k + 1:] if other_level <= level), total)
-        out.append((at, heading, end))
+    for k, entry in enumerate(entries):
+        at, level, heading = entry[:3]
+        end = next((other[0] for other in entries[k + 1:] if other[1] <= level), total)
+        chain, below = [entry[3] if len(entry) > 3 else ""], level
+        for other in reversed(entries[:k]):
+            if other[1] < below:
+                chain.insert(0, other[3] if len(other) > 3 else "")
+                below = other[1]
+        out.append((at, heading, end, "".join(chain)))
     return out
 
 
-def read(text: str, outline: list[tuple[int, str, int]], offset: int, max_chars: int = WHOLE_CHARS) -> dict[str, Any]:
+def read(text: str, outline: list[tuple[int, str, int, str]], offset: int, max_chars: int = WHOLE_CHARS) -> dict[str, Any]:
     """What a fetch of a long text returns. Whole when it fits; when it does not and it has an outline, the
     outline with only the lines before the first heading (the first part itself when the text opens with a
-    heading, since offset 0 asks for the outline); from a heading's offset, that part to its end; from any other
-    offset, a page."""
+    heading, since offset 0 asks for the outline); from a heading's offset, that part to its end, with its pin;
+    from any other offset, a page."""
     if offset == 0 and outline and len(text) > max_chars:
         out = window(text, 0, max_chars, outline[0][0] or outline[0][2])
         out["truncated"] = True   # only the lines before the first heading: the rest is read by the outline
         out.pop("next_offset", None)
-        out["outline"] = [f"{at}: {heading}" for at, heading, _end in outline]
+        out["outline"] = [f"{entry[0]}: {entry[1]}" for entry in outline]
         return out
-    return window(text, offset, max_chars, next((end for at, _heading, end in outline if offset and at == offset), None))
+    part = next((entry for entry in outline if offset and entry[0] == offset), None)
+    out = window(text, offset, max_chars, part[2] if part else None)
+    if part and part[3]:
+        out["pin"] = part[3]
+    return out

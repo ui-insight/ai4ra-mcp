@@ -494,7 +494,11 @@ lines before the first of them; the caller chooses a part and calls again
 with its `offset`, one number copied from the outline, and the part is read
 to its end: where the next subheading of the same level begins, so "(g)"
 comes with the paragraphs under it and a definition with its numbered
-items. Levels are read from the text too (an appendix's heading ranks, a
+items. A part read also returns its `pinpoint`, the citation down to that
+paragraph (`2 CFR 200.430(i)(5)`, `2 CFR 200.1 Equipment`, `2 CFR Appendix
+III to Part 200, B.1`), built from the labels of the headings it sits
+under, so a finding cites the paragraph it quotes and not a neighbour
+(#23). Levels are read from the text too (an appendix's heading ranks, a
 paragraph's own label: (a), (1), (i), (A)). The subheadings are the ones
 the regulation carries: a paragraph's italic lead-in (the 109 defined terms
 of 200.1, "(a) General." in 200.430), an appendix's headings, each
@@ -977,7 +981,8 @@ makes a search-and-cite layer cheap:
   12,000 characters comes back whole; a longer one as an outline
   of its own sections, the lettered ones and the numbered ones under them
   (`"9830: E-1. Salaries"`), read from the text; a section is then read to
-  its end by its offset, as a long section of the eCFR is. APM 45.06 is
+  its end by its offset, as a long section of the eCFR is, and returns its
+  `pinpoint` (`APM 45.06 E-1`). APM 45.06 is
   17,377 characters, its first call about 1,400, and E-1 reads as 1,286. A
   contents list at the top and a lettered list inside a section are passed
   over, since sections come in order. The first two-source check read about
@@ -1186,7 +1191,7 @@ these lines in this order:
 violates. 2 CFR 200.<section>(<paragraph>)
 Statement: "<the sentence's words, copied exactly from the passage>"
 eCFR: "<one clause, copied word for word from the fetched text>" <the address it was read from>
-Fix: <one plain sentence>
+Fix: <Add | Change | Remove> <what, in the document>
 ```
 
 The first line is the verdict, `violates.` or `unclear.`, then the pinpoint
@@ -1198,11 +1203,18 @@ reads the same in every client; a client may take any line that opens with
 a label and a colon, other than `Statement:`, `Conflicts with:` and `Fix:`,
 for a source line. One line for each rule the finding rests on; in the federal check `Conflicts
 with: "<the other sentence's words>"` takes its place when two sentences of
-the passage disagree, and no other check reports that. A closing in prose
-follows the findings: what was read and as of when, and each sentence not
-checked, named by its own words with no citation. Every quotation is text
-the check fetched in that turn, and the closing says nothing of what
-governs a sentence that was not fetched either (#20).
+the passage disagree, and no other check reports that. `Fix:` opens with
+Add, Change or Remove, is one clause and ends at the change: it gives no
+reason and states no rule, since it is the one line nothing can test (#22,
+#23). A closing follows the findings: what was read and as of when, and one
+line for each sentence not checked, `not checked: "<the sentence's words,
+copied exactly>"` with nothing after it, so a client can match the line to
+a sentence and see that none of them also has a finding. Every quotation
+is text the check fetched in that turn, and the closing says nothing of
+what governs a sentence that was not fetched either (#20). The pinpoint is
+not left to be worked out where the server knows it: a part read by its
+offset returns `pinpoint` (`2 CFR 200.430(i)(5)`, `APM 45.06 E-1`), which
+the check copies and a client can hold the verdict line to.
 `tests/test_findings.py` holds each such skill's prompt to the form, and a
 change to it is a MAJOR version of the skill.
 
@@ -1508,7 +1520,7 @@ version in the front matter and the catalog together.
 
 ## Status
 
-2026-10-01: after the run that followed (#22) the size of a read is the server's alone (no `max_chars`; 12,000 for both sources), search hits are compact, and both checks keep the Fix line to what to change in the document and test each finding's clause against the sentence before reporting. After the first two-source run (#21) a long policy comes back as an outline of its sections and is read one section at a time, a policy question starts with a chapter's listing, and both checks quote the clause on the sentence's own subject and take no general principle as grounds for a finding. After the second run (#20) the checks label a source line with the server's name (`eCFR:`, `University of Idaho:`), search for every sentence that asserts something and fetch the section the search returned for it before calling it unchecked, name what was not checked by its own words only, and keep violates and unclear apart. After the first real run of `cfr-check` took 16 model calls for one passage (#19), a section up to 20,000 characters comes back whole, a part is read to its end by its offset alone, and both checks search once, read once and stop. The `uidaho` chapter index, each policy with what it covers in its own opening words (#18); `policy-check` on `uidaho`, the university's sibling of `cfr-check`; the findings contract both report in. `ecfr_search` limited to a title and part (#17); no date needed for the current text on any ecfr tool, the latest day read from the eCFR and not the clock, and the server's refusals readable by a client (#16 items 2, 4, 5, part of 8); `ecfr-research-admin` removed; a report-only `cfr-check` on `ecfr`, so a client keeps only the placement of findings. a long section returned as its outline, a part read by its offsets (#16 item 3). Open on #16: the index's size (6), compact search results (7). 2026-09-30: the server-and-client rule and the grid; log no keys; the Banner family removed; guides as catalogued components with a `<server>_guide` tool per server (the UDM guide, five proposal guides, the AI-tells guide, and the compliance-concerns vocabulary as draft 0.1, #15); once the pane served its own placement skills (mindrouter-365 #34 to #39), the ten it had been carrying here (Gantt, ask, remove-ai-tells, the five proposal sheets, udm-sheet, proposal-workbook) were removed and the rates skill became report-only, so no catalog here carries a client's fields. 2026-09-29: twenty-six servers; the `udm` server and the `udm-sheet` skill on `ai4ra` were added that day, offline-tested against a fixture in the published schema's shape and tried against the real schema. 2026-09-25: twenty-five servers. The eCFR and grants.gov code moved in from
+2026-10-01: after the next run (#23), with both steps light (14,505 and 23,283 characters), the checks number the sentences and work by the numbers, a part read returns its `pinpoint`, the Fix line has a form (Add, Change or Remove, ending at the change), a rate the page contradicts is a finding and never "not checked", and a not-checked line quotes its sentence. After the run that followed (#22) the size of a read is the server's alone (no `max_chars`; 12,000 for both sources), search hits are compact, and both checks keep the Fix line to what to change in the document and test each finding's clause against the sentence before reporting. After the first two-source run (#21) a long policy comes back as an outline of its sections and is read one section at a time, a policy question starts with a chapter's listing, and both checks quote the clause on the sentence's own subject and take no general principle as grounds for a finding. After the second run (#20) the checks label a source line with the server's name (`eCFR:`, `University of Idaho:`), search for every sentence that asserts something and fetch the section the search returned for it before calling it unchecked, name what was not checked by its own words only, and keep violates and unclear apart. After the first real run of `cfr-check` took 16 model calls for one passage (#19), a section up to 20,000 characters comes back whole, a part is read to its end by its offset alone, and both checks search once, read once and stop. The `uidaho` chapter index, each policy with what it covers in its own opening words (#18); `policy-check` on `uidaho`, the university's sibling of `cfr-check`; the findings contract both report in. `ecfr_search` limited to a title and part (#17); no date needed for the current text on any ecfr tool, the latest day read from the eCFR and not the clock, and the server's refusals readable by a client (#16 items 2, 4, 5, part of 8); `ecfr-research-admin` removed; a report-only `cfr-check` on `ecfr`, so a client keeps only the placement of findings. a long section returned as its outline, a part read by its offsets (#16 item 3). Open on #16: the index's size (6), compact search results (7). 2026-09-30: the server-and-client rule and the grid; log no keys; the Banner family removed; guides as catalogued components with a `<server>_guide` tool per server (the UDM guide, five proposal guides, the AI-tells guide, and the compliance-concerns vocabulary as draft 0.1, #15); once the pane served its own placement skills (mindrouter-365 #34 to #39), the ten it had been carrying here (Gantt, ask, remove-ai-tells, the five proposal sheets, udm-sheet, proposal-workbook) were removed and the rates skill became report-only, so no catalog here carries a client's fields. 2026-09-29: twenty-six servers; the `udm` server and the `udm-sheet` skill on `ai4ra` were added that day, offline-tested against a fixture in the published schema's shape and tried against the real schema. 2026-09-25: twenty-five servers. The eCFR and grants.gov code moved in from
 mcp-ecfr on 2026-09-22 with the Office add-in's skills, and the NIH, NSF,
 SAM.gov, USAspending and Federal Audit Clearinghouse servers were verified
 against the live APIs that day (SAM.gov and FAC with a person's own key).

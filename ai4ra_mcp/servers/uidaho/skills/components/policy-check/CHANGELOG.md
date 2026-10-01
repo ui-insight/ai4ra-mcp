@@ -38,3 +38,11 @@ From the run after 0.6.0 (#22), where a finding on an administrative assistant's
 - A step before the report: name the word or figure in the sentence that the quoted clause speaks to; if the clause's subject is not in the sentence, there is no finding.
 - The quotation is one sentence or line exactly as it stands. A rate finding quotes one fiscal year's line, the year the pinpoint names, and a second figure takes a second source line: a finding was withheld for joining two years' lines. Each rate document is read once.
 - A not-checked line has nothing after the sentence's words, no reason.
+
+## [0.8.0] — 2026-10-01
+
+From the run after 0.7.0 (#23), where the fringe sentence, whose figures match no rate on the page, was listed as not checked with that as the reason.
+
+- A sentence that states a rate has been checked once the rate document is read and is never listed as not checked: the figure on the page for the class named, in any year shown, is no finding; the figure in none is unclear, quoting the current year's line, a second class on a second line, with a Fix that asks for the rate and its fiscal year.
+- The sentences are numbered first and each ends as a finding, nothing, or not checked; one policy a sentence; a clause read for another sentence is used only when it names this one's subject.
+- The pinpoint of a section read by its offset is copied from the `pinpoint` the read returns. `Fix:` opens with Add, Change or Remove and ends at the change. A sentence not checked is one line, `not checked: "<the sentence's words, copied exactly>"`.

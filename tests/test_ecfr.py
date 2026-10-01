@@ -151,6 +151,7 @@ async def test_a_long_section_comes_back_as_its_outline_and_a_part_is_read_by_it
     part = json.loads(await ecfr.ecfr_get_regulation(title=2, part="200", section="200.1", offset=at["Modified Total Direct Cost (MTDC)"]))
     assert part["text"].startswith("Modified Total Direct Cost (MTDC) means Costs must be") and part["text"].endswith("Federal award.")
     assert part["returned_chars"] == len(part["text"]) < 800 and not part["truncated"] and "next_offset" not in part and "outline" not in part
+    assert part["pinpoint"] == "2 CFR 200.1 Modified Total Direct Cost (MTDC)" and "pin" not in part and "pinpoint" not in first   # a defined term is cited by name
     # a part runs to the next subheading of its level, so a definition comes with the numbered item under it
     sub = json.loads(await ecfr.ecfr_get_regulation(title=2, part="200", section="200.1", offset=at["Subaward"]))
     assert sub["text"].startswith("Subaward means") and "\n\n(1) Costs must be" in sub["text"] and "Term 0" not in sub["text"] and not sub["truncated"]
@@ -165,13 +166,16 @@ async def test_a_part_ends_where_the_next_subheading_of_its_level_begins(monkeyp
     assert h.startswith("(h) Nonprofits.") and "Institutions." not in h   # the letter (i) that follows (h) is the next part, not something under (h)
     i = json.loads(await ecfr.ecfr_get_regulation(title=2, part="200", section="200.430", offset=at["(i) Institutions."]))
     assert "(1) Item 1." in i["text"] and i["text"].count("Item ") == 15 and not i["truncated"]   # its numbered items are under it, to the end of the section
-    one = json.loads(await ecfr.ecfr_get_regulation(title=2, part="200", section="200.430", offset=at["(5) Item 5."]))["text"]
-    assert one.startswith("(5) Item 5.") and "Item 6." not in one
+    one = json.loads(await ecfr.ecfr_get_regulation(title=2, part="200", section="200.430", offset=at["(5) Item 5."]))
+    assert one["text"].startswith("(5) Item 5.") and "Item 6." not in one["text"]
+    # a part read says which paragraph it is, from the labels of the headings it sits under, so a finding cites what it quotes (#23)
+    assert one["pinpoint"] == "2 CFR 200.430(i)(5)" and i["pinpoint"] == "2 CFR 200.430(i)"
+    assert json.loads(await ecfr.ecfr_get_regulation(title=2, part="200", section="200.430", offset=at["(g) Heading g."]))["pinpoint"] == "2 CFR 200.430(g)"
     app = _outline(json.loads(await ecfr.ecfr_get_regulation(title=2, part="200", appendix="Appendix III to Part 200")))
     a = json.loads(await ecfr.ecfr_get_regulation(title=2, part="200", appendix="Appendix III to Part 200", offset=app["A. General"]))["text"]
     assert "--- 1. Major functions ---" in a and "--- 2. Criteria ---" in a and "B. Identification" not in a   # a heading takes the lower headings under it
-    one = json.loads(await ecfr.ecfr_get_regulation(title=2, part="200", appendix="Appendix III to Part 200", offset=app["1. Major functions"]))["text"]
-    assert one.startswith("--- 1. Major functions ---") and "2. Criteria" not in one
+    one = json.loads(await ecfr.ecfr_get_regulation(title=2, part="200", appendix="Appendix III to Part 200", offset=app["1. Major functions"]))
+    assert one["text"].startswith("--- 1. Major functions ---") and "2. Criteria" not in one["text"] and one["pinpoint"] == "2 CFR Appendix III to Part 200, A.1"
 
 
 async def test_a_long_section_with_no_subheadings_is_paged_and_a_shorter_one_comes_whole(monkeypatch):

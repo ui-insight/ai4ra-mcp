@@ -302,7 +302,7 @@ def _xml_to_text_and_outline(xml_str: str) -> tuple[str, List[tuple]]:
         return xml_str, []
 
     parts: List[str] = []
-    marks: List[tuple] = []   # (index in parts, level, heading): a section's head 0, an appendix's headings 1 to 3, a paragraph 4 and deeper
+    marks: List[tuple] = []   # (index in parts, level, heading, label): a section's head 0, an appendix's headings 1 to 3, a paragraph 4 and deeper
     last_letter = [""]        # the last (a), (b), ... seen, to tell the letter (i) that follows (h) from the numeral (i)
 
     def _depth(text: str) -> int:
@@ -374,14 +374,15 @@ def _xml_to_text_and_outline(xml_str: str) -> tuple[str, List[tuple]]:
         if tag in ("SUBJECT", "HEAD"):
             text = _inner_text(elem)
             if text:
-                marks.append((len(parts), 0, text))
+                marks.append((len(parts), 0, text, ""))
                 parts.append(text)
                 parts.append("=" * 60)
             return
         if tag == "HD" or re.fullmatch(r"HD\d", tag):
             text = _inner_text(elem)
             if text:
-                marks.append((len(parts), int(tag[2:] or 1), text))
+                number = re.match(r"([A-Za-z0-9]+)\.(?= |$)", text)   # "B." of "B. Identification ...", "1." under it
+                marks.append((len(parts), int(tag[2:] or 1), text, f".{number.group(1)}" if number else f" {text}"))
                 parts.append(f"\n--- {text} ---")
             return
         if tag in ("TABLE", "GPOTABLE"):
@@ -395,7 +396,8 @@ def _xml_to_text_and_outline(xml_str: str) -> tuple[str, List[tuple]]:
                 depth = _depth(text)
                 lead = _lead_in(elem)
                 if lead:
-                    marks.append((len(parts), 4 + depth, lead))
+                    own = _LABELS.match(lead)   # "(a)" of "(a) General."; a defined term has none and is cited by name
+                    marks.append((len(parts), 4 + depth, lead, re.sub(r"\s+", "", own.group(0)) if own else f" {lead.rstrip('.')}"))
                 prefix = _paragraph_prefix(elem)
                 parts.append(f"{prefix} {text}" if prefix and not text.startswith(prefix) else text)
             return
@@ -436,7 +438,7 @@ def _xml_to_text_and_outline(xml_str: str) -> tuple[str, List[tuple]]:
     entries = [m for m in marks if m[1] > 0]
     if len(heads) > 1:
         entries = sorted(entries + heads)
-    return text, _text.with_ends([(starts[i], level, heading) for i, level, heading in entries], len(text))
+    return text, _text.with_ends([(starts[i], level, heading, label) for i, level, heading, label in entries], len(text))
 
 
 # =============================================================================
@@ -696,7 +698,8 @@ async def ecfr_get_regulation(
     back as an outline: its own subheadings, each as "offset: heading", with only the lines before the
     first of them. Choose the part you need and call again with offset= that heading's offset: the part
     is read to its end, which is where the next subheading of its level begins, so "(g)" comes with the
-    paragraphs under it. Ask for several parts in one round of calls. A long text with no subheadings
+    paragraphs under it, and the result's pinpoint cites it ("2 CFR 200.430(i)(5)"). Ask for several parts
+    in one round of calls. A long text with no subheadings
     comes back a page at a time instead: when truncated, call again with offset = next_offset.
     Provide section= whenever possible — part-only requests return very large responses and will be blocked unless subpart= is also specified.
     Always provide title= explicitly for Parts 46 and 50, which exist in multiple titles.
@@ -763,8 +766,10 @@ async def ecfr_get_regulation(
         f"versioner/v1/full/{used_date}/title-{resolved_title}.xml",
         params=query_params or None,
     )
+    pin = ""
     if text_only:
         result = _text.read(*_xml_to_text_and_outline(xml_text), offset)
+        pin = result.pop("pin", "")
     else:
         result = {"xml": xml_text}
         content_bytes = len(xml_text.encode("utf-8"))
@@ -772,6 +777,9 @@ async def ecfr_get_regulation(
             _add_warning(result, f"Response is {content_bytes:,} bytes (soft limit: 800KB). "
                                  f"Narrow to section= if you only need a specific provision.")
     _add_canonical_fields(result, title=resolved_title, part=part, section=section, appendix=appendix, date=used_date)
+    if pin and (section or appendix):
+        # the part read, as a finding cites it: "2 CFR 200.430(i)(5)", "2 CFR 200.1 Equipment", "2 CFR Appendix III to Part 200, B.1"
+        result["pinpoint"] = f"{resolved_title} CFR {section}{pin}" if section else f"{resolved_title} CFR {appendix}, {pin.lstrip('. ')}"
     if title is None:
         result["resolved_from"] = "search"
     return _finalize_response(result)
