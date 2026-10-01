@@ -2,7 +2,7 @@
   "catalog_version": "1.0",
   "repo": "ui-insight/ai4ra-mcp",
   "server": "ai4ra",
-  "note": "Research-administration guides and prompts, no client named: the proposal guides (an RFA record, a narrative, a work plan, a budget outline, the NSF budget form), and the cost-allowability and budget-justification prompts copied from AI4RA/prompt-library at a pinned commit (each entry's source says which). The ai4ra_guide tool serves them. Same shape as AI4RA/prompt-library's component_catalog.json, hand-maintained.",
+  "note": "Research-administration guides and prompts, no client named: the proposal guides (an RFA record, a narrative, a work plan, a budget outline, the NSF budget form), the compliance-concerns vocabulary, and the cost-allowability and budget-justification prompts copied from AI4RA/prompt-library at a pinned commit (each entry's source says which). The ai4ra_guide tool serves them. Same shape as AI4RA/prompt-library's component_catalog.json, hand-maintained.",
   "components": [
     {
       "slug": "rfa-guide",
@@ -174,6 +174,43 @@
         {
           "type": "prompt",
           "path": "components/nsf-budget-guide/prompt.md",
+          "version": "0.1.0",
+          "role": "canonical_prompt"
+        }
+      ],
+      "contracts": {
+        "output": {
+          "format": null,
+          "scope": "repo_local",
+          "schema_path": null
+        }
+      },
+      "evaluation": {
+        "case_count": 0,
+        "report_count": 0,
+        "last_fully_evaluated_version": null,
+        "current_version_is_fully_evaluated": false
+      },
+      "requires": []
+    },
+    {
+      "slug": "compliance-concerns-guide",
+      "name": "compliance-concerns-guide",
+      "summary": "A vocabulary for grouping: twenty concerns a statement about a sponsored project can raise (allowability, indirect costs, effort, cost sharing, subawards, and the rest), each a name and a description of what it covers and where it stops. A closed list with no citations; which rule governs a statement is each source's to find. A guide; what is done with the groups is the caller's.",
+      "version": "0.1.0",
+      "category": "guide",
+      "domain": "research-administration",
+      "status": "experimental",
+      "paths": {
+        "component_dir": "components/compliance-concerns-guide",
+        "readme": "components/compliance-concerns-guide/README.md",
+        "prompt": "components/compliance-concerns-guide/prompt.md",
+        "evals_dir": "components/compliance-concerns-guide/evals"
+      },
+      "manifestations": [
+        {
+          "type": "prompt",
+          "path": "components/compliance-concerns-guide/prompt.md",
           "version": "0.1.0",
           "role": "canonical_prompt"
         }

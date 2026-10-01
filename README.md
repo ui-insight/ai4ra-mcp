@@ -42,7 +42,7 @@ works without one and a key raises its quota.
 | Path | Upstream | Key | Tools | Skills |
 |---|---|---|---|---|
 | `/general/mcp` | the open web, through a SearXNG beside the process | none | `web_search`, `fetch_document`, `general_guide` | `ai-tells-guide` (the guide), `code-change` and `actions-check` (use GitHub's own MCP server; a browser client reaches it through a proxy, see mindrouter-365's README) |
-| `/ai4ra/mcp` | none: guides and prompts | none | `ai4ra_guide` | the guides `rfa-guide`, `narrative-guide`, `work-plan-guide`, `budget-outline-guide`, `nsf-budget-guide`, and seventeen cost-allowability, extraction and budget-justification prompts copied from AI4RA/prompt-library |
+| `/ai4ra/mcp` | none: guides and prompts | none | `ai4ra_guide` | the guides `rfa-guide`, `narrative-guide`, `work-plan-guide`, `budget-outline-guide`, `nsf-budget-guide`, `compliance-concerns-guide`, and seventeen cost-allowability, extraction and budget-justification prompts copied from AI4RA/prompt-library |
 | `/udm/mcp` | the AI4RA Unified Data Model's published schema (ui-insight.github.io/AI4RA-UDM) | none | `udm_index`, `udm_schema`, `udm_guide` | `udm-conversion-guide` (the guide) |
 
 **Rules and announcements**
@@ -382,6 +382,17 @@ fixed order (Location, F&A rate, F&A base, Fringe faculty, Fringe staff,
 Fringe students, Fringe temporary) and a Source line of provenance; an
 institution's rates skill reports in that form (`uidaho-rates` is Idaho's)
 and a client lays it down.
+
+A sixth guide is a vocabulary: `compliance-concerns-guide` holds twenty
+concerns a statement about a sponsored project can raise (allowability,
+indirect costs, effort, cost sharing, subawards and the rest), each a name
+and a description of what it covers and where it stops, so that statements
+about the same thing can be grouped under one name. The list is closed and
+cites nothing: which regulation or policy governs a statement is found from
+the statement by the skill of the server that holds that source
+(`ecfr-research-admin`, `uidaho-lookup`), not from a map kept here. Draft
+0.1; the categories are the research office's to own and have not been
+reviewed by it (#15).
 
 The other seventeen components are copies of AI4RA/prompt-library at commit
 `eef6fd3d818037ab51ece87f61806c448d51f40d`, files unchanged, each catalog
@@ -1018,8 +1029,9 @@ slug, and through the server's `<server>_guide` tool, which lists the
 server's components without a name and returns one with a name, so a
 client that lists tools but not prompts still gets it and the model can
 fetch the guide at the moment the job comes up. The UDM conversion guide
-(`udm_guide`), the five proposal guides on `ai4ra` (`ai4ra_guide`) and the
-AI-tells guide on `general` (`general_guide`) are the guides so far.
+(`udm_guide`), the five proposal guides and the compliance-concerns
+vocabulary on `ai4ra` (`ai4ra_guide`) and the AI-tells guide on `general`
+(`general_guide`) are the guides so far.
 
 A skill is a prompt with a contract: what it needs, what it produces, which
 tools it calls. Each lives in its server's `skills/components/<slug>/` as
@@ -1348,7 +1360,7 @@ version in the front matter and the catalog together.
 
 ## Status
 
-2026-09-30: the server-and-client rule and the grid; log no keys; the Banner family removed; guides as catalogued components with a `<server>_guide` tool per server (the UDM guide, five proposal guides, the AI-tells guide); once the pane served its own placement skills (mindrouter-365 #34 to #39), the ten it had been carrying here (Gantt, ask, remove-ai-tells, the five proposal sheets, udm-sheet, proposal-workbook) were removed and the rates skill became report-only, so no catalog here carries a client's fields. 2026-09-29: twenty-six servers; the `udm` server and the `udm-sheet` skill on `ai4ra` were added that day, offline-tested against a fixture in the published schema's shape and tried against the real schema. 2026-09-25: twenty-five servers. The eCFR and grants.gov code moved in from
+2026-09-30: the server-and-client rule and the grid; log no keys; the Banner family removed; guides as catalogued components with a `<server>_guide` tool per server (the UDM guide, five proposal guides, the AI-tells guide, and the compliance-concerns vocabulary as draft 0.1, #15); once the pane served its own placement skills (mindrouter-365 #34 to #39), the ten it had been carrying here (Gantt, ask, remove-ai-tells, the five proposal sheets, udm-sheet, proposal-workbook) were removed and the rates skill became report-only, so no catalog here carries a client's fields. 2026-09-29: twenty-six servers; the `udm` server and the `udm-sheet` skill on `ai4ra` were added that day, offline-tested against a fixture in the published schema's shape and tried against the real schema. 2026-09-25: twenty-five servers. The eCFR and grants.gov code moved in from
 mcp-ecfr on 2026-09-22 with the Office add-in's skills, and the NIH, NSF,
 SAM.gov, USAspending and Federal Audit Clearinghouse servers were verified
 against the live APIs that day (SAM.gov and FAC with a person's own key).
