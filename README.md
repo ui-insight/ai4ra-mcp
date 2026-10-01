@@ -969,7 +969,10 @@ values, marked "not fetched". Neither skill carries fallback figures.
 `policy-check` checks a passage of a document against the APM and the FSH
 as fetched and reports a finding for each sentence that disagrees with a
 policy, in the findings contract's form with a `UI:` line: it finds the
-policy from the chapter's index, reads it, and quotes the clause. It is
+policy from the chapter's index, reads it, and quotes the clause. A
+sentence that states an F&A or fringe rate is compared with the rate
+agreement or the fringe-rate page by `uidaho_rates` inside the same check
+(0.2.0), so a client runs no rates skill first. It is
 the university's sibling of `cfr-check` on `ecfr`; a client that runs both
 on one passage can put the two findings for a sentence in one place.
 Writing the rates onto a sheet, and the eight-step proposal workbook that

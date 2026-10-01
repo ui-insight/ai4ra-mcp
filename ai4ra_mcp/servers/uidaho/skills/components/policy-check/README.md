@@ -1,18 +1,18 @@
 # Policy Check
 
-Checks a passage of a document against University of Idaho policy, the APM and the FSH, as fetched from the university's policy pages, and reports a finding for each sentence that disagrees with it. Report-only and client-neutral: the findings are in the reply. It is the university's sibling of `cfr-check` on the `ecfr` server and reports in the same form, with a `UI:` line where that one has `Federal:`, so a client that runs both can put the two on one sentence together.
+Checks a passage of a document against University of Idaho policy, the APM and the FSH, and against the university's F&A and fringe rates, as fetched from the university's policy pages and rate documents, and reports a finding for each sentence that disagrees with it. Report-only and client-neutral: the findings are in the reply. It is the university's sibling of `cfr-check` on the `ecfr` server and reports in the same form, with a `UI:` line where that one has `Federal:`, so a client that runs both can put the two on one sentence together.
 
-**Version:** 0.1.0 · **Category:** review · **Status:** experimental · **Output:** findings
+**Version:** 0.2.0 · **Category:** review · **Status:** experimental · **Output:** findings
 
 ## Inputs
 
 A passage of text, however the client supplies it.
 
-The skill needs `uidaho_guidance_index` (a chapter's policies with what each covers) and `uidaho_guidance_get`.
+The skill needs `uidaho_guidance_index` (a chapter's policies with what each covers), `uidaho_guidance_get`, and `uidaho_rates` for a sentence that states an F&A or fringe rate.
 
 ## Outputs
 
-One finding per sentence that disagrees, in four lines: the verdict (violates or unclear) with the policy's number and paragraph, the sentence's own words, one clause quoted from the fetched policy with its link, and a fix. Then a closing: the policies read with their "Last updated" dates, each sentence not checked and why, and that federal regulation and sponsor terms were not read. Sentences of the passage that disagree with each other are left to the federal check.
+One finding per sentence that disagrees, in four lines: the verdict (violates or unclear) with the policy's number and paragraph, the sentence's own words, one clause quoted from the fetched policy with its link, and a fix. A stated rate is compared with the rate agreement or the fringe-rate page: a figure the document gives for a different type, location, class or year than the passage names is a finding, and one it gives nowhere is unclear, since a sponsor's limit or an approved reduction was not read. Then a closing: the policies and rate documents read with their dates, each sentence not checked and why, and that federal regulation and sponsor terms were not read. Sentences of the passage that disagree with each other are left to the federal check.
 
 ## The form is a contract
 
