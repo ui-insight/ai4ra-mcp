@@ -64,7 +64,7 @@
         "fringe rate",
         "indirect rate"
       ],
-      "version": "0.4.0",
+      "version": "0.4.1",
       "category": "research",
       "domain": "research-administration",
       "status": "experimental",
@@ -78,7 +78,7 @@
         {
           "type": "prompt",
           "path": "components/uidaho-rates/prompt.md",
-          "version": "0.4.0",
+          "version": "0.4.1",
           "role": "canonical_prompt"
         }
       ],

@@ -1,6 +1,6 @@
 # UIdaho Lookup
 
-Answers questions about the University of Idaho's sponsored-research facts (F&A and fringe rates, budget rules, policies, contacts) with the uidaho server's tools, quoting each figure or passage with its policy number, revision date or effective period, and page. The rates topic records keyed notes for the budget template inside a workflow.
+Answers questions about the University of Idaho's sponsored-research facts (F&A and fringe rates, budget rules, policies, contacts) with the uidaho server's tools, quoting each figure or passage with its policy number, revision date or effective period, and page.
 
 **Version:** 0.4.0 · **Category:** research · **Status:** experimental · **Output:** Markdown
 

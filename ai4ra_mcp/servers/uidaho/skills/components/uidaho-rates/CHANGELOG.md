@@ -17,3 +17,7 @@ All notable changes to this component. Versions follow semver: MAJOR for output-
 ## [0.4.0] — 2026-09-30
 
 - Fetch and report only, in the Rates contract's order. Writing the rates onto a sheet moved to Idaho's mindrouter-365-aware server (cell 2 of the grid), beside the proposal workbook (mindrouter-365 #39).
+
+## [0.4.1] — 2026-09-30
+
+- Wording: the first quality standard and the README still spoke of figures on a sheet; they speak of the reply now. The `spreadsheet` tag is gone.

@@ -1,10 +1,10 @@
 ---
 name: uidaho-rates
-version: 0.4.0
+version: 0.4.1
 category: research
 domain: research-administration
 status: experimental
-tags: [university-of-idaho, rates, fringe, f-and-a, indirect, budget, spreadsheet, research-administration]
+tags: [university-of-idaho, rates, fringe, f-and-a, indirect, budget, research-administration]
 audience: [pre-award-staff, principal-investigators, proposal-developers]
 owner: nlayman
 created: 2026-09-22
@@ -34,6 +34,6 @@ The reply is the result, in the Rates contract's order (see Expected output). Gi
 
 ## Quality Standards
 
-1. **Read, then written, then dated, then linked.** Every figure on the sheet names its document, its effective period and the address it was read from; nothing on the sheet comes from memory, and a document that could not be read leaves its rows without figures and says so.
+1. **Read, then reported, then dated, then linked.** Every figure in the reply names its document, its effective period and the address it was read from; nothing in the reply comes from memory, and a document that could not be read yields no figures and the reply says so.
 2. **Fixed labels.** The seven items keep their exact labels and order, and the Source line comes last, so a client that lays them down keeps the contract a budget form reads.
 3. **Fractions.** Values are fractions, never text with a percent sign.
