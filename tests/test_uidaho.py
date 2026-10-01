@@ -36,7 +36,17 @@ def test_opening_paragraph_is_the_first_prose_whatever_the_page_calls_it():
     long = "A. Purpose. " + "This sentence is fifty characters long, or about. " * 20
     cut = uidaho.opening_paragraph(long)
     assert len(cut) <= uidaho.COVERS_CHARS and cut.endswith("about.")
-    assert uidaho.opening_paragraph("C. Definitions.\n\nA short line.") == ""
+    assert uidaho.opening_paragraph("CONTENTS:\n\n### A heading\n\nClick here for chart.") == "Click here for chart."   # no prose: the first line that is not a heading
+    assert uidaho.opening_paragraph("### Under revision.\n\nCONTENTS:") == ""
+
+
+def test_a_heading_that_opens_with_the_manual_s_name_is_policy_text_not_the_site_s_navigation():
+    page = ("# 70.04 - Travel Entitlements\n\n## Owner:\n\nPosition: Travel Services Manager\n\nEmail: ap-staff@uidaho.edu\n\nLast updated: August 2017\n\n"
+            "### APM 70.04 is under revision.\n\nA. General. Subject to limitations stated in this section, UI reimburses employees for the expenses of authorized travel.\n\n"
+            "#### APM\n\nChapter 01: Legal Affairs\n")
+    parsed = uidaho.parse_policy_page(page)
+    assert parsed["text"].startswith("### APM 70.04 is under revision.") and parsed["text"].endswith("authorized travel.")
+    assert uidaho.opening_paragraph(parsed["text"]).startswith("A. General. Subject to limitations")
 
 
 async def test_a_chapter_index_lists_each_policy_with_what_it_covers_and_names_the_unread(monkeypatch):

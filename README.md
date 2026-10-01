@@ -939,8 +939,10 @@ makes a search-and-cite layer cheap:
   and no list kept by hand. The index is built from the policy pages when
   asked for (APM 45 is 24 policies, about 11,000 characters, under three
   seconds cold) and the pages are cached for a day; a page that cannot be
-  read is listed under `unread`, not left out. The starter citations, ten
-  policies listed by hand, are gone (#18).
+  read is listed under `unread`, not left out. A page with no opening prose
+  (two of 354: a pointer to another page, a link to a chart) gives the first
+  line it has. The starter citations, ten policies listed by hand, are gone
+  (#18).
 - `uidaho_guidance_search`: policies by number or title words, as listed in
   each chapter's index. It does not search policy text; the skill reads a
   likely policy and looks there.
@@ -1148,7 +1150,9 @@ Federal: "<one clause, copied word for word from the fetched text>" <the address
 Fix: <one plain sentence>
 ```
 
-The first line is the verdict, `violates.` or `unclear.`, then the pinpoint.
+The first line is the verdict, `violates.` or `unclear.`, then the pinpoint
+in the source's own citation: `2 CFR 200.313(a)`, `APM 45.09 D-4`, `FSH
+5100 B-2` (an FSH policy number has no dot).
 The source line opens with the check's own label (`Federal:`, `UI:`), one
 line for each rule the finding rests on; in the federal check `Conflicts
 with: "<the other sentence's words>"` takes its place when two sentences of

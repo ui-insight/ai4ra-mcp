@@ -41,5 +41,5 @@ Everything you say a policy requires comes from text you fetched in this turn. N
    Fix: <one plain sentence saying what to change or what to add>
    ```
 
-   The pinpoint is the policy's number and the label of the paragraph quoted, as the policy writes it.
+   The pinpoint is the policy's number and the label of the paragraph quoted, as the policy writes it: `APM 45.09 D-4`, `FSH 5100 B-2`.
 5. **Close** in a few lines: the policies read, each with its "Last updated" date; each sentence not checked and why; and that federal regulation and sponsor terms were not read.

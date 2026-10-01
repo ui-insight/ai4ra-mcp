@@ -88,6 +88,9 @@ _CHAPTER_LINE = re.compile(r"^Chapter (\d+): (.+)$", re.M)
 _APM_POLICY_LINE = re.compile(r"^(\d{2})\.(\d{2}) - (.+)$", re.M)
 _FSH_POLICY_LINE = re.compile(r"^(\d{4}) - (.+)$", re.M)
 _POLICY_REF = re.compile(r"^\s*(APM|FSH)?\s*(\d{2}\.\d{2}|\d{4})\s*$", re.I)
+# Where a page's own text ends and the site's navigation begins: a heading that is only "APM", "FSH" or "Footer".
+# A heading inside a policy that merely opens with one of those words ("### APM 70.04 is under revision.") is text.
+_NAV_HEADING = re.compile(r"^#{2,4} (APM|FSH|Footer)[ \t]*$", re.M)
 _CHAPTER_REF = re.compile(r"^\s*(APM|FSH)\s*(\d{1,2})\s*$", re.I)
 
 mcp = MCPServer(
@@ -125,7 +128,7 @@ def parse_policies(source: str, chapter: str, text: str) -> list[dict]:
     """The policies listed under a chapter page's 'Chapter Index'."""
     start = text.find("## Chapter Index")
     body = text[start:] if start >= 0 else text
-    end = re.search(r"^#{2,4} (APM|FSH|Footer)", body[3:], re.M)
+    end = _NAV_HEADING.search(body[3:])
     body = body[: end.start() + 3] if end else body
     seen, out = set(), []
     if source == "APM":
@@ -159,7 +162,7 @@ def parse_policy_page(text: str) -> dict:
     last_updated = m.group(1).strip() if m else ""
     body_start = m.end() if m else (title_m.end() if title_m else 0)
     body = text[body_start:]
-    end = re.search(r"^#{2,4} (APM|FSH|Footer)\b", body, re.M)
+    end = _NAV_HEADING.search(body)
     if end:
         body = body[: end.start()]
     return {"title": title, "owner": owner, "last_updated": last_updated, "text": body.strip()}
@@ -168,16 +171,18 @@ def parse_policy_page(text: str) -> dict:
 def opening_paragraph(body: str) -> str:
     """What a policy covers, in its own words: the first paragraph of its text that is prose, whatever the page
     calls it (a Purpose, a Preamble, an Introduction), cut at a sentence end when it is long. A contents list
-    and bare headings are passed over: they do not end as a sentence does."""
-    for block in body.split("\n\n"):
-        text = " ".join(block.split())
-        if len(text) < 60 or text.startswith("#") or text.rstrip("”\"')")[-1:] not in (".", "?", "!"):
+    and bare headings are passed over: they do not end as a sentence does. A page with no such paragraph (a
+    pointer to another page, a link to a chart) gives the first line it has that is not a heading."""
+    blocks = [" ".join(block.split()) for block in body.split("\n\n")]
+    blocks = [b for b in blocks if b and not b.startswith("#")]
+    for text in blocks:
+        if len(text) < 60 or text.rstrip("”\"')")[-1:] not in (".", "?", "!"):
             continue
         if len(text) > COVERS_CHARS:
             cut = text.rfind(". ", 0, COVERS_CHARS)
             text = text[: cut + 1] if cut > 0 else text[:COVERS_CHARS].rstrip() + "…"
         return text
-    return ""
+    return next((b[:COVERS_CHARS] for b in blocks if not b.endswith(":")), "")
 
 
 def parse_policy_ref(policy: str) -> tuple[str, str, str] | None:
