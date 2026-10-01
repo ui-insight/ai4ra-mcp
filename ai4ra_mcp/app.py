@@ -76,7 +76,7 @@ WEB = "https://github.com/ui-insight/ai4ra-mcp/blob/main/ai4ra_mcp/servers/"
 
 # What a client's picker shows for each server, and whether it wants a key of the person's own.
 META: dict[str, dict] = {
-    "ecfr": {"label": "eCFR", "description": "Federal regulations from the eCFR: search, read a section on a date, compare versions."},
+    "ecfr": {"label": "eCFR", "description": "Federal regulations from the eCFR: search within a title and part, read a section (the current text, or as of a date), compare versions; a report-only check of a passage against 2 CFR 200."},
     "grants": {"label": "grants.gov", "description": "Federal funding opportunities: search, then one opportunity's record with its attachments."},
     "s2s": {"label": "Grants.gov S2S", "description": "The Grants.gov Applicant System-to-System service with the person's own certificate: an opportunity's package, a GrantApplication checked against the schemas, its submission (where the deployment allows), and the status of what was submitted. The deployment's default endpoint is a mock unless configured otherwise.",
             "key": {"required": False, "hint": "Paste your S2S credential bundle: the base64url JSON of your client certificate and key, made with `python -m ai4ra_mcp.servers.s2s.credentials cert.pem key.pem`. Without one the deployment's fallback certificate is used, which only the mock accepts."}},

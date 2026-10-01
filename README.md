@@ -49,7 +49,7 @@ works without one and a key raises its quota.
 
 | Path | Upstream | Key | Tools | Skills |
 |---|---|---|---|---|
-| `/ecfr/mcp` | ecfr.gov | none | `ecfr_regulatory_index`, `ecfr_search`, `ecfr_list_titles`, `ecfr_list_agencies`, `ecfr_get_title_versions`, `ecfr_get_regulation`, `ecfr_get_title_structure`, `ecfr_compare_regulations` | none |
+| `/ecfr/mcp` | ecfr.gov | none | `ecfr_guide`, `ecfr_regulatory_index`, `ecfr_search`, `ecfr_list_titles`, `ecfr_list_agencies`, `ecfr_get_title_versions`, `ecfr_get_regulation`, `ecfr_get_title_structure`, `ecfr_compare_regulations` | `cfr-check` |
 | `/fedreg/mcp` | Federal Register | none | `federal_register_index`, `federal_register_search`, `federal_register_document`, `federal_register_agencies` | none |
 | `/regulations/mcp` | Regulations.gov | **required** (api.data.gov) | `regulations_gov_index`, `regulations_gov_documents_search`, `regulations_gov_document`, `regulations_gov_docket`, `regulations_gov_comments_search` | none |
 | `/grants/mcp` | grants.gov | none | `grants_gov_search`, `grants_gov_opportunity`, `grants_guide` | `funding-opportunity-finder` |
@@ -201,7 +201,7 @@ curl -s http://127.0.0.1:8000/ecfr/mcp \
 # One call
 curl -s http://127.0.0.1:8000/ecfr/mcp \
   -H 'Content-Type: application/json' -H 'Accept: application/json, text/event-stream' \
-  -d '{"jsonrpc":"2.0","id":3,"method":"tools/call","params":{"name":"ecfr_get_regulation","arguments":{"title":2,"section":"200.403","date":"2025-01-01"}}}'
+  -d '{"jsonrpc":"2.0","id":3,"method":"tools/call","params":{"name":"ecfr_get_regulation","arguments":{"title":2,"part":"200","section":"200.403"}}}'
 
 # A keyed server: the person's key rides as a bearer token
 curl -s http://127.0.0.1:8000/perdiem/mcp \
@@ -459,29 +459,52 @@ its own mindrouter-365-aware server instead (mindrouter-365 #43).
 
 ### ecfr
 
-The eCFR API, https://www.ecfr.gov/api, no key. The tools and their rules
-are unchanged from mcp-ecfr: read the index first, get a valid date from the
-title's versions before fetching text, give the title explicitly because
-part numbers repeat across titles, prefer sections over parts. The
-regulatory index, a resource in mcp-ecfr, is a tool here as well, because
-most clients never list resources. `ecfr_compare_regulations` diffs a
-section between two dates.
+The eCFR API, https://www.ecfr.gov/api, no key. The tools came from
+mcp-ecfr: read the index first, give the title explicitly because part
+numbers repeat across titles, prefer sections over parts. The regulatory
+index, a resource in mcp-ecfr, is a tool here as well, because most clients
+never list resources. `ecfr_compare_regulations` diffs a section between two
+dates.
+
+**No date is needed for the current text.** `ecfr_search`,
+`ecfr_get_regulation` and `ecfr_get_title_structure` take `date` as
+optional, and `ecfr_compare_regulations` its `date_2`: left out, it is the
+latest day the eCFR holds, read from the eCFR's own
+titles list (the title's `up_to_date_as_of`) and kept for an hour, never
+taken from the clock. The eCFR runs behind the calendar (on 2026-10-01 it
+held 2026-09-29) and refuses a later date, so "today" and often "yesterday"
+fail. The result's `date` says which day was read, and the index reports it
+as `current_as_of`. Any earlier
+date returns the text in force that day, so no version lookup comes before
+a fetch; `ecfr_get_title_versions` is for history. A date past the latest
+day is refused with that day named, and the server's refusals (a bad date,
+a section the eCFR does not have, with the eCFR's own words) now reach the
+client as the error's text instead of a bare "Error executing tool" (#16,
+items 2, 4, 5 and part of 8). A search of every version, superseded ones
+included, is `date="all"`.
 
 `ecfr_search` can be limited to a title, part, subpart or section (`title`,
 `part`, `subpart`, `section`, the eCFR's hierarchy filter), so a Uniform
 Guidance search is only 2 CFR 200: `title=2, part="200"`. A part, subpart or
 section needs the title, and a subpart needs its part. Three things make a
 search find the governing sections: the words, the limit to the title and
-part, and `date`, without which superseded versions of a section come back
-too and often rank first. The agency filter (`agency_slugs`) takes in every
+part, and the date, which is the current text unless one is given. The agency filter (`agency_slugs`) takes in every
 part an agency owns and is no longer the way to reach Part 200; the eCFR's
 slug for OMB is `management-and-budget-office`. The result's
 `meta.description` says what was searched ("in Title 2 :: Part 200") (#17).
 
-The server has no skills. `ecfr-research-admin`, the prompt that came with
-mcp-ecfr, was removed on 2026-10-01 with the `ecfr_guide` tool that served
-it: it restated what the tool descriptions, the server's instructions and
-the index already say, and how an answer is laid out is the client's.
+One skill, `cfr-check`, report-only: it checks a passage of a document,
+however the client supplies it, against 2 CFR 200 as fetched (the current
+rules unless the request names a date) and reports a finding for each
+sentence that disagrees: the verdict (violates or unclear), the sentence's
+words, one clause quoted with its link, and a fix; then the date read, the
+sections fetched and each sentence not checked. Nothing comes from memory.
+It names no client, so it runs the same in Claude Desktop, Claude Code or
+the pane; putting each finding on the document (a comment on its sentence)
+is a client's placement skill, as with the rates. `ecfr_guide` serves it.
+`ecfr-research-admin`, the prompt that came with mcp-ecfr, was removed on
+2026-10-01: it restated what the tool descriptions, the server's
+instructions and the index already say.
 
 ### fedreg
 
@@ -1046,7 +1069,7 @@ slug, and through the server's `<server>_guide` tool, which lists the
 server's components without a name and returns one with a name, so a
 client that lists tools but not prompts still gets it and the model can
 fetch the guide at the moment the job comes up. The UDM conversion guide
-(`udm_guide`), the five proposal guides and the compliance-concerns
+(`udm_guide`), the five proposal guides, the compliance-concerns
 vocabulary on `ai4ra` (`ai4ra_guide`) and the AI-tells guide on `general`
 (`general_guide`) are the guides so far.
 
@@ -1377,7 +1400,7 @@ version in the front matter and the catalog together.
 
 ## Status
 
-2026-09-30: the server-and-client rule and the grid; log no keys; the Banner family removed; guides as catalogued components with a `<server>_guide` tool per server (the UDM guide, five proposal guides, the AI-tells guide, and the compliance-concerns vocabulary as draft 0.1, #15); once the pane served its own placement skills (mindrouter-365 #34 to #39), the ten it had been carrying here (Gantt, ask, remove-ai-tells, the five proposal sheets, udm-sheet, proposal-workbook) were removed and the rates skill became report-only, so no catalog here carries a client's fields. 2026-09-29: twenty-six servers; the `udm` server and the `udm-sheet` skill on `ai4ra` were added that day, offline-tested against a fixture in the published schema's shape and tried against the real schema. 2026-09-25: twenty-five servers. The eCFR and grants.gov code moved in from
+2026-10-01: `ecfr_search` limited to a title and part (#17); no date needed for the current text on any ecfr tool, the latest day read from the eCFR and not the clock, and the server's refusals readable by a client (#16 items 2, 4, 5, part of 8); `ecfr-research-admin` removed; a report-only `cfr-check` on `ecfr`, so a client keeps only the placement of findings. Open on #16: paging a long section (3), the index's size (6), compact search results (7). 2026-09-30: the server-and-client rule and the grid; log no keys; the Banner family removed; guides as catalogued components with a `<server>_guide` tool per server (the UDM guide, five proposal guides, the AI-tells guide, and the compliance-concerns vocabulary as draft 0.1, #15); once the pane served its own placement skills (mindrouter-365 #34 to #39), the ten it had been carrying here (Gantt, ask, remove-ai-tells, the five proposal sheets, udm-sheet, proposal-workbook) were removed and the rates skill became report-only, so no catalog here carries a client's fields. 2026-09-29: twenty-six servers; the `udm` server and the `udm-sheet` skill on `ai4ra` were added that day, offline-tested against a fixture in the published schema's shape and tried against the real schema. 2026-09-25: twenty-five servers. The eCFR and grants.gov code moved in from
 mcp-ecfr on 2026-09-22 with the Office add-in's skills, and the NIH, NSF,
 SAM.gov, USAspending and Federal Audit Clearinghouse servers were verified
 against the live APIs that day (SAM.gov and FAC with a person's own key).

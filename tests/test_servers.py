@@ -12,7 +12,7 @@ from ai4ra_mcp.servers.s2s import server as s2s
 from ai4ra_mcp.servers.uidaho import server as uidaho
 
 EXPECTED_TOOLS = {
-    "ecfr": {"ecfr_regulatory_index", "ecfr_search", "ecfr_list_titles", "ecfr_list_agencies",
+    "ecfr": {"ecfr_guide", "ecfr_regulatory_index", "ecfr_search", "ecfr_list_titles", "ecfr_list_agencies",
              "ecfr_get_title_versions", "ecfr_get_regulation", "ecfr_get_title_structure", "ecfr_compare_regulations"},
     "grants": {"grants_guide", "grants_gov_search", "grants_gov_opportunity"},
     "uidaho": {"uidaho_guide", "uidaho_guidance_index", "uidaho_guidance_search", "uidaho_guidance_get", "uidaho_rates"},

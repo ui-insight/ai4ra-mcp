@@ -7,6 +7,7 @@ with a primary focus on Uniform Guidance (2 CFR Part 200) and related research r
 """
 
 from mcp.server.mcpserver import MCPServer
+from mcp.server.mcpserver.exceptions import ToolError
 
 from ai4ra_mcp.common.http import HEADERS as _UA_HEADERS
 from pydantic import Field
@@ -16,11 +17,12 @@ import difflib
 import httpx
 import json
 import re
+import time
 import xml.etree.ElementTree as ET
-from datetime import datetime, date
+from datetime import datetime
 
 # Initialize the MCP server
-mcp = MCPServer("ecfr", instructions="Federal regulation from the eCFR. Read the ecfr_regulatory_index tool first; get a valid date from ecfr_get_title_versions before fetching text; always give title explicitly.")
+mcp = MCPServer("ecfr", instructions="Federal regulation from the eCFR. Read the ecfr_regulatory_index tool first; search with ecfr_search limited to a title and part, then read a section with ecfr_get_regulation; omit date for the current text, or give any earlier date for the text in force that day; always give title explicitly.")
 
 # Constants
 BASE_URL = "https://www.ecfr.gov/api"
@@ -33,9 +35,7 @@ DEFAULT_SEARCH_RESULTS = 5
 MAX_SEARCH_RESULTS = 25
 MAX_DIFF_LINES = 100
 DEFAULT_STRUCTURE_DEPTH = 2
-
-# Today's date as a valid default for version lookups
-TODAY = date.today().isoformat()
+CURRENT_TTL = 3600.0                  # seconds the titles list is kept; the eCFR adds a day at most once a day
 
 # =============================================================================
 # RESOURCE CACHE — built on first access, memoized for process lifetime
@@ -44,6 +44,9 @@ _resource_cache: Optional[Dict[str, Any]] = None
 
 # Module-level HTTP client for connection reuse
 _http_client: Optional[httpx.AsyncClient] = None
+
+# The eCFR's titles list, which says the latest day it holds: (monotonic time read, the list)
+_titles_cache: Optional[tuple] = None
 
 
 def _get_http_client() -> httpx.AsyncClient:
@@ -80,18 +83,33 @@ async def api_get(
                     await asyncio.sleep(2 ** attempt)
                     continue
                 if code == 429:
-                    raise ValueError("Rate limit exceeded. Wait before retrying.")
-                raise ValueError(f"Server error {code} for {endpoint} after {max_retries} retries")
+                    raise ToolError("Rate limit exceeded. Wait before retrying.")
+                raise ToolError(f"Server error {code} for {endpoint} after {max_retries} retries")
+            said = _upstream_reason(e.response)
             if code == 404:
-                raise ValueError(f"Not found: {endpoint}. Check that the title, part, section, and date are valid.")
+                raise ToolError(f"Not found: {endpoint}. Check that the title, part, section, and date are valid.{said}")
             if code == 406:
-                raise ValueError(f"406 Not Acceptable — endpoint must end in .json or .xml: {endpoint}")
-            raise ValueError(f"API error {code} for {endpoint}")
+                raise ToolError(f"406 Not Acceptable — endpoint must end in .json or .xml: {endpoint}")
+            raise ToolError(f"API error {code} for {endpoint}.{said}")
         except httpx.TimeoutException:
             if attempt < max_retries:
                 await asyncio.sleep(2 ** attempt)
                 continue
-            raise ValueError(f"Request timed out for {endpoint} after {max_retries} retries.")
+            raise ToolError(f"Request timed out for {endpoint} after {max_retries} retries.")
+
+
+def _upstream_reason(response: httpx.Response) -> str:
+    """What the eCFR said about a refused request (its `error` or `errors`), to end an error message; empty when it said nothing."""
+    try:
+        body = response.json()
+    except ValueError:
+        return ""
+    if not isinstance(body, dict):
+        return ""
+    reason = body.get("error") or body.get("errors")
+    if not reason:
+        return ""
+    return f" The eCFR said: {reason if isinstance(reason, str) else json.dumps(reason, ensure_ascii=False)}"
 
 
 def _build_params(**kwargs) -> Dict[str, Any]:
@@ -185,7 +203,44 @@ def _validate_date_str(value: Optional[str], field_name: str) -> None:
     try:
         datetime.strptime(value, "%Y-%m-%d")
     except ValueError as e:
-        raise ValueError(f"{field_name} must be YYYY-MM-DD") from e
+        raise ToolError(f"{field_name} must be YYYY-MM-DD") from e
+
+
+# =============================================================================
+# THE CURRENT DATE — the latest day the eCFR holds, read from the eCFR
+# =============================================================================
+
+async def _current_date(title: Optional[int] = None) -> str:
+    """The latest day the eCFR holds: the title's up_to_date_as_of, or the whole eCFR's (meta.date) with no title.
+    The eCFR runs a day or more behind the calendar and refuses a later date, so this is read from its titles
+    list, never taken from the clock."""
+    global _titles_cache
+    now = time.monotonic()
+    if _titles_cache is None or now - _titles_cache[0] > CURRENT_TTL:
+        _titles_cache = (now, await api_get("versioner/v1/titles.json"))
+    data = _titles_cache[1]
+    latest = (data.get("meta") or {}).get("date")
+    if title is not None:
+        for t in data.get("titles", []):
+            if t.get("number") == title and t.get("up_to_date_as_of"):
+                latest = t["up_to_date_as_of"]
+    if not latest:
+        raise ToolError("The eCFR's titles list did not say the latest day it holds; give date explicitly.")
+    return latest
+
+
+async def _resolve_date(value: Optional[str], field_name: str, title: Optional[int] = None) -> str:
+    """The date to send: the latest day the eCFR holds when none is given, else the given date once it is well
+    formed and not past that day."""
+    latest = await _current_date(title)
+    if not value:
+        return latest
+    _validate_date_str(value, field_name)
+    if value > latest:
+        where = f" for Title {title}" if title is not None else ""
+        raise ToolError(f"{field_name} {value} is past the latest day the eCFR holds{where} ({latest}). "
+                        f"Omit {field_name} for the current text, or give {latest} or an earlier date.")
+    return value
 
 
 # =============================================================================
@@ -424,7 +479,6 @@ async def _build_resource() -> Dict[str, Any]:
     latest_date = meta.get("latest_amendment_date") or meta.get("latest_issue_date")
     return {
         "generated_from": "live ecfr api",
-        "today": TODAY,
         "uniform_guidance": {
             "citation": "2 CFR Part 200",
             "title": 2,
@@ -435,11 +489,13 @@ async def _build_resource() -> Dict[str, Any]:
         },
         "grants_relevant_agencies": agencies,
         "usage_notes": [
-            "Call ecfr_get_title_versions(title, part, section) BEFORE ecfr_get_regulation to get a valid date.",
-            "Use ecfr_search for topic/concept discovery, limited to a title and part and given a date (Uniform Guidance: title=2, part='200'). Results include title+part+section for follow-up calls.",
+            "Omit date for the current text: every tool that takes a date uses the latest day the eCFR holds (current_as_of) when none is given.",
+            "Any date on or before current_as_of returns the text in force that day. The calendar's today is usually a day or more past current_as_of and is refused.",
+            "ecfr_get_title_versions is for history (when a section changed, and the dates of its versions). It is not needed before a fetch.",
+            "Use ecfr_search for topic/concept discovery, limited to a title and part (Uniform Guidance: title=2, part='200'). Results include title+part+section for follow-up calls.",
             "Always provide title= explicitly; part numbers are NOT unique across titles (e.g. Part 46 exists in Title 45 AND other titles).",
             "Prefer section-level over part-level requests — part-level fetches can be very large.",
-            f"Use latest_amendment_date ({latest_date}) as a safe default date for Title 2 Part 200 lookups.",
+            f"latest_amendment_date ({latest_date}) is when Title 2 Part 200 last changed, not a date a fetch needs.",
         ],
     }
 
@@ -470,8 +526,9 @@ async def ecfr_regulatory_index() -> str:
       starter_citations — section-level starting points for 2 CFR Part 200
       grants_relevant_agencies — agency slugs for search filtering
       usage_notes — key rules for valid tool calls
+      current_as_of — the latest day the eCFR holds, which a tool uses when no date is given
     """
-    data = await _get_resource()
+    data = {**await _get_resource(), "current_as_of": await _current_date()}
     return _finalize_response(data)
 
 
@@ -502,15 +559,15 @@ async def ecfr_get_title_versions(
     subpart: Annotated[Optional[str], Field(default=None, description="Requires part. Uppercase letter.")] = None,
     appendix: Annotated[Optional[str], Field(default=None, description="Requires subtitle, chapter, or part.")] = None,
 ) -> str:
-    """Get the amendment/version history for a CFR title.
+    """Get the amendment/version history for a CFR title: when a part or section changed.
 
-    CALL THIS FIRST before ecfr_get_regulation or ecfr_compare_regulations.
+    For history, not a step before a fetch: ecfr_get_regulation with no date returns the current text.
     Use part= and section= filters to narrow to a specific regulation.
-    Each returned version has a "date" field — use that value as date= in ecfr_get_regulation.
-    Pick the most recent date unless a historical lookup is specifically needed.
+    Each returned version has a "date" field, the day that version began. To read a version, pass its
+    date (or any later day before the next version began) as date= to ecfr_get_regulation; to compare
+    two, pass their dates to ecfr_compare_regulations.
 
     Example: ecfr_get_title_versions(title=2, part="200", section="200.474")
-    → each content_version has a "date" → pass that as date= to ecfr_get_regulation.
     """
     _validate_date_str(issue_date_on, "issue_date_on")
     _validate_date_str(issue_date_lte, "issue_date_lte")
@@ -556,7 +613,7 @@ async def ecfr_get_title_versions(
 
 @mcp.tool(name="ecfr_get_regulation", annotations=_READ_ONLY_ANNOTATIONS)
 async def ecfr_get_regulation(
-    date: Annotated[str, Field(description="Date in YYYY-MM-DD format. Must be a valid eCFR amendment date — use ecfr_get_title_versions to find one. Do not guess.")],
+    date: Annotated[Optional[str], Field(default=None, description="The day whose text is wanted (YYYY-MM-DD). Omit for the current text: the latest day the eCFR holds. Any earlier date returns the text in force that day; no version lookup is needed first. A date past the latest day the eCFR holds, which is usually a day or more behind the calendar, is refused.")] = None,
     title: Annotated[Optional[int], Field(default=None, description="CFR title number (1–50). Provide explicitly for unambiguous results. If omitted, resolved from section/part via search — but ambiguous parts (e.g. Part 46, Part 50) will return an error requiring you to specify title.", ge=1, le=50)] = None,
     part: Annotated[Optional[str], Field(default=None, description="Part number, e.g. '200', '46'")] = None,
     section: Annotated[Optional[str], Field(default=None, description="Section number, e.g. '200.474', '46.116'. Requires part. Prefer this over part-only.")] = None,
@@ -567,17 +624,16 @@ async def ecfr_get_regulation(
     appendix: Annotated[Optional[str], Field(default=None, description="Requires subtitle, chapter, or part.")] = None,
     text_only: Annotated[bool, Field(default=True, description="True (default): returns clean paragraph text — sufficient for policy analysis. False: returns raw XML — only needed for structural parsing.")] = True,
 ) -> str:
-    """Retrieve regulatory text for a specific section or part on a given date.
+    """Retrieve regulatory text for a specific section or part: the current text, or the text in force on a given date.
 
-    IMPORTANT: Call ecfr_get_title_versions first to get a valid date.
+    Omit date= for the current text; the result's date says which day was read.
     Provide section= whenever possible — part-only requests return very large responses and will be blocked unless subpart= is also specified.
     Always provide title= explicitly for Parts 46 and 50, which exist in multiple titles.
 
     Examples:
-      ecfr_get_regulation(title=2, date="2024-10-01", part="200", section="200.474")
-      ecfr_get_regulation(title=45, date="2024-06-21", part="46", section="46.116")
+      ecfr_get_regulation(title=2, part="200", section="200.474")
+      ecfr_get_regulation(title=45, part="46", section="46.116", date="2018-07-18")
     """
-    _validate_date_str(date, "date")
     if subchapter and not chapter:
         return _finalize_response({"error": _make_error("subchapter requires chapter")})
     if subpart and not part:
@@ -631,14 +687,15 @@ async def ecfr_get_regulation(
         section=section,
         appendix=appendix,
     )
+    used_date = await _resolve_date(date, "date", resolved_title)
     xml_text = await api_get(
-        f"versioner/v1/full/{date}/title-{resolved_title}.xml",
+        f"versioner/v1/full/{used_date}/title-{resolved_title}.xml",
         params=query_params or None,
     )
     content_value = _xml_to_text(xml_text) if text_only else xml_text
     content_key = "text" if text_only else "xml"
     result = {content_key: content_value}
-    _add_canonical_fields(result, title=resolved_title, part=part, section=section, appendix=appendix, date=date)
+    _add_canonical_fields(result, title=resolved_title, part=part, section=section, appendix=appendix, date=used_date)
     if title is None:
         result["resolved_from"] = "search"
     content_bytes = len(content_value.encode("utf-8"))
@@ -659,7 +716,7 @@ async def ecfr_search(
     per_page: Annotated[int, Field(default=DEFAULT_SEARCH_RESULTS, description="Results per page (default 5). Increase to 10-15 only when broader coverage needed.", ge=1, le=MAX_SEARCH_RESULTS)] = DEFAULT_SEARCH_RESULTS,
     include_excerpts: Annotated[bool, Field(default=False, description="Include full_text_excerpt snippets. Useful to confirm relevance before fetching full text.")] = False,
     order: Annotated[Optional[str], Field(default="relevance", description="Sort order: 'relevance' (default), 'newest_first', 'oldest_first', 'hierarchy'")] = "relevance",
-    date: Annotated[Optional[str], Field(default=None, description="Limit to the text in force on this date (YYYY-MM-DD). A search for the rule in force needs it: without a date, superseded versions of a section are returned too and often rank first.")] = None,
+    date: Annotated[Optional[str], Field(default=None, description="Limit to the text in force on this date (YYYY-MM-DD). Omit for the current text: the latest day the eCFR holds. 'all' searches every version, superseded ones included, which often rank first.")] = None,
     last_modified_after: Annotated[Optional[str], Field(default=None, description="Modified after this date (YYYY-MM-DD)")] = None,
     last_modified_on_or_after: Annotated[Optional[str], Field(default=None, description="Modified on or after (YYYY-MM-DD)")] = None,
     last_modified_before: Annotated[Optional[str], Field(default=None, description="Modified before (YYYY-MM-DD)")] = None,
@@ -671,23 +728,24 @@ async def ecfr_search(
     START HERE for topic or concept questions where you don't have a specific citation.
     Returns sections ranked by relevance with title/part/section hierarchy for follow-up calls.
     Three things make a search find the governing sections: the words, the limit to a title and part,
-    and the date. A search for the rule in force needs date=; without it, superseded versions of a
-    section are returned too and often rank first.
+    and the date. With no date= the search is of the current text (the result's date says which day);
+    give a date for the rule in force that day, or date="all" for every version, superseded ones included.
     For Uniform Guidance topics, search only 2 CFR 200: title=2, part="200".
     meta.description says what was searched, e.g. "... in Title 2 :: Part 200".
     Results include citation and source_url fields for each match.
 
-    Example: ecfr_search(query="compensation", title=2, part="200", date="2024-10-01")
+    Example: ecfr_search(query="compensation", title=2, part="200")
 
-    NEXT STEP: Take the title/part/section from a result → call ecfr_get_title_versions to get
-    a valid date → then ecfr_get_regulation to fetch the full text.
+    NEXT STEP: Take the title/part/section from a result → ecfr_get_regulation with the same date
+    (or none, for the current text) to fetch the full text.
     """
     if (part or subpart or section) and title is None:
         return _finalize_response({"error": _make_error("part, subpart and section require title")})
     if subpart and not part:
         return _finalize_response({"error": _make_error("subpart requires part")})
+    every_version = (date or "").strip().lower() == "all"
+    used_date = None if every_version else await _resolve_date(date, "date", title)
     for field_name, field_val in [
-        ("date", date),
         ("last_modified_after", last_modified_after),
         ("last_modified_on_or_after", last_modified_on_or_after),
         ("last_modified_before", last_modified_before),
@@ -701,7 +759,7 @@ async def ecfr_search(
         per_page=per_page,
         paginate_by="results",
         order=order,
-        date=date,
+        date=used_date,
         last_modified_after=last_modified_after,
         last_modified_on_or_after=last_modified_on_or_after,
         last_modified_before=last_modified_before,
@@ -719,6 +777,7 @@ async def ecfr_search(
     response = {
         "results": [_slim_search_result(r, include_excerpts) for r in results],
         "meta": meta,
+        "date": used_date or "all",
         "source_url": f"{ECFR_SITE}/search?query={query}",
     }
     total_pages = meta.get("total_pages", 0)
@@ -735,23 +794,23 @@ async def ecfr_search(
 @mcp.tool(name="ecfr_get_title_structure", annotations=_READ_ONLY_ANNOTATIONS)
 async def ecfr_get_title_structure(
     title: Annotated[int, Field(description="CFR title number (1–50)", ge=1, le=50)],
-    date: Annotated[str, Field(description="Date in YYYY-MM-DD format. Use latest_amendment_date from ecfr_get_title_versions or the regulatory_index resource rather than guessing.")],
+    date: Annotated[Optional[str], Field(default=None, description="The day whose table of contents is wanted (YYYY-MM-DD). Omit for the current one: the latest day the eCFR holds.")] = None,
     depth: Annotated[int, Field(default=DEFAULT_STRUCTURE_DEPTH, description="Hierarchy depth: 1=title, 2=subtitle/chapter, 3=parts, 4=sections. Depth 4 on broad titles (2, 42, 45) is blocked — use depth 3 then narrow.", ge=1, le=4)] = DEFAULT_STRUCTURE_DEPTH,
 ) -> str:
-    """Get the hierarchical table of contents for a CFR title on a given date.
+    """Get the hierarchical table of contents for a CFR title: the current one, or as it stood on a given date.
 
     Use this to discover valid part and section identifiers before calling ecfr_get_regulation.
     Start with depth=2 or depth=3; depth=4 on broad titles (2, 42, 45) is blocked due to response size.
     """
-    _validate_date_str(date, "date")
     if depth == 4 and title in {2, 42, 45}:
         return _finalize_response({"error": _make_error(
             f"Depth 4 for Title {title} exceeds the 1MB response limit. "
             f"Use depth=3 to find parts, then call ecfr_get_regulation with a specific part or section."
         )})
-    data = await api_get(f"versioner/v1/structure/{date}/title-{title}.json")
+    used_date = await _resolve_date(date, "date", title)
+    data = await api_get(f"versioner/v1/structure/{used_date}/title-{title}.json")
     pruned = _prune_tree(data, max_depth=depth)
-    _add_canonical_fields(pruned, title=title, date=date)
+    _add_canonical_fields(pruned, title=title, date=used_date)
     if len(json.dumps(pruned, ensure_ascii=False).encode("utf-8")) > SOFT_RESPONSE_BYTES:
         _add_warning(pruned, "Structure response is large (>800KB). Lower depth or use ecfr_search to find a specific section first.")
     return _finalize_response(pruned)
@@ -759,8 +818,8 @@ async def ecfr_get_title_structure(
 
 @mcp.tool(name="ecfr_compare_regulations", annotations=_READ_ONLY_ANNOTATIONS)
 async def ecfr_compare_regulations(
-    date_1: Annotated[str, Field(description="Earlier date (YYYY-MM-DD) — from ecfr_get_title_versions")],
-    date_2: Annotated[str, Field(description="Later date (YYYY-MM-DD) — from ecfr_get_title_versions")],
+    date_1: Annotated[str, Field(description="Earlier date (YYYY-MM-DD): any day the earlier text was in force. ecfr_get_title_versions gives the days a section changed.")],
+    date_2: Annotated[Optional[str], Field(default=None, description="Later date (YYYY-MM-DD). Omit to compare with the current text: the latest day the eCFR holds.")] = None,
     title: Annotated[Optional[int], Field(default=None, description="CFR title number. Provide explicitly to avoid ambiguity. See ecfr_get_regulation notes on ambiguous parts.", ge=1, le=50)] = None,
     part: Annotated[Optional[str], Field(default=None, description="Part number, e.g. '200'")] = None,
     section: Annotated[Optional[str], Field(default=None, description="Section number. Requires part.")] = None,
@@ -773,12 +832,11 @@ async def ecfr_compare_regulations(
 ) -> str:
     """Compare regulatory text between two dates to identify changes.
 
-    WORKFLOW: Use ecfr_get_title_versions to find valid amendment dates first,
-    then pass two of those dates here. Returns a structured diff of added/removed paragraphs.
+    Give date_1 and leave date_2 out to compare an earlier text with the current one. To compare two
+    versions, ecfr_get_title_versions gives the days a section changed: a day before a change and a day
+    on or after it. Returns a structured diff of added/removed paragraphs.
     Set include_full_text=True to also receive the full text of both versions.
     """
-    _validate_date_str(date_1, "date_1")
-    _validate_date_str(date_2, "date_2")
     if subchapter and not chapter:
         return _finalize_response({"error": _make_error("subchapter requires chapter")})
     if subpart and not part:
@@ -815,6 +873,8 @@ async def ecfr_compare_regulations(
         section=section,
         appendix=appendix,
     )
+    date_1 = await _resolve_date(date_1, "date_1", resolved_title)
+    date_2 = await _resolve_date(date_2, "date_2", resolved_title)
     xml_1 = await api_get(f"versioner/v1/full/{date_1}/title-{resolved_title}.xml", params=hierarchy)
     xml_2 = await api_get(f"versioner/v1/full/{date_2}/title-{resolved_title}.xml", params=hierarchy)
     text_1 = _xml_to_text(xml_1)

@@ -1,6 +1,10 @@
-"""ecfr: the query a search sends when it is limited to a title and part (the eCFR's hierarchy filter), the scope kept in the result, bad input."""
+"""ecfr: the query a search sends when it is limited to a title and part (the eCFR's hierarchy filter), the scope kept
+in the result, the date used when none is given (the latest day the eCFR holds, never the clock's), bad input."""
 
 import json
+
+import pytest
+from mcp.server.mcpserver.exceptions import ToolError, UnexpectedToolError
 
 from ai4ra_mcp.servers.ecfr import server as ecfr
 
@@ -13,14 +17,27 @@ META = {"current_page": 1, "total_pages": 3, "total_count": 15, "max_score": 15.
         "description": "Changes to sections matching 'compensation' in Title 2 :: Part 200"}
 
 
+# The eCFR two days behind the calendar, and Title 2 a day behind the rest: what its titles list looks like on such a day.
+TITLES = {"titles": [{"number": 1, "name": "General Provisions", "up_to_date_as_of": "2026-09-29", "reserved": False},
+                     {"number": 2, "name": "Federal Financial Assistance", "latest_amended_on": "2026-08-17", "up_to_date_as_of": "2026-09-28", "reserved": False},
+                     {"number": 35, "name": "Reserved", "up_to_date_as_of": None, "reserved": True}],
+          "meta": {"date": "2026-09-29", "import_in_progress": False}}
+SECTION = '<DIV8 N="200.431" TYPE="SECTION"><HEAD>§ 200.431 Compensation—fringe benefits.</HEAD><P>(a) <I>General.</I> Fringe benefits are allowances and services.</P></DIV8>'
+
+
 def _capture(monkeypatch):
-    seen = {}
+    """Stands in for the eCFR: the titles list, a section's XML, one search hit. Records the last call that was not for the titles list."""
+    seen: dict = {"calls": []}
 
     async def fake_api_get(endpoint, params=None, **kwargs):
+        seen["calls"].append(endpoint)
+        if endpoint == "versioner/v1/titles.json":
+            return TITLES
         seen["endpoint"], seen["params"] = endpoint, params
-        return {"results": [HIT], "meta": META}
+        return SECTION if endpoint.endswith(".xml") else {"results": [HIT], "meta": META}
 
     monkeypatch.setattr(ecfr, "api_get", fake_api_get)
+    monkeypatch.setattr(ecfr, "_titles_cache", None)
     return seen
 
 
@@ -46,6 +63,48 @@ async def test_search_takes_subpart_and_section_and_keeps_the_agency_filter(monk
     assert not [k for k in seen["params"] if k.startswith("hierarchy[")]
 
 
+async def test_a_search_with_no_date_is_of_the_current_text_and_all_is_every_version(monkeypatch):
+    seen = _capture(monkeypatch)
+    out = json.loads(await ecfr.ecfr_search(query="compensation", title=2, part="200"))
+    assert seen["params"]["date"] == "2026-09-28" and out["date"] == "2026-09-28"   # the title's day
+    out = json.loads(await ecfr.ecfr_search(query="compensation"))
+    assert seen["params"]["date"] == "2026-09-29" and out["date"] == "2026-09-29"   # no title: the whole eCFR's day
+    out = json.loads(await ecfr.ecfr_search(query="compensation", title=2, part="200", date="all"))
+    assert "date" not in seen["params"] and out["date"] == "all"
+    out = json.loads(await ecfr.ecfr_search(query="compensation", title=2, part="200", date="2024-10-01"))
+    assert seen["params"]["date"] == "2024-10-01" and out["date"] == "2024-10-01"
+    assert seen["calls"].count("versioner/v1/titles.json") == 1   # read once, then kept
+
+
+async def test_a_fetch_with_no_date_reads_the_latest_day_the_ecfr_holds(monkeypatch):
+    seen = _capture(monkeypatch)
+    out = json.loads(await ecfr.ecfr_get_regulation(title=2, part="200", section="200.431"))
+    assert seen["endpoint"] == "versioner/v1/full/2026-09-28/title-2.xml" and seen["params"] == {"part": "200", "section": "200.431"}
+    assert out["date"] == "2026-09-28" and "Fringe benefits are allowances" in out["text"]
+    out = json.loads(await ecfr.ecfr_get_regulation(title=2, part="200", section="200.431", date="2023-03-10"))
+    assert seen["endpoint"] == "versioner/v1/full/2023-03-10/title-2.xml" and out["date"] == "2023-03-10"
+    out = json.loads(await ecfr.ecfr_compare_regulations(date_1="2024-09-30", title=2, part="200", section="200.431"))
+    assert out["date_1"] == "2024-09-30" and out["date_2"] == "2026-09-28" and out["identical"]
+    out = json.loads(await ecfr.ecfr_get_title_structure(title=1, depth=1))
+    assert seen["endpoint"] == "versioner/v1/structure/2026-09-29/title-1.json" and out["date"] == "2026-09-29"
+
+
+async def test_a_date_past_the_latest_day_or_malformed_is_refused_in_words_a_client_receives(monkeypatch):
+    seen = _capture(monkeypatch)
+    for call in (ecfr.ecfr_get_regulation(title=2, part="200", section="200.431", date="2026-09-29"),
+                 ecfr.ecfr_search(query="compensation", title=2, part="200", date="2026-10-01"),
+                 ecfr.ecfr_compare_regulations(date_1="2024-09-30", date_2="2026-10-01", title=2, part="200", section="200.431")):
+        with pytest.raises(ToolError, match=r"past the latest day the eCFR holds for Title 2 \(2026-09-28\)"):
+            await call
+    with pytest.raises(ToolError, match="date must be YYYY-MM-DD"):
+        await ecfr.ecfr_get_regulation(title=2, part="200", section="200.431", date="10/01/2024")
+    assert set(seen["calls"]) == {"versioner/v1/titles.json"}   # nothing was asked of the eCFR but its latest day
+    # A ToolError's message is what a client is sent; any other exception arrives as "Error executing tool" alone.
+    with pytest.raises(ToolError, match="Omit date for the current text") as refused:
+        await ecfr.mcp.call_tool("ecfr_get_regulation", {"title": 2, "part": "200", "section": "200.431", "date": "2026-10-01"})
+    assert not isinstance(refused.value, UnexpectedToolError)
+
+
 async def test_search_rejects_a_part_without_a_title_and_a_subpart_without_a_part(monkeypatch):
     async def fake_api_get(endpoint, params=None, **kwargs):
         raise AssertionError("no request should be made")
@@ -60,5 +119,8 @@ async def test_search_description_names_the_title_and_part_for_the_uniform_guida
     tool = next(t for t in await ecfr.mcp.list_tools() if t.name == "ecfr_search")
     props = tool.input_schema["properties"]
     assert {"title", "part", "subpart", "section"} <= set(props)
-    assert 'title=2, part="200"' in tool.description and "rule in force needs date" in tool.description
+    assert 'title=2, part="200"' in tool.description and "With no date= the search is of the current text" in tool.description
+    assert "date" not in tool.input_schema.get("required", [])
+    fetch = next(t for t in await ecfr.mcp.list_tools() if t.name == "ecfr_get_regulation")
+    assert "date" not in fetch.input_schema.get("required", []) and "ecfr_get_title_versions first" not in fetch.description
     assert "office-of-management-and-budget" not in tool.description + json.dumps(props)
