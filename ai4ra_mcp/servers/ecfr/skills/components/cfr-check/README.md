@@ -2,7 +2,7 @@
 
 Checks a passage of a document against 2 CFR 200, the Uniform Guidance, as fetched from the eCFR, and reports a finding for each sentence that disagrees with it. Report-only and client-neutral: the findings are in the reply, so the same check works in any MCP client; putting a finding on the document (a comment on its sentence, say) is a client's placement skill.
 
-**Version:** 0.8.0 · **Category:** review · **Status:** experimental · **Output:** findings
+**Version:** 0.9.0 · **Category:** review · **Status:** experimental · **Output:** findings
 
 ## Inputs
 
@@ -12,7 +12,7 @@ The skill needs `ecfr_search` (limited to title 2, part 200) and `ecfr_get_regul
 
 ## Outputs
 
-One finding per sentence that disagrees, in four lines: the verdict (violates or unclear) with the pinpoint, the sentence's own words, one clause quoted from the fetched section with its link, and a fix. Then a closing: the date the rules were read as of, the sections fetched, each sentence not checked and why, and that institution policy and sponsor terms were not read.
+One finding per sentence that disagrees with the fetched text, in four lines: the verdict (violates or unclear) with the pinpoint, the sentence's own words, one clause quoted from the fetched section with its link, and a fix that opens with Add, Change or Remove. Then a closing: the date the rules were read as of, the sections fetched, one line for each sentence not checked, `not checked: "<its words>"`, and that institution policy and sponsor terms were not read. Two sentences of the passage that disagree with each other are not a finding: each is held to the regulation on its own.
 
 ## The form is a contract
 

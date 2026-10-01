@@ -61,3 +61,8 @@ From the first whole-document run (run 0c6f044f), where a passage of about seven
 - The read names its arguments: `title` 2, `part` "200" and the section, every time. Five fetches had left the title out and three came back ambiguous, since Title 17 has a Part 200.
 - An offset is a number from that section's own outline (one was taken from another section's), and a heading is not read together with the heading above it.
 - A call refused because a round held too many is made in the next round; a limit that stopped the reading gets one line of its own in the closing.
+
+## [0.9.0] — 2026-10-01
+
+- A finding holds one sentence to the fetched rule, never to another sentence of the document (#24, decided on the client side: the check is of alignment with the sources, not of the document's consistency with itself). The `Conflicts with:` line is gone from the form; two sentences that disagree with each other are not this check's to report, as `policy-check` already said.
+- The example of a search that misses is one from outside any test document: "moving expenses" finds nothing, "relocation costs" finds 200.464 (checked against the eCFR on 2026-10-01). The earlier one was a sentence of the document the skill was being tried on, which teaches the answer to the test.

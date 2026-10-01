@@ -12,7 +12,7 @@ The skill needs `uidaho_guidance_index` (a chapter's policies with what each cov
 
 ## Outputs
 
-One finding per sentence that disagrees, in four lines: the verdict (violates or unclear) with the policy's number and paragraph, the sentence's own words, one clause quoted from the fetched policy with its link, and a fix. A stated rate is compared with the rate agreement or the fringe-rate page: a figure the document gives for a different type, location, class or year than the passage names is a finding, and one it gives nowhere is unclear, since a sponsor's limit or an approved reduction was not read. Then a closing: the policies and rate documents read with their dates, each sentence not checked and why, and that federal regulation and sponsor terms were not read. Sentences of the passage that disagree with each other are left to the federal check.
+One finding per sentence that disagrees, in four lines: the verdict (violates or unclear) with the policy's number and paragraph, the sentence's own words, one clause quoted from the fetched policy with its link, and a fix. A stated rate is compared with the rate agreement or the fringe-rate page: a figure the document gives for the class, type or location named, in any year shown, draws no finding, and one it gives in none is unclear. Then a closing: the policies and rate documents read with their dates, one line for each sentence not checked, `not checked: "<its words>"`, and that federal regulation and sponsor terms were not read. Two sentences of the passage that disagree with each other are not a finding, here or in the federal check: each is held to the source on its own.
 
 ## The form is a contract
 

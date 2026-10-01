@@ -51,6 +51,8 @@ def test_every_check_writes_the_form_with_its_own_source_label():
     assert labels == {"cfr-check": "eCFR", "policy-check": "University of Idaho"}
 
 
-def test_only_the_federal_check_reports_two_sentences_that_disagree():
-    by = {c["slug"]: text for _, c, text in checks()}
-    assert "Conflicts with:" in by["cfr-check"] and "Conflicts with:" not in by["policy-check"]
+def test_no_check_sets_one_sentence_of_the_document_against_another():
+    """A finding holds a sentence to the fetched text; a conflict inside the document rests on nothing fetched (#24)."""
+    for _, c, text in checks():
+        assert "Conflicts with" not in text and "with another sentence" not in text, c["slug"]
+        assert "Two sentences of the passage that disagree with each other are not this check's to report." in text, c["slug"]
