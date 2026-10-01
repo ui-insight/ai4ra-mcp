@@ -33,6 +33,7 @@ def test_every_check_writes_the_form_with_its_own_source_label():
         labels[c["slug"]] = m.group(2)
         assert m.group(2) == META[server]["label"]   # the source line carries the name a client shows for the server it was fetched from
         assert "by its own words" in text and "forbids" in text and "does not show" in text
+        assert "Before you report" in text and "is left not checked" in text   # a sentence one fetch away is fetched, not listed
         assert "violates" in text and "unclear" in text and "copied exactly" in text and "not checked" in text
         # the sample finding names no real section or policy, since a model took one for a lead and fetched it (#19)
         assert re.search(r"^\s*(violates|unclear)\. [^\n]*<[^\n]+>", text, re.M), f"{c['slug']}: the sample pinpoint should be a form, not a real citation"

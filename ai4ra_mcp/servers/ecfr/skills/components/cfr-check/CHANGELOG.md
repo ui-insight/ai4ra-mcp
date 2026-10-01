@@ -20,3 +20,7 @@ From the second real run (#20).
 - One search for each sentence that asserts something checkable. A sentence not searched for, or whose rule was not fetched, draws no finding and is listed as not checked: the run had written a finding on one from a section it never fetched.
 - The closing lists a sentence not checked by its own words only, with no section number and no word on what governs it. Nothing about the regulation is said without a fetch behind it, in the closing as in the findings.
 - The two verdicts no longer overlap: violates is something the text forbids; unclear is a condition or a requirement the passage does not show.
+
+## [0.4.0] — 2026-10-01
+
+- Before reporting, a sentence that asserts something and has no fetched section behind it gets the section its search returned, fetched then (#20, item 2 as revised). In the second run the search had returned 200.413 for a sentence on an administrative assistant's effort; only 200.430 and 200.431 were read and the sentence was listed as not checked, one fetch away. Not checked is now only a sentence whose search returned nothing, or that a limit on calls cut off.

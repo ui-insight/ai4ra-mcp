@@ -17,3 +17,7 @@ Versions follow semver: MAJOR for output-contract breaks, MINOR for backward-com
 ## [0.4.0] — 2026-10-01
 
 - The same four changes as `cfr-check` 0.3.0 (#20): the source line is labelled `University of Idaho:`, the name of the server the clause was fetched from, in place of `UI:`; a policy is chosen for each sentence that asserts something checkable, and one with none draws no finding and is listed as not checked; the closing names a sentence not checked by its own words only, with no policy number and no word on what governs it; violates and unclear no longer overlap.
+
+## [0.5.0] — 2026-10-01
+
+- Before reporting, a sentence that asserts something and has no fetched policy behind it gets the policy the index offers for it, read then, as `cfr-check` 0.4.0 does with the section its search returned (#20, item 2 as revised). Not checked is only a sentence the index offers nothing for, or that a limit on calls cut off.
