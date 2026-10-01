@@ -31,12 +31,13 @@ def _site(monkeypatch):
 
 def test_opening_paragraph_is_the_first_prose_whatever_the_page_calls_it():
     contents = "CONTENTS:\n\nA. Introduction\n\nF. Provisions Pertaining to Proposals for and the Conduct of Research Supported by Grants and Contracts\n\n"
-    assert uidaho.opening_paragraph(contents + "A. INTRODUCTION. The UI encourages the creation of scholarly works as an integral part of its mission.").startswith("A. INTRODUCTION. The UI encourages")
+    assert uidaho.opening_paragraph(contents + "A. INTRODUCTION. The UI encourages the creation of scholarly works as an integral part of its mission. UI participation has an aim.") == "The UI encourages the creation of scholarly works as an integral part of its mission."   # one sentence, without its label
     quoted = "A. Purpose. This policy addresses the classification between “gifts” and “sponsored projects.”\n\nB. Scope. The policy applies to any external funding agreement."
-    assert uidaho.opening_paragraph(quoted).startswith("A. Purpose.")   # a closing quotation mark after the full stop still ends a sentence
-    long = "A. Purpose. " + "This sentence is fifty characters long, or about. " * 20
+    assert uidaho.opening_paragraph(quoted) == "This policy addresses the classification between “gifts” and “sponsored projects.”"   # a closing quotation mark after the full stop still ends a sentence
+    assert uidaho.opening_paragraph("Preamble: This document sets forth the policy governing University activities under U.S. export control laws. It applies to all.") == "This document sets forth the policy governing University activities under U.S. export control laws."   # "U.S." does not end it
+    long = "A. Purpose. " + "This sentence runs on and on and on without a stop " * 20 + "until here."
     cut = uidaho.opening_paragraph(long)
-    assert len(cut) <= uidaho.COVERS_CHARS and cut.endswith("about.")
+    assert len(cut) == uidaho.COVERS_CHARS + 1 and cut.endswith("…") and cut.startswith("This sentence runs on")
     assert uidaho.opening_paragraph("CONTENTS:\n\n### A heading\n\nClick here for chart.") == "Click here for chart."   # no prose: the first line that is not a heading
     assert uidaho.opening_paragraph("### Under revision.\n\nCONTENTS:") == ""
 
@@ -47,7 +48,7 @@ def test_a_heading_that_opens_with_the_manual_s_name_is_policy_text_not_the_site
             "#### APM\n\nChapter 01: Legal Affairs\n")
     parsed = uidaho.parse_policy_page(page)
     assert parsed["text"].startswith("### APM 70.04 is under revision.") and parsed["text"].endswith("authorized travel.")
-    assert uidaho.opening_paragraph(parsed["text"]).startswith("A. General. Subject to limitations")
+    assert uidaho.opening_paragraph(parsed["text"]).startswith("Subject to limitations")
 
 
 async def test_a_chapter_index_lists_each_policy_with_what_it_covers_and_names_the_unread(monkeypatch):
@@ -56,8 +57,8 @@ async def test_a_chapter_index_lists_each_policy_with_what_it_covers_and_names_t
     assert out["chapter"] == "APM 45" and out["title"] == "Research Office" and out["url"].endswith("/apm/45")
     assert [p["policy"] for p in out["policies"]] == ["APM 45.01", "APM 45.06"]
     first, second = out["policies"]
-    assert first["covers"].startswith("Preamble: This policy sets forth") and first["last_updated"] == "May 3, 2019"
-    assert second["covers"].startswith("A. Purpose. The purpose of this policy") and second["url"].endswith("/apm/45/06") and "text" not in second
+    assert first["covers"].startswith("This policy sets forth") and first["last_updated"] == "May 3, 2019"
+    assert second["covers"].startswith("The purpose of this policy") and sorted(second) == ["covers", "last_updated", "policy", "title"]   # the listing is read whole by every check: no text, no address
     assert [u["policy"] for u in out["unread"]] == ["APM 45.09"] and "could not connect" in out["unread"][0]["unread"]
     assert "starter_citations" not in await uidaho.uidaho_guidance_index() and "APM 45" in " ".join(uidaho.USAGE_NOTES)
 
@@ -124,3 +125,39 @@ def test_the_first_call_is_a_chapter_listing_wherever_the_server_says_what_to_do
     assert "start with uidaho_guidance_index and a chapter" in uidaho.USAGE_NOTES[0] and "No call without a chapter" in uidaho.USAGE_NOTES[0]
     assert not any(note.startswith("Call uidaho_guidance_index first") for note in uidaho.USAGE_NOTES)
     assert "READ THIS FIRST" not in (uidaho.uidaho_guidance_index.__doc__ or "") and "with a chapter" in (uidaho.uidaho_guidance_index.__doc__ or "")
+
+
+async def test_a_policy_of_middling_length_is_an_outline_when_it_has_sections_and_whole_when_it_has_none(monkeypatch):
+    from ai4ra_mcp.common import text
+    assert (text.WHOLE_CHARS, text.PAGE_CHARS) == (6000, 12000)
+    sections = "\n\n".join([f"A. Purpose. {FILL}", "D. Procedure."] + [f"D-{n}. Item {n}. {FILL}" for n in range(1, 12)])   # about 8,000 characters
+    _policy(monkeypatch, sections)
+    out = await uidaho.uidaho_guidance_get("APM 45.06")
+    assert 6000 < out["total_chars"] < 12000 and out["truncated"] and len(out["outline"]) == 13 and out["returned_chars"] < 1000
+    assert out["text"].startswith("A. Purpose.") and "D. Procedure" not in out["text"]   # the text opens with a heading: the lines up to the next one
+    one = await uidaho.uidaho_guidance_get("APM 45.06", offset=int(next(line for line in out["outline"] if "D-3." in line).split(":")[0]))
+    assert one["text"].startswith("D-3. Item 3.") and one["pinpoint"] == "APM 45.06 D-3" and one["returned_chars"] < 800
+    _policy(monkeypatch, "\n\n".join([FILL.strip()] * 13))   # about 8,300 characters and nothing to choose from
+    whole = await uidaho.uidaho_guidance_get("APM 45.06")
+    assert 6000 < whole["total_chars"] < 12000 and not whole["truncated"] and "outline" not in whole
+
+
+async def test_the_rate_agreement_comes_without_its_general_terms_and_signatures(monkeypatch):
+    pdf = ("[page 1]\nCOLLEGES AND UNIVERSITIES RATE AGREEMENT \nSECTION I: INDIRECT COST RATES \nPRED. 07/01/2022 06/30/2024 50.00 On-Campus Organized Research \n\n"
+           "[page 2]\n*BASE \nModified total direct costs, up to the first $25,000 of each subaward. \n\n[page 4]\nSECTION II: SPECIAL REMARKS \nDEFINITION OF OFF-CAMPUS \n\n"
+           "[page 5]\nORGANIZATION: University of Idaho \nSECTION Ill: GENERAL \nA. LIMITATIONS: \nThe rates in this Agreement are subject to limitations. \n(SIGNATURE) \n\n[page 6]")
+
+    async def fake(url, offset=0, max_chars=12000):
+        return {"url": url, "kind": "pdf", "title": "", "total_chars": len(pdf), "offset": 0, "returned_chars": len(pdf), "truncated": False, "text": pdf}
+
+    async def fake_url():
+        return "https://content-hub.uidaho.edu/api/public/content/abc?v=1", "the F&A page's rate-agreement link, read today"
+
+    monkeypatch.setattr(uidaho._fetch, "fetch_document", fake)
+    monkeypatch.setattr(uidaho, "_fa_agreement_url", fake_url)
+    out = await uidaho.uidaho_rates("fa")
+    assert "50.00 On-Campus Organized Research" in out["text"] and "first $25,000" in out["text"] and "DEFINITION OF OFF-CAMPUS" in out["text"]
+    assert "LIMITATIONS" not in out["text"] and "SIGNATURE" not in out["text"] and out["text"].endswith("DEFINITION OF OFF-CAMPUS")
+    assert not out["truncated"] and out["total_chars"] == len(out["text"]) and "Section III" in out["trimmed_to"] and out["url"].endswith("abc?v=1")
+    pdf = pdf.replace("SECTION Ill: GENERAL", "SECTION FOUR")   # an agreement laid out some other way comes as it is
+    assert "SIGNATURE" in (await uidaho.uidaho_rates("fa"))["text"] and "trimmed_to" not in await uidaho.uidaho_rates("fa")

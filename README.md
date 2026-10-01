@@ -487,8 +487,8 @@ included, is `date="all"`.
 thing the eCFR serves, and some are far longer than what a caller needs
 from them: 200.1 (Definitions) is 47,153 characters and the definition of
 modified total direct cost is 659 of them. `ecfr_get_regulation` returns a
-text whole when it is 12,000 characters or less. A longer one comes back as
-an `outline`, the text's own subheadings each with the character offset it
+short text whole. One over 6,000 characters that has subheadings comes back
+as an `outline`, the text's own subheadings each with the character offset it
 starts at and the size of its part (`"30650: Modified Total Direct Cost
 (MTDC) (661 chars)"`), and only the lines before the first of them; the caller chooses a part and calls again
 with its `offset`, one number copied from the outline, and the part is read
@@ -515,16 +515,22 @@ what was asked for, so a part read to its end is not truncated though the
 text goes on (#16 item 3).
 
 The size is the server's and a caller cannot set it: there is no
-`max_chars`. One number, 12,000 (`WHOLE_CHARS` in `common/text.py`), holds
-for a regulation's sections and a policy's alike. It has moved with the
+`max_chars`. Two numbers in `common/text.py` hold for a regulation's
+sections and a policy's alike. A text that has an outline comes back whole
+up to 6,000 characters (`WHOLE_CHARS`) and as its outline past that; a text
+with no outline has nothing to choose from, so it comes back whole up to
+12,000 (`PAGE_CHARS`) and a page of that size at a time past it, and a part
+read by its offset is never cut below that. The line has moved with the
 runs. At 12,000, before a part could be read to its end by its offset, a
 check read 200.430 (17,638 characters) in twelve pieces (#19), and it went
-to 20,000; at 20,000 a check read 200.431 (15,647) whole for nothing and
-came within a tenth of a client's limit on characters (#22); and a model
-that asked for 3,000 turned 200.413 (3,777) into an outline, then was
-refused for asking for 400. Now a short section is always whole, a long one
-is always its outline, and a part is one call. Change the one constant if a
-run shows the line is in the wrong place.
+to 20,000; at 20,000 a check read 200.431 (15,647) whole for nothing (#22);
+and at 12,000 the first whole-document check read five policies of 6,900 to
+9,400 characters whole for a clause each, 43,000 of a step's 60,000, with
+half its rounds of calls unused. What a step runs out of is characters, so
+the line sits where a part read saves them. A model that asked for 3,000
+turned 200.413 (3,777) into an outline, then was refused for asking for
+400; no caller sets a size now. Change the constants if a run shows the
+line is in the wrong place.
 
 `ecfr_search` can be limited to a title, part, subpart or section (`title`,
 `part`, `subpart`, `section`, the eCFR's hierarchy filter), so a Uniform
@@ -964,15 +970,17 @@ makes a search-and-cite layer cheap:
   chapter: both sources chapter by chapter with URLs, where the rate
   documents are, and the usage rules. With `chapter`
   (`APM 45`, `FSH 5`, any chapter listed) it is that chapter's index: every
-  policy with what it covers, its `Last updated` date and its URL. What a
-  policy covers is its own opening paragraph (a Purpose, a Preamble, an
-  Introduction, whatever the page opens with; a contents list is passed
-  over), cut at a sentence end past 500 characters. This is how the policy
+  policy with what it covers and its `Last updated` date. What a policy
+  covers is the opening sentence of its own text, without the label the
+  page gives it (a Purpose, a Preamble, an Introduction; a contents list is
+  passed over), cut at 200 characters. One sentence and no address, because
+  every check reads the listing whole: APM 45 was 9,736 characters with a
+  paragraph and a URL for each policy and is 7,253 now; a policy's address
+  comes with its text when it is read. This is how the policy
   that governs a statement is found: a model reads the index and chooses by
   what each policy covers, which matches on meaning with no embedding model
   and no list kept by hand. The index is built from the policy pages when
-  asked for (APM 45 is 24 policies, about 11,000 characters, under three
-  seconds cold) and the pages are cached for a day; a page that cannot be
+  asked for (APM 45 is 24 policies, under three seconds cold) and the pages are cached for a day; a page that cannot be
   read is listed under `unread`, not left out. A page with no opening prose
   (two of 354: a pointer to another page, a link to a chart) gives the first
   line it has. The starter citations, ten policies listed by hand, are gone
@@ -981,20 +989,24 @@ makes a search-and-cite layer cheap:
   each chapter's index. It does not search policy text; the skill reads a
   likely policy and looks there.
 - `uidaho_guidance_get`: one policy as clean text by number (`APM 45.06`,
-  `FSH 5100`), with its owner, `Last updated` date and URL. A policy up to
-  12,000 characters comes back whole; a longer one as an outline
+  `FSH 5100`), with its owner, `Last updated` date and URL. A short policy
+  comes back whole; one over 6,000 characters as an outline
   of its own sections, the lettered ones and the numbered ones under them
   (`"9830: E-1. Salaries"`), read from the text; a section is then read to
   its end by its offset, as a long section of the eCFR is, and returns its
   `pinpoint` (`APM 45.06 E-1`). APM 45.06 is
-  17,377 characters, its first call about 1,400, and E-1 reads as 1,286. A
+  17,377 characters, its first call about 1,500, and E-1 reads as 1,286. A
   contents list at the top and a lettered list inside a section are passed
   over, since sections come in order. The first two-source check read about
   77,000 characters of policy for three sentences, most of it whole
   policies for one clause each (#21). The reader is shared with the ecfr
   server (`common/text.py`).
 - `uidaho_rates`: the F&A rate agreement PDF (`fa`) or the fringe-rate page
-  (`fringe`) as text. The agreement is read at the address the F&A page
+  (`fringe`) as text. The agreement comes as its Sections I and II (the
+  rates by type and location, the base, the fringe rates, the special
+  remarks on off-campus work and equipment), 5,422 characters; Section III,
+  general terms and signatures, a third of the text, is left out, and the
+  result says so in `trimmed_to`. The agreement is read at the address the F&A page
   links today, so a new agreement is picked up the day it is posted, with
   the last known address as the fallback and the result saying which was
   used; the fringe read returns only the page's fringe section. Every result
@@ -1524,7 +1536,7 @@ version in the front matter and the catalog together.
 
 ## Status
 
-2026-10-01: after the first whole-document run, an outline shows each part's size, an offset that is no heading's reads the part it falls in, and the checks name the read's arguments, never read a heading and the one above it, and list as not checked only a numbered sentence. After the next run (#23), with both steps light (14,505 and 23,283 characters), the checks number the sentences and work by the numbers, a part read returns its `pinpoint`, the Fix line has a form (Add, Change or Remove, ending at the change), a rate the page contradicts is a finding and never "not checked", and a not-checked line quotes its sentence. After the run that followed (#22) the size of a read is the server's alone (no `max_chars`; 12,000 for both sources), search hits are compact, and both checks keep the Fix line to what to change in the document and test each finding's clause against the sentence before reporting. After the first two-source run (#21) a long policy comes back as an outline of its sections and is read one section at a time, a policy question starts with a chapter's listing, and both checks quote the clause on the sentence's own subject and take no general principle as grounds for a finding. After the second run (#20) the checks label a source line with the server's name (`eCFR:`, `University of Idaho:`), search for every sentence that asserts something and fetch the section the search returned for it before calling it unchecked, name what was not checked by its own words only, and keep violates and unclear apart. After the first real run of `cfr-check` took 16 model calls for one passage (#19), a section up to 20,000 characters comes back whole, a part is read to its end by its offset alone, and both checks search once, read once and stop. The `uidaho` chapter index, each policy with what it covers in its own opening words (#18); `policy-check` on `uidaho`, the university's sibling of `cfr-check`; the findings contract both report in. `ecfr_search` limited to a title and part (#17); no date needed for the current text on any ecfr tool, the latest day read from the eCFR and not the clock, and the server's refusals readable by a client (#16 items 2, 4, 5, part of 8); `ecfr-research-admin` removed; a report-only `cfr-check` on `ecfr`, so a client keeps only the placement of findings. a long section returned as its outline, a part read by its offsets (#16 item 3). Open on #16: the index's size (6), compact search results (7). 2026-09-30: the server-and-client rule and the grid; log no keys; the Banner family removed; guides as catalogued components with a `<server>_guide` tool per server (the UDM guide, five proposal guides, the AI-tells guide, and the compliance-concerns vocabulary as draft 0.1, #15); once the pane served its own placement skills (mindrouter-365 #34 to #39), the ten it had been carrying here (Gantt, ask, remove-ai-tells, the five proposal sheets, udm-sheet, proposal-workbook) were removed and the rates skill became report-only, so no catalog here carries a client's fields. 2026-09-29: twenty-six servers; the `udm` server and the `udm-sheet` skill on `ai4ra` were added that day, offline-tested against a fixture in the published schema's shape and tried against the real schema. 2026-09-25: twenty-five servers. The eCFR and grants.gov code moved in from
+2026-10-01: a text with an outline comes back whole only up to 6,000 characters, a chapter's listing carries one sentence a policy, and the rate agreement comes without its general terms, since a step runs out of characters before it runs out of rounds. After the first whole-document run, an outline shows each part's size, an offset that is no heading's reads the part it falls in, and the checks name the read's arguments, never read a heading and the one above it, and list as not checked only a numbered sentence. After the next run (#23), with both steps light (14,505 and 23,283 characters), the checks number the sentences and work by the numbers, a part read returns its `pinpoint`, the Fix line has a form (Add, Change or Remove, ending at the change), a rate the page contradicts is a finding and never "not checked", and a not-checked line quotes its sentence. After the run that followed (#22) the size of a read is the server's alone (no `max_chars`; 12,000 for both sources), search hits are compact, and both checks keep the Fix line to what to change in the document and test each finding's clause against the sentence before reporting. After the first two-source run (#21) a long policy comes back as an outline of its sections and is read one section at a time, a policy question starts with a chapter's listing, and both checks quote the clause on the sentence's own subject and take no general principle as grounds for a finding. After the second run (#20) the checks label a source line with the server's name (`eCFR:`, `University of Idaho:`), search for every sentence that asserts something and fetch the section the search returned for it before calling it unchecked, name what was not checked by its own words only, and keep violates and unclear apart. After the first real run of `cfr-check` took 16 model calls for one passage (#19), a section up to 20,000 characters comes back whole, a part is read to its end by its offset alone, and both checks search once, read once and stop. The `uidaho` chapter index, each policy with what it covers in its own opening words (#18); `policy-check` on `uidaho`, the university's sibling of `cfr-check`; the findings contract both report in. `ecfr_search` limited to a title and part (#17); no date needed for the current text on any ecfr tool, the latest day read from the eCFR and not the clock, and the server's refusals readable by a client (#16 items 2, 4, 5, part of 8); `ecfr-research-admin` removed; a report-only `cfr-check` on `ecfr`, so a client keeps only the placement of findings. a long section returned as its outline, a part read by its offsets (#16 item 3). Open on #16: the index's size (6), compact search results (7). 2026-09-30: the server-and-client rule and the grid; log no keys; the Banner family removed; guides as catalogued components with a `<server>_guide` tool per server (the UDM guide, five proposal guides, the AI-tells guide, and the compliance-concerns vocabulary as draft 0.1, #15); once the pane served its own placement skills (mindrouter-365 #34 to #39), the ten it had been carrying here (Gantt, ask, remove-ai-tells, the five proposal sheets, udm-sheet, proposal-workbook) were removed and the rates skill became report-only, so no catalog here carries a client's fields. 2026-09-29: twenty-six servers; the `udm` server and the `udm-sheet` skill on `ai4ra` were added that day, offline-tested against a fixture in the published schema's shape and tried against the real schema. 2026-09-25: twenty-five servers. The eCFR and grants.gov code moved in from
 mcp-ecfr on 2026-09-22 with the Office add-in's skills, and the NIH, NSF,
 SAM.gov, USAspending and Federal Audit Clearinghouse servers were verified
 against the live APIs that day (SAM.gov and FAC with a person's own key).

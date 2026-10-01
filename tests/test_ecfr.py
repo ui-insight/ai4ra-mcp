@@ -212,7 +212,7 @@ async def test_the_size_of_a_read_is_the_server_s_and_a_size_a_caller_sends_is_i
 
     monkeypatch.setattr(ecfr, "api_get", fake_api_get)
     monkeypatch.setattr(ecfr, "_titles_cache", None)
-    assert text.WHOLE_CHARS == 12000
+    assert (text.WHOLE_CHARS, text.PAGE_CHARS) == (6000, 12000)
     tool = next(t for t in await ecfr.mcp.list_tools() if t.name == "ecfr_get_regulation")
     assert "max_chars" not in tool.input_schema["properties"] and "end_offset" not in tool.input_schema["properties"]
     # a model asked for 3,000 of a 3,777-character section and got an outline, then was refused for asking for 400 (#22)
@@ -254,3 +254,20 @@ async def test_search_description_names_the_title_and_part_for_the_uniform_guida
     fetch = next(t for t in await ecfr.mcp.list_tools() if t.name == "ecfr_get_regulation")
     assert "date" not in fetch.input_schema.get("required", []) and "ecfr_get_title_versions first" not in fetch.description
     assert "office-of-management-and-budget" not in tool.description + json.dumps(props)
+
+
+async def test_a_section_of_middling_length_is_an_outline_when_it_has_subheadings_and_whole_when_it_has_none(monkeypatch):
+    headed = _section("200.313", [f"({letter}) <I>Heading {letter}.</I> {FILL}" for letter in "abcdefghij"])   # about 7,600 characters
+    plain = _section("200.306", [f"({letter}) {FILL}" for letter in "abcdefghij"])                             # as long, with nothing to choose from
+
+    async def fake_api_get(endpoint, params=None, **kwargs):
+        return TITLES if endpoint == "versioner/v1/titles.json" else (headed if (params or {}).get("section") == "200.313" else plain)
+
+    monkeypatch.setattr(ecfr, "api_get", fake_api_get)
+    monkeypatch.setattr(ecfr, "_titles_cache", None)
+    out = json.loads(await ecfr.ecfr_get_regulation(title=2, part="200", section="200.313"))
+    assert 6000 < out["total_chars"] < 12000 and out["truncated"] and len(out["outline"]) == 10 and out["returned_chars"] < 200
+    part = json.loads(await ecfr.ecfr_get_regulation(title=2, part="200", section="200.313", offset=_outline(out)["(e) Heading e."]))
+    assert part["pinpoint"] == "2 CFR 200.313(e)" and part["returned_chars"] < 800 and not part["truncated"]
+    whole = json.loads(await ecfr.ecfr_get_regulation(title=2, part="200", section="200.306"))
+    assert 6000 < whole["total_chars"] < 12000 and not whole["truncated"] and "outline" not in whole

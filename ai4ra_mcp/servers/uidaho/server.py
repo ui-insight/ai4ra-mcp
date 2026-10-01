@@ -36,7 +36,7 @@ RATES = {
     "fa": {"label": "Facilities and administrative (indirect) rate agreement",
            "url": "https://content-hub.uidaho.edu/api/public/content/015597383dac40219f3c7f32223b7445?v=6bc964f2",
            "linked_from": "https://www.uidaho.edu/research/faculty/resources/f-and-a-rates",
-           "note": "A PDF, read at the address the F&A page links today (this one is the last known). Section I has the rates by type and location and the base definition. Read in pages."},
+           "note": "A PDF, read at the address the F&A page links today (this one is the last known). Section I has the rates by type and location and the base definition; Section II the special remarks. Section III, general terms and signatures, is left out."},
     "fringe": {"label": "Consolidated fringe benefit rates by fiscal year",
                "url": "https://www.uidaho.edu/leadership/finance-administration/budget-planning",
                "note": "The section 'Consolidated fringe rates by fiscal year' lists faculty, staff, temporary help and student rates."},
@@ -72,13 +72,15 @@ async def _fa_agreement_url() -> tuple[str, str]:
 
 
 # The fringe section of the budget office page: from its heading to the next heading.
+# The rate agreement's last section, general terms and signatures: nothing a budget is checked against.
+_FA_GENERAL = re.compile(r"^SECTION\s+(?:III|Ill|IlI|lll)\s*:\s*GENERAL", re.M)
 _FRINGE_SECTION = re.compile(r"^## Consolidated fringe rates by fiscal year[ \t]*\n(.*?)(?=^## |\Z)", re.S | re.M)
-COVERS_CHARS = 500   # the most of a policy's opening paragraph a chapter's index carries
+COVERS_CHARS = 200   # the most of a policy's opening sentence a chapter's index carries
 INDEX_FETCHES = 6    # policy pages read at once when a chapter's index is built
 USAGE_NOTES = [
     "To find the policy that governs something, start with uidaho_guidance_index and a chapter ('APM 45' is sponsored projects, 'FSH 5' is research policy): it lists each policy of the chapter with what it covers, in the policy's own opening words. Choose by what a policy covers, then read it with uidaho_guidance_get. No call without a chapter is needed first.",
     "uidaho_guidance_index with no chapter lists every chapter with its URL and where the rate documents are: for a matter whose chapter is not known.",
-    "uidaho_guidance_get returns a short policy whole and a long one as an outline of its sections (A., E-1.) with their offsets: read the section you need by its offset, not the whole policy.",
+    "uidaho_guidance_get returns a short policy whole and one over 6,000 characters as an outline of its sections (A., E-1.) with their offsets and sizes: read the section you need by its offset, not the whole policy.",
     "uidaho_guidance_search matches policy numbers and titles, not full text: use it when you have a title word or a number.",
     "uidaho_guidance_get takes a policy number ('APM 45.06', 'FSH 5100'); every result carries the page URL and its 'Last updated' date. Cite both.",
     "uidaho_rates reads the F&A rate agreement PDF or the fringe-rate page; quote figures with their effective period.",
@@ -95,6 +97,8 @@ _POLICY_REF = re.compile(r"^\s*(APM|FSH)?\s*(\d{2}\.\d{2}|\d{4})\s*$", re.I)
 _NAV_HEADING = re.compile(r"^#{2,4} (APM|FSH|Footer)[ \t]*$", re.M)
 # A policy's own sections: a lettered one (A. Purpose.) and a numbered one under it (E-1. Salaries), at the start of a line.
 _SECTION = re.compile(r"^(?:#+[ \t]*)?([A-Z])(-\d+)?\.[ \t]+(\S.*)$", re.M)
+# The label a policy's opening paragraph carries: "A. Purpose. ", "A-1. Early setup. ", "Preamble: ".
+_OPENING_LABEL = re.compile(r"^(?:[A-Z](?:-\d+)?\.\s+)?(?:[A-Za-z][A-Za-z ]{2,30}[.:]\s+)?(?=[A-Z“\"])")
 _CHAPTER_REF = re.compile(r"^\s*(APM|FSH)\s*(\d{1,2})\s*$", re.I)
 
 mcp = MCPServer(
@@ -173,19 +177,21 @@ def parse_policy_page(text: str) -> dict:
 
 
 def opening_paragraph(body: str) -> str:
-    """What a policy covers, in its own words: the first paragraph of its text that is prose, whatever the page
-    calls it (a Purpose, a Preamble, an Introduction), cut at a sentence end when it is long. A contents list
-    and bare headings are passed over: they do not end as a sentence does. A page with no such paragraph (a
-    pointer to another page, a link to a chart) gives the first line it has that is not a heading."""
+    """What a policy covers, in its own words: the first sentence of the first paragraph of its text that is
+    prose, whatever the page calls it (a Purpose, a Preamble, an Introduction), without that label. One sentence,
+    since a chapter's listing is read whole by every check and a paragraph each came to 9,700 characters for
+    APM 45. A contents list and bare headings are passed over: they do not end as a sentence does. A page with no
+    such paragraph (a pointer to another page, a link to a chart) gives the first line it has that is not a
+    heading."""
     blocks = [" ".join(block.split()) for block in body.split("\n\n")]
     blocks = [b for b in blocks if b and not b.startswith("#")]
     for text in blocks:
         if len(text) < 60 or text.rstrip("”\"')")[-1:] not in (".", "?", "!"):
             continue
-        if len(text) > COVERS_CHARS:
-            cut = text.rfind(". ", 0, COVERS_CHARS)
-            text = text[: cut + 1] if cut > 0 else text[:COVERS_CHARS].rstrip() + "…"
-        return text
+        text = _OPENING_LABEL.sub("", text, count=1)
+        end = re.search(r"(?<=[a-z0-9)”\"])[.?!](?= [A-Z“\"(]|$)", text)   # the first full stop that ends a sentence, not "U.S." or "e.g."
+        text = text[: end.end()] if end else text
+        return text if len(text) <= COVERS_CHARS else text[:COVERS_CHARS].rstrip() + "…"
     return next((b[:COVERS_CHARS] for b in blocks if not b.endswith(":")), "")
 
 
@@ -259,13 +265,13 @@ async def _chapter_index(source: str, chapter: dict) -> dict:
                 return {"policy": p["policy"], "title": p["title"], "url": p["url"], "unread": str(e)}
         if not page["title"]:
             return {"policy": p["policy"], "title": p["title"], "url": p["url"], "unread": "the page has no policy text"}
-        return {"policy": p["policy"], "title": p["title"], "covers": opening_paragraph(page["text"]),
-                "last_updated": page["last_updated"], "url": p["url"]}
+        # No address here: the chapter's is above, and a policy's comes with its text when it is read.
+        return {"policy": p["policy"], "title": p["title"], "covers": opening_paragraph(page["text"]), "last_updated": page["last_updated"]}
 
     rows = await asyncio.gather(*(one(p) for p in await _policies(source, chapter)))
     return {"chapter": f"{source} {chapter['chapter']}", "title": chapter["title"], "url": chapter["url"],
             "policies": [r for r in rows if "unread" not in r], "unread": [r for r in rows if "unread" in r],
-            "note": "covers is each policy's own opening paragraph. Choose the policy by what it covers, then read it with uidaho_guidance_get. A policy under unread could not be read just now and may still be the one that governs."}
+            "note": "covers is the opening sentence of each policy's own text. Choose the policy by what it covers, then read it with uidaho_guidance_get. A policy under unread could not be read just now and may still be the one that governs."}
 
 
 async def _all_policies(source_filter: str = "") -> list[dict]:
@@ -283,8 +289,8 @@ async def _all_policies(source_filter: str = "") -> list[dict]:
 async def uidaho_guidance_index(chapter: str = "") -> dict:
     """University of Idaho policy for sponsored projects: find the policy that governs something. START HERE, with a chapter.
 
-    With a chapter: every policy of that chapter with what it covers (the policy's own opening paragraph),
-    its 'Last updated' date and its URL. Choose by what a policy covers, then read it with
+    With a chapter: every policy of that chapter with what it covers (the opening sentence of its own text)
+    and its 'Last updated' date. Choose by what a policy covers, then read it with
     uidaho_guidance_get. 'APM 45' is sponsored projects: proposals, allowable costs, cost sharing, effort,
     F&A, subawards. No call without a chapter is needed first.
     With no chapter: the APM and FSH with every chapter and its URL, where the F&A and fringe rates are,
@@ -345,14 +351,15 @@ async def uidaho_guidance_get(policy: str, offset: int = 0) -> dict:
     """Read one University of Idaho policy as clean text by its number: all of it, or one section of it.
 
     Returns the title, owner, 'Last updated' date, URL and text. Cite the policy number, the URL and
-    the date. A policy up to 12,000 characters comes back whole; there is no size to set. A longer one
-    comes back as an outline: its own sections, each as "offset: heading (size of the section)"
+    the date. A short policy comes back whole; there is no size to set. One over 6,000 characters comes
+    back as an outline: its own sections, each as "offset: heading (size of the section)"
     (A. Purpose, E-1. Salaries), with only the lines before the first of them. Choose the section you
     need and call again with offset = that heading's offset, a number from this policy's own outline:
     the section is read to its end, and the result's pinpoint cites it ("APM 45.06 E-1"). A lettered
     section holds the numbered ones under it (E holds E-1 to E-9): read the numbered one you need, not
-    it and the letter above it. Ask for several sections in one round of calls. A long policy with no
-    such sections comes back a page at a time: when truncated, call again with offset = next_offset.
+    it and the letter above it. Ask for several sections in one round of calls. A policy with no such
+    sections comes back whole up to 12,000 characters and a page at a time past that: when truncated,
+    call again with offset = next_offset.
 
     Args:
         policy: 'APM 45.06', '45.06', 'FSH 5100' or '5100'.
@@ -409,7 +416,23 @@ async def uidaho_rates(kind: str, offset: int = 0, max_chars: int = 12000) -> di
                 page["next_offset"] = offset + len(chunk)
         return {"kind": kind, **RATES[kind], **page}
     url, how = await _fa_agreement_url()
-    page = await _fetch.fetch_document(url, offset=offset, max_chars=max_chars)
+    whole = await _fetch.fetch_document(url, offset=0, max_chars=40000)
+    m = None if whole.get("truncated") else _FA_GENERAL.search(whole.get("text") or "")
+    if not m:   # no such section, or an agreement too long to see whole: as it comes, in pages
+        page = whole if not offset and int(max_chars or 12000) >= 40000 else await _fetch.fetch_document(url, offset=offset, max_chars=max_chars)
+        return {"kind": kind, **RATES[kind], **page, "url": page.get("url", url), "resolved_via": how}
+    # Sections I and II are what a budget is checked against: the rates by type and location, the base, the fringe
+    # rates and the special remarks (off-campus, equipment). Section III, a third of the text, is left out.
+    text = whole["text"]
+    cut = text.rfind("[page ", 0, m.start())
+    text = text[: cut if cut > 0 else m.start()].rstrip()
+    offset = max(0, int(offset or 0))
+    chunk = text[offset:offset + max(1000, min(int(max_chars or 12000), 40000))]
+    page = {**whole, "total_chars": len(text), "offset": offset, "returned_chars": len(chunk), "truncated": offset + len(chunk) < len(text), "text": chunk,
+            "trimmed_to": "Sections I and II: the rates, the base, the fringe rates and the special remarks. Section III, general terms and signatures, is left out."}
+    page.pop("next_offset", None)
+    if page["truncated"]:
+        page["next_offset"] = offset + len(chunk)
     return {"kind": kind, **RATES[kind], **page, "url": page.get("url", url), "resolved_via": how}
 
 

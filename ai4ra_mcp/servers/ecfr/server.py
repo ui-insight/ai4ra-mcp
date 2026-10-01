@@ -694,15 +694,16 @@ async def ecfr_get_regulation(
     """Retrieve regulatory text for a specific section or part: the current text, or the text in force on a given date.
 
     Omit date= for the current text; the result's date says which day was read.
-    A text up to 12,000 characters comes back whole; there is no size to set. A longer one comes
-    back as an outline: its own subheadings, each as "offset: heading (size of the part)", with only the
+    A short text comes back whole; there is no size to set. One over 6,000 characters that has
+    subheadings comes back as an outline: its own subheadings, each as "offset: heading (size of the part)", with only the
     lines before the first of them. Choose the part you need and call again with offset= that heading's
     offset, a number from this text's own outline and no other: the part
     is read to its end, which is where the next subheading of its level begins, so "(g)" comes with the
     paragraphs under it, and the result's pinpoint cites it ("2 CFR 200.430(i)(5)"). A heading's part
     holds the parts listed under it: read the one you need, not it and the heading above it. Ask for
-    several parts in one round of calls. A long text with no subheadings
-    comes back a page at a time instead: when truncated, call again with offset = next_offset.
+    several parts in one round of calls. A text with no subheadings
+    comes back whole up to 12,000 characters and a page at a time past that: when truncated, call again
+    with offset = next_offset.
     Provide section= whenever possible — part-only requests return very large responses and will be blocked unless subpart= is also specified.
     Always provide title= explicitly for Parts 46 and 50, which exist in multiple titles.
 
