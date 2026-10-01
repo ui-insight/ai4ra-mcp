@@ -49,7 +49,7 @@ works without one and a key raises its quota.
 
 | Path | Upstream | Key | Tools | Skills |
 |---|---|---|---|---|
-| `/ecfr/mcp` | ecfr.gov | none | `ecfr_guide`, `ecfr_regulatory_index`, `ecfr_search`, `ecfr_list_titles`, `ecfr_list_agencies`, `ecfr_get_title_versions`, `ecfr_get_regulation`, `ecfr_get_title_structure`, `ecfr_compare_regulations` | `ecfr-research-admin` |
+| `/ecfr/mcp` | ecfr.gov | none | `ecfr_regulatory_index`, `ecfr_search`, `ecfr_list_titles`, `ecfr_list_agencies`, `ecfr_get_title_versions`, `ecfr_get_regulation`, `ecfr_get_title_structure`, `ecfr_compare_regulations` | none |
 | `/fedreg/mcp` | Federal Register | none | `federal_register_index`, `federal_register_search`, `federal_register_document`, `federal_register_agencies` | none |
 | `/regulations/mcp` | Regulations.gov | **required** (api.data.gov) | `regulations_gov_index`, `regulations_gov_documents_search`, `regulations_gov_document`, `regulations_gov_docket`, `regulations_gov_comments_search` | none |
 | `/grants/mcp` | grants.gov | none | `grants_gov_search`, `grants_gov_opportunity`, `grants_guide` | `funding-opportunity-finder` |
@@ -389,8 +389,9 @@ indirect costs, effort, cost sharing, subawards and the rest), each a name
 and a description of what it covers and where it stops, so that statements
 about the same thing can be grouped under one name. The list is closed and
 cites nothing: which regulation or policy governs a statement is found from
-the statement by the skill of the server that holds that source
-(`ecfr-research-admin`, `uidaho-lookup`), not from a map kept here. Draft
+the statement with the server that holds that source (`ecfr_search`
+limited to a title and part on `ecfr`, the `uidaho-lookup` skill on
+`uidaho`), not from a map kept here. Draft
 0.1; the categories are the research office's to own and have not been
 reviewed by it (#15).
 
@@ -465,6 +466,22 @@ part numbers repeat across titles, prefer sections over parts. The
 regulatory index, a resource in mcp-ecfr, is a tool here as well, because
 most clients never list resources. `ecfr_compare_regulations` diffs a
 section between two dates.
+
+`ecfr_search` can be limited to a title, part, subpart or section (`title`,
+`part`, `subpart`, `section`, the eCFR's hierarchy filter), so a Uniform
+Guidance search is only 2 CFR 200: `title=2, part="200"`. A part, subpart or
+section needs the title, and a subpart needs its part. Three things make a
+search find the governing sections: the words, the limit to the title and
+part, and `date`, without which superseded versions of a section come back
+too and often rank first. The agency filter (`agency_slugs`) takes in every
+part an agency owns and is no longer the way to reach Part 200; the eCFR's
+slug for OMB is `management-and-budget-office`. The result's
+`meta.description` says what was searched ("in Title 2 :: Part 200") (#17).
+
+The server has no skills. `ecfr-research-admin`, the prompt that came with
+mcp-ecfr, was removed on 2026-10-01 with the `ecfr_guide` tool that served
+it: it restated what the tool descriptions, the server's instructions and
+the index already say, and how an answer is laid out is the client's.
 
 ### fedreg
 
@@ -1194,7 +1211,7 @@ correct result is belongs here, as a guide, in cell 3 or 4.
   pane sends it as the bearer token on that server's calls and nowhere else.
 - **Claude Code:** `claude mcp add --transport http ecfr https://<host>/ecfr/mcp`,
   one server per command; add `--header "Authorization: Bearer <key>"` for a
-  keyed server. Its skills appear as prompts (`/mcp__ecfr__ecfr-research-admin`).
+  keyed server. A server's skills appear as prompts (`/mcp__uidaho__uidaho-lookup`).
 - **Claude.ai:** one custom connector per server, added under Customize,
   Connectors (on Team and Enterprise plans an owner adds it under
   Organization settings and members then connect). The walkthrough below

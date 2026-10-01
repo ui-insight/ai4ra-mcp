@@ -436,7 +436,7 @@ async def _build_resource() -> Dict[str, Any]:
         "grants_relevant_agencies": agencies,
         "usage_notes": [
             "Call ecfr_get_title_versions(title, part, section) BEFORE ecfr_get_regulation to get a valid date.",
-            "Use ecfr_search for topic/concept discovery. Results include title+part+section for follow-up calls.",
+            "Use ecfr_search for topic/concept discovery, limited to a title and part and given a date (Uniform Guidance: title=2, part='200'). Results include title+part+section for follow-up calls.",
             "Always provide title= explicitly; part numbers are NOT unique across titles (e.g. Part 46 exists in Title 45 AND other titles).",
             "Prefer section-level over part-level requests — part-level fetches can be very large.",
             f"Use latest_amendment_date ({latest_date}) as a safe default date for Title 2 Part 200 lookups.",
@@ -651,27 +651,41 @@ async def ecfr_get_regulation(
 @mcp.tool(name="ecfr_search", annotations=_READ_ONLY_ANNOTATIONS)
 async def ecfr_search(
     query: Annotated[str, Field(description="Search term. Examples: 'indirect costs', 'subaward monitoring', 'conflict of interest', 'prior approval', 'procurement standards'.", min_length=1, max_length=500)],
+    title: Annotated[Optional[int], Field(default=None, description="Limit the search to this CFR title (1–50). Uniform Guidance: title=2 with part='200'.", ge=1, le=50)] = None,
+    part: Annotated[Optional[str], Field(default=None, description="Limit the search to this part, e.g. '200', '46'. Requires title, because part numbers repeat across titles.")] = None,
+    subpart: Annotated[Optional[str], Field(default=None, description="Limit the search to this subpart, e.g. 'E'. Requires title and part.")] = None,
+    section: Annotated[Optional[str], Field(default=None, description="Limit the search to this section, e.g. '200.430'. Requires title.")] = None,
     page: Annotated[int, Field(default=1, description="Page of results (max 20)", ge=1, le=20)] = 1,
     per_page: Annotated[int, Field(default=DEFAULT_SEARCH_RESULTS, description="Results per page (default 5). Increase to 10-15 only when broader coverage needed.", ge=1, le=MAX_SEARCH_RESULTS)] = DEFAULT_SEARCH_RESULTS,
     include_excerpts: Annotated[bool, Field(default=False, description="Include full_text_excerpt snippets. Useful to confirm relevance before fetching full text.")] = False,
     order: Annotated[Optional[str], Field(default="relevance", description="Sort order: 'relevance' (default), 'newest_first', 'oldest_first', 'hierarchy'")] = "relevance",
-    date: Annotated[Optional[str], Field(default=None, description="Limit to content present on this date (YYYY-MM-DD)")] = None,
+    date: Annotated[Optional[str], Field(default=None, description="Limit to the text in force on this date (YYYY-MM-DD). A search for the rule in force needs it: without a date, superseded versions of a section are returned too and often rank first.")] = None,
     last_modified_after: Annotated[Optional[str], Field(default=None, description="Modified after this date (YYYY-MM-DD)")] = None,
     last_modified_on_or_after: Annotated[Optional[str], Field(default=None, description="Modified on or after (YYYY-MM-DD)")] = None,
     last_modified_before: Annotated[Optional[str], Field(default=None, description="Modified before (YYYY-MM-DD)")] = None,
     last_modified_on_or_before: Annotated[Optional[str], Field(default=None, description="Modified on or before (YYYY-MM-DD)")] = None,
-    agency_slugs: Annotated[Optional[List[str]], Field(default=None, description="Filter by agency slug(s). For Uniform Guidance use 'office-of-management-and-budget'. Use ecfr_list_agencies to find slugs for other agencies.")] = None,
+    agency_slugs: Annotated[Optional[List[str]], Field(default=None, description="Filter by agency slug(s) from ecfr_list_agencies. An agency filter takes in every part the agency owns; to search one part, use title and part instead.")] = None,
 ) -> str:
-    """Full-text search across the entire Code of Federal Regulations.
+    """Full-text search of the Code of Federal Regulations: all of it, or one title, part, subpart or section.
 
     START HERE for topic or concept questions where you don't have a specific citation.
     Returns sections ranked by relevance with title/part/section hierarchy for follow-up calls.
-    For Uniform Guidance topics, filter with agency_slugs=['office-of-management-and-budget'].
+    Three things make a search find the governing sections: the words, the limit to a title and part,
+    and the date. A search for the rule in force needs date=; without it, superseded versions of a
+    section are returned too and often rank first.
+    For Uniform Guidance topics, search only 2 CFR 200: title=2, part="200".
+    meta.description says what was searched, e.g. "... in Title 2 :: Part 200".
     Results include citation and source_url fields for each match.
+
+    Example: ecfr_search(query="compensation", title=2, part="200", date="2024-10-01")
 
     NEXT STEP: Take the title/part/section from a result → call ecfr_get_title_versions to get
     a valid date → then ecfr_get_regulation to fetch the full text.
     """
+    if (part or subpart or section) and title is None:
+        return _finalize_response({"error": _make_error("part, subpart and section require title")})
+    if subpart and not part:
+        return _finalize_response({"error": _make_error("subpart requires part")})
     for field_name, field_val in [
         ("date", date),
         ("last_modified_after", last_modified_after),
@@ -695,6 +709,9 @@ async def ecfr_search(
     )
     if agency_slugs:
         query_params["agency_slugs[]"] = agency_slugs
+    for level, value in [("title", title), ("part", part), ("subpart", subpart), ("section", section)]:
+        if value is not None:
+            query_params[f"hierarchy[{level}]"] = value
 
     data = await api_get("search/v1/results.json", params=query_params)
     results = data.get("results", [])
@@ -709,7 +726,7 @@ async def ecfr_search(
     current_page = meta.get("current_page", 1)
     if total_pages > 20:
         _add_warning(response, f"{total_count} total results across {total_pages} pages; only pages 1–20 accessible. "
-                               f"Narrow with agency_slugs, date, or last_modified_* filters.")
+                               f"Narrow with title and part, date, agency_slugs, or last_modified_* filters.")
     if current_page >= 20 and total_pages > 20:
         _add_warning(response, f"Reached last accessible page (20/{total_pages}). Refine the query to find more specific results.")
     return _finalize_response(response)
@@ -864,9 +881,10 @@ async def ecfr_list_agencies(
     """List federal agencies with slugs and CFR references.
 
     Use name_filter to find a specific agency quickly (e.g. 'health', 'nsf').
-    Slugs can be passed to ecfr_search via agency_slugs= to scope results.
-    Common slugs: 'office-of-management-and-budget' (Uniform Guidance),
-    'national-science-foundation', 'national-institutes-of-health'.
+    Slugs can be passed to ecfr_search via agency_slugs= to scope results to everything an agency owns.
+    Common slugs: 'management-and-budget-office', 'national-science-foundation',
+    'national-institutes-of-health'.
+    To search the Uniform Guidance alone, use ecfr_search(title=2, part="200") rather than an agency slug.
     """
     data = await api_get("admin/v1/agencies.json")
     agencies = data.get("agencies", [])
