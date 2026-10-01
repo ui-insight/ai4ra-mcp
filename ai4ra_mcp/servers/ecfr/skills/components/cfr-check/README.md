@@ -2,7 +2,7 @@
 
 Checks a passage of a document against 2 CFR 200, the Uniform Guidance, as fetched from the eCFR, and reports a finding for each sentence that disagrees with it. Report-only and client-neutral: the findings are in the reply, so the same check works in any MCP client; putting a finding on the document (a comment on its sentence, say) is a client's placement skill.
 
-**Version:** 0.2.0 · **Category:** review · **Status:** experimental · **Output:** findings
+**Version:** 0.3.0 · **Category:** review · **Status:** experimental · **Output:** findings
 
 ## Inputs
 
@@ -16,7 +16,7 @@ One finding per sentence that disagrees, in four lines: the verdict (violates or
 
 ## The form is a contract
 
-The four lines are the findings contract in this repository's README (Skills): a client may read them without a model, and the `Statement:` words are what a finding is placed by. A change to the form is a MAJOR version. `policy-check` on the `uidaho` server reports in the same form with a `UI:` line.
+The four lines are the findings contract in this repository's README (Skills): a client may read them without a model, and the `Statement:` words are what a finding is placed by. A change to the form is a MAJOR version. The source line opens with the name of the server the clause was fetched from, `eCFR:`; `policy-check` on the `uidaho` server reports in the same form with a `University of Idaho:` line.
 
 ## Nothing from memory
 

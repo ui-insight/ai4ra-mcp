@@ -1,8 +1,8 @@
 # Policy Check
 
-Checks a passage of a document against University of Idaho policy, the APM and the FSH, and against the university's F&A and fringe rates, as fetched from the university's policy pages and rate documents, and reports a finding for each sentence that disagrees with it. Report-only and client-neutral: the findings are in the reply. It is the university's sibling of `cfr-check` on the `ecfr` server and reports in the same form, with a `UI:` line where that one has `Federal:`, so a client that runs both can put the two on one sentence together.
+Checks a passage of a document against University of Idaho policy, the APM and the FSH, and against the university's F&A and fringe rates, as fetched from the university's policy pages and rate documents, and reports a finding for each sentence that disagrees with it. Report-only and client-neutral: the findings are in the reply. It is the university's sibling of `cfr-check` on the `ecfr` server and reports in the same form, with a `University of Idaho:` line where that one has `eCFR:`, so a client that runs both can put the two on one sentence together.
 
-**Version:** 0.3.0 · **Category:** review · **Status:** experimental · **Output:** findings
+**Version:** 0.4.0 · **Category:** review · **Status:** experimental · **Output:** findings
 
 ## Inputs
 
