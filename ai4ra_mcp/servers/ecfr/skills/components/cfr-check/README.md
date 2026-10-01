@@ -2,7 +2,7 @@
 
 Checks a passage of a document against 2 CFR 200, the Uniform Guidance, as fetched from the eCFR, and reports a finding for each sentence that disagrees with it. Report-only and client-neutral: the findings are in the reply, so the same check works in any MCP client; putting a finding on the document (a comment on its sentence, say) is a client's placement skill.
 
-**Version:** 0.5.0 · **Category:** review · **Status:** experimental · **Output:** findings
+**Version:** 0.6.0 · **Category:** review · **Status:** experimental · **Output:** findings
 
 ## Inputs
 

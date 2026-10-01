@@ -487,28 +487,36 @@ included, is `date="all"`.
 thing the eCFR serves, and some are far longer than what a caller needs
 from them: 200.1 (Definitions) is 47,153 characters and the definition of
 modified total direct cost is 659 of them. `ecfr_get_regulation` returns a
-text whole when it fits in `max_chars` (default 20,000, up to 40,000). A
-longer one comes back as an `outline`, the text's own subheadings each with
-the character offset it starts at (`"30650: Modified Total Direct Cost
-(MTDC)"`), and only the lines before the first of them; the caller chooses
-a part and calls again with its `offset`, one number copied from the
-outline, and the part is read to its end: where the next subheading of the
-same level begins, so "(g)" comes with the paragraphs under it and a
-definition with its numbered items. Levels are read from the text too (an
-appendix's heading ranks, a paragraph's own label: (a), (1), (i), (A)). The
-threshold was 12,000 for a day: the first real check read 200.430 (17,638
-characters) as an outline and twelve pieces over ten rounds, and a round
-costs more than the characters it saves, since each re-sends everything
-fetched before it (#19). The subheadings are the ones the regulation carries: a
-paragraph's italic lead-in (the 109 defined terms of 200.1, "(a) General."
-in 200.430), an appendix's headings, each section's head when a subpart is
-fetched. They are read from the text fetched, so an earlier version's
-outline is that version's, and the server keeps no map of the regulation.
-A long text with no subheadings is paged instead: `truncated`,
-`next_offset`, as `uidaho_guidance_get` and `fetch_document` do. Every
-result carries `total_chars`, `offset` and `returned_chars`; `truncated`
-means the read was cut by `max_chars`, so a part read to its end is not
-truncated though the text goes on (#16 item 3).
+text whole when it is 12,000 characters or less. A longer one comes back as
+an `outline`, the text's own subheadings each with the character offset it
+starts at (`"30650: Modified Total Direct Cost (MTDC)"`), and only the
+lines before the first of them; the caller chooses a part and calls again
+with its `offset`, one number copied from the outline, and the part is read
+to its end: where the next subheading of the same level begins, so "(g)"
+comes with the paragraphs under it and a definition with its numbered
+items. Levels are read from the text too (an appendix's heading ranks, a
+paragraph's own label: (a), (1), (i), (A)). The subheadings are the ones
+the regulation carries: a paragraph's italic lead-in (the 109 defined terms
+of 200.1, "(a) General." in 200.430), an appendix's headings, each
+section's head when a subpart is fetched. They are read from the text
+fetched, so an earlier version's outline is that version's, and the server
+keeps no map of the regulation. A long text with no subheadings is paged
+instead: `truncated`, `next_offset`. Every result carries `total_chars`,
+`offset` and `returned_chars`; `truncated` means the read was cut short of
+what was asked for, so a part read to its end is not truncated though the
+text goes on (#16 item 3).
+
+The size is the server's and a caller cannot set it: there is no
+`max_chars`. One number, 12,000 (`WHOLE_CHARS` in `common/text.py`), holds
+for a regulation's sections and a policy's alike. It has moved with the
+runs. At 12,000, before a part could be read to its end by its offset, a
+check read 200.430 (17,638 characters) in twelve pieces (#19), and it went
+to 20,000; at 20,000 a check read 200.431 (15,647) whole for nothing and
+came within a tenth of a client's limit on characters (#22); and a model
+that asked for 3,000 turned 200.413 (3,777) into an outline, then was
+refused for asking for 400. Now a short section is always whole, a long one
+is always its outline, and a part is one call. Change the one constant if a
+run shows the line is in the wrong place.
 
 `ecfr_search` can be limited to a title, part, subpart or section (`title`,
 `part`, `subpart`, `section`, the eCFR's hierarchy filter), so a Uniform
@@ -517,7 +525,11 @@ section needs the title, and a subpart needs its part. Three things make a
 search find the governing sections: the words, the limit to the title and
 part, and the date, which is the current text unless one is given. The
 words are few, two or three: a section matches only when it has every one,
-and a search that finds nothing with more says so. The agency filter (`agency_slugs`) takes in every
+and a search that finds nothing with more says so. A hit is its citation, the heading of the section or appendix, the
+title, part and section to pass to `ecfr_get_regulation`, and its link:
+about 350 characters where the eCFR's own record, which repeats the title,
+chapter and part headings in every hit, came to about 780 (#16 item 7).
+The agency filter (`agency_slugs`) takes in every
 part an agency owns and is no longer the way to reach Part 200; the eCFR's
 slug for OMB is `management-and-budget-office`. The result's
 `meta.description` says what was searched ("in Title 2 :: Part 200") (#17).
@@ -962,7 +974,7 @@ makes a search-and-cite layer cheap:
   likely policy and looks there.
 - `uidaho_guidance_get`: one policy as clean text by number (`APM 45.06`,
   `FSH 5100`), with its owner, `Last updated` date and URL. A policy up to
-  `max_chars` (default 12,000) comes back whole; a longer one as an outline
+  12,000 characters comes back whole; a longer one as an outline
   of its own sections, the lettered ones and the numbered ones under them
   (`"9830: E-1. Salaries"`), read from the text; a section is then read to
   its end by its offset, as a long section of the eCFR is. APM 45.06 is
@@ -1496,7 +1508,7 @@ version in the front matter and the catalog together.
 
 ## Status
 
-2026-10-01: after the first two-source run (#21) a long policy comes back as an outline of its sections and is read one section at a time, a policy question starts with a chapter's listing, and both checks quote the clause on the sentence's own subject and take no general principle as grounds for a finding. After the second run (#20) the checks label a source line with the server's name (`eCFR:`, `University of Idaho:`), search for every sentence that asserts something and fetch the section the search returned for it before calling it unchecked, name what was not checked by its own words only, and keep violates and unclear apart. After the first real run of `cfr-check` took 16 model calls for one passage (#19), a section up to 20,000 characters comes back whole, a part is read to its end by its offset alone, and both checks search once, read once and stop. The `uidaho` chapter index, each policy with what it covers in its own opening words (#18); `policy-check` on `uidaho`, the university's sibling of `cfr-check`; the findings contract both report in. `ecfr_search` limited to a title and part (#17); no date needed for the current text on any ecfr tool, the latest day read from the eCFR and not the clock, and the server's refusals readable by a client (#16 items 2, 4, 5, part of 8); `ecfr-research-admin` removed; a report-only `cfr-check` on `ecfr`, so a client keeps only the placement of findings. a long section returned as its outline, a part read by its offsets (#16 item 3). Open on #16: the index's size (6), compact search results (7). 2026-09-30: the server-and-client rule and the grid; log no keys; the Banner family removed; guides as catalogued components with a `<server>_guide` tool per server (the UDM guide, five proposal guides, the AI-tells guide, and the compliance-concerns vocabulary as draft 0.1, #15); once the pane served its own placement skills (mindrouter-365 #34 to #39), the ten it had been carrying here (Gantt, ask, remove-ai-tells, the five proposal sheets, udm-sheet, proposal-workbook) were removed and the rates skill became report-only, so no catalog here carries a client's fields. 2026-09-29: twenty-six servers; the `udm` server and the `udm-sheet` skill on `ai4ra` were added that day, offline-tested against a fixture in the published schema's shape and tried against the real schema. 2026-09-25: twenty-five servers. The eCFR and grants.gov code moved in from
+2026-10-01: after the run that followed (#22) the size of a read is the server's alone (no `max_chars`; 12,000 for both sources), search hits are compact, and both checks keep the Fix line to what to change in the document and test each finding's clause against the sentence before reporting. After the first two-source run (#21) a long policy comes back as an outline of its sections and is read one section at a time, a policy question starts with a chapter's listing, and both checks quote the clause on the sentence's own subject and take no general principle as grounds for a finding. After the second run (#20) the checks label a source line with the server's name (`eCFR:`, `University of Idaho:`), search for every sentence that asserts something and fetch the section the search returned for it before calling it unchecked, name what was not checked by its own words only, and keep violates and unclear apart. After the first real run of `cfr-check` took 16 model calls for one passage (#19), a section up to 20,000 characters comes back whole, a part is read to its end by its offset alone, and both checks search once, read once and stop. The `uidaho` chapter index, each policy with what it covers in its own opening words (#18); `policy-check` on `uidaho`, the university's sibling of `cfr-check`; the findings contract both report in. `ecfr_search` limited to a title and part (#17); no date needed for the current text on any ecfr tool, the latest day read from the eCFR and not the clock, and the server's refusals readable by a client (#16 items 2, 4, 5, part of 8); `ecfr-research-admin` removed; a report-only `cfr-check` on `ecfr`, so a client keeps only the placement of findings. a long section returned as its outline, a part read by its offsets (#16 item 3). Open on #16: the index's size (6), compact search results (7). 2026-09-30: the server-and-client rule and the grid; log no keys; the Banner family removed; guides as catalogued components with a `<server>_guide` tool per server (the UDM guide, five proposal guides, the AI-tells guide, and the compliance-concerns vocabulary as draft 0.1, #15); once the pane served its own placement skills (mindrouter-365 #34 to #39), the ten it had been carrying here (Gantt, ask, remove-ai-tells, the five proposal sheets, udm-sheet, proposal-workbook) were removed and the rates skill became report-only, so no catalog here carries a client's fields. 2026-09-29: twenty-six servers; the `udm` server and the `udm-sheet` skill on `ai4ra` were added that day, offline-tested against a fixture in the published schema's shape and tried against the real schema. 2026-09-25: twenty-five servers. The eCFR and grants.gov code moved in from
 mcp-ecfr on 2026-09-22 with the Office add-in's skills, and the NIH, NSF,
 SAM.gov, USAspending and Federal Audit Clearinghouse servers were verified
 against the live APIs that day (SAM.gov and FAC with a person's own key).

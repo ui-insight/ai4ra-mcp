@@ -10,6 +10,12 @@ from __future__ import annotations
 
 from typing import Any, Optional
 
+# The most of a text one read returns: a text up to this comes back whole, a longer one as its outline (or a page of
+# this size when it has no headings). The server's alone: a caller cannot set it, since a model that asked for less
+# turned a 3,777-character section into an outline and was then refused for asking for too little (#22). One
+# number for every source; a regulation's sections and a policy's are read the same way.
+WHOLE_CHARS = 12_000
+
 
 def window(text: str, offset: int, max_chars: int, stop: Optional[int] = None) -> dict[str, Any]:
     """Part of a text: from offset to stop (the end of the text when none is given), and never more than
@@ -42,7 +48,7 @@ def with_ends(entries: list[tuple[int, int, str]], total: int) -> list[tuple[int
     return out
 
 
-def read(text: str, outline: list[tuple[int, str, int]], offset: int, max_chars: int) -> dict[str, Any]:
+def read(text: str, outline: list[tuple[int, str, int]], offset: int, max_chars: int = WHOLE_CHARS) -> dict[str, Any]:
     """What a fetch of a long text returns. Whole when it fits; when it does not and it has an outline, the
     outline with only the lines before the first heading (the first part itself when the text opens with a
     heading, since offset 0 asks for the outline); from a heading's offset, that part to its end; from any other

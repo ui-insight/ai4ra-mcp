@@ -15,6 +15,7 @@ from pydantic import Field
 from typing import Annotated, Optional, List, Dict, Any
 import asyncio
 import difflib
+import html
 import httpx
 import json
 import re
@@ -36,8 +37,6 @@ DEFAULT_SEARCH_RESULTS = 5
 MAX_SEARCH_RESULTS = 25
 MAX_DIFF_LINES = 100
 DEFAULT_STRUCTURE_DEPTH = 2
-DEFAULT_TEXT_CHARS = 20_000           # a section's text up to this comes back whole; a longer one as its outline.
-                                      # 12,000 turned 200.430 (17,638) into thirteen fetches in a real check (#19).
 CURRENT_TTL = 3600.0                  # seconds the titles list is kept; the eCFR adds a day at most once a day
 
 # =============================================================================
@@ -144,10 +143,8 @@ def _make_citation(
         return None
     if section:
         return f"{title} CFR § {section}"
-    if appendix and part:
-        return f"{title} CFR Part {part}, Appendix {appendix}"
-    if appendix:
-        return f"{title} CFR Appendix {appendix}"
+    if appendix:   # the eCFR names one in full, "Appendix III to Part 200"
+        return f"{title} CFR {appendix}" if appendix.lower().startswith("appendix") else f"{title} CFR Appendix {appendix}"
     if part:
         return f"{title} CFR Part {part}"
     return f"{title} CFR"
@@ -462,33 +459,36 @@ def _prune_tree(node: dict, max_depth: int, current_depth: int = 1) -> dict:
     return result
 
 
-def _slim_search_result(result: dict, include_excerpts: bool) -> dict:
+def _plain(marked: Optional[str]) -> str:
+    """The eCFR's search text without its highlight markup and entities."""
+    return " ".join(html.unescape(re.sub(r"<[^>]+>", "", marked or "")).split())
+
+
+def _slim_search_result(result: dict, include_excerpts: bool, versions: bool = False) -> dict:
+    """One hit as what a caller needs to choose it and read it: the citation, the heading of the section or
+    appendix, what to pass to ecfr_get_regulation, and the link. The eCFR's own record repeats the title, chapter
+    and part headings in every hit and came to about 780 characters; this is about a fifth of that (#16, #22)."""
     hierarchy = result.get("hierarchy", {})
     headings = result.get("headings", {})
+    title = int(hierarchy["title"]) if hierarchy.get("title") not in (None, "") else None
+    part, section, appendix = hierarchy.get("part"), hierarchy.get("section"), hierarchy.get("appendix")
     slim = {
-        "type": result.get("type"),
-        "hierarchy": hierarchy,
-        "headings": {k: headings.get(k) for k in ("title", "chapter", "part", "subpart", "section", "appendix")},
-        "score": result.get("score"),
-        "change_types": result.get("change_types", []),
-        "starts_on": result.get("starts_on"),
-        "ends_on": result.get("ends_on"),
-        "reserved": result.get("reserved"),
-        "removed": result.get("removed"),
-        "citation": _make_citation(
-            title=int(hierarchy["title"]) if hierarchy.get("title") not in (None, "") else None,
-            part=hierarchy.get("part"),
-            section=hierarchy.get("section"),
-            appendix=hierarchy.get("appendix"),
-        ),
-        "source_url": _make_source_url(
-            title=int(hierarchy["title"]) if hierarchy.get("title") not in (None, "") else None,
-            part=hierarchy.get("part"),
-            section=hierarchy.get("section"),
-        ),
+        "citation": _make_citation(title=title, part=part, section=section, appendix=appendix),
+        "heading": _plain(headings.get("section") or headings.get("appendix") or headings.get("subpart") or headings.get("part")),
+        "title": title,
+        "part": part,
     }
+    if section:
+        slim["section"] = section
+    elif appendix:
+        slim["appendix"] = appendix
+    elif hierarchy.get("subpart"):
+        slim["subpart"] = hierarchy["subpart"]
+    slim["source_url"] = _make_source_url(title=title, part=part, section=section)
+    if versions:   # a search of every version: which one this is
+        slim["starts_on"], slim["ends_on"] = result.get("starts_on"), result.get("ends_on")
     if include_excerpts:
-        slim["full_text_excerpt"] = result.get("full_text_excerpt")
+        slim["full_text_excerpt"] = _plain(result.get("full_text_excerpt"))
     return slim
 
 
@@ -688,12 +688,11 @@ async def ecfr_get_regulation(
     appendix: Annotated[Optional[str], Field(default=None, description="Requires subtitle, chapter, or part.")] = None,
     text_only: Annotated[bool, Field(default=True, description="True (default): returns clean paragraph text — sufficient for policy analysis. False: returns raw XML, whole — only needed for structural parsing.")] = True,
     offset: Annotated[int, Field(default=0, description="Character position to start reading from: a heading's offset from the outline, which reads that part to its end, or next_offset.", ge=0)] = 0,
-    max_chars: Annotated[int, Field(default=DEFAULT_TEXT_CHARS, description="Most characters of text to return in one call, 1000-40000. Default 20000.", ge=1000, le=40000)] = DEFAULT_TEXT_CHARS,
 ) -> str:
     """Retrieve regulatory text for a specific section or part: the current text, or the text in force on a given date.
 
     Omit date= for the current text; the result's date says which day was read.
-    A text that fits in max_chars (20,000 characters by default) comes back whole. A longer one comes
+    A text up to 12,000 characters comes back whole; there is no size to set. A longer one comes
     back as an outline: its own subheadings, each as "offset: heading", with only the lines before the
     first of them. Choose the part you need and call again with offset= that heading's offset: the part
     is read to its end, which is where the next subheading of its level begins, so "(g)" comes with the
@@ -765,7 +764,7 @@ async def ecfr_get_regulation(
         params=query_params or None,
     )
     if text_only:
-        result = _text.read(*_xml_to_text_and_outline(xml_text), offset, max_chars)
+        result = _text.read(*_xml_to_text_and_outline(xml_text), offset)
     else:
         result = {"xml": xml_text}
         content_bytes = len(xml_text.encode("utf-8"))
@@ -799,13 +798,13 @@ async def ecfr_search(
     """Full-text search of the Code of Federal Regulations: all of it, or one title, part, subpart or section.
 
     START HERE for topic or concept questions where you don't have a specific citation.
-    Returns sections ranked by relevance with title/part/section hierarchy for follow-up calls.
+    Returns sections ranked by relevance, each as its citation, its heading, the title, part and section
+    (or appendix) to pass to ecfr_get_regulation, and its link.
     Three things make a search find the governing sections: the words, the limit to a title and part,
     and the date. Keep the words few, two or three: a section matches only when it has every one of them. With no date= the search is of the current text (the result's date says which day);
     give a date for the rule in force that day, or date="all" for every version, superseded ones included.
     For Uniform Guidance topics, search only 2 CFR 200: title=2, part="200".
     meta.description says what was searched, e.g. "... in Title 2 :: Part 200".
-    Results include citation and source_url fields for each match.
 
     Example: ecfr_search(query="compensation", title=2, part="200")
 
@@ -848,7 +847,7 @@ async def ecfr_search(
     results = data.get("results", [])
     meta = data.get("meta", {})
     response = {
-        "results": [_slim_search_result(r, include_excerpts) for r in results],
+        "results": [_slim_search_result(r, include_excerpts, every_version) for r in results],
         "meta": meta,
         "date": used_date or "all",
         "source_url": f"{ECFR_SITE}/search?query={query}",

@@ -98,8 +98,8 @@ async def test_a_long_policy_comes_back_as_an_outline_of_its_sections_and_one_is
     assert not salaries["truncated"] and "outline" not in salaries and salaries["url"].endswith("/apm/45/06")
     definitions = await uidaho.uidaho_guidance_get("APM 45.06", offset=at["B. Definitions"])
     assert "B-1. Allowable costs" in definitions["text"] and "B-2. Institutional" in definitions["text"] and "C. Procedure" not in definitions["text"]   # a lettered section takes its numbered ones
-    whole = await uidaho.uidaho_guidance_get("APM 45.06", max_chars=40000)
-    assert not whole["truncated"] and "outline" not in whole and whole["returned_chars"] == whole["total_chars"]
+    tool = next(t for t in await uidaho.mcp.list_tools() if t.name == "uidaho_guidance_get")
+    assert sorted(tool.input_schema["properties"]) == ["offset", "policy"]   # the size of a read is the server's
 
 
 async def test_a_short_policy_comes_whole_and_a_long_one_with_no_sections_is_paged(monkeypatch):

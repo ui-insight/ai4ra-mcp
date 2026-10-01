@@ -1,6 +1,6 @@
 ---
 name: policy-check
-version: 0.6.0
+version: 0.7.0
 category: review
 domain: research-administration
 status: experimental
@@ -36,7 +36,8 @@ Everything you say a policy requires comes from text you fetched in this turn, i
    Quote the clause that speaks most directly to the sentence's own subject. A general principle (reasonable, allocable, consistently treated) is not by itself grounds for a finding: with no clause on the sentence's subject, there is no finding.
 
    A sentence with no finding is not mentioned, in the findings or in the closing: never write that one complies, conforms or is consistent. Two sentences of the passage that disagree with each other are not this check's to report.
-6. **Report** one finding per sentence, in these lines:
+6. **Test each finding** before you write it. Name the word or the figure in the sentence that the quoted clause speaks to. If the clause's subject is not in the sentence, there is no finding: drop it. If the clause forbids nothing and only requires or conditions something, the verdict is unclear.
+7. **Report** one finding per sentence, in these lines:
 
    ```
    violates. APM <policy number> <paragraph label>
@@ -45,5 +46,5 @@ Everything you say a policy requires comes from text you fetched in this turn, i
    Fix: <one plain sentence saying what to change or what to add>
    ```
 
-   The pinpoint is the manual, the policy's number and the label of the paragraph quoted, as the policy writes them (an APM number has a dot, an FSH number has four digits; a label looks like D-4). For a rate it is the document and the place in it, `F&A rate agreement, Section I` or `Fringe rates, FY<year>`; the clause is the document's own line for that rate, and the link is the `url` the tool returned.
-7. **Close** in a few lines: the policies read, each with its "Last updated" date; the rate documents read, each with its date or fiscal year; each sentence not checked, by its own words and nothing more ("not checked: the sentence on ..."), with no policy number and no word on what governs it, and never a sentence that has a finding; and that federal regulation and sponsor terms were not read.
+   The quotation is one sentence or one line of the fetched text exactly as it stands: nothing left out, nothing added, not several joined. `Fix:` says only what to change in the document, in terms of the clause quoted above it ("Add a statement that ...", "Change X to Y"); it states no rule, cites no policy, and never says that something is or is not allowable. The pinpoint is the manual, the policy's number and the label of the paragraph quoted, as the policy writes them (an APM number has a dot, an FSH number has four digits; a label looks like D-4). For a rate it is the document and the place in it, `F&A rate agreement, Section I` or `Fringe rates, FY<year>`; the clause is the document's own line for that rate in one fiscal year, the year the pinpoint names, and the link is the `url` the tool returned; a second figure takes a second `University of Idaho:` line. Read each rate document once.
+8. **Close** in a few lines: the policies read, each with its "Last updated" date; the rate documents read, each with its date or fiscal year; each sentence not checked, by its own words and nothing after them ("not checked: the sentence on ..."): no reason, with no policy number and no word on what governs it, and never a sentence that has a finding; and that federal regulation and sponsor terms were not read.

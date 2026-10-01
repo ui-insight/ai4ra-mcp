@@ -35,6 +35,9 @@ def test_every_check_writes_the_form_with_its_own_source_label():
         assert "by its own words" in text and "forbids" in text and "does not show" in text
         assert "Before you report" in text and "is left not checked" in text   # a sentence one fetch away is fetched, not listed
         assert "speaks most directly" in text and "not by itself grounds for a finding" in text and "never a sentence that has a finding" in text
+        # the Fix line says what to change and states no rule; each finding's clause is tested against the sentence (#22)
+        assert "Test each finding" in text and "there is no finding: drop it" in text and "it states no rule" in text and "is or is not allowable" in text
+        assert "exactly as it stands" in text and "nothing after them" in text
         assert "violates" in text and "unclear" in text and "copied exactly" in text and "not checked" in text
         # the sample finding names no real section or policy, since a model took one for a lead and fetched it (#19)
         assert re.search(r"^\s*(violates|unclear)\. [^\n]*<[^\n]+>", text, re.M), f"{c['slug']}: the sample pinpoint should be a form, not a real citation"

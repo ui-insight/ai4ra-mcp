@@ -32,3 +32,13 @@ From the first two-source run (#21).
 - A finding quotes the clause that speaks most directly to the sentence's own subject, and a general principle alone is not grounds for one.
 - unclear names its cue: a clause that allows something "only if" or "provided that", with the passage silent on the condition. The run had called such a sentence a violation.
 - Before reporting, a sentence counts as checked when any fetched text speaks to it, whichever sentence it was fetched for; and a sentence that has a finding is never listed as not checked.
+
+## [0.6.0] — 2026-10-01
+
+From the run after 0.5.0 (#22).
+
+- `Fix:` says only what to change in the document, in terms of the clause quoted; it states no rule and never says something is or is not allowable. It was the one line of a finding nothing tested, and it carried a claim no fetched text made.
+- A step before the report: name the word or figure in the sentence that the quoted clause speaks to; if the clause's subject is not in the sentence, there is no finding; a clause that forbids nothing gives unclear.
+- The quotation is one sentence or clause exactly as it stands, nothing left out and nothing joined: a finding was withheld for a dropped phrase.
+- No second search after reading, and no general section read for its own sake. A long section now comes back as an outline (the server's threshold is 12,000), so 200.431 is read by its part.
+- A not-checked line has nothing after the sentence's words, no reason.

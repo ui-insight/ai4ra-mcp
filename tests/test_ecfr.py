@@ -50,7 +50,14 @@ async def test_search_limited_to_a_title_and_part_sends_the_hierarchy_filter(mon
     assert p["hierarchy[title]"] == 2 and p["hierarchy[part]"] == "200"
     assert "hierarchy[subpart]" not in p and "hierarchy[section]" not in p and "agency_slugs[]" not in p
     assert out["meta"]["description"].endswith("in Title 2 :: Part 200") and out["meta"]["total_count"] == 15
-    assert out["results"][0]["citation"] == "2 CFR § 200.430" and "full_text_excerpt" not in out["results"][0]
+    hit = out["results"][0]
+    assert hit["citation"] == "2 CFR § 200.430" and "full_text_excerpt" not in hit
+    # a hit is what a caller needs to choose it and read it, without the eCFR's headings repeated in every one (#22)
+    assert hit == {"citation": "2 CFR § 200.430", "heading": "Compensation—personal services.", "title": 2, "part": "200", "section": "200.430",
+                   "source_url": "https://www.ecfr.gov/current/title-2/section-200.430"}
+    marked = json.loads(await ecfr.ecfr_search(query="compensation", title=2, part="200", date="all", include_excerpts=True))["results"][0]
+    assert marked["starts_on"] == "2024-10-01" and marked["ends_on"] is None and marked["full_text_excerpt"].startswith("Compensation for personal services")
+    assert ecfr._make_citation(title=2, part="200", appendix="Appendix III to Part 200") == "2 CFR Appendix III to Part 200"
 
 
 async def test_search_takes_subpart_and_section_and_keeps_the_agency_filter(monkeypatch):
@@ -138,7 +145,7 @@ def _outline(result):
 async def test_a_long_section_comes_back_as_its_outline_and_a_part_is_read_by_its_offset(monkeypatch):
     _long_texts(monkeypatch)
     first = json.loads(await ecfr.ecfr_get_regulation(title=2, part="200", section="200.1"))
-    assert first["truncated"] and first["total_chars"] > 20000 and first["text"].endswith("The following definitions apply:")   # only what comes before the first subheading
+    assert first["truncated"] and first["total_chars"] > 12000 and first["text"].endswith("The following definitions apply:")   # only what comes before the first subheading
     assert "next_offset" not in first and list(_outline(first))[:4] == ["Acquisition cost", "Budget", "Modified Total Direct Cost (MTDC)", "Subaward"] and len(first["outline"]) == 30
     at = _outline(first)
     part = json.loads(await ecfr.ecfr_get_regulation(title=2, part="200", section="200.1", offset=at["Modified Total Direct Cost (MTDC)"]))
@@ -169,21 +176,40 @@ async def test_a_part_ends_where_the_next_subheading_of_its_level_begins(monkeyp
 
 async def test_a_long_section_with_no_subheadings_is_paged_and_a_shorter_one_comes_whole(monkeypatch):
     _long_texts(monkeypatch)
-    whole = json.loads(await ecfr.ecfr_get_regulation(title=42, part="50", section="50.605", max_chars=40000))
-    assert not whole["truncated"] and "outline" not in whole and whole["returned_chars"] == whole["total_chars"] > 20000
+    whole = ecfr._xml_to_text(LONG["50.605"])
     pages, offset = [], 0
     while True:
         page = json.loads(await ecfr.ecfr_get_regulation(title=42, part="50", section="50.605", offset=offset))
-        assert "outline" not in page and page["returned_chars"] <= 20000 and page["offset"] == offset
+        assert "outline" not in page and page["returned_chars"] <= 12000 and page["offset"] == offset and page["total_chars"] == len(whole)
         pages.append(page["text"])
         if not page["truncated"]:
             break
         offset = page["next_offset"]
-    assert len(pages) == 2 and "\n\n".join(pages) == whole["text"] and pages[0].endswith("Federal award.")   # cut on a paragraph break
+    assert len(pages) == 2 and "\n\n".join(pages) == whole and pages[0].endswith("Federal award.")   # cut on a paragraph break
     short = json.loads(await ecfr.ecfr_get_regulation(title=2, part="200", section="200.431"))
     assert not short["truncated"] and "outline" not in short and "next_offset" not in short and short["offset"] == 0
-    # 17,638 characters is the size of 200.430, which a 12,000 threshold turned into an outline and twelve pieces (#19)
-    assert ecfr.DEFAULT_TEXT_CHARS >= 20000
+
+
+async def test_the_size_of_a_read_is_the_server_s_and_a_size_a_caller_sends_is_ignored(monkeypatch):
+    from ai4ra_mcp.common import text
+
+    mid = _section("200.413", [f"({letter}) <I>Heading {letter}.</I> {FILL}" for letter in "abcde"])   # about 3,800 characters, with subheadings
+
+    async def fake_api_get(endpoint, params=None, **kwargs):
+        return TITLES if endpoint == "versioner/v1/titles.json" else mid
+
+    monkeypatch.setattr(ecfr, "api_get", fake_api_get)
+    monkeypatch.setattr(ecfr, "_titles_cache", None)
+    assert text.WHOLE_CHARS == 12000
+    tool = next(t for t in await ecfr.mcp.list_tools() if t.name == "ecfr_get_regulation")
+    assert "max_chars" not in tool.input_schema["properties"] and "end_offset" not in tool.input_schema["properties"]
+    # a model asked for 3,000 of a 3,777-character section and got an outline, then was refused for asking for 400 (#22)
+    for sent in ({}, {"max_chars": 3000}, {"max_chars": 400}):
+        result = await ecfr.mcp.call_tool("ecfr_get_regulation", {"title": 2, "part": "200", "section": "200.413", **sent})
+        content = result[0] if isinstance(result, tuple) else result
+        blocks = content.content if hasattr(content, "content") else content
+        out = json.loads(blocks[0].text)
+        assert not out["truncated"] and "outline" not in out and out["returned_chars"] == out["total_chars"] > 3000
 
 
 async def test_a_long_query_that_finds_nothing_is_told_to_use_fewer_words(monkeypatch):

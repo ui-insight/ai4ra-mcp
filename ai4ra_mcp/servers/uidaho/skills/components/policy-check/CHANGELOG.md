@@ -29,3 +29,12 @@ From the first two-source run, where the check fetched about 77,000 characters f
 - The first call is the listing for APM 45; the index with no chapter and the title search are not used, and another chapter is listed only for a sentence APM 45 plainly does not cover.
 - One policy for each sentence that asserts something, and no more. A long policy now comes back as an outline of its sections, and the check reads the section that speaks to the sentence by its offset, not the whole policy.
 - The same judgment lines as `cfr-check` 0.5.0: the clause that speaks most directly to the sentence's subject; a general principle alone is not grounds for a finding; a sentence is checked when any fetched text speaks to it; a sentence with a finding is never listed as not checked.
+
+## [0.7.0] — 2026-10-01
+
+From the run after 0.6.0 (#22), where a finding on an administrative assistant's effort quoted a clause about a rate of pay, called it a violation, and its Fix said the charge "is not allowable", which no fetched policy says.
+
+- `Fix:` says only what to change in the document, in terms of the clause quoted; it states no rule and never says something is or is not allowable.
+- A step before the report: name the word or figure in the sentence that the quoted clause speaks to; if the clause's subject is not in the sentence, there is no finding.
+- The quotation is one sentence or line exactly as it stands. A rate finding quotes one fiscal year's line, the year the pinpoint names, and a second figure takes a second source line: a finding was withheld for joining two years' lines. Each rate document is read once.
+- A not-checked line has nothing after the sentence's words, no reason.

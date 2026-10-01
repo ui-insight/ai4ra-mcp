@@ -339,11 +339,11 @@ async def uidaho_guidance_search(query: str, source: str = "", limit: int = 20) 
 
 
 @mcp.tool(name="uidaho_guidance_get", annotations=_READ_ONLY)
-async def uidaho_guidance_get(policy: str, offset: int = 0, max_chars: int = 12000) -> dict:
+async def uidaho_guidance_get(policy: str, offset: int = 0) -> dict:
     """Read one University of Idaho policy as clean text by its number: all of it, or one section of it.
 
     Returns the title, owner, 'Last updated' date, URL and text. Cite the policy number, the URL and
-    the date. A policy that fits in max_chars comes back whole. A longer one comes back as an outline:
+    the date. A policy up to 12,000 characters comes back whole; there is no size to set. A longer one comes back as an outline:
     its own sections, each as "offset: heading" (A. Purpose, E-1. Salaries), with only the lines before
     the first of them. Choose the section you need and call again with offset = that heading's offset:
     the section is read to its end, with the numbered sections under a lettered one. Ask for several
@@ -353,7 +353,6 @@ async def uidaho_guidance_get(policy: str, offset: int = 0, max_chars: int = 120
     Args:
         policy: 'APM 45.06', '45.06', 'FSH 5100' or '5100'.
         offset: Character position to start from: a heading's offset from the outline, or next_offset. Default 0.
-        max_chars: Most characters to return in one call, 1000-40000. Default 12000.
     """
     ref = parse_policy_ref(policy)
     if not ref:
@@ -366,12 +365,11 @@ async def uidaho_guidance_get(policy: str, offset: int = 0, max_chars: int = 120
         return {"error": str(e), "url": url}
     if not page["title"]:
         return {"error": "the page has no policy text; it may not exist or may be script-rendered", "url": url}
-    max_chars = max(1_000, min(int(max_chars or 12_000), 40_000))
     offset = max(0, int(offset or 0))
     text = page["text"]
     label = f"{source} {chapter}.{number}" if source == "APM" else f"FSH {number}"
     return {"policy": label, "title": page["title"], "owner": page["owner"], "last_updated": page["last_updated"], "url": url,
-            **_text.read(text, policy_outline(text), offset, max_chars)}
+            **_text.read(text, policy_outline(text), offset)}
 
 
 @mcp.tool(name="uidaho_rates", annotations=_READ_ONLY)
@@ -396,7 +394,7 @@ async def uidaho_rates(kind: str, offset: int = 0, max_chars: int = 12000) -> di
         if m:
             text = "## Consolidated fringe rates by fiscal year\n\n" + m.group(1).strip()
             offset = max(0, offset)
-            chunk = text[offset:offset + max(1000, min(max_chars, 40000))]
+            chunk = text[offset:offset + max(1000, min(int(max_chars or 12000), 40000))]
             page.update({"total_chars": len(text), "offset": offset, "returned_chars": len(chunk),
                          "truncated": offset + len(chunk) < len(text), "text": chunk, "trimmed_to": "the consolidated fringe rates section of the page"})
             page.pop("next_offset", None)
