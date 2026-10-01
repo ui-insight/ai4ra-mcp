@@ -35,7 +35,8 @@ DEFAULT_SEARCH_RESULTS = 5
 MAX_SEARCH_RESULTS = 25
 MAX_DIFF_LINES = 100
 DEFAULT_STRUCTURE_DEPTH = 2
-DEFAULT_TEXT_CHARS = 12_000           # one window of a section's text; a longer section comes with its outline
+DEFAULT_TEXT_CHARS = 20_000           # a section's text up to this comes back whole; a longer one as its outline.
+                                      # 12,000 turned 200.430 (17,638) into thirteen fetches in a real check (#19).
 CURRENT_TTL = 3600.0                  # seconds the titles list is kept; the eCFR adds a day at most once a day
 
 # =============================================================================
@@ -284,6 +285,7 @@ async def _resolve_title(section: str = None, part: str = None) -> dict | list |
 # =============================================================================
 
 _LABELS = re.compile(r"(\([A-Za-z0-9]+\)\s*)+")   # a paragraph's own label or labels: (a), (1), (a)(1)
+_ROMAN = re.compile(r"m{0,3}(cm|cd|d?c{0,3})(xc|xl|l?x{0,3})(ix|iv|v?i{0,3})")
 
 
 def _xml_to_text(xml_str: str) -> str:
@@ -291,8 +293,9 @@ def _xml_to_text(xml_str: str) -> str:
 
 
 def _xml_to_text_and_outline(xml_str: str) -> tuple[str, List[tuple]]:
-    """The eCFR's XML as plain text, and the text's own outline: each subheading with the character offset it
-    starts at, as (offset, heading). The subheadings are the ones the regulation carries: a paragraph's italic
+    """The eCFR's XML as plain text, and the text's own outline: each subheading as (offset, heading, end), the
+    character offset it starts at and the offset its part ends at, which is where the next subheading of the
+    same level or a higher one begins. The subheadings are the ones the regulation carries: a paragraph's italic
     lead-in, an appendix's headings, each section's head when there are several. A text with none has no
     outline. It is read from the text fetched, so the outline of an earlier version is that version's."""
     try:
@@ -301,7 +304,25 @@ def _xml_to_text_and_outline(xml_str: str) -> tuple[str, List[tuple]]:
         return xml_str, []
 
     parts: List[str] = []
-    marks: List[tuple] = []   # (index in parts, kind, heading)
+    marks: List[tuple] = []   # (index in parts, level, heading): a section's head 0, an appendix's headings 1 to 3, a paragraph 4 and deeper
+    last_letter = [""]        # the last (a), (b), ... seen, to tell the letter (i) that follows (h) from the numeral (i)
+
+    def _depth(text: str) -> int:
+        """How deep a paragraph sits by its own label, as the CFR nests them: (a) 1, (1) 2, (i) 3, (A) 4; none 0."""
+        m = _LABELS.match(text)
+        depth = 0
+        for label in re.findall(r"\(([A-Za-z0-9]+)\)", m.group(0)) if m else []:
+            if label.isdigit():
+                depth = 2
+            elif label.isupper():
+                depth = 4
+            elif len(label) == 1 and (label == "a" or (last_letter[0] and ord(label) == ord(last_letter[0]) + 1)):
+                depth, last_letter[0] = 1, label
+            elif _ROMAN.fullmatch(label):
+                depth = 3
+            else:
+                depth, last_letter[0] = 1, label
+        return depth
 
     def _inner_text(elem: ET.Element) -> str:
         return re.sub(r"\s+", " ", "".join(elem.itertext())).strip()
@@ -355,14 +376,14 @@ def _xml_to_text_and_outline(xml_str: str) -> tuple[str, List[tuple]]:
         if tag in ("SUBJECT", "HEAD"):
             text = _inner_text(elem)
             if text:
-                marks.append((len(parts), "head", text))
+                marks.append((len(parts), 0, text))
                 parts.append(text)
                 parts.append("=" * 60)
             return
         if tag == "HD" or re.fullmatch(r"HD\d", tag):
             text = _inner_text(elem)
             if text:
-                marks.append((len(parts), "heading", text))
+                marks.append((len(parts), int(tag[2:] or 1), text))
                 parts.append(f"\n--- {text} ---")
             return
         if tag in ("TABLE", "GPOTABLE"):
@@ -373,9 +394,10 @@ def _xml_to_text_and_outline(xml_str: str) -> tuple[str, List[tuple]]:
         if tag in ("P", "FP"):
             text = _inner_text(elem)
             if text:
+                depth = _depth(text)
                 lead = _lead_in(elem)
                 if lead:
-                    marks.append((len(parts), "heading", lead))
+                    marks.append((len(parts), 4 + depth, lead))
                 prefix = _paragraph_prefix(elem)
                 parts.append(f"{prefix} {text}" if prefix and not text.startswith(prefix) else text)
             return
@@ -411,19 +433,25 @@ def _xml_to_text_and_outline(xml_str: str) -> tuple[str, List[tuple]]:
             length += len(v)
             seen_blank = False
 
-    heads = [m for m in marks if m[1] == "head"]
-    entries = [m for m in marks if m[1] == "heading"]
+    text = "\n\n".join(cleaned)
+    heads = [m for m in marks if m[1] == 0]
+    entries = [m for m in marks if m[1] > 0]
     if len(heads) > 1:
         entries = sorted(entries + heads)
-    return "\n\n".join(cleaned), [(starts[i], heading) for i, _kind, heading in entries]
+    outline = []
+    for k, (i, level, heading) in enumerate(entries):
+        end = next((starts[j] for j, other, _ in entries[k + 1:] if other <= level), len(text))
+        outline.append((starts[i], heading, end))
+    return text, outline
 
 
-def _window(text: str, offset: int, max_chars: int, end_offset: Optional[int] = None) -> Dict[str, Any]:
-    """Part of a text: from offset to end_offset when one is given, and never more than max_chars, which
-    ends on a paragraph break when one fits."""
+def _window(text: str, offset: int, max_chars: int, stop: Optional[int] = None) -> Dict[str, Any]:
+    """Part of a text: from offset to stop (the end of the text when none is given), and never more than
+    max_chars, which ends on a paragraph break when one fits. truncated says the read was cut by max_chars
+    before it reached its stop; a part read to its end is not truncated, though the text goes on."""
     total = len(text)
     offset = min(max(offset, 0), total)
-    stop = total if end_offset is None else min(end_offset, total)
+    stop = total if stop is None else min(stop, total)
     end = stop
     if stop - offset > max_chars:
         end = offset + max_chars
@@ -432,7 +460,7 @@ def _window(text: str, offset: int, max_chars: int, end_offset: Optional[int] = 
             end = cut
     chunk = text[offset:end].rstrip()
     out: Dict[str, Any] = {"text": chunk, "total_chars": total, "offset": offset,
-                           "returned_chars": len(chunk), "truncated": end < total}
+                           "returned_chars": len(chunk), "truncated": end < stop}
     if out["truncated"]:
         out["next_offset"] = end + 2 if text.startswith("\n\n", end) else end
     return out
@@ -683,18 +711,18 @@ async def ecfr_get_regulation(
     subchapter: Annotated[Optional[str], Field(default=None, description="Requires chapter.")] = None,
     appendix: Annotated[Optional[str], Field(default=None, description="Requires subtitle, chapter, or part.")] = None,
     text_only: Annotated[bool, Field(default=True, description="True (default): returns clean paragraph text — sufficient for policy analysis. False: returns raw XML, whole — only needed for structural parsing.")] = True,
-    offset: Annotated[int, Field(default=0, description="Character position to start reading from: a heading's offset from the outline, or next_offset.", ge=0)] = 0,
-    end_offset: Annotated[Optional[int], Field(default=None, description="Character position to stop at: the offset of the heading where the part you want ends. Omit to read on up to max_chars.", ge=1)] = None,
-    max_chars: Annotated[int, Field(default=DEFAULT_TEXT_CHARS, description="Most characters of text to return in one call, 1000-40000. Default 12000.", ge=1000, le=40000)] = DEFAULT_TEXT_CHARS,
+    offset: Annotated[int, Field(default=0, description="Character position to start reading from: a heading's offset from the outline, which reads that part to its end, or next_offset.", ge=0)] = 0,
+    max_chars: Annotated[int, Field(default=DEFAULT_TEXT_CHARS, description="Most characters of text to return in one call, 1000-40000. Default 20000.", ge=1000, le=40000)] = DEFAULT_TEXT_CHARS,
 ) -> str:
     """Retrieve regulatory text for a specific section or part: the current text, or the text in force on a given date.
 
     Omit date= for the current text; the result's date says which day was read.
-    A text that fits in max_chars comes back whole. A longer one comes back as an outline: its own
-    subheadings, each as "offset: heading", with only the lines before the first of them. Choose the part
-    you need and call again with offset= that heading's offset and end_offset= the offset of the heading
-    where the part ends. A long text with no subheadings comes back a page at a time instead: when
-    truncated, call again with offset = next_offset.
+    A text that fits in max_chars (20,000 characters by default) comes back whole. A longer one comes
+    back as an outline: its own subheadings, each as "offset: heading", with only the lines before the
+    first of them. Choose the part you need and call again with offset= that heading's offset: the part
+    is read to its end, which is where the next subheading of its level begins, so "(g)" comes with the
+    paragraphs under it. Ask for several parts in one round of calls. A long text with no subheadings
+    comes back a page at a time instead: when truncated, call again with offset = next_offset.
     Provide section= whenever possible — part-only requests return very large responses and will be blocked unless subpart= is also specified.
     Always provide title= explicitly for Parts 46 and 50, which exist in multiple titles.
 
@@ -760,15 +788,14 @@ async def ecfr_get_regulation(
         f"versioner/v1/full/{used_date}/title-{resolved_title}.xml",
         params=query_params or None,
     )
-    if end_offset is not None and end_offset <= offset:
-        return _finalize_response({"error": _make_error("end_offset must be past offset")})
     if text_only:
         text, outline = _xml_to_text_and_outline(xml_text)
-        if offset == 0 and end_offset is None and outline and len(text) > max_chars:
+        if offset == 0 and outline and len(text) > max_chars:
             result = _window(text, 0, max_chars, outline[0][0])
-            result["outline"] = [f"{at}: {heading}" for at, heading in outline]
+            result["truncated"] = True   # only the lines before the first subheading: the rest is read by the outline
+            result["outline"] = [f"{at}: {heading}" for at, heading, _end in outline]
         else:
-            result = _window(text, offset, max_chars, end_offset)
+            result = _window(text, offset, max_chars, next((end for at, _heading, end in outline if at == offset and offset), None))
     else:
         result = {"xml": xml_text}
         content_bytes = len(xml_text.encode("utf-8"))
@@ -783,7 +810,7 @@ async def ecfr_get_regulation(
 
 @mcp.tool(name="ecfr_search", annotations=_READ_ONLY_ANNOTATIONS)
 async def ecfr_search(
-    query: Annotated[str, Field(description="Search term. Examples: 'indirect costs', 'subaward monitoring', 'conflict of interest', 'prior approval', 'procurement standards'.", min_length=1, max_length=500)],
+    query: Annotated[str, Field(description="Two or three words: every word must be in a section for it to match, so a long query finds nothing. Examples: 'indirect costs', 'subaward monitoring', 'conflict of interest', 'prior approval', 'procurement standards'.", min_length=1, max_length=500)],
     title: Annotated[Optional[int], Field(default=None, description="Limit the search to this CFR title (1–50). Uniform Guidance: title=2 with part='200'.", ge=1, le=50)] = None,
     part: Annotated[Optional[str], Field(default=None, description="Limit the search to this part, e.g. '200', '46'. Requires title, because part numbers repeat across titles.")] = None,
     subpart: Annotated[Optional[str], Field(default=None, description="Limit the search to this subpart, e.g. 'E'. Requires title and part.")] = None,
@@ -804,7 +831,7 @@ async def ecfr_search(
     START HERE for topic or concept questions where you don't have a specific citation.
     Returns sections ranked by relevance with title/part/section hierarchy for follow-up calls.
     Three things make a search find the governing sections: the words, the limit to a title and part,
-    and the date. With no date= the search is of the current text (the result's date says which day);
+    and the date. Keep the words few, two or three: a section matches only when it has every one of them. With no date= the search is of the current text (the result's date says which day);
     give a date for the rule in force that day, or date="all" for every version, superseded ones included.
     For Uniform Guidance topics, search only 2 CFR 200: title=2, part="200".
     meta.description says what was searched, e.g. "... in Title 2 :: Part 200".
@@ -859,6 +886,8 @@ async def ecfr_search(
     total_pages = meta.get("total_pages", 0)
     total_count = meta.get("total_count", 0)
     current_page = meta.get("current_page", 1)
+    if not results and len(query.split()) > 3:
+        _add_warning(response, "No section has every word of this query. Search again with two or three of them.")
     if total_pages > 20:
         _add_warning(response, f"{total_count} total results across {total_pages} pages; only pages 1–20 accessible. "
                                f"Narrow with title and part, date, agency_slugs, or last_modified_* filters.")

@@ -9,3 +9,7 @@ Versions follow semver: MAJOR for output-contract breaks, MINOR for backward-com
 ## [0.2.0] — 2026-10-01
 
 - Rates. A sentence that states an F&A rate, its base or a fringe rate is checked against the rate agreement or the fringe-rate page with `uidaho_rates`, inside the same check: no second skill and no extra step for a client. The pinpoint for a rate is the document and the place in it, and the clause is the document's own line.
+
+## [0.3.0] — 2026-10-01
+
+- The same bounds as `cfr-check` 0.2.0 (#19): the policies are chosen once from the index and read in one round of calls, only what a sentence needs is read, and the check then stops and reports. The sample finding's pinpoint is a form, not a real policy. A sentence with no finding is not mentioned, and "not checked" is only a sentence whose policy could not be fetched.

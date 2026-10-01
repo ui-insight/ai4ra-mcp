@@ -1,6 +1,6 @@
 """ecfr: the query a search sends when it is limited to a title and part (the eCFR's hierarchy filter), the scope kept
 in the result, the date used when none is given (the latest day the eCFR holds, never the clock's), a long section
-as its outline and a part read by its offsets, a long section with no subheadings paged, bad input."""
+as its outline and a part read to its end by its offset, a long section with no subheadings paged, bad input."""
 
 import json
 
@@ -111,45 +111,70 @@ def _section(number, paragraphs):
 
 
 FILL = "Costs must be necessary and reasonable for the performance of the Federal award. " * 9   # 729 characters
-LONG = {   # sections longer than one window: one with the regulation's own subheadings, one with none, and an appendix
+LONG = {   # texts longer than one window: definitions, a section of lettered paragraphs, one with no subheadings, an appendix
     "200.1": _section("200.1", ["The following definitions apply:"] + [f"<I>{term}</I> means {FILL}" for term in ("Acquisition cost", "Budget", "Modified Total Direct Cost (MTDC)", "Subaward")]
-                      + [f"(1) {FILL}"] + [f"<I>Term {n}</I> means {FILL}" for n in range(14)]),
-    "50.605": _section("50.605", [f"({letter}) {FILL}" for letter in "abcdefghijklmnopqrst"]),
+                      + [f"(1) {FILL}"] + [f"<I>Term {n}</I> means {FILL}" for n in range(26)]),
+    "200.430": _section("200.430", [f"({letter}) <I>Heading {letter}.</I> {FILL}" for letter in "abcdefg"] + [f"(1) {FILL}", f"(i) {FILL}", f"(2) {FILL}"]
+                        + [f"(h) <I>Nonprofits.</I> {FILL}", f"(i) <I>Institutions.</I> {FILL}"] + [f"({n}) <I>Item {n}.</I> {FILL}" for n in range(1, 16)]),
+    "50.605": _section("50.605", [f"({letter}) {FILL}" for letter in "abcdefghijklmnopqrstuvwxyz"] + [FILL] * 6),
+    "Appendix III to Part 200": '<DIV9 N="Appendix III to Part 200" TYPE="APPENDIX"><HEAD>Appendix III to Part 200</HEAD><HD1>A. General</HD1>' + f"<P>{FILL}</P>" * 3
+                                + f"<HD2>1. Major functions</HD2><P>{FILL}</P><HD2>2. Criteria</HD2>" + f"<P>{FILL}</P>" * 12 + f"<HD1>B. Identification</HD1>" + f"<P>{FILL}</P>" * 14 + "</DIV9>",
 }
 
 
-async def test_a_long_section_comes_back_as_its_outline_and_a_part_is_read_by_its_offsets(monkeypatch):
+def _long_texts(monkeypatch):
     async def fake_api_get(endpoint, params=None, **kwargs):
-        return TITLES if endpoint == "versioner/v1/titles.json" else LONG.get((params or {}).get("section"), SECTION)
+        params = params or {}
+        return TITLES if endpoint == "versioner/v1/titles.json" else LONG.get(params.get("section") or params.get("appendix"), SECTION)
 
     monkeypatch.setattr(ecfr, "api_get", fake_api_get)
     monkeypatch.setattr(ecfr, "_titles_cache", None)
+
+
+def _outline(result):
+    return {heading: int(at) for at, heading in (entry.split(": ", 1) for entry in result["outline"])}
+
+
+async def test_a_long_section_comes_back_as_its_outline_and_a_part_is_read_by_its_offset(monkeypatch):
+    _long_texts(monkeypatch)
     first = json.loads(await ecfr.ecfr_get_regulation(title=2, part="200", section="200.1"))
-    assert first["truncated"] and first["total_chars"] > 12000 and first["text"].endswith("The following definitions apply:")   # only what comes before the first subheading
-    headings = [entry.split(": ", 1) for entry in first["outline"]]
-    assert [h for _, h in headings][:4] == ["Acquisition cost", "Budget", "Modified Total Direct Cost (MTDC)", "Subaward"] and len(headings) == 18
-    start, stop = int(headings[2][0]), int(headings[3][0])
-    part = json.loads(await ecfr.ecfr_get_regulation(title=2, part="200", section="200.1", offset=start, end_offset=stop))
+    assert first["truncated"] and first["total_chars"] > 20000 and first["text"].endswith("The following definitions apply:")   # only what comes before the first subheading
+    assert "next_offset" not in first and list(_outline(first))[:4] == ["Acquisition cost", "Budget", "Modified Total Direct Cost (MTDC)", "Subaward"] and len(first["outline"]) == 30
+    at = _outline(first)
+    part = json.loads(await ecfr.ecfr_get_regulation(title=2, part="200", section="200.1", offset=at["Modified Total Direct Cost (MTDC)"]))
     assert part["text"].startswith("Modified Total Direct Cost (MTDC) means Costs must be") and part["text"].endswith("Federal award.")
-    assert part["returned_chars"] == len(part["text"]) < 800 and part["next_offset"] == stop and "outline" not in part
-    # a subheading's part runs to the heading the caller names, so one with paragraphs under it is read whole
-    sub = json.loads(await ecfr.ecfr_get_regulation(title=2, part="200", section="200.1", offset=stop, end_offset=int(headings[4][0])))
-    assert sub["text"].startswith("Subaward means") and "\n\n(1) Costs must be" in sub["text"]
-    assert "past offset" in json.loads(await ecfr.ecfr_get_regulation(title=2, part="200", section="200.1", offset=stop, end_offset=start))["error"]["message"]
+    assert part["returned_chars"] == len(part["text"]) < 800 and not part["truncated"] and "next_offset" not in part and "outline" not in part
+    # a part runs to the next subheading of its level, so a definition comes with the numbered item under it
+    sub = json.loads(await ecfr.ecfr_get_regulation(title=2, part="200", section="200.1", offset=at["Subaward"]))
+    assert sub["text"].startswith("Subaward means") and "\n\n(1) Costs must be" in sub["text"] and "Term 0" not in sub["text"] and not sub["truncated"]
 
 
-async def test_a_long_section_with_no_subheadings_is_paged_and_a_short_one_comes_whole(monkeypatch):
-    async def fake_api_get(endpoint, params=None, **kwargs):
-        return TITLES if endpoint == "versioner/v1/titles.json" else LONG.get((params or {}).get("section"), SECTION)
+async def test_a_part_ends_where_the_next_subheading_of_its_level_begins(monkeypatch):
+    _long_texts(monkeypatch)
+    at = _outline(json.loads(await ecfr.ecfr_get_regulation(title=2, part="200", section="200.430")))
+    g = json.loads(await ecfr.ecfr_get_regulation(title=2, part="200", section="200.430", offset=at["(g) Heading g."]))["text"]
+    assert g.startswith("(g) Heading g.") and "\n\n(1) Costs" in g and "\n\n(i) Costs" in g and "\n\n(2) Costs" in g and "(h) Nonprofits." not in g   # the numeral (i) under (g)(1) stays in (g)
+    h = json.loads(await ecfr.ecfr_get_regulation(title=2, part="200", section="200.430", offset=at["(h) Nonprofits."]))["text"]
+    assert h.startswith("(h) Nonprofits.") and "Institutions." not in h   # the letter (i) that follows (h) is the next part, not something under (h)
+    i = json.loads(await ecfr.ecfr_get_regulation(title=2, part="200", section="200.430", offset=at["(i) Institutions."]))
+    assert "(1) Item 1." in i["text"] and i["text"].count("Item ") == 15 and not i["truncated"]   # its numbered items are under it, to the end of the section
+    one = json.loads(await ecfr.ecfr_get_regulation(title=2, part="200", section="200.430", offset=at["(5) Item 5."]))["text"]
+    assert one.startswith("(5) Item 5.") and "Item 6." not in one
+    app = _outline(json.loads(await ecfr.ecfr_get_regulation(title=2, part="200", appendix="Appendix III to Part 200")))
+    a = json.loads(await ecfr.ecfr_get_regulation(title=2, part="200", appendix="Appendix III to Part 200", offset=app["A. General"]))["text"]
+    assert "--- 1. Major functions ---" in a and "--- 2. Criteria ---" in a and "B. Identification" not in a   # a heading takes the lower headings under it
+    one = json.loads(await ecfr.ecfr_get_regulation(title=2, part="200", appendix="Appendix III to Part 200", offset=app["1. Major functions"]))["text"]
+    assert one.startswith("--- 1. Major functions ---") and "2. Criteria" not in one
 
-    monkeypatch.setattr(ecfr, "api_get", fake_api_get)
-    monkeypatch.setattr(ecfr, "_titles_cache", None)
+
+async def test_a_long_section_with_no_subheadings_is_paged_and_a_shorter_one_comes_whole(monkeypatch):
+    _long_texts(monkeypatch)
     whole = json.loads(await ecfr.ecfr_get_regulation(title=42, part="50", section="50.605", max_chars=40000))
-    assert not whole["truncated"] and "outline" not in whole and whole["returned_chars"] == whole["total_chars"] > 12000
+    assert not whole["truncated"] and "outline" not in whole and whole["returned_chars"] == whole["total_chars"] > 20000
     pages, offset = [], 0
     while True:
         page = json.loads(await ecfr.ecfr_get_regulation(title=42, part="50", section="50.605", offset=offset))
-        assert "outline" not in page and page["returned_chars"] <= 12000 and page["offset"] == offset
+        assert "outline" not in page and page["returned_chars"] <= 20000 and page["offset"] == offset
         pages.append(page["text"])
         if not page["truncated"]:
             break
@@ -157,6 +182,19 @@ async def test_a_long_section_with_no_subheadings_is_paged_and_a_short_one_comes
     assert len(pages) == 2 and "\n\n".join(pages) == whole["text"] and pages[0].endswith("Federal award.")   # cut on a paragraph break
     short = json.loads(await ecfr.ecfr_get_regulation(title=2, part="200", section="200.431"))
     assert not short["truncated"] and "outline" not in short and "next_offset" not in short and short["offset"] == 0
+    # 17,638 characters is the size of 200.430, which a 12,000 threshold turned into an outline and twelve pieces (#19)
+    assert ecfr.DEFAULT_TEXT_CHARS >= 20000
+
+
+async def test_a_long_query_that_finds_nothing_is_told_to_use_fewer_words(monkeypatch):
+    async def fake_api_get(endpoint, params=None, **kwargs):
+        return TITLES if endpoint == "versioner/v1/titles.json" else {"results": [], "meta": {"total_count": 0, "total_pages": 0, "current_page": 1}}
+
+    monkeypatch.setattr(ecfr, "api_get", fake_api_get)
+    monkeypatch.setattr(ecfr, "_titles_cache", None)
+    out = json.loads(await ecfr.ecfr_search(query="compensation salary rate academic summer", title=2, part="200"))
+    assert "two or three" in out["warnings"][0]
+    assert "warnings" not in json.loads(await ecfr.ecfr_search(query="summer salary", title=2, part="200"))
 
 
 async def test_search_rejects_a_part_without_a_title_and_a_subpart_without_a_part(monkeypatch):

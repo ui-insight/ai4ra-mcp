@@ -2,13 +2,13 @@
 
 Checks a passage of a document against 2 CFR 200, the Uniform Guidance, as fetched from the eCFR, and reports a finding for each sentence that disagrees with it. Report-only and client-neutral: the findings are in the reply, so the same check works in any MCP client; putting a finding on the document (a comment on its sentence, say) is a client's placement skill.
 
-**Version:** 0.1.0 · **Category:** review · **Status:** experimental · **Output:** findings
+**Version:** 0.2.0 · **Category:** review · **Status:** experimental · **Output:** findings
 
 ## Inputs
 
 A passage of text, however the client supplies it. The current rules are used unless the request names a date.
 
-The skill needs `ecfr_search` (limited to title 2, part 200) and `ecfr_get_regulation`.
+The skill needs `ecfr_search` (limited to title 2, part 200) and `ecfr_get_regulation`. It searches once and reads once, each as one round of calls, and reads only what a sentence needs.
 
 ## Outputs
 

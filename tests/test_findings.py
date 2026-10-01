@@ -32,6 +32,9 @@ def test_every_check_writes_the_form_with_its_own_source_label():
         assert m, f"{server}/{c['slug']} does not show the four lines of a finding in order"
         labels[c["slug"]] = m.group(2)
         assert "violates" in text and "unclear" in text and "copied exactly" in text and "not checked" in text
+        # the sample finding names no real section or policy, since a model took one for a lead and fetched it (#19)
+        assert re.search(r"^\s*(violates|unclear)\. [^\n]*<[^\n]+>", text, re.M), f"{c['slug']}: the sample pinpoint should be a form, not a real citation"
+        assert "stop reading and report" in text and "in one round of calls" in text and "is not mentioned" in text
         assert not any(r.startswith(("excel:", "word:", "skill_")) for r in c["requires"])   # report-only: no client's tools
     assert labels == {"cfr-check": "Federal", "policy-check": "UI"}
 
