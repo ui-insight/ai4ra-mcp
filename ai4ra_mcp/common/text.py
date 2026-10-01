@@ -70,8 +70,14 @@ def read(text: str, outline: list[tuple[int, str, int, str]], offset: int) -> di
     heading's offset, that part to its end, with its pin. An offset that is no heading's falls inside some part:
     it reads that part, from its heading when the part fits in one read (so the text is whole and the pin true),
     from the offset to the part's end when it does not (a long part being paged). With no outline, whole up to
-    PAGE_CHARS and a page at a time past it."""
+    PAGE_CHARS and a page at a time past it. A text that comes whole has no part and no page to ask for, so an
+    offset sent for one returns it whole again with a note that says so, never a piece that starts mid-sentence (a
+    check asked for a 2,111-character section at 1300, 600 and 470, a round of calls each, #25)."""
     outlined = bool(outline) and len(text) > WHOLE_CHARS
+    if offset and not outlined and len(text) <= PAGE_CHARS:
+        out = window(text, 0, PAGE_CHARS)
+        out["note"] = f"This text is {len(text):,} characters and comes whole in one read: an offset does not apply, and there is no more of it to read."
+        return out
     if offset == 0 and outlined:
         out = window(text, 0, PAGE_CHARS, outline[0][0] or (outline[1][0] if len(outline) > 1 else outline[0][2]))
         out["truncated"] = True   # only the lines before the first heading: the rest is read by the outline

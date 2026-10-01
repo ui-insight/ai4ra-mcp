@@ -703,7 +703,7 @@ async def ecfr_get_regulation(
     holds the parts listed under it: read the one you need, not it and the heading above it. Ask for
     several parts in one round of calls. A text with no subheadings
     comes back whole up to 12,000 characters and a page at a time past that: when truncated, call again
-    with offset = next_offset.
+    with offset = next_offset. A text that came whole takes no offset: there is no more of it to read.
     Provide section= whenever possible — part-only requests return very large responses and will be blocked unless subpart= is also specified.
     Always provide title= explicitly for Parts 46 and 50, which exist in multiple titles.
 

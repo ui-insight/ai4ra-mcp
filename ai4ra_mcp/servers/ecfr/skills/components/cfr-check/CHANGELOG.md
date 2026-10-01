@@ -66,3 +66,13 @@ From the first whole-document run (run 0c6f044f), where a passage of about seven
 
 - A finding holds one sentence to the fetched rule, never to another sentence of the document (#24, decided on the client side: the check is of alignment with the sources, not of the document's consistency with itself). The `Conflicts with:` line is gone from the form; two sentences that disagree with each other are not this check's to report, as `policy-check` already said.
 - The example of a search that misses is one from outside any test document: "moving expenses" finds nothing, "relocation costs" finds 200.464 (checked against the eCFR on 2026-10-01). The earlier one was a sentence of the document the skill was being tried on, which teaches the answer to the test.
+
+## [0.10.0] — 2026-10-01
+
+From the first whole-document run on passages of 1,500 characters (run b860db9b; #25), and a decision on what the check is (#26): it surfaces candidate findings, with the evidence beside them, for a person to verify. It does not rule.
+
+- One word, `finding.`, in place of `violates.` and `unclear.` (#26). The split had held in no run: `violates` was written on clauses that only set a condition. What the two words carried is on the Fix line: Add when the passage does not show something the clause requires, Change or Remove when the sentence states something the clause does not allow.
+- No label before the quotation (#26): the source line is the quotation and its link, the pinpoint above it having named the source. A change to the form, and so a break for a client that read the source line by its label.
+- The quoted clause must itself forbid, require or condition something (#25 item 5). A clause that only says what a rule is for, what it uses or who is responsible is not quoted.
+- The test before a finding is written is one line, the sentence's words against the clause's words, and a finding that holds only by adding a fact the sentence does not state (that an amount is over a limit the clause sets) is dropped (#25 item 1). The Fix asks for nothing the quoted clause does not call for.
+- The reading a sentence still lacks before the report is one further round of calls, all of it, and no round after (#25 item 3): the step had read a part a round, each announced.

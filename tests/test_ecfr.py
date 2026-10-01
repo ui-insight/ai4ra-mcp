@@ -200,6 +200,12 @@ async def test_a_long_section_with_no_subheadings_is_paged_and_a_shorter_one_com
     assert len(pages) == 2 and "\n\n".join(pages) == whole and pages[0].endswith("Federal award.")   # cut on a paragraph break
     short = json.loads(await ecfr.ecfr_get_regulation(title=2, part="200", section="200.431"))
     assert not short["truncated"] and "outline" not in short and "next_offset" not in short and short["offset"] == 0
+    # a text that comes whole has no part and no page: an offset sent for it returns it whole, with a note, and not
+    # a piece from mid-sentence (a check asked for a 2,111-character section at 1300, 600 and 470, #25)
+    for sent in (1300, 600, 470):
+        again = json.loads(await ecfr.ecfr_get_regulation(title=2, part="200", section="200.431", offset=sent))
+        assert again["text"] == short["text"] and again["offset"] == 0 and not again["truncated"] and "pinpoint" not in again
+        assert "comes whole in one read" in again["note"] and "note" not in short
 
 
 async def test_the_size_of_a_read_is_the_server_s_and_a_size_a_caller_sends_is_ignored(monkeypatch):

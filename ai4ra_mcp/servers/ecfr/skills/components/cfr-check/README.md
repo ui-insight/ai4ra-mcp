@@ -2,7 +2,7 @@
 
 Checks a passage of a document against 2 CFR 200, the Uniform Guidance, as fetched from the eCFR, and reports a finding for each sentence that disagrees with it. Report-only and client-neutral: the findings are in the reply, so the same check works in any MCP client; putting a finding on the document (a comment on its sentence, say) is a client's placement skill.
 
-**Version:** 0.9.0 · **Category:** review · **Status:** experimental · **Output:** findings
+**Version:** 0.10.0 · **Category:** review · **Status:** experimental · **Output:** findings
 
 ## Inputs
 
@@ -12,11 +12,11 @@ The skill needs `ecfr_search` (limited to title 2, part 200) and `ecfr_get_regul
 
 ## Outputs
 
-One finding per sentence that disagrees with the fetched text, in four lines: the verdict (violates or unclear) with the pinpoint, the sentence's own words, one clause quoted from the fetched section with its link, and a fix that opens with Add, Change or Remove. Then a closing: the date the rules were read as of, the sections fetched, one line for each sentence not checked, `not checked: "<its words>"`, and that institution policy and sponsor terms were not read. Two sentences of the passage that disagree with each other are not a finding: each is held to the regulation on its own.
+One finding per sentence that disagrees with the fetched text, in four lines: the word `finding.` with the pinpoint, the sentence's own words, one clause quoted from the fetched section with its link, and a fix that opens with Add, Change or Remove. There is no verdict: the check surfaces what a person should look at, with the evidence beside it, and does not rule. A sentence draws a finding when it states something the quoted clause forbids, or when the clause conditions or requires something the passage does not show; the Fix line says which (Change or Remove, or Add). Then a closing: the date the rules were read as of, the sections fetched, one line for each sentence not checked, `not checked: "<its words>"`, and that institution policy and sponsor terms were not read. Two sentences of the passage that disagree with each other are not a finding: each is held to the regulation on its own.
 
 ## The form is a contract
 
-The four lines are the findings contract in this repository's README (Skills): a client may read them without a model, and the `Statement:` words are what a finding is placed by. A change to the form is a MAJOR version. The source line opens with the name of the server the clause was fetched from, `eCFR:`; `policy-check` on the `uidaho` server reports in the same form with a `University of Idaho:` line.
+The four lines are the findings contract in this repository's README (Skills): a client may read them without a model, and the `Statement:` words are what a finding is placed by. A change to the form is a MAJOR version. The source line is the quotation and its link with nothing before it, the pinpoint above it having named the source; `policy-check` on the `uidaho` server reports in the same form.
 
 ## Nothing from memory
 
@@ -24,7 +24,7 @@ No section is cited and no clause quoted unless it was fetched in the turn. A se
 
 ## Provenance
 
-The pane's `cfr-check` 0.1.1 (mindrouter-365, 2026-09-30) with the document tools taken out and the workarounds removed after the server changes of 2026-10-01: the search is limited to title 2, part 200 (#17) and a call with no date reads the current text, so the version menu, the agency filter and the call-budget rules are gone. The verdict "worth asking" is gone too: it spoke of sponsor terms that were never fetched.
+The pane's `cfr-check` 0.1.1 (mindrouter-365, 2026-09-30) with the document tools taken out and the workarounds removed after the server changes of 2026-10-01: the search is limited to title 2, part 200 (#17) and a call with no date reads the current text, so the version menu, the agency filter and the call-budget rules are gone. The verdict "worth asking" went then, since it spoke of sponsor terms that were never fetched, and the other two went in 0.10.0 (#26).
 
 ## Evals
 

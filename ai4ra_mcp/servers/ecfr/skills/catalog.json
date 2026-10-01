@@ -7,12 +7,12 @@
     {
       "slug": "cfr-check",
       "name": "cfr-check",
-      "summary": "Check a passage of a document against 2 CFR 200 (the Uniform Guidance) as fetched from the eCFR and report a finding for each sentence that disagrees with it: the verdict, the sentence's words, one clause quoted with its link, and a fix. Nothing is said from memory; a sentence whose rule could not be fetched is reported as not checked. Report-only: placing a finding on the document is a client's job.",
+      "summary": "Check a passage of a document against 2 CFR 200 (the Uniform Guidance) as fetched from the eCFR and report a finding for each sentence that disagrees with it: the pinpoint, the sentence's words, one clause quoted with its link, and a fix. Nothing is said from memory; a sentence whose rule could not be fetched is reported as not checked. Report-only: placing a finding on the document is a client's job.",
       "triggers": [
         "2 CFR 200",
         "Uniform Guidance"
       ],
-      "version": "0.9.0",
+      "version": "0.10.0",
       "category": "review",
       "domain": "research-administration",
       "status": "experimental",
@@ -26,7 +26,7 @@
         {
           "type": "prompt",
           "path": "components/cfr-check/prompt.md",
-          "version": "0.9.0",
+          "version": "0.10.0",
           "role": "canonical_prompt"
         }
       ],

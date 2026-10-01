@@ -54,3 +54,10 @@ From the first whole-document run (run 0c6f044f), where both passages ran past a
 - A lettered section is not read together with the numbered ones under it: the run read APM 45.06 E-2, E-6 and E-8 and then E whole, which holds them. The outline now shows each section's size, and an offset is a number from that policy's own outline.
 - A sentence that was not numbered is never mentioned, "not checked" is never a sentence that was checked and drew nothing, and a limit that stopped the reading gets one line of its own in the closing.
 - A policy is listed as read only if its text was fetched: the closing had named one that only the index mentioned.
+
+## [0.10.0] — 2026-10-01
+
+From the first whole-document run on passages of 1,500 characters (run b860db9b; #25), and a decision on what the check is (#26): it surfaces candidate findings, with the evidence beside them, for a person to verify. It does not rule.
+
+- The same changes as `cfr-check` 0.10.0: one word, `finding.`, in place of the two verdicts; no label before the quotation (a second class of a rate takes a second quotation line); the quoted clause must itself forbid, require or condition something, where the run had quoted a sentence on what the University "uses ... as a starting point"; no finding on a fact the sentence does not state, where the run had held a sentence that charges at a rate to a clause that sets a ceiling; one further round of reading before the report and no more, where one step had spent its eight rounds a part at a time.
+- Rates (#25 item 4). Once the rate document is read, a sentence that states a rate or its base ends as a finding or as nothing, and the closing's rule says so where the list is written: the run had read the agreement and then listed two such sentences as not checked. The step said what to do with a figure and nothing of a base, so a base is now held to the agreement's own line for it. With no such sentence in the passage the rate document is not read.

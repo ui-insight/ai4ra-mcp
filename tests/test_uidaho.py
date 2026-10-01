@@ -109,6 +109,8 @@ async def test_a_short_policy_comes_whole_and_a_long_one_with_no_sections_is_pag
     _policy(monkeypatch, f"A. Purpose. {FILL}\n\nB. Scope. {FILL}")
     short = await uidaho.uidaho_guidance_get("APM 45.06")
     assert not short["truncated"] and "outline" not in short and short["text"].startswith("A. Purpose.")
+    again = await uidaho.uidaho_guidance_get("APM 45.06", offset=400)   # no part and no page to ask for: whole again, and it says so (#25)
+    assert again["text"] == short["text"] and again["offset"] == 0 and "comes whole in one read" in again["note"] and "note" not in short
     _policy(monkeypatch, "\n\n".join([FILL.strip()] * 30))
     pages, offset = [], 0
     while True:

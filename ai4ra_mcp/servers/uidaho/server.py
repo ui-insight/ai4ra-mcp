@@ -359,7 +359,8 @@ async def uidaho_guidance_get(policy: str, offset: int = 0) -> dict:
     section holds the numbered ones under it (E holds E-1 to E-9): read the numbered one you need, not
     it and the letter above it. Ask for several sections in one round of calls. A policy with no such
     sections comes back whole up to 12,000 characters and a page at a time past that: when truncated,
-    call again with offset = next_offset.
+    call again with offset = next_offset. A policy that came whole takes no offset: there is no more
+    of it to read.
 
     Args:
         policy: 'APM 45.06', '45.06', 'FSH 5100' or '5100'.
