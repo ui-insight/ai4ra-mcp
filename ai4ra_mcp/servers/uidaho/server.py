@@ -10,6 +10,7 @@ what they read for a day, since revisions are rare and the page dates itself.
 
 from __future__ import annotations
 
+import asyncio
 import html
 import re
 from pathlib import Path
@@ -71,21 +72,12 @@ async def _fa_agreement_url() -> tuple[str, str]:
 
 # The fringe section of the budget office page: from its heading to the next heading.
 _FRINGE_SECTION = re.compile(r"^## Consolidated fringe rates by fiscal year[ \t]*\n(.*?)(?=^## |\Z)", re.S | re.M)
-STARTER_CITATIONS = [
-    {"policy": "APM 45.02", "title": "Sponsored Projects Proposal Preparation and Authorization"},
-    {"policy": "APM 45.06", "title": "Allowable and Unallowable Sponsored Project Expenditures"},
-    {"policy": "APM 45.07", "title": "Cost Transfers on Sponsored Projects"},
-    {"policy": "APM 45.08", "title": "Cost Sharing (\"Match\") on Sponsored Projects"},
-    {"policy": "APM 45.09", "title": "Effort Reporting and Personnel Activity Reports (PARs)"},
-    {"policy": "APM 45.10", "title": "Facilities and Administrative (Indirect) Rate"},
-    {"policy": "APM 45.14", "title": "Changes Requiring Prior Approval from Sponsor"},
-    {"policy": "APM 45.15", "title": "Subawards and Subcontracts"},
-    {"policy": "FSH 5100", "title": "General Research Policy"},
-    {"policy": "FSH 5600", "title": "Financial Disclosure Policy"},
-]
+COVERS_CHARS = 500   # the most of a policy's opening paragraph a chapter's index carries
+INDEX_FETCHES = 6    # policy pages read at once when a chapter's index is built
 USAGE_NOTES = [
     "Call uidaho_guidance_index first; it lists every chapter with its URL.",
-    "uidaho_guidance_search matches policy numbers and titles, not full text. Read a likely policy with uidaho_guidance_get and search its text yourself.",
+    "To find the policy that governs something, call uidaho_guidance_index with chapter ('APM 45' is sponsored projects, 'FSH 5' is research policy): it lists each policy of the chapter with what it covers, in the policy's own opening words. Choose by what a policy covers, then read it with uidaho_guidance_get.",
+    "uidaho_guidance_search matches policy numbers and titles, not full text: use it when you have a title word or a number.",
     "uidaho_guidance_get takes a policy number ('APM 45.06', 'FSH 5100'); every result carries the page URL and its 'Last updated' date. Cite both.",
     "uidaho_rates reads the F&A rate agreement PDF or the fringe-rate page; quote figures with their effective period.",
     "Questions about allowability or interpretation go to the Office of Sponsored Programs, 208-885-6651, osp@uidaho.edu. Give no other contact.",
@@ -96,10 +88,11 @@ _CHAPTER_LINE = re.compile(r"^Chapter (\d+): (.+)$", re.M)
 _APM_POLICY_LINE = re.compile(r"^(\d{2})\.(\d{2}) - (.+)$", re.M)
 _FSH_POLICY_LINE = re.compile(r"^(\d{4}) - (.+)$", re.M)
 _POLICY_REF = re.compile(r"^\s*(APM|FSH)?\s*(\d{2}\.\d{2}|\d{4})\s*$", re.I)
+_CHAPTER_REF = re.compile(r"^\s*(APM|FSH)\s*(\d{1,2})\s*$", re.I)
 
 mcp = MCPServer(
     "uidaho",
-    instructions="University of Idaho policy for sponsored projects: the APM and FSH by policy number and title, and the F&A and fringe rates. Read uidaho_guidance_index first.",
+    instructions="University of Idaho policy for sponsored projects: the APM and FSH, found by what each policy covers (uidaho_guidance_index with a chapter) or by number and title, and the F&A and fringe rates. Read uidaho_guidance_index first.",
 )
 
 
@@ -172,6 +165,21 @@ def parse_policy_page(text: str) -> dict:
     return {"title": title, "owner": owner, "last_updated": last_updated, "text": body.strip()}
 
 
+def opening_paragraph(body: str) -> str:
+    """What a policy covers, in its own words: the first paragraph of its text that is prose, whatever the page
+    calls it (a Purpose, a Preamble, an Introduction), cut at a sentence end when it is long. A contents list
+    and bare headings are passed over: they do not end as a sentence does."""
+    for block in body.split("\n\n"):
+        text = " ".join(block.split())
+        if len(text) < 60 or text.startswith("#") or text.rstrip("”\"')")[-1:] not in (".", "?", "!"):
+            continue
+        if len(text) > COVERS_CHARS:
+            cut = text.rfind(". ", 0, COVERS_CHARS)
+            text = text[: cut + 1] if cut > 0 else text[:COVERS_CHARS].rstrip() + "…"
+        return text
+    return ""
+
+
 def parse_policy_ref(policy: str) -> tuple[str, str, str] | None:
     """'APM 45.06' -> ('APM', '45', '06'); 'FSH 5100' or '5100' -> ('FSH', '5', '5100')."""
     m = _POLICY_REF.match(policy or "")
@@ -198,6 +206,36 @@ async def _policies(source: str, chapter: dict) -> list[dict]:
     return await _cache.remember(f"policies:{chapter['url']}", DAY, make)
 
 
+async def _policy_page(url: str) -> dict:
+    """A policy page read and parsed, kept for a day."""
+    async def make():
+        _, text = await _whole_text(url)
+        return parse_policy_page(text)
+    return await _cache.remember(f"policy:{url}", DAY, make)
+
+
+async def _chapter_index(source: str, chapter: dict) -> dict:
+    """Every policy of one chapter with what it covers, read from the policy pages themselves, so nothing is kept by
+    hand and an entry changes when its policy does. A page that cannot be read is listed as unread, not left out."""
+    gate = asyncio.Semaphore(INDEX_FETCHES)
+
+    async def one(p: dict) -> dict:
+        async with gate:
+            try:
+                page = await _policy_page(p["url"])
+            except Exception as e:
+                return {"policy": p["policy"], "title": p["title"], "url": p["url"], "unread": str(e)}
+        if not page["title"]:
+            return {"policy": p["policy"], "title": p["title"], "url": p["url"], "unread": "the page has no policy text"}
+        return {"policy": p["policy"], "title": p["title"], "covers": opening_paragraph(page["text"]),
+                "last_updated": page["last_updated"], "url": p["url"]}
+
+    rows = await asyncio.gather(*(one(p) for p in await _policies(source, chapter)))
+    return {"chapter": f"{source} {chapter['chapter']}", "title": chapter["title"], "url": chapter["url"],
+            "policies": [r for r in rows if "unread" not in r], "unread": [r for r in rows if "unread" in r],
+            "note": "covers is each policy's own opening paragraph. Choose the policy by what it covers, then read it with uidaho_guidance_get. A policy under unread could not be read just now and may still be the one that governs."}
+
+
 async def _all_policies(source_filter: str = "") -> list[dict]:
     out = []
     for source in SOURCES:
@@ -210,16 +248,32 @@ async def _all_policies(source_filter: str = "") -> list[dict]:
 
 
 @mcp.tool(name="uidaho_guidance_index", annotations=_READ_ONLY)
-async def uidaho_guidance_index() -> dict:
+async def uidaho_guidance_index(chapter: str = "") -> dict:
     """University of Idaho policy sources for sponsored projects. READ THIS FIRST.
 
-    Returns the APM and FSH with every chapter and its URL, starter citations for sponsored-projects
-    work, where the F&A and fringe rates are, and the rules for using the other uidaho tools.
+    With no chapter: the APM and FSH with every chapter and its URL, where the F&A and fringe rates are,
+    and the rules for using the other uidaho tools.
+    With a chapter: every policy of that chapter with what it covers (the policy's own opening paragraph),
+    its 'Last updated' date and its URL. This is how to find the policy that governs something: choose by
+    what a policy covers, then read it with uidaho_guidance_get.
+
+    Args:
+        chapter: 'APM 45' (sponsored projects), 'FSH 5' (research policy), or any chapter the index lists. Empty for the chapters.
     """
+    if (chapter or "").strip():
+        m = _CHAPTER_REF.match(chapter)
+        if not m:
+            return {"error": "chapter must look like 'APM 45' or 'FSH 5'"}
+        source, number = m.group(1).upper(), int(m.group(2))
+        chapters = await _chapters(source)
+        found = next((c for c in chapters if int(c["chapter"]) == number), None)
+        if not found:
+            return {"error": f"{source} has no chapter {number}", "chapters": [f"{source} {c['chapter']}: {c['title']}" for c in chapters]}
+        return await _chapter_index(source, found)
     sources = {}
     for source, meta in SOURCES.items():
         sources[source] = {**meta, "chapters": await _chapters(source)}
-    return {"sources": sources, "rates": RATES, "starter_citations": STARTER_CITATIONS, "usage_notes": USAGE_NOTES}
+    return {"sources": sources, "rates": RATES, "usage_notes": USAGE_NOTES}
 
 
 @mcp.tool(name="uidaho_guidance_search", annotations=_READ_ONLY)
@@ -270,13 +324,8 @@ async def uidaho_guidance_get(policy: str, offset: int = 0, max_chars: int = 120
         return {"error": "policy must look like 'APM 45.06' or 'FSH 5100'"}
     source, chapter, number = ref
     url = f"{SOURCES[source]['landing']}/{chapter}/{number}"
-
-    async def make():
-        _, text = await _whole_text(url)
-        return parse_policy_page(text)
-
     try:
-        page = await _cache.remember(f"policy:{url}", DAY, make)
+        page = await _policy_page(url)
     except ValueError as e:
         return {"error": str(e), "url": url}
     if not page["title"]:

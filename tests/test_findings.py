@@ -1,0 +1,41 @@
+"""The findings contract: every skill whose catalog entry says its output is findings writes the form the README
+gives, in its prompt, in the same order, so a client can read a check's reply without a model."""
+
+import re
+from pathlib import Path
+
+from ai4ra_mcp.app import SERVERS
+from ai4ra_mcp.common.skills import load_catalog, prompt_text
+
+SERVERS_DIR = Path(__file__).parent.parent / "ai4ra_mcp" / "servers"
+FORM = re.compile(r'''^\s*(violates|unclear)\. \S.*\n\s*Statement: "<[^"\n]+>"\n\s*(\w+): "<[^"\n]+>" <[^>\n]+>\n\s*Fix: <[^>\n]+>$''', re.M)
+
+
+def checks():
+    out = []
+    for name in SERVERS:
+        skills = SERVERS_DIR / name / "skills"
+        for c in load_catalog(skills).get("components", []):
+            if c.get("contracts", {}).get("output", {}).get("format") == "findings":
+                out.append((name, c, prompt_text(skills, c)))
+    return out
+
+
+def test_the_two_checks_report_findings():
+    assert {(server, c["slug"]) for server, c, _ in checks()} == {("ecfr", "cfr-check"), ("uidaho", "policy-check")}
+
+
+def test_every_check_writes_the_form_with_its_own_source_label():
+    labels = {}
+    for server, c, text in checks():
+        m = FORM.search(text)
+        assert m, f"{server}/{c['slug']} does not show the four lines of a finding in order"
+        labels[c["slug"]] = m.group(2)
+        assert "violates" in text and "unclear" in text and "copied exactly" in text and "not checked" in text
+        assert not any(r.startswith(("excel:", "word:", "skill_")) for r in c["requires"])   # report-only: no client's tools
+    assert labels == {"cfr-check": "Federal", "policy-check": "UI"}
+
+
+def test_only_the_federal_check_reports_two_sentences_that_disagree():
+    by = {c["slug"]: text for _, c, text in checks()}
+    assert "Conflicts with:" in by["cfr-check"] and "Conflicts with:" not in by["policy-check"]

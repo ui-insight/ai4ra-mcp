@@ -110,7 +110,7 @@ REST API.
 
 | Path | Upstream | Key | Tools | Skills |
 |---|---|---|---|---|
-| `/uidaho/mcp` | uidaho.edu policy pages and rate documents | none | `uidaho_guide`, `uidaho_guidance_index`, `uidaho_guidance_search`, `uidaho_guidance_get`, `uidaho_rates` | `uidaho-lookup`, `uidaho-rates` |
+| `/uidaho/mcp` | uidaho.edu policy pages and rate documents | none | `uidaho_guide`, `uidaho_guidance_index`, `uidaho_guidance_search`, `uidaho_guidance_get`, `uidaho_rates` | `uidaho-lookup`, `uidaho-rates`, `policy-check` |
 | `/lakehouse/mcp` (one per configured client; the others at `/lakehouse-<id>/mcp`) | the University of Idaho data lakehouse, through Marina | **required** (the client's shared secret) | `lakehouse_guide`, `lakehouse_index`, `lakehouse_sql_catalog`, `lakehouse_sql`, `lakehouse_streams`, `lakehouse_schema`, `lakehouse_query`, `lakehouse_files`, `lakehouse_file` | `lakehouse-answer` |
 
 Tool names carry their upstream (`ecfr_`, `grants_gov_`, `uidaho_`) and
@@ -928,9 +928,19 @@ makes a search-and-cite layer cheap:
 | FSH | `uidaho.edu/policies/fsh` lists chapters 1–6 (5 is Research Policies) | `uidaho.edu/policies/fsh/5/5100` is FSH 5100 | same |
 
 - `uidaho_guidance_index`: read first. Both sources chapter by chapter with
-  URLs, starter citations for sponsored-projects work (APM 45.06 allowable
-  costs, 45.08 cost sharing, 45.10 F&A rate, 45.15 subawards, FSH 5100
-  general research policy), where the rate documents are, and the usage rules.
+  URLs, where the rate documents are, and the usage rules. With `chapter`
+  (`APM 45`, `FSH 5`, any chapter listed) it is that chapter's index: every
+  policy with what it covers, its `Last updated` date and its URL. What a
+  policy covers is its own opening paragraph (a Purpose, a Preamble, an
+  Introduction, whatever the page opens with; a contents list is passed
+  over), cut at a sentence end past 500 characters. This is how the policy
+  that governs a statement is found: a model reads the index and chooses by
+  what each policy covers, which matches on meaning with no embedding model
+  and no list kept by hand. The index is built from the policy pages when
+  asked for (APM 45 is 24 policies, about 11,000 characters, under three
+  seconds cold) and the pages are cached for a day; a page that cannot be
+  read is listed under `unread`, not left out. The starter citations, ten
+  policies listed by hand, are gone (#18).
 - `uidaho_guidance_search`: policies by number or title words, as listed in
   each chapter's index. It does not search policy text; the skill reads a
   likely policy and looks there.
@@ -954,6 +964,12 @@ for a page that could not be read. `uidaho-rates` fetches the F&A and fringe
 rates and reports them in the Rates contract's order with their dates and
 addresses; a document that could not be read leaves its items without
 values, marked "not fetched". Neither skill carries fallback figures.
+`policy-check` checks a passage of a document against the APM and the FSH
+as fetched and reports a finding for each sentence that disagrees with a
+policy, in the findings contract's form with a `UI:` line: it finds the
+policy from the chapter's index, reads it, and quotes the clause. It is
+the university's sibling of `cfr-check` on `ecfr`; a client that runs both
+on one passage can put the two findings for a sentence in one place.
 Writing the rates onto a sheet, and the eight-step proposal workbook that
 ran skills from the general, ai4ra and uidaho servers in order, are Idaho's
 mindrouter-365-aware server's (cell 2 of the grid; mindrouter-365 #39) and
@@ -1117,6 +1133,30 @@ client acts on for its own skills (`hosts`, `fold`, `template`,
 requirements) are not carried here: a catalog served by an institution's
 mindrouter-365-aware server may carry them, and this one never does, which
 `tests/test_guides.py` checks for every guide (ai4ra-mcp #10).
+
+**The findings contract.** A check of a document against a source (`cfr-check`
+on `ecfr`, `policy-check` on `uidaho`) replies with findings in one fixed
+form, so a client can put each on its sentence and join the findings of two
+checks without a model. Its catalog entry says `contracts.output.format:
+"findings"`. One finding per sentence, a blank line between findings, each
+these lines in this order:
+
+```
+violates. 2 CFR 200.313(a)
+Statement: "<the sentence's words, copied exactly from the passage>"
+Federal: "<one clause, copied word for word from the fetched text>" <the address it was read from>
+Fix: <one plain sentence>
+```
+
+The first line is the verdict, `violates.` or `unclear.`, then the pinpoint.
+The source line opens with the check's own label (`Federal:`, `UI:`), one
+line for each rule the finding rests on; in the federal check `Conflicts
+with: "<the other sentence's words>"` takes its place when two sentences of
+the passage disagree, and no other check reports that. A closing in prose
+follows the findings: what was read and as of when, and each sentence not
+checked. Every quotation is text the check fetched in that turn.
+`tests/test_findings.py` holds each such skill's prompt to the form, and a
+change to it is a MAJOR version of the skill.
 
 **The Rates contract.** A budget form is institution-agnostic: it takes its
 rates in one fixed form, wherever a client keeps them. An institution's
@@ -1419,7 +1459,7 @@ version in the front matter and the catalog together.
 
 ## Status
 
-2026-10-01: `ecfr_search` limited to a title and part (#17); no date needed for the current text on any ecfr tool, the latest day read from the eCFR and not the clock, and the server's refusals readable by a client (#16 items 2, 4, 5, part of 8); `ecfr-research-admin` removed; a report-only `cfr-check` on `ecfr`, so a client keeps only the placement of findings. a long section returned as its outline, a part read by its offsets (#16 item 3). Open on #16: the index's size (6), compact search results (7). 2026-09-30: the server-and-client rule and the grid; log no keys; the Banner family removed; guides as catalogued components with a `<server>_guide` tool per server (the UDM guide, five proposal guides, the AI-tells guide, and the compliance-concerns vocabulary as draft 0.1, #15); once the pane served its own placement skills (mindrouter-365 #34 to #39), the ten it had been carrying here (Gantt, ask, remove-ai-tells, the five proposal sheets, udm-sheet, proposal-workbook) were removed and the rates skill became report-only, so no catalog here carries a client's fields. 2026-09-29: twenty-six servers; the `udm` server and the `udm-sheet` skill on `ai4ra` were added that day, offline-tested against a fixture in the published schema's shape and tried against the real schema. 2026-09-25: twenty-five servers. The eCFR and grants.gov code moved in from
+2026-10-01: the `uidaho` chapter index, each policy with what it covers in its own opening words (#18); `policy-check` on `uidaho`, the university's sibling of `cfr-check`; the findings contract both report in. `ecfr_search` limited to a title and part (#17); no date needed for the current text on any ecfr tool, the latest day read from the eCFR and not the clock, and the server's refusals readable by a client (#16 items 2, 4, 5, part of 8); `ecfr-research-admin` removed; a report-only `cfr-check` on `ecfr`, so a client keeps only the placement of findings. a long section returned as its outline, a part read by its offsets (#16 item 3). Open on #16: the index's size (6), compact search results (7). 2026-09-30: the server-and-client rule and the grid; log no keys; the Banner family removed; guides as catalogued components with a `<server>_guide` tool per server (the UDM guide, five proposal guides, the AI-tells guide, and the compliance-concerns vocabulary as draft 0.1, #15); once the pane served its own placement skills (mindrouter-365 #34 to #39), the ten it had been carrying here (Gantt, ask, remove-ai-tells, the five proposal sheets, udm-sheet, proposal-workbook) were removed and the rates skill became report-only, so no catalog here carries a client's fields. 2026-09-29: twenty-six servers; the `udm` server and the `udm-sheet` skill on `ai4ra` were added that day, offline-tested against a fixture in the published schema's shape and tried against the real schema. 2026-09-25: twenty-five servers. The eCFR and grants.gov code moved in from
 mcp-ecfr on 2026-09-22 with the Office add-in's skills, and the NIH, NSF,
 SAM.gov, USAspending and Federal Audit Clearinghouse servers were verified
 against the live APIs that day (SAM.gov and FAC with a person's own key).

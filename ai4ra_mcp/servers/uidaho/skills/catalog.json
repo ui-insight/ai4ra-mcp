@@ -2,7 +2,7 @@
   "catalog_version": "1.0",
   "repo": "ui-insight/ai4ra-mcp",
   "server": "uidaho",
-  "note": "Skills that use the uidaho server's tools: the policy and rate lookups, and the rates skill that fetches and reports the university's F&A and fringe rates with their sources. Same shape as AI4RA/prompt-library's component_catalog.json, hand-maintained. Writing the rates onto a sheet is a client's job (Idaho's mindrouter-365-aware server holds that skill).",
+  "note": "Skills that use the uidaho server's tools: the policy and rate lookups, the check of a passage against university policy, and the rates skill that fetches and reports the university's F&A and fringe rates with their sources. Same shape as AI4RA/prompt-library's component_catalog.json, hand-maintained. Writing the rates onto a sheet is a client's job (Idaho's mindrouter-365-aware server holds that skill).",
   "components": [
     {
       "slug": "uidaho-lookup",
@@ -16,7 +16,7 @@
         "fringe rate",
         "UI policy"
       ],
-      "version": "0.4.0",
+      "version": "0.5.0",
       "category": "research",
       "domain": "research-administration",
       "status": "experimental",
@@ -30,7 +30,7 @@
         {
           "type": "prompt",
           "path": "components/uidaho-lookup/prompt.md",
-          "version": "0.4.0",
+          "version": "0.5.0",
           "role": "canonical_prompt"
         }
       ],
@@ -97,6 +97,50 @@
       },
       "requires": [
         "uidaho_rates"
+      ]
+    },
+    {
+      "slug": "policy-check",
+      "name": "policy-check",
+      "summary": "Check a passage of a document against University of Idaho policy (the APM and the FSH) as fetched from the university's policy pages and report a finding for each sentence that disagrees with it: the verdict, the sentence's words, one clause quoted with its link, and a fix. Nothing is said from memory; a sentence whose policy could not be fetched is reported as not checked. Report-only: placing a finding on the document is a client's job.",
+      "triggers": [
+        "check against university policy",
+        "policy check"
+      ],
+      "version": "0.1.0",
+      "category": "review",
+      "domain": "research-administration",
+      "status": "experimental",
+      "paths": {
+        "component_dir": "components/policy-check",
+        "readme": "components/policy-check/README.md",
+        "prompt": "components/policy-check/prompt.md",
+        "evals_dir": "components/policy-check/evals"
+      },
+      "manifestations": [
+        {
+          "type": "prompt",
+          "path": "components/policy-check/prompt.md",
+          "version": "0.1.0",
+          "role": "canonical_prompt"
+        }
+      ],
+      "contracts": {
+        "output": {
+          "format": "findings",
+          "scope": "repo_local",
+          "schema_path": null
+        }
+      },
+      "evaluation": {
+        "case_count": 0,
+        "report_count": 0,
+        "last_fully_evaluated_version": null,
+        "current_version_is_fully_evaluated": false
+      },
+      "requires": [
+        "uidaho_guidance_index",
+        "uidaho_guidance_get"
       ]
     }
   ]

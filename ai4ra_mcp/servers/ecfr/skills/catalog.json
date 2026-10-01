@@ -32,7 +32,7 @@
       ],
       "contracts": {
         "output": {
-          "format": null,
+          "format": "findings",
           "scope": "repo_local",
           "schema_path": null
         }

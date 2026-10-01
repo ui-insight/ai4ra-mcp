@@ -1,0 +1,27 @@
+# Policy Check
+
+Checks a passage of a document against University of Idaho policy, the APM and the FSH, as fetched from the university's policy pages, and reports a finding for each sentence that disagrees with it. Report-only and client-neutral: the findings are in the reply. It is the university's sibling of `cfr-check` on the `ecfr` server and reports in the same form, with a `UI:` line where that one has `Federal:`, so a client that runs both can put the two on one sentence together.
+
+**Version:** 0.1.0 · **Category:** review · **Status:** experimental · **Output:** findings
+
+## Inputs
+
+A passage of text, however the client supplies it.
+
+The skill needs `uidaho_guidance_index` (a chapter's policies with what each covers) and `uidaho_guidance_get`.
+
+## Outputs
+
+One finding per sentence that disagrees, in four lines: the verdict (violates or unclear) with the policy's number and paragraph, the sentence's own words, one clause quoted from the fetched policy with its link, and a fix. Then a closing: the policies read with their "Last updated" dates, each sentence not checked and why, and that federal regulation and sponsor terms were not read. Sentences of the passage that disagree with each other are left to the federal check.
+
+## The form is a contract
+
+The four lines are the findings contract in this repository's README (Skills): a client may read them without a model. A change to the form is a MAJOR version.
+
+## Nothing from memory
+
+No policy is cited and no clause quoted unless it was fetched in the turn. A sentence whose policy could not be fetched is reported as not checked. A policy is the page as it stands today; the university's site keeps no earlier versions, so there is no date to choose.
+
+## Evals
+
+See [`evals/`](evals/). None yet.
