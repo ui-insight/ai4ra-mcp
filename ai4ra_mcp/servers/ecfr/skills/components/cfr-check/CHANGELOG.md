@@ -76,3 +76,7 @@ From the first whole-document run on passages of 1,500 characters (run b860db9b;
 - The quoted clause must itself forbid, require or condition something (#25 item 5). A clause that only says what a rule is for, what it uses or who is responsible is not quoted.
 - The test before a finding is written is one line, the sentence's words against the clause's words, and a finding that holds only by adding a fact the sentence does not state (that an amount is over a limit the clause sets) is dropped (#25 item 1). The Fix asks for nothing the quoted clause does not call for.
 - The reading a sentence still lacks before the report is one further round of calls, all of it, and no round after (#25 item 3): the step had read a part a round, each announced.
+
+## [0.11.0] — 2026-10-01
+
+- The last line of a finding is labelled `Suggested Fix:` in place of `Fix:` (#27), in the spirit of 0.10.0: the check surfaces candidates for a person to verify, so its last line is a suggestion to that person. The line's rule is unchanged: it opens with Add, Change or Remove, is one clause, and states no rule. A change to the form, and so a break for a client that reads the line by its label.

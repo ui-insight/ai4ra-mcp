@@ -61,3 +61,7 @@ From the first whole-document run on passages of 1,500 characters (run b860db9b;
 
 - The same changes as `cfr-check` 0.10.0: one word, `finding.`, in place of the two verdicts; no label before the quotation (a second class of a rate takes a second quotation line); the quoted clause must itself forbid, require or condition something, where the run had quoted a sentence on what the University "uses ... as a starting point"; no finding on a fact the sentence does not state, where the run had held a sentence that charges at a rate to a clause that sets a ceiling; one further round of reading before the report and no more, where one step had spent its eight rounds a part at a time.
 - Rates (#25 item 4). Once the rate document is read, a sentence that states a rate or its base ends as a finding or as nothing, and the closing's rule says so where the list is written: the run had read the agreement and then listed two such sentences as not checked. The step said what to do with a figure and nothing of a base, so a base is now held to the agreement's own line for it. With no such sentence in the passage the rate document is not read.
+
+## [0.11.0] — 2026-10-01
+
+- The last line of a finding is labelled `Suggested Fix:` in place of `Fix:` (#27), in the spirit of 0.10.0: the check surfaces candidates for a person to verify, so its last line is a suggestion to that person. The line's rule is unchanged: it opens with Add, Change or Remove, is one clause, and states no rule. A change to the form, and so a break for a client that reads the line by its label.

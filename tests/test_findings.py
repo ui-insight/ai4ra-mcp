@@ -8,7 +8,7 @@ from ai4ra_mcp.app import META, SERVERS
 from ai4ra_mcp.common.skills import load_catalog, prompt_text
 
 SERVERS_DIR = Path(__file__).parent.parent / "ai4ra_mcp" / "servers"
-FORM = re.compile(r'''^\s*finding\. \S.*\n\s*Statement: "<[^"\n]+>"\n\s*"<[^"\n]+>" <[^>\n]+>\n\s*Fix: <Add \| Change \| Remove> <[^>\n]+>$''', re.M)
+FORM = re.compile(r'''^\s*finding\. \S.*\n\s*Statement: "<[^"\n]+>"\n\s*"<[^"\n]+>" <[^>\n]+>\n\s*Suggested Fix: <Add \| Change \| Remove> <[^>\n]+>$''', re.M)
 NOT_CHECKED = '`not checked: "<the sentence\'s words, copied exactly>"`'
 
 
@@ -49,7 +49,9 @@ def test_every_check_writes_the_form():
         assert "Test each finding" in text and "there is no finding: drop it" in text and "is not mentioned" in text
         # the reading a sentence still lacks is one further round, not a round per afterthought (#25)
         assert "one further round of calls" in text and "no round after it" in text
-        # forms a client can hold a reply to: the quotation, the Fix line, the pinpoint a read returned, the not-checked line (#22, #23)
+        # forms a client can hold a reply to: the quotation, the Suggested Fix line, the pinpoint a read returned, the not-checked line (#22, #23)
+        # the last line is a suggestion to the person who verifies the finding, and is labelled as one (#27)
+        assert "`Suggested Fix:`" in text and not re.search(r"(?<!Suggested )Fix:", text)
         assert "exactly as it stands" in text and "opens with Add, Change or Remove" in text and "states no rule" in text and "is or is not allowable" in text
         assert "Add when the passage does not show something the clause requires" in text   # what the two verdicts carried (#26)
         assert "copy the `pinpoint` that read returned" in text and NOT_CHECKED in text and "never a sentence that has a finding" in text

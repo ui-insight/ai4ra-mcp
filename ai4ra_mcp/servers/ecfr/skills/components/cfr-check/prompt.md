@@ -1,6 +1,6 @@
 ---
 name: cfr-check
-version: 0.10.0
+version: 0.11.0
 category: review
 domain: research-administration
 status: experimental
@@ -15,7 +15,7 @@ updated: 2026-10-01
 
 > **Purpose:** Check a passage of a document against 2 CFR 200, the Uniform Guidance, as fetched from the eCFR, and report a finding for each sentence that disagrees with it. Report only: where a finding is put is the client's.
 > **Expected input:** A passage of text, however the client supplies it. A date, if the rules of an earlier day are wanted.
-> **Expected output:** The findings in the reply, each with its pinpoint, the sentence, one quoted clause with its link, and a fix; then a short closing.
+> **Expected output:** The findings in the reply, each with its pinpoint, the sentence, one quoted clause with its link, and a suggested fix; then a short closing.
 
 ---
 
@@ -43,10 +43,10 @@ Everything you say the regulation requires comes from text you fetched in this t
    finding. 2 CFR 200.<section>(<paragraph>)
    Statement: "<the sentence's words, copied exactly>"
    "<one clause, copied word for word from the fetched text>" <the source_url of that fetch>
-   Fix: <Add | Change | Remove> <what, in the document>
+   Suggested Fix: <Add | Change | Remove> <what, in the document>
    ```
 
    - The first line is `finding.`, the same word for every finding, and the pinpoint of the clause you quote. For a part read by its offset, copy the `pinpoint` that read returned, and add the label of a paragraph below it when the quoted words stand under one. For a section that came whole, build it from the labels that stand in front of the quoted words, reading back from them to the nearest (a), (1), (i).
    - The third line is the quotation and its link, with nothing before it. The quotation is one sentence, clause or line of the fetched text exactly as it stands: nothing left out, nothing added, not several joined.
-   - `Fix:` opens with Add, Change or Remove: Add when the passage does not show something the clause requires, Change or Remove when the sentence states something the clause does not allow. It is one clause, ends at the change, and asks for nothing the quoted clause does not call for. It gives no reason (no "since", no "because"), states no rule, cites nothing, and never says that something is or is not allowable.
+   - `Suggested Fix:` is a suggestion to the person who verifies the finding, and opens with Add, Change or Remove: Add when the passage does not show something the clause requires, Change or Remove when the sentence states something the clause does not allow. It is one clause, ends at the change, and asks for nothing the quoted clause does not call for. It gives no reason (no "since", no "because"), states no rule, cites nothing, and never says that something is or is not allowable.
 8. **Close** in a few lines: the date the rules were read as of; the sections fetched; one line for each numbered sentence not checked, in this form with nothing after it, `not checked: "<the sentence's words, copied exactly>"`, and never a sentence that has a finding or one that you checked and found nothing against; if a limit stopped your reading, one line saying what you could not read; and that institution policy and sponsor terms were not read.
