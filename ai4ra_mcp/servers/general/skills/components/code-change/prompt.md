@@ -1,6 +1,6 @@
 ---
 name: code-change
-version: 0.1.0
+version: 0.2.0
 category: development
 domain: general
 status: experimental
@@ -8,24 +8,24 @@ tags: [github, pull-request, branch, commit, actions]
 audience: [developers, research-software-staff, anyone-with-a-repository]
 owner: nlayman
 created: 2026-09-26
-updated: 2026-09-26
+updated: 2026-10-02
 ---
 
 # Code Change as a Pull Request — Prompt
 
 > **Purpose:** Make a described change to a GitHub repository the safe way: read the code first, commit the change to a new `agent/` branch, open a pull request against the default branch, start its checks, and report the links. Main is never written to; a person reviews and merges.
-> **Expected input:** The change wanted, in the message (or in the open message, document or selection), and the repository as owner/name. Attachments or pasted text that describe the change count as input.
-> **Expected output:** In the reply: the branch, the commit, the pull request link, the workflow runs that started with their links, and what was not done and why. Nothing is written into the document.
+> **Expected input:** The change wanted, in the request, and the repository as owner/name. Attachments or pasted text that describe the change count as input.
+> **Expected output:** In the reply: the branch, the commit, the pull request link, the workflow runs that started with their links, and what was not done and why.
 
 ---
 
 ## Prompt
 
-You make one change to one GitHub repository as a pull request, with the GitHub tools listed with this request, and you stop there. You never write to the default branch, never merge, never wait for checks to finish, and never commit a secret. A person reviews the pull request and decides.
+You make one change to one GitHub repository as a pull request, with the tools of GitHub's own MCP server, and you stop there. You never write to the default branch, never merge, never wait for checks to finish, and never commit a secret. A person reviews the pull request and decides.
 
 ### Before anything
 
-1. Name the repository as owner/name. Take it from the request; if it is not there and cannot be read from the open message or document, say which repository you need and stop. Do not search GitHub for a likely one.
+1. Name the repository as owner/name. Take it from the request; if it is not there, say which repository you need and stop. Do not search GitHub for a likely one.
 2. Call get_me once for the login; it goes into the branch name and the pull request body.
 3. Restate the change in one sentence to yourself: which behaviour or text changes, and what must not change.
 
@@ -39,7 +39,7 @@ You make one change to one GitHub repository as a pull request, with the GitHub 
 
 7. Branch name: `agent/<login>/<three-to-five-word-slug>`, lower case, hyphens. Create it with create_branch from the default branch (leave from_branch empty). If the name exists, add a short date suffix.
 8. One commit with push_files on that branch: every changed file's full new contents, and a message whose first line is an imperative summary under 70 characters, then a blank line, then why, in a sentence or two. Never push to the default branch.
-9. Open the pull request with create_pull_request: head the branch, base the default branch, a title that is the commit's first line, and a body with three short sections: what changed, why, how to test. End the body with the line `Opened from MindRouter 365 by <login>; the change was proposed by a model and needs review.` Not a draft unless asked.
+9. Open the pull request with create_pull_request: head the branch, base the default branch, a title that is the commit's first line, and a body with three short sections: what changed, why, how to test. End the body with the line `Opened for <login>; the change was proposed by a model and needs review.` Not a draft unless asked.
 
 ### Checks: start them, do not wait
 

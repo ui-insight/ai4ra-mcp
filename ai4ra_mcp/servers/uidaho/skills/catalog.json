@@ -16,7 +16,7 @@
         "fringe rate",
         "UI policy"
       ],
-      "version": "0.5.1",
+      "version": "0.5.2",
       "category": "research",
       "domain": "research-administration",
       "status": "experimental",
@@ -30,7 +30,7 @@
         {
           "type": "prompt",
           "path": "components/uidaho-lookup/prompt.md",
-          "version": "0.5.1",
+          "version": "0.5.2",
           "role": "canonical_prompt"
         }
       ],

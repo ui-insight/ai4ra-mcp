@@ -2,7 +2,7 @@
   "catalog_version": "1.0",
   "repo": "ui-insight/ai4ra-mcp",
   "server": "udm",
-  "note": "The conversion guide: how records are converted to one UDM table, as text for a model to follow, served by udm_guide and as a prompt. The udm-sheet skill on the ai4ra server is one caller. Same shape as AI4RA/prompt-library's component_catalog.json.",
+  "note": "The conversion guide: how records are converted to one UDM table, as text for a model to follow, served by udm_guide and as a prompt. Same shape as AI4RA/prompt-library's component_catalog.json.",
   "components": [
     {
       "slug": "udm-conversion-guide",

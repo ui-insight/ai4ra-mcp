@@ -65,3 +65,16 @@ def test_a_guide_names_no_client(server, component, skills):
     for k in ("hosts", "fold", "assertions", "stages"):
         assert k not in component, k
     assert "template" not in component.get("paths", {})
+
+
+def test_no_skill_on_any_server_names_a_client_or_assumes_an_open_document():
+    """The test for any line: would it be wrong if the caller were Claude Desktop? A pull request body said it was
+    opened from one client, and three skills read from or guarded "the open message", "the workbook or document"."""
+    # the last alternative is a host tool's name (excel:read_range), not a word that stands before a colon
+    named = re.compile(r"mindrouter|task ?pane|\bthe pane\b|add-in|\bopen (message|document|workbook)\b|workbook or document|listed with this request|\b(excel|word|powerpoint|outlook):[a-z_]", re.I)
+    servers = Path(__file__).parent.parent / "ai4ra_mcp" / "servers"
+    for name in SERVERS:
+        for c in load_catalog(servers / name / "skills").get("components", []):
+            found = named.search(prompt_text(servers / name / "skills", c))
+            assert not found, f"{name}/{c['slug']} says {found.group(0)!r}"
+            assert not any(r.startswith(("excel:", "word:", "powerpoint:", "outlook:", "skill_")) for r in c.get("requires", [])), c["slug"]

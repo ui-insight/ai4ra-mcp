@@ -53,7 +53,7 @@
         "agent branch",
         "change the code"
       ],
-      "version": "0.1.0",
+      "version": "0.2.0",
       "category": "development",
       "domain": "general",
       "status": "experimental",
@@ -67,7 +67,7 @@
         {
           "type": "prompt",
           "path": "components/code-change/prompt.md",
-          "version": "0.1.0",
+          "version": "0.2.0",
           "role": "canonical_prompt"
         }
       ],
@@ -107,7 +107,7 @@
         "build failed",
         "rerun the failed jobs"
       ],
-      "version": "0.1.0",
+      "version": "0.1.1",
       "category": "review",
       "domain": "general",
       "status": "experimental",
@@ -121,7 +121,7 @@
         {
           "type": "prompt",
           "path": "components/actions-check/prompt.md",
-          "version": "0.1.0",
+          "version": "0.1.1",
           "role": "canonical_prompt"
         }
       ],

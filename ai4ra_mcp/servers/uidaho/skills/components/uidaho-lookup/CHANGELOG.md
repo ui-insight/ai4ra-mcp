@@ -29,3 +29,7 @@ Versions follow semver: MAJOR for output-contract breaks, MINOR for backward-com
 ## [0.5.1] — 2026-10-01
 
 - Wording follows the tools: a policy question starts with a chapter's listing, and a long policy is read one section at a time from its outline (#21).
+
+## [0.5.2] — 2026-10-02
+
+- Names no client: the answer is "in the reply", not "in the chat", and the guard against writing into a workbook or document is gone. It described one client's tools; a report-only skill says its answer is the reply and nothing more.

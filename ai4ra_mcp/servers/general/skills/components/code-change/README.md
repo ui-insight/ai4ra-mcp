@@ -2,11 +2,11 @@
 
 Makes a described change to a GitHub repository through the GitHub MCP server's tools, the safe way: read the files first, commit the whole changed files to a new `agent/<login>/<slug>` branch, open a pull request against the default branch, start the repository's checks (or a named workflow), and report the links. It never writes to main, never merges, never waits for checks and never commits a secret. Review and merge are the person's.
 
-**Version:** 0.1.0 · **Category:** development · **Status:** experimental · **Output:** reply
+**Version:** 0.2.0 · **Category:** development · **Status:** experimental · **Output:** reply
 
 ## Inputs
 
-The change, in the message or read from the open message, document or selection, and the repository as owner/name. Without the repository it stops and asks.
+The change, in the request, and the repository as owner/name. Without the repository it stops and asks.
 
 ## Outputs
 

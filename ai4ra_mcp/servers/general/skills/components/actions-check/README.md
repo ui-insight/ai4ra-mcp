@@ -2,7 +2,7 @@
 
 One look at a repository's workflow runs through the GitHub MCP server's tools: which ran, on which branch and commit, whether they passed, and for a failure the job, the step and the first real error from the failed jobs' logs. It takes a snapshot and stops; it never polls, never changes anything, and reruns or cancels a run only when the person asks for that by name.
 
-**Version:** 0.1.0 · **Category:** review · **Status:** experimental · **Output:** reply
+**Version:** 0.1.1 · **Category:** review · **Status:** experimental · **Output:** reply
 
 ## Inputs
 
