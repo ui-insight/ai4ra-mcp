@@ -6,7 +6,7 @@ Fetches the University of Idaho's current F&A and fringe rates from the rate agr
 
 ## Inputs
 
-The project's location (on-campus unless told otherwise) and type (organized research unless told otherwise).
+The project's location (on-campus unless told otherwise) and type (organized research unless told otherwise). As an MCP prompt it takes these optional arguments, appended to the text when given: `location`, `type`.
 
 ## Outputs
 

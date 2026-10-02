@@ -22,7 +22,7 @@
       "manifestations": [
         {"type": "prompt", "path": "components/funding-opportunity-finder/prompt.md", "version": "0.2.0", "role": "canonical_prompt"}
       ],
-      "contracts": {"output": {"format": "markdown_review", "scope": "repo_local", "schema_path": null}},
+      "contracts": {"input": {"arguments": [{"name": "topic", "description": "The research idea, field, target sponsor or program, or an opportunity number or title.", "required": false}, {"name": "constraints", "description": "Limits on what is wanted: sponsor, deadline window, award size, eligibility.", "required": false}]}, "output": {"format": "markdown_review", "scope": "repo_local", "schema_path": null}},
       "evaluation": {"case_count": 0, "report_count": 0, "last_fully_evaluated_version": null, "current_version_is_fully_evaluated": false},
       "requires": ["grants_gov_search", "grants_gov_opportunity", "fetch_document"]
     }

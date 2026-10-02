@@ -6,7 +6,7 @@ Assembles a named investigator's federal research support from NIH RePORTER and 
 
 ## Inputs
 
-A person's name; optionally their institution, the years wanted, or one sponsor only.
+A person's name; optionally their institution, the years wanted, or one sponsor only. As an MCP prompt it takes these optional arguments, appended to the text when given: `person`, `institution`, `years`, `sponsor`.
 
 The skill needs the nih server's tools at run time (`nih_index`, `nih_projects_search`, `nih_project`) and the nsf server's (`nsf_awards_search`, `nsf_award`).
 

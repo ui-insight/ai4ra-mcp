@@ -6,7 +6,7 @@ Makes a described change to a GitHub repository through the GitHub MCP server's 
 
 ## Inputs
 
-The change, in the request, and the repository as owner/name. Without the repository it stops and asks.
+The change, in the request, and the repository as owner/name. Without the repository it stops and asks. As an MCP prompt it takes these optional arguments, appended to the text when given: `repository`, `change`.
 
 ## Outputs
 

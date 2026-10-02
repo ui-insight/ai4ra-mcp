@@ -63,7 +63,7 @@ def with_arguments(text: str, declared: list[dict], given: dict) -> str:
     for arg in declared:
         value = str(given.get(arg["name"]) or "").strip()
         if value:
-            text += f"\n\nThe {arg['name']}:\n{value}"
+            text += f"\n\nThe {arg['name'].replace('_', ' ')}:\n{value}"
     return text
 
 

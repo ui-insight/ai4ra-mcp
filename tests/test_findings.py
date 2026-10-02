@@ -92,9 +92,3 @@ async def test_a_check_takes_its_passage_as_a_prompt_argument_and_is_served_unch
     dated = (await SERVERS["ecfr"].get_prompt("cfr-check", {"passage": "P.", "date": "2024-06-01"})).messages[0].content.text
     assert dated.endswith("The passage:\nP.\n\nThe date:\n2024-06-01")
 
-
-async def test_a_skill_with_no_declared_input_takes_no_arguments():
-    for server in ("uidaho", "ai4ra"):
-        for p in await SERVERS[server].list_prompts():
-            if p.name not in ("policy-check",):
-                assert not p.arguments, p.name

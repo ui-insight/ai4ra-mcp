@@ -6,7 +6,7 @@ Turns a project idea, topic, sponsor or opportunity number into a short ranked l
 
 ## Inputs
 
-A few words to a paragraph describing the research idea, field, target sponsor or program, or an opportunity number or title; optional constraints on sponsor, deadline, award size or eligibility.
+A few words to a paragraph describing the research idea, field, target sponsor or program, or an opportunity number or title; optional constraints on sponsor, deadline, award size or eligibility. As an MCP prompt it takes these optional arguments, appended to the text when given: `topic`, `constraints`.
 
 The skill needs the grants server's two tools at run time, `grants_gov_search` (keyword, status, agency and category filters, paging) and `grants_gov_opportunity` (one record by id with its attachment links), and `fetch_document` on the ai4ra server to read an attachment.
 

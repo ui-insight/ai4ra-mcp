@@ -57,6 +57,45 @@ async def test_every_catalogued_skill_is_a_prompt(name):
     assert prompts == slugs
 
 
+@pytest.mark.parametrize("name", list(EXPECTED_TOOLS))
+async def test_a_prompt_s_arguments_are_the_ones_its_catalog_entry_declares(name):
+    """A skill that takes something short from its caller declares it (contracts.input.arguments) and a client that
+    shows a prompt as a form asks for it; a value given follows the text under its name. Every argument is optional,
+    so a prompt fetched with none is the skill's text as the guide tool and the static file serve it; a guide, which
+    is reference a caller reads as data, takes none (#28, #29)."""
+    from ai4ra_mcp.common.skills import guide_get, prompt_arguments
+    skills = Path(uidaho.__file__).parent.parent / name / "skills"
+    listed = {p.name: p for p in await SERVERS[name].list_prompts()}
+    for c in load_catalog(skills).get("components", []):
+        declared = prompt_arguments(c)
+        assert [(a.name, a.description, a.required) for a in listed[c["slug"]].arguments or []] == [(a["name"], a["description"], False) for a in declared], c["slug"]
+        assert all(a["description"] and a["required"] is False for a in declared), c["slug"]
+        if c.get("category") == "guide":
+            assert not declared, c["slug"]
+        text = guide_get(skills, c["slug"])["guide"]
+        assert (await SERVERS[name].get_prompt(c["slug"], None)).messages[0].content.text == text, c["slug"]
+        if declared:
+            given = {a["name"]: f"value of {a['name']}" for a in declared}
+            filled = (await SERVERS[name].get_prompt(c["slug"], given)).messages[0].content.text
+            assert filled == text + "".join(f"\n\nThe {a['name'].replace('_', ' ')}:\nvalue of {a['name']}" for a in declared), c["slug"]
+
+
+async def test_the_skills_with_a_short_input_declare_it():
+    took = {}
+    for name in SERVERS:
+        for p in await SERVERS[name].list_prompts():
+            if p.arguments:
+                took[f"{name}/{p.name}"] = [a.name for a in p.arguments]
+    assert took == {
+        "ecfr/cfr-check": ["passage", "date"], "uidaho/policy-check": ["passage"],
+        "nih/funding-history": ["person", "institution", "years", "sponsor"], "sam/subrecipient-check": ["entity", "award"],
+        "grants/funding-opportunity-finder": ["topic", "constraints"], "lakehouse/lakehouse-answer": ["question"],
+        "uidaho/uidaho-lookup": ["question", "location"], "uidaho/uidaho-rates": ["location", "type"],
+        "general/actions-check": ["repository", "branch", "pull_request", "workflow", "run"], "general/code-change": ["repository", "change"],
+        "ai4ra/sponsor-doc-defaults-udm": ["sponsor", "division"],
+    }
+
+
 def test_app_mounts_every_server_and_its_skills():
     with TestClient(build_app()) as client:
         index = client.get("/").json()

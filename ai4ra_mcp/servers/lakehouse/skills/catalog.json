@@ -33,6 +33,15 @@
         }
       ],
       "contracts": {
+        "input": {
+          "arguments": [
+            {
+              "name": "question",
+              "description": "The question, with any names, numbers or years that narrow it.",
+              "required": false
+            }
+          ]
+        },
         "output": {
           "format": "markdown_review",
           "scope": "repo_local",

@@ -72,6 +72,20 @@
         }
       ],
       "contracts": {
+        "input": {
+          "arguments": [
+            {
+              "name": "repository",
+              "description": "The repository, as owner/name.",
+              "required": false
+            },
+            {
+              "name": "change",
+              "description": "The change wanted: which behaviour or text changes, and what must not.",
+              "required": false
+            }
+          ]
+        },
         "output": {
           "format": "reply",
           "scope": "repo_local",
@@ -126,6 +140,35 @@
         }
       ],
       "contracts": {
+        "input": {
+          "arguments": [
+            {
+              "name": "repository",
+              "description": "The repository, as owner/name.",
+              "required": false
+            },
+            {
+              "name": "branch",
+              "description": "A branch to look at. Leave empty for the default branch.",
+              "required": false
+            },
+            {
+              "name": "pull_request",
+              "description": "A pull request number, to look at its branch's runs.",
+              "required": false
+            },
+            {
+              "name": "workflow",
+              "description": "A workflow's name, to look at its runs only.",
+              "required": false
+            },
+            {
+              "name": "run",
+              "description": "A run id, to look at that run only.",
+              "required": false
+            }
+          ]
+        },
         "output": {
           "format": "reply",
           "scope": "repo_local",

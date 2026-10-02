@@ -35,6 +35,20 @@
         }
       ],
       "contracts": {
+        "input": {
+          "arguments": [
+            {
+              "name": "question",
+              "description": "The question or topic, such as the F&A rate, fringe for a postdoc, or what APM 45.07 says.",
+              "required": false
+            },
+            {
+              "name": "location",
+              "description": "On-campus or off-campus, when a rate depends on it.",
+              "required": false
+            }
+          ]
+        },
         "output": {
           "format": "markdown_review",
           "scope": "repo_local",
@@ -83,6 +97,20 @@
         }
       ],
       "contracts": {
+        "input": {
+          "arguments": [
+            {
+              "name": "location",
+              "description": "On-campus or off-campus. Leave empty for on-campus.",
+              "required": false
+            },
+            {
+              "name": "type",
+              "description": "The project's type, such as organized research or instruction. Leave empty for organized research.",
+              "required": false
+            }
+          ]
+        },
         "output": {
           "format": null,
           "scope": "repo_local",

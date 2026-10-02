@@ -1592,6 +1592,20 @@
         }
       ],
       "contracts": {
+        "input": {
+          "arguments": [
+            {
+              "name": "sponsor",
+              "description": "The sponsor's name, such as NSF or NIH.",
+              "required": false
+            },
+            {
+              "name": "division",
+              "description": "The division, directorate, institute or center, when it matters.",
+              "required": false
+            }
+          ]
+        },
         "output": {
           "format": "json_object",
           "scope": "repo_local_sponsor_defaults_contract",

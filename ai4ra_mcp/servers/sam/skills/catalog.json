@@ -34,6 +34,20 @@
         }
       ],
       "contracts": {
+        "input": {
+          "arguments": [
+            {
+              "name": "entity",
+              "description": "The entity's name, or its UEI.",
+              "required": false
+            },
+            {
+              "name": "award",
+              "description": "The award or program the entity would be under.",
+              "required": false
+            }
+          ]
+        },
         "output": {
           "format": "markdown_review",
           "scope": "repo_local",

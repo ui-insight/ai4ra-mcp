@@ -6,7 +6,7 @@ Checks a prospective subrecipient or vendor against SAM.gov (registration, exclu
 
 ## Inputs
 
-An entity's name or UEI; optionally the award or program it would be under.
+An entity's name or UEI; optionally the award or program it would be under. As an MCP prompt it takes these optional arguments, appended to the text when given: `entity`, `award`.
 
 The skill needs the sam server's tools at run time (`sam_index`, `sam_entity`, `sam_exclusions_search`) and the fac server's (`fac_audits_search`, `fac_findings`). Both servers need keys; a step whose server has none is reported as not checked.
 

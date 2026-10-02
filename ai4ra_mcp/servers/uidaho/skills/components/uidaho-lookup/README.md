@@ -6,7 +6,7 @@ Answers questions about the University of Idaho's sponsored-research facts (F&A 
 
 ## Inputs
 
-A question or topic; on- or off-campus.
+A question or topic; on- or off-campus. As an MCP prompt it takes these optional arguments, appended to the text when given: `question`, `location`.
 
 The skill needs the uidaho server's tools at run time: `uidaho_guidance_index`, `uidaho_guidance_search`, `uidaho_guidance_get` and `uidaho_rates`.
 

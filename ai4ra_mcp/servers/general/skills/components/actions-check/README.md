@@ -6,7 +6,7 @@ One look at a repository's workflow runs through the GitHub MCP server's tools: 
 
 ## Inputs
 
-The repository as owner/name; optionally a branch, a pull request number, a workflow name or a run id.
+The repository as owner/name; optionally a branch, a pull request number, a workflow name or a run id. As an MCP prompt it takes these optional arguments, appended to the text when given: `repository`, `branch`, `pull_request`, `workflow`, `run`.
 
 ## Outputs
 

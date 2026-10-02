@@ -6,7 +6,7 @@ Answers a question from the University of Idaho data lakehouse: discovers the st
 
 ## Inputs
 
-A question, with any names, numbers or years that narrow it.
+A question, with any names, numbers or years that narrow it. As an MCP prompt it takes one optional argument, appended to the text when given: `question`.
 
 ## Outputs
 
