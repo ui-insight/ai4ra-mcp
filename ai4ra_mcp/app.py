@@ -119,7 +119,7 @@ META: dict[str, dict] = {
 for _name, _client in lakehouse.CLIENT_OF.items():
     META[_name] = {"label": "Lakehouse" if len(lakehouse.CLIENT_OF) == 1 else f"Lakehouse ({_client})",
                    "description": f"The University of Idaho data lakehouse (Marina) as client {_client}: the streams it may query, their tables and columns, rows filtered or aggregated, and the files a stream may read. Read only.",
-                   "key": {"required": True, "hint": f"Paste the shared secret issued with the lakehouse client id {_client} by Research Computing and Data Services."}}
+                   "key": {"required": True, "hint": f"Paste the shared secret issued with the lakehouse client id {_client} by Research Computing and Data Services; or, to run as another client, its id, a colon and its secret (other-client:its-secret)."}}
 
 
 class BearerKeyMiddleware:

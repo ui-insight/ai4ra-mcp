@@ -252,6 +252,60 @@ def test_lakehouse_second_client_names():
     assert lakehouse.key_env(1, "OSP Reports") == "AI4RA_MCP_LAKEHOUSE_SECRET_OSP_REPORTS"
 
 
+def test_lakehouse_client_comes_from_the_bearer_or_defaults(monkeypatch):
+    """A bearer of `<client id>:<secret>` runs as that client (2026-10-02); a bare bearer is the mounted client's secret;
+    nothing sent falls back to the deployment's secret for the mounted client, and to no credentials at all."""
+    client = {"id": "mr-365", "key_env": "AI4RA_MCP_LAKEHOUSE_SECRET"}
+    monkeypatch.delenv("AI4RA_MCP_LAKEHOUSE_SECRET", raising=False)
+    assert lakehouse._creds(client) is None and lakehouse._client_id(client) == "mr-365"
+    monkeypatch.setenv("AI4RA_MCP_LAKEHOUSE_SECRET", "held")
+    assert lakehouse._creds(client) == ("mr-365", "held")
+    for sent, want in [("plain-secret", ("mr-365", "plain-secret")),
+                       ("osp-reports:their-secret", ("osp-reports", "their-secret")),
+                       ("OSP.Reports_2:a:b:c", ("OSP.Reports_2", "a:b:c")),
+                       (":no-id", ("mr-365", ":no-id")),
+                       ("has a space:x", ("mr-365", "has a space:x")),
+                       ("no-secret:", ("mr-365", "no-secret:"))]:
+        token = h.request_key.set(sent)
+        try:
+            assert lakehouse._creds(client) == want, sent
+            assert lakehouse._client_id(client) == want[0], sent
+        finally:
+            h.request_key.reset(token)
+
+
+async def test_lakehouse_bearer_client_is_the_one_minted_for(monkeypatch):
+    """The token is minted with HTTP Basic for the client the bearer names, not the mounted one."""
+    calls = []
+
+    class Resp:
+        def __init__(self, status, body=None, content=b"{}"):
+            self.status_code, self._body, self.content, self.headers, self.text = status, body, content, {}, ""
+        def json(self): return self._body
+
+    class Client:
+        def __init__(self, **kw): self.headers = kw.get("headers") or {}
+        async def __aenter__(self): return self
+        async def __aexit__(self, *a): return False
+        async def post(self, url, auth=None, data=None):
+            calls.append(("token", auth)); return Resp(200, {"access_token": "tok-2", "expires_in": 3600}, b"x")
+        async def request(self, method, url, params=None, json=None):
+            calls.append((method, self.headers.get("Authorization"))); return Resp(200, {"client_id": "osp-reports", "querying": [], "submitting": []}, b"x")
+
+    monkeypatch.setattr(lakehouse.httpx, "AsyncClient", Client)
+    lakehouse._tokens.clear()
+    monkeypatch.setenv("AI4RA_MCP_LAKEHOUSE_SECRET", "s3")
+    token = h.request_key.set("osp-reports:their-secret")
+    try:
+        out = await lakehouse.lakehouse_streams()
+        idx = await lakehouse.lakehouse_index()
+    finally:
+        h.request_key.reset(token)
+    assert out["client_id"] == "osp-reports"
+    assert calls[0] == ("token", ("osp-reports", "their-secret")) and calls[1][1] == "Bearer tok-2"
+    assert idx["client"] == "osp-reports" and idx["key"]["on_this_request"] is True
+
+
 def test_lakehouse_stream_names_read_marinas_key():
     """Marina lists a querying stream as {stream_name, enabled, table_count}: the overview read only name/stream and came back empty."""
     assert lakehouse._stream_names({"querying": [{"stream_name": "subaward", "enabled": True}, "awards", {"name": "x"}]}) == ["subaward", "awards", "x"]

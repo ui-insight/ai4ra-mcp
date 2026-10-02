@@ -263,7 +263,7 @@ deployment holds no secrets at all.
 | `bls` | optional | https://data.bls.gov/registrationEngine/ (free) | 25 queries a day per IP without one (v1, shared by everyone on the server), 500 with one (v2), plus longer spans and series titles | `registrationkey` in the POST body |
 | `pubmed` | optional | The settings page of an NCBI account, https://account.ncbi.nlm.nih.gov/settings/ (free) | 3 requests a second without one, shared; 10 with one | `api_key` query parameter |
 | `clickup` | required | ClickUp: click your avatar, Settings, Apps, Generate API Token (starts with `pk_`). It acts as you in every workspace you belong to, so a task it creates is created by you | 100 requests a minute per token | Raw in the `Authorization` header, the way ClickUp wants it (the server takes the bearer the client sent and re-sends it that way) |
-| `lakehouse` | required | The shared secret issued with the lakehouse client id (today `mr-365`) by Research Computing and Data Services. It is one client's secret, not a personal key, so its limits (100 requests a minute, 1,000 an hour) are shared by everyone who uses it | per client | Exchanged at Marina's `/auth/token` for an OAuth bearer, kept in memory until it expires |
+| `lakehouse` | required | The shared secret issued with the lakehouse client id (today `mr-365`) by Research Computing and Data Services; or another client's id, a colon and its secret (`other-client:its-secret`) to run as that client. It is one client's secret, not a personal key, so its limits (100 requests a minute, 1,000 an hour) are shared by everyone who uses it | per client | Exchanged at Marina's `/auth/token` for an OAuth bearer, kept in memory until it expires |
 
 One api.data.gov key works for `fac`, `regulations` and `perdiem` alike; a
 person pastes the same key into each of those three servers.
@@ -1069,6 +1069,18 @@ exchanged here for a Marina token that is kept in memory until it expires
 and never logged; `AI4RA_MCP_LAKEHOUSE_SECRET` is a deployment's fallback. It
 is one client's secret, not a personal key, so its rate limits (100 requests
 a minute, 1,000 an hour) are shared by everyone who uses it.
+
+The key may also name the client (2026-10-02). A bearer of the form
+`<client id>:<secret>` runs the request as that client of Marina's, with
+that secret, so a person authorized for another client uses the same fold
+with no deployment change; a bearer with no such prefix is the mounted
+client's secret, and a request with no bearer falls back to the deployment's
+secret for the mounted client, as before. The part before the first colon
+is taken as a client id only when it has the shape of one (letters, digits,
+dots, hyphens and underscores, up to 64), so a secret that happens to hold a
+colon is still read whole. Marina decides whether the pair is good; a wrong
+pair gets its refusal. `lakehouse_index` reports the client the request ran
+as, and so does every catalog answer.
 
 Marina authorizes a client for streams, and a secret belongs to one client,
 so each client is its own server here: its own path, its own fold in the

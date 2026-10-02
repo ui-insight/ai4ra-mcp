@@ -7,7 +7,9 @@ AI4RA_MCP_LAKEHOUSE_CLIENTS lists the client ids to mount, comma separated (defa
 mounted as `lakehouse`, the others as `lakehouse-<id>`. Every call needs an OAuth 2.0 bearer from /auth/token,
 minted with HTTP Basic (client id, secret): the secret the person's client sends as its bearer token, else
 AI4RA_MCP_LAKEHOUSE_SECRET (for the first client) or AI4RA_MCP_LAKEHOUSE_SECRET_<ID> (id upper-cased,
-non-alphanumerics as underscores). A token is kept until it expires and never logged. Read only: the querying
+non-alphanumerics as underscores). A person may run as another of Marina's clients without a deployment change
+(2026-10-02): a bearer of the form `<client id>:<secret>` names the client and its secret, and a bearer with no
+such prefix is the mounted client's secret. A token is kept until it expires and never logged. Read only: the querying
 streams' tables and files. The submitting streams are listed but not written to here, because a remote write
 runs behind no confirmation card.
 
@@ -35,7 +37,7 @@ from pydantic import Field
 from mcp.server.mcpserver import MCPServer
 
 from ai4ra_mcp.common import fetch as _fetch
-from ai4ra_mcp.common.http import HEADERS, TIMEOUT_S, api_key, missing_key
+from ai4ra_mcp.common.http import HEADERS, TIMEOUT_S, missing_key, request_key
 from ai4ra_mcp.common.skills import register_prompts
 
 _READ_ONLY = {"readOnlyHint": True, "destructiveHint": False, "idempotentHint": True, "openWorldHint": False}
@@ -62,7 +64,33 @@ def key_env(index: int, client_id: str) -> str:
 
 
 def key_how(client_id: str) -> str:
-    return f"The key is the shared secret issued with the lakehouse client id {client_id} by Research Computing and Data Services; it is not a personal key, so ask them for it."
+    return (f"The key is the shared secret issued with the lakehouse client id {client_id} by Research Computing and Data Services; it is not a personal key, so ask them for it. "
+            "To run as another client, the key is that client's id, a colon and its secret (other-client:its-secret).")
+
+
+# A client id as Marina issues them: letters, digits, dots, hyphens and underscores, no colon. A bearer whose part before
+# the first colon is one names the client to run as; a secret has no such shape before a colon.
+_CLIENT_ID = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$")
+
+
+def _creds(client: dict) -> tuple[str, str] | None:
+    """The client id and secret this request runs with: the bearer the person's client sent, as `<client id>:<secret>`
+    for another of Marina's clients or as the mounted client's secret alone; else the deployment's fallback secret for
+    the mounted client; else None."""
+    sent = (request_key.get() or "").strip()
+    if sent:
+        head, sep, tail = sent.partition(":")
+        if sep and _CLIENT_ID.match(head) and tail.strip():
+            return head, tail.strip()
+        return client["id"], sent
+    held = os.environ.get(client["key_env"], "").strip()
+    return (client["id"], held) if held else None
+
+
+def _client_id(client: dict) -> str:
+    """The client a request runs as, for the record: the one named in the bearer, else the mounted one."""
+    creds = _creds(client)
+    return creds[0] if creds else client["id"]
 
 
 def _hash(client_id: str, secret: str) -> str:
@@ -95,11 +123,12 @@ async def _token(client_id: str, secret: str) -> str:
 
 async def _call(client: dict, method: str, path: str, params: dict | None = None, payload: dict | None = None, raw: bool = False):
     """One authenticated request for a client. LookupError when no secret is on the request; ValueError for an upstream refusal."""
-    secret = api_key(client["key_env"])
-    if not secret:
+    creds = _creds(client)
+    if not creds:
         raise LookupError(client["key_env"])
+    cid, secret = creds
     for attempt in (1, 2):
-        token = await _token(client["id"], secret)
+        token = await _token(cid, secret)
         try:
             async with httpx.AsyncClient(timeout=TIMEOUT_S, headers={**HEADERS, "Authorization": f"Bearer {token}"}) as client_http:
                 resp = await client_http.request(method, f"{BASE}{path}", params=params, json=payload)
@@ -107,7 +136,7 @@ async def _call(client: dict, method: str, path: str, params: dict | None = None
             raise ValueError(f"the lakehouse gave no answer to {method} {path} within {TIMEOUT_S:.0f} seconds ({type(e).__name__}); "
                              "ask for less in one call") from e
         if resp.status_code == 401 and attempt == 1:
-            _tokens.pop(_hash(client["id"], secret), None)   # the token died early: mint another once
+            _tokens.pop(_hash(cid, secret), None)   # the token died early: mint another once
             continue
         break
     if resp.status_code >= 400:
@@ -290,9 +319,10 @@ async def _sql(client: dict, sql: str, budget_s: float | None = None) -> dict:
     """One statement through Marina's Trino endpoint: HTTP Basic (client id, bearer), text/plain body, nextUri followed
     until the state is terminal or the caps are hit (then the statement is cancelled). Marina's messages come back
     verbatim in the ValueError. LookupError when no secret is on the request."""
-    secret = api_key(client["key_env"])
-    if not secret:
+    creds = _creds(client)
+    if not creds:
         raise LookupError(client["key_env"])
+    cid, secret = creds
     budget = budget_s or SQL_TIMEOUT_S
     # Marina may run the whole statement before its first answer, so each HTTP exchange is allowed the statement's
     # budget (the shared 30-second TIMEOUT_S cut a slow count short with an empty message, before the budget was reached).
@@ -300,8 +330,8 @@ async def _sql(client: dict, sql: str, budget_s: float | None = None) -> dict:
     too_slow = (f"Marina gave no answer to the statement within {budget:.0f} seconds; it may still be running there. "
                 "Narrow it with a WHERE, put fewer tables in one statement, or for row counts read the stream's _stats table")
     for attempt in (1, 2):
-        token = await _token(client["id"], secret)
-        auth = (client["id"], token)
+        token = await _token(cid, secret)
+        auth = (cid, token)
         started = time.monotonic()
         columns: list = []
         rows: list = []
@@ -312,7 +342,7 @@ async def _sql(client: dict, sql: str, budget_s: float | None = None) -> dict:
             async with httpx.AsyncClient(timeout=http_timeout, headers=HEADERS) as http:
                 resp = await http.post(f"{BASE}/sql/v1/statement", content=sql.encode("utf-8"), headers={"Content-Type": "text/plain"}, auth=auth)
                 if resp.status_code == 401 and attempt == 1:
-                    _tokens.pop(_hash(client["id"], secret), None)   # the bearer died: mint another and send the statement again, once
+                    _tokens.pop(_hash(cid, secret), None)   # the bearer died: mint another and send the statement again, once
                     continue
                 if resp.status_code >= 400:
                     raise ValueError(_marina_message(resp))
@@ -346,7 +376,7 @@ async def _sql(client: dict, sql: str, budget_s: float | None = None) -> dict:
                         break
                     resp = await http.get(next_uri, auth=auth)
                     if resp.status_code == 401 and attempt == 1:
-                        _tokens.pop(_hash(client["id"], secret), None)
+                        _tokens.pop(_hash(cid, secret), None)
                         body = None
                         break
                     if resp.status_code >= 400:
@@ -489,8 +519,8 @@ def make_server(name: str, client_id: str, key_env_name: str) -> tuple[MCPServer
         """What the lakehouse server offers and how to use it: the client, the streams model, the tools in order, the rules. Read this first."""
         return {
             "upstream": f"{BASE} (Marina, the University of Idaho lakehouse API; campus only, reached by this server)",
-            "client": client["id"],
-            "key": {"on_this_request": bool(api_key(client["key_env"])), "per_user": "send this client's shared secret as a bearer token; the server holds none unless the deployment set " + client["key_env"],
+            "client": _client_id(client),
+            "key": {"on_this_request": bool(_creds(client)), "per_user": "send this client's shared secret as a bearer token, or another client's id, a colon and its secret to run as that client; the server holds none unless the deployment set " + client["key_env"],
                         "how": key_how(client["id"])},
             "model": "A client is an application identity authorized for streams; everyone using it sees the same views. A querying stream reads a set of tables through a wrapper view (columns masked and rows filtered as the admin set on the stream) and a set of files by tag. A submitting stream accepts records and files; those are listed here but not written to. In SQL, a stream is the schema lakehouse.\"<stream>\" and each table is in it under its own name.",
             "workflow": ["lakehouse_sql_catalog(): the streams this client sees with their sizes and the largest tables across them; (stream): that stream's tables by row count, or with like='%doc%' only the tables whose names match; (stream, table): every column with Marina's statistics (null_count, distinct_count, min, max, mean, true_count, rows_by_year and the rest, where measured). Read this before writing SQL; the conversation keeps it. counts=true scans only the tables Marina has not measured yet.",
@@ -707,7 +737,7 @@ def make_server(name: str, client_id: str, key_env_name: str) -> tuple[MCPServer
                     streams.append(entry)
                     largest.extend({"table": qualified(client["id"], st, t["name"]), "rows": t["row_count"]} for t in data if isinstance(t["row_count"], (int, float)))
                 largest.sort(key=lambda x: -x["rows"])
-                out = {"client": client["id"], "streams": streams, "largest_tables": largest[:LARGEST_TABLES], "metadata_tables": meta,
+                out = {"client": _client_id(client), "streams": streams, "largest_tables": largest[:LARGEST_TABLES], "metadata_tables": meta,
                        "stats_source": "marina", "next": "lakehouse_sql_catalog(stream) for one stream's tables; (stream, table) for a table's columns and statistics."}
                 if any(s["unmeasured"] for s in streams):
                     out["note"] = ("rows is null for a stream Marina has not finished measuring: rows_measured sums only its measured tables, and largest_tables "
@@ -729,7 +759,7 @@ def make_server(name: str, client_id: str, key_env_name: str) -> tuple[MCPServer
                     if c["stats"]:
                         col.update({k: v for k, v in c["stats"].items() if v is not None})
                     cols.append(col)
-                out = {"client": client["id"], "stream": stream, "table": hit["name"], "qualified": qualified(client["id"], stream, hit["name"]),
+                out = {"client": _client_id(client), "stream": stream, "table": hit["name"], "qualified": qualified(client["id"], stream, hit["name"]),
                        "description": hit["description"], "row_count": hit["row_count"], "columns": cols, "stats_source": "marina" if any(c["stats"] for c in hit["columns"]) else None}
                 if not cols:
                     # Marina's schema lists no columns for a table it has counted but not profiled: one row through /query names them.
@@ -759,7 +789,7 @@ def make_server(name: str, client_id: str, key_env_name: str) -> tuple[MCPServer
                 if inline:
                     r["column_list"] = [f"{c['name'] or ''} {c['type'] or ''}".strip() for c in t["columns"]]
                 rows.append(r)
-            out = {"client": client["id"], "stream": stream, "schema": schema_name(client["id"], stream), "tables": rows, "table_count": len(rows),
+            out = {"client": _client_id(client), "stream": stream, "schema": schema_name(client["id"], stream), "tables": rows, "table_count": len(rows),
                    **({"like": like, "stream_table_count": len([t for t in tables if not is_meta_table(t["name"])])} if like else {}),
                    "unmeasured": sum(1 for t in data if t["row_count"] is None), "stats_source": "marina" if any(t["row_count"] is not None and not t.get("counted_now") for t in data) else None,
                    "metadata_tables": [t["name"] for t in tables if is_meta_table(t["name"])],
