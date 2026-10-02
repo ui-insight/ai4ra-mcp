@@ -10,6 +10,15 @@ a guide at the moment the job comes up. `app.py` also serves the folder as
 static files, so a client that reads catalogs by URL gets the same components
 unchanged.
 
+A skill that works on something the caller supplies (a passage to check)
+declares it in its catalog entry, `contracts.input.arguments`, each with a
+name, a description and whether it is required. They become the MCP prompt's
+arguments, so a client that shows a prompt as a form asks for them, and a
+value given is appended to the prompt's text under its name ("The passage:").
+Only the prompt route takes them: the guide tool and the static file serve
+the skill's text as it is, for a client that supplies the input in its own
+message.
+
 A guide is a component that says what a correct result is in terms that name
 no client: no host, no tool names, no cells. What a client does with it is the
 client's (decided 2026-09-30).
@@ -17,11 +26,14 @@ client's (decided 2026-09-30).
 
 from __future__ import annotations
 
+import inspect
 import json
 import re
 from pathlib import Path
+from typing import Annotated
 
 from mcp.server.mcpserver import MCPServer
+from pydantic import Field
 
 _FRONT_MATTER = re.compile(r"\A---\n.*?\n---\n", re.S)
 _READ_ONLY = {"readOnlyHint": True, "destructiveHint": False, "idempotentHint": True, "openWorldHint": False}
@@ -39,6 +51,20 @@ def prompt_text(skills_dir: Path, component: dict) -> str:
     rel = component.get("paths", {}).get("prompt") or f"components/{component['slug']}/prompt.md"
     text = (skills_dir / rel).read_text(encoding="utf-8")
     return _FRONT_MATTER.sub("", text, count=1).strip()
+
+
+def prompt_arguments(component: dict) -> list[dict]:
+    """What a skill takes from its caller, as its catalog entry declares it: name, description, required."""
+    return list(component.get("contracts", {}).get("input", {}).get("arguments", []))
+
+
+def with_arguments(text: str, declared: list[dict], given: dict) -> str:
+    """The skill's text with each value that was given after it, under its name, in the order declared."""
+    for arg in declared:
+        value = str(given.get(arg["name"]) or "").strip()
+        if value:
+            text += f"\n\nThe {arg['name']}:\n{value}"
+    return text
 
 
 def guide_list(skills_dir: Path) -> list[dict]:
@@ -76,9 +102,17 @@ def register_prompts(server: MCPServer, skills_dir: Path) -> list[str]:
             continue
 
         def make(c=component):
-            def prompt() -> str:
-                return prompt_text(skills_dir, c)
+            declared = prompt_arguments(c)
+
+            def prompt(**given: str) -> str:
+                return with_arguments(prompt_text(skills_dir, c), declared, given)
             prompt.__name__ = c["slug"].replace("-", "_")
+            # the arguments the catalog declares, as the signature and annotations the prompt's form is read from
+            hints = {a["name"]: Annotated[str, Field(description=a.get("description", ""))] for a in declared}
+            prompt.__signature__ = inspect.Signature(
+                [inspect.Parameter(a["name"], inspect.Parameter.KEYWORD_ONLY, annotation=hints[a["name"]], **({} if a.get("required") else {"default": ""}))
+                 for a in declared], return_annotation=str)
+            prompt.__annotations__ = {**hints, "return": str}
             return prompt
 
         server.prompt(name=slug, description=summary)(make())

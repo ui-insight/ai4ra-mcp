@@ -65,3 +65,10 @@ From the first whole-document run on passages of 1,500 characters (run b860db9b;
 ## [0.11.0] — 2026-10-01
 
 - The last line of a finding is labelled `Suggested Fix:` in place of `Fix:` (#27), in the spirit of 0.10.0: the check surfaces candidates for a person to verify, so its last line is a suggestion to that person. The line's rule is unchanged: it opens with Add, Change or Remove, is one clause, and states no rule. A change to the form, and so a break for a client that reads the line by its label.
+
+## [0.12.0] — 2026-10-02
+
+From a review of whether a client other than the pane can run the check (#28).
+
+- The text no longer describes one client's limits. "A call refused because a round held too many is made in the next round" is gone: a client that refuses a call says what to do next itself, at that moment. The other two are general now: a sentence that could not be read for is left not checked, and the closing says what could not be read, with no mention of a limit.
+- As an MCP prompt the skill takes one optional argument, `passage`, so a client that shows a prompt as a form asks for it; a value given is appended to the text. They are declared in the catalog entry (`contracts.input.arguments`) and are on the prompt route only; the text served through the guide tool and as a file is unchanged by them.

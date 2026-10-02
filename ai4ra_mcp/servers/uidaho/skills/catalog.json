@@ -107,7 +107,7 @@
         "check against university policy",
         "policy check"
       ],
-      "version": "0.11.0",
+      "version": "0.12.0",
       "category": "review",
       "domain": "research-administration",
       "status": "experimental",
@@ -121,11 +121,20 @@
         {
           "type": "prompt",
           "path": "components/policy-check/prompt.md",
-          "version": "0.11.0",
+          "version": "0.12.0",
           "role": "canonical_prompt"
         }
       ],
       "contracts": {
+        "input": {
+          "arguments": [
+            {
+              "name": "passage",
+              "description": "The text to check: a passage of a document, pasted here. Leave empty if it is supplied beside the prompt.",
+              "required": false
+            }
+          ]
+        },
         "output": {
           "format": "findings",
           "scope": "repo_local",

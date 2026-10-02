@@ -24,7 +24,7 @@ import xml.etree.ElementTree as ET
 from datetime import datetime
 
 # Initialize the MCP server
-mcp = MCPServer("ecfr", instructions="Federal regulation from the eCFR. Read the ecfr_regulatory_index tool first; search with ecfr_search limited to a title and part, then read a section with ecfr_get_regulation; omit date for the current text, or give any earlier date for the text in force that day; always give title explicitly.")
+mcp = MCPServer("ecfr", instructions="Federal regulation from the eCFR. Start with ecfr_search limited to a title and part, then read a section it returned with ecfr_get_regulation; omit date for the current text, or give any earlier date for the text in force that day; always give title explicitly. ecfr_regulatory_index is reference, read when wanted and not before every call: agency slugs, starter citations, the day the eCFR is current to.")
 
 # Constants
 BASE_URL = "https://www.ecfr.gov/api"
@@ -585,9 +585,9 @@ async def regulatory_index() -> str:
 
 @mcp.tool(name="ecfr_regulatory_index", annotations={"readOnlyHint": True, "destructiveHint": False, "idempotentHint": True, "openWorldHint": True})
 async def ecfr_regulatory_index() -> str:
-    """
-    Compact API-derived metadata for Uniform Guidance and research administration.
-    READ THIS BEFORE CALLING TOOLS. Contains:
+    """Reference for a caller that does not know where to start: compact API-derived metadata for the Uniform Guidance and research administration.
+
+    Read it when wanted, not before every call: a question starts with ecfr_search. Contains:
       uniform_guidance — live Title 2 Part 200 metadata and latest_amendment_date
       starter_citations — section-level starting points for 2 CFR Part 200
       grants_relevant_agencies — agency slugs for search filtering

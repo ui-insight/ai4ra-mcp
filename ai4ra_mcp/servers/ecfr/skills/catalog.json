@@ -12,7 +12,7 @@
         "2 CFR 200",
         "Uniform Guidance"
       ],
-      "version": "0.11.0",
+      "version": "0.12.0",
       "category": "review",
       "domain": "research-administration",
       "status": "experimental",
@@ -26,11 +26,25 @@
         {
           "type": "prompt",
           "path": "components/cfr-check/prompt.md",
-          "version": "0.11.0",
+          "version": "0.12.0",
           "role": "canonical_prompt"
         }
       ],
       "contracts": {
+        "input": {
+          "arguments": [
+            {
+              "name": "passage",
+              "description": "The text to check: a passage of a document, pasted here. Leave empty if it is supplied beside the prompt.",
+              "required": false
+            },
+            {
+              "name": "date",
+              "description": "The day whose rules are wanted (YYYY-MM-DD). Leave empty for the current rules.",
+              "required": false
+            }
+          ]
+        },
         "output": {
           "format": "findings",
           "scope": "repo_local",

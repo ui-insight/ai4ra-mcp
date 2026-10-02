@@ -41,7 +41,10 @@ def test_every_check_writes_the_form():
         assert "Number the sentences" in text and "in one round of calls" in text and "stop reading and report" in text and "Before you report" in text
         assert "is left not checked" in text and "used only when it does" in text
         # at the scale of a whole page: only a numbered sentence is ever listed, a heading is not read with the one above it
-        assert "is never mentioned" in text and "found nothing against" in text and "is made in the next round" in text and "own outline" in text
+        assert "is never mentioned" in text and "found nothing against" in text and "own outline" in text
+        # no client's limits in the text: what a client refuses or cuts off it says itself, at that moment (#28)
+        assert "refused because" not in text and "limit on calls" not in text and "a limit stopped" not in text
+        assert "or that you could not read for, is left not checked" in text and "if there was something you could not read, one line saying what" in text
         # judgment: the clause on the sentence's own subject, which itself forbids, requires or conditions; no finding on
         # a general principle, or on a fact the sentence does not state (#20, #21, #22, #25)
         assert "forbids" in text and "does not show" in text and "speaks most directly" in text and "not by itself grounds for a finding" in text
@@ -71,3 +74,27 @@ def test_a_sentence_that_states_a_rate_is_never_listed_as_not_checked():
     text = next(t for _, c, t in checks() if c["slug"] == "policy-check")
     assert "it ends as a finding or as nothing" in text and "or one that states a rate or its base when the rate document was read" in text
     assert "A base is held to the agreement's own line" in text and "`uidaho_rates` is not called" in text
+
+
+async def test_a_check_takes_its_passage_as_a_prompt_argument_and_is_served_unchanged_as_a_guide():
+    """A client that shows a prompt as a form asks for the passage; one that reads the skill as a guide or a file
+    supplies the passage itself, and gets the text word for word (#28)."""
+    from ai4ra_mcp.common.skills import guide_get
+    wanted = {"cfr-check": ["passage", "date"], "policy-check": ["passage"]}
+    for server, c, text in checks():
+        listed = next(p for p in await SERVERS[server].list_prompts() if p.name == c["slug"])
+        assert [a.name for a in listed.arguments] == wanted[c["slug"]] and not any(a.required for a in listed.arguments)
+        assert all(a.description for a in listed.arguments)
+        bare = (await SERVERS[server].get_prompt(c["slug"], None)).messages[0].content.text
+        assert bare == text == guide_get(SERVERS_DIR / server / "skills", c["slug"])["guide"]
+        filled = (await SERVERS[server].get_prompt(c["slug"], {"passage": "Dr. Vale will charge three months.\n\nNo equipment is requested."})).messages[0].content.text
+        assert filled == text + "\n\nThe passage:\nDr. Vale will charge three months.\n\nNo equipment is requested."
+    dated = (await SERVERS["ecfr"].get_prompt("cfr-check", {"passage": "P.", "date": "2024-06-01"})).messages[0].content.text
+    assert dated.endswith("The passage:\nP.\n\nThe date:\n2024-06-01")
+
+
+async def test_a_skill_with_no_declared_input_takes_no_arguments():
+    for server in ("uidaho", "ai4ra"):
+        for p in await SERVERS[server].list_prompts():
+            if p.name not in ("policy-check",):
+                assert not p.arguments, p.name

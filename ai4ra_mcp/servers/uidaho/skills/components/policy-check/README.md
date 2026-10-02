@@ -2,11 +2,11 @@
 
 Checks a passage of a document against University of Idaho policy, the APM and the FSH, and against the university's F&A and fringe rates, as fetched from the university's policy pages and rate documents, and reports a finding for each sentence that disagrees with it. Report-only and client-neutral: the findings are in the reply. It is the university's sibling of `cfr-check` on the `ecfr` server and reports in the same form, so a client that runs both can put the two on one sentence together.
 
-**Version:** 0.11.0 · **Category:** review · **Status:** experimental · **Output:** findings
+**Version:** 0.12.0 · **Category:** review · **Status:** experimental · **Output:** findings
 
 ## Inputs
 
-A passage of text, however the client supplies it.
+A passage of text, however the client supplies it. As an MCP prompt it takes one optional argument, `passage`, appended to the text when given; fetched through `uidaho_guide` or as a file it is the text alone and the client supplies the passage.
 
 The skill needs `uidaho_guidance_index` (a chapter's policies with what each covers; its first call is the listing for APM 45), `uidaho_guidance_get` (one policy for each sentence that asserts something, and of a long policy only the section that speaks to it), and `uidaho_rates` for a sentence that states an F&A or fringe rate.
 

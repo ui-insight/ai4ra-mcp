@@ -277,3 +277,12 @@ async def test_a_section_of_middling_length_is_an_outline_when_it_has_subheading
     assert part["pinpoint"] == "2 CFR 200.313(e)" and part["returned_chars"] < 800 and not part["truncated"]
     whole = json.loads(await ecfr.ecfr_get_regulation(title=2, part="200", section="200.306"))
     assert 6000 < whole["total_chars"] < 12000 and not whole["truncated"] and "outline" not in whole
+
+
+async def test_the_server_tells_one_story_about_the_first_call():
+    """A question starts with a search; the index is reference, read when wanted (#28)."""
+    tools = {t.name: t.description for t in await ecfr.mcp.list_tools()}
+    assert "START HERE" in tools["ecfr_search"]
+    index = tools["ecfr_regulatory_index"]
+    assert "READ THIS" not in index and "not before every call" in index and index == index.lstrip() and index.splitlines()[0].startswith("Reference")
+    assert "Start with ecfr_search" in ecfr.mcp.instructions and "index tool first" not in ecfr.mcp.instructions and "reference" in ecfr.mcp.instructions
