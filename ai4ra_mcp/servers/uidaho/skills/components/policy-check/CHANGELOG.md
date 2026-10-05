@@ -72,3 +72,10 @@ From a review of whether a client other than the pane can run the check (#28).
 
 - The text no longer describes one client's limits. "A call refused because a round held too many is made in the next round" is gone: a client that refuses a call says what to do next itself, at that moment. The other two are general now: a sentence that could not be read for is left not checked, and the closing says what could not be read, with no mention of a limit.
 - As an MCP prompt the skill takes one optional argument, `passage`, so a client that shows a prompt as a form asks for it; a value given is appended to the text. They are declared in the catalog entry (`contracts.input.arguments`) and are on the prompt route only; the text served through the guide tool and as a file is unchanged by them.
+
+## [0.13.0] — 2026-10-05
+
+From a review of the `Suggested Fix:` line.
+
+- An Add names what the passage is to show and never says that it exists or was done. Where a clause requires prior approval and the passage is silent, the natural line was "Add a statement that prior approval was obtained": an instruction to write into the document a fact the check never saw. The check knows only that the passage does not show it.
+- An Add gives the two other ways out in the same line, in fixed words: `Add <what the passage is to show>, check with the Office of Sponsored Programs, or Remove the sentence`. The line had turned whatever the clause requires into an instruction to supply it, however unlikely that it can be supplied, and the check cannot know whether it can. It still does not judge that: it names what is missing, the office to ask and the removal, and leaves the choice to the person. A Change or a Remove is one clause, as before. The line still opens with Add, Change or Remove under the same label.

@@ -1,6 +1,6 @@
 ---
 name: policy-check
-version: 0.12.0
+version: 0.13.0
 category: review
 domain: research-administration
 status: experimental
@@ -8,7 +8,7 @@ tags: [compliance, university-of-idaho, policy, apm, fsh, review]
 audience: [research-administrators]
 owner: nlayman
 created: 2026-10-01
-updated: 2026-10-01
+updated: 2026-10-05
 ---
 
 # Check a Passage Against University of Idaho Policy — Prompt
@@ -49,5 +49,5 @@ Everything you say a policy requires comes from text you fetched in this turn, i
 
    - The first line is `finding.`, the same word for every finding, and the pinpoint of the clause you quote: the manual, the policy's number and the label of the paragraph quoted, as the policy writes them (an APM number has a dot, an FSH number has four digits; a label looks like D-4). For a section read by its offset, copy the `pinpoint` that read returned. For a rate it is the document and the place in it, `F&A rate agreement, Section I` or `Fringe rates, FY<year>`, and the link is the `url` the tool returned.
    - The third line is the quotation and its link, with nothing before it. The quotation is one sentence, clause or line of the fetched text exactly as it stands: nothing left out, nothing added, not several joined. A rate is quoted as the document's own line for it in one fiscal year, the year the pinpoint names.
-   - `Suggested Fix:` is a suggestion to the person who verifies the finding, and opens with Add, Change or Remove: Add when the passage does not show something the clause requires, Change or Remove when the sentence states something the clause does not allow. It is one clause, ends at the change, and asks for nothing the quoted clause does not call for. It gives no reason (no "since", no "because"), states no rule, cites nothing, and never says that something is or is not allowable.
+   - `Suggested Fix:` is a suggestion to the person who verifies the finding, and opens with Add, Change or Remove: Add when the passage does not show something the clause requires, Change or Remove when the sentence states something the clause does not allow. It ends at the change and asks for nothing the quoted clause does not call for. An Add names what the passage is to show (the prior approval, the documentation) and never says that it exists or was done (not "that prior approval was obtained"): you know only that the passage does not show it, not whether it exists or can be had. So an Add gives the two other ways out in the same line, in these words, and leaves the choice to the person: `Add <what the passage is to show>, check with the Office of Sponsored Programs, or Remove the sentence`. A Change or a Remove is one clause. It gives no reason (no "since", no "because"), states no rule, cites nothing, and never says that something is or is not allowable.
 9. **Close** in a few lines: the policies read, each with its "Last updated" date; the rate documents read, each with its date or fiscal year; one line for each numbered sentence not checked, in this form with nothing after it, `not checked: "<the sentence's words, copied exactly>"`, and never a sentence that has a finding, one that you checked and found nothing against, or one that states a rate or its base when the rate document was read; if there was something you could not read, one line saying what; and that federal regulation and sponsor terms were not read. A policy is listed as read only if you fetched its text, not because the index names it.

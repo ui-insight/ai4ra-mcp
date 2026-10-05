@@ -2,7 +2,7 @@
 
 Checks a passage of a document against 2 CFR 200, the Uniform Guidance, as fetched from the eCFR, and reports a finding for each sentence that disagrees with it. Report-only and client-neutral: the findings are in the reply, so the same check works in any MCP client; putting a finding on the document (a comment on its sentence, say) is a client's placement skill.
 
-**Version:** 0.12.0 · **Category:** review · **Status:** experimental · **Output:** findings
+**Version:** 0.13.0 · **Category:** review · **Status:** experimental · **Output:** findings
 
 ## Inputs
 
@@ -12,7 +12,7 @@ The skill needs `ecfr_search` (limited to title 2, part 200) and `ecfr_get_regul
 
 ## Outputs
 
-One finding per sentence that disagrees with the fetched text, in four lines: the word `finding.` with the pinpoint, the sentence's own words, one clause quoted from the fetched section with its link, and a `Suggested Fix:` line that opens with Add, Change or Remove. There is no verdict: the check surfaces what a person should look at, with the evidence beside it, and does not rule. A sentence draws a finding when it states something the quoted clause forbids, or when the clause conditions or requires something the passage does not show; the Suggested Fix line says which (Change or Remove, or Add). Then a closing: the date the rules were read as of, the sections fetched, one line for each sentence not checked, `not checked: "<its words>"`, and that institution policy and sponsor terms were not read. Two sentences of the passage that disagree with each other are not a finding: each is held to the regulation on its own.
+One finding per sentence that disagrees with the fetched text, in four lines: the word `finding.` with the pinpoint, the sentence's own words, one clause quoted from the fetched section with its link, and a `Suggested Fix:` line that opens with Add, Change or Remove. There is no verdict: the check surfaces what a person should look at, with the evidence beside it, and does not rule. A sentence draws a finding when it states something the quoted clause forbids, or when the clause conditions or requires something the passage does not show; the Suggested Fix line says which (Change or Remove, or Add). An Add names what the passage is to show and never says that it exists or was done, and gives the two other ways out in the same line (`Add <what the passage is to show>, check with your sponsored programs office, or Remove the sentence`): the check knows only that the passage does not show it, not whether it exists or can be had. Then a closing: the date the rules were read as of, the sections fetched, one line for each sentence not checked, `not checked: "<its words>"`, and that institution policy and sponsor terms were not read. Two sentences of the passage that disagree with each other are not a finding: each is held to the regulation on its own.
 
 ## The form is a contract
 

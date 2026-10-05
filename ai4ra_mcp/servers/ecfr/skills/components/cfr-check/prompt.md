@@ -1,6 +1,6 @@
 ---
 name: cfr-check
-version: 0.12.0
+version: 0.13.0
 category: review
 domain: research-administration
 status: experimental
@@ -8,7 +8,7 @@ tags: [compliance, ecfr, 2-cfr-200, uniform-guidance, review]
 audience: [research-administrators]
 owner: nlayman
 created: 2026-10-01
-updated: 2026-10-01
+updated: 2026-10-05
 ---
 
 # Check a Passage Against 2 CFR 200 — Prompt
@@ -48,5 +48,5 @@ Everything you say the regulation requires comes from text you fetched in this t
 
    - The first line is `finding.`, the same word for every finding, and the pinpoint of the clause you quote. For a part read by its offset, copy the `pinpoint` that read returned, and add the label of a paragraph below it when the quoted words stand under one. For a section that came whole, build it from the labels that stand in front of the quoted words, reading back from them to the nearest (a), (1), (i).
    - The third line is the quotation and its link, with nothing before it. The quotation is one sentence, clause or line of the fetched text exactly as it stands: nothing left out, nothing added, not several joined.
-   - `Suggested Fix:` is a suggestion to the person who verifies the finding, and opens with Add, Change or Remove: Add when the passage does not show something the clause requires, Change or Remove when the sentence states something the clause does not allow. It is one clause, ends at the change, and asks for nothing the quoted clause does not call for. It gives no reason (no "since", no "because"), states no rule, cites nothing, and never says that something is or is not allowable.
+   - `Suggested Fix:` is a suggestion to the person who verifies the finding, and opens with Add, Change or Remove: Add when the passage does not show something the clause requires, Change or Remove when the sentence states something the clause does not allow. It ends at the change and asks for nothing the quoted clause does not call for. An Add names what the passage is to show (the prior approval, the documentation) and never says that it exists or was done (not "that prior approval was obtained"): you know only that the passage does not show it, not whether it exists or can be had. So an Add gives the two other ways out in the same line, in these words, and leaves the choice to the person: `Add <what the passage is to show>, check with your sponsored programs office, or Remove the sentence`. A Change or a Remove is one clause. It gives no reason (no "since", no "because"), states no rule, cites nothing, and never says that something is or is not allowable.
 8. **Close** in a few lines: the date the rules were read as of; the sections fetched; one line for each numbered sentence not checked, in this form with nothing after it, `not checked: "<the sentence's words, copied exactly>"`, and never a sentence that has a finding or one that you checked and found nothing against; if there was something you could not read, one line saying what; and that institution policy and sponsor terms were not read.

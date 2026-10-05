@@ -135,7 +135,7 @@
         "check against university policy",
         "policy check"
       ],
-      "version": "0.12.0",
+      "version": "0.13.0",
       "category": "review",
       "domain": "research-administration",
       "status": "experimental",
@@ -149,7 +149,7 @@
         {
           "type": "prompt",
           "path": "components/policy-check/prompt.md",
-          "version": "0.12.0",
+          "version": "0.13.0",
           "role": "canonical_prompt"
         }
       ],

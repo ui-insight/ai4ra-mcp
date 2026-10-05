@@ -2,7 +2,7 @@
 
 Checks a passage of a document against University of Idaho policy, the APM and the FSH, and against the university's F&A and fringe rates, as fetched from the university's policy pages and rate documents, and reports a finding for each sentence that disagrees with it. Report-only and client-neutral: the findings are in the reply. It is the university's sibling of `cfr-check` on the `ecfr` server and reports in the same form, so a client that runs both can put the two on one sentence together.
 
-**Version:** 0.12.0 · **Category:** review · **Status:** experimental · **Output:** findings
+**Version:** 0.13.0 · **Category:** review · **Status:** experimental · **Output:** findings
 
 ## Inputs
 
@@ -12,7 +12,7 @@ The skill needs `uidaho_guidance_index` (a chapter's policies with what each cov
 
 ## Outputs
 
-One finding per sentence that disagrees, in four lines: the word `finding.` with the policy's number and paragraph, the sentence's own words, one clause quoted from the fetched policy with its link and nothing before it, and a `Suggested Fix:` line. There is no verdict: the check surfaces what a person should look at and does not rule. A stated rate is compared with the rate agreement or the fringe-rate page: a figure the document gives for the class, type or location named, in any year shown, draws no finding, and one it gives in none is a finding; a base stated differently from the agreement's own line is one too. Once the rate document is read, a sentence that states a rate or its base is never listed as not checked. Then a closing: the policies and rate documents read with their dates, one line for each sentence not checked, `not checked: "<its words>"`, and that federal regulation and sponsor terms were not read. Two sentences of the passage that disagree with each other are not a finding, here or in the federal check: each is held to the source on its own.
+One finding per sentence that disagrees, in four lines: the word `finding.` with the policy's number and paragraph, the sentence's own words, one clause quoted from the fetched policy with its link and nothing before it, and a `Suggested Fix:` line. There is no verdict: the check surfaces what a person should look at and does not rule. An Add names what the passage is to show and never says that it exists or was done, and gives the two other ways out in the same line (`Add <what the passage is to show>, check with the Office of Sponsored Programs, or Remove the sentence`): the check knows only that the passage does not show it, not whether it exists or can be had. A stated rate is compared with the rate agreement or the fringe-rate page: a figure the document gives for the class, type or location named, in any year shown, draws no finding, and one it gives in none is a finding; a base stated differently from the agreement's own line is one too. Once the rate document is read, a sentence that states a rate or its base is never listed as not checked. Then a closing: the policies and rate documents read with their dates, one line for each sentence not checked, `not checked: "<its words>"`, and that federal regulation and sponsor terms were not read. Two sentences of the passage that disagree with each other are not a finding, here or in the federal check: each is held to the source on its own.
 
 ## The form is a contract
 

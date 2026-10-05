@@ -57,6 +57,13 @@ def test_every_check_writes_the_form():
         assert "`Suggested Fix:`" in text and not re.search(r"(?<!Suggested )Fix:", text)
         assert "exactly as it stands" in text and "opens with Add, Change or Remove" in text and "states no rule" in text and "is or is not allowable" in text
         assert "Add when the passage does not show something the clause requires" in text   # what the two verdicts carried (#26)
+        # an Add never has the document assert a fact the check did not see: it names what is to be shown
+        # nor does it take for granted that the thing can be had: an Add gives the other way out in the same line
+        assert "never says that it exists or was done" in text and "you know only that the passage does not show it" in text
+        # the office to ask is the institution's own on its server; a general server names no institution's office
+        office = {"ecfr": "your sponsored programs office", "uidaho": "the Office of Sponsored Programs"}[server]
+        assert f"`Add <what the passage is to show>, check with {office}, or Remove the sentence`" in text and "leaves the choice to the person" in text
+        assert server == "uidaho" or "Office of Sponsored Programs" not in text
         assert "copy the `pinpoint` that read returned" in text and NOT_CHECKED in text and "never a sentence that has a finding" in text
         assert not any(r.startswith(("excel:", "word:", "skill_")) for r in c["requires"])   # report-only: no client's tools
 
