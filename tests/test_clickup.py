@@ -166,9 +166,71 @@ async def test_workspace_reads_live_spaces_and_adds_archived_only_on_request(mon
 
 async def test_writes_are_off_unless_the_deployment_turns_them_on():
     names = {t.name for t in await c.mcp.list_tools()}
-    reads = {"clickup_index", "clickup_whoami", "clickup_tasks_search", "clickup_workspace", "clickup_tasks", "clickup_task"}
-    writes = {"clickup_task_create", "clickup_task_update", "clickup_task_comment", "clickup_task_attach"}
+    reads = {"clickup_index", "clickup_whoami", "clickup_tasks_search", "clickup_workspace", "clickup_tasks", "clickup_task", "clickup_list_fields"}
+    writes = {"clickup_task_create", "clickup_task_update", "clickup_task_comment", "clickup_task_attach", "clickup_task_field_set"}
     assert reads <= names
     assert (writes <= names) if c.WRITES_ON else not (writes & names)
     idx = await c.clickup_index()
     assert idx["writes"] is c.WRITES_ON
+
+
+FIELDS = [{"id": "f-sens", "name": "Data Sensitivity", "type": "drop_down", "required": False,
+           "type_config": {"options": [{"id": "o-1", "name": "Public", "orderindex": 0}, {"id": "o-2", "name": "FERPA", "orderindex": 1}]}},
+          {"id": "f-note", "name": "Reviewer note", "type": "short_text", "type_config": {}},
+          {"id": "f-date", "name": "Reviewed on", "type": "date", "type_config": {}}]
+
+
+async def test_search_filters_by_tag(monkeypatch):
+    monkeypatch.setenv(c.KEY_ENV, "pk_123")
+    seen = {}
+
+    async def fake_request(method, url, key, params=None, json=None, files=None):
+        if url.endswith("/user"):
+            return {"user": {"id": 95185155}}
+        if url.endswith("/team"):
+            return {"teams": [{"id": "9017952524", "name": "University of Idaho", "members": []}]}
+        seen.update(params)
+        return {"tasks": [TASK]}
+
+    monkeypatch.setattr(c, "_request", fake_request)
+    c._cache._d.clear()
+    out = await c.clickup_tasks_search(tags=["feature", " roadmap "])
+    assert seen["tags[]"] == ["feature", "roadmap"] and out["returned"] == 1
+
+
+async def test_list_fields_slims_definitions_with_options(monkeypatch):
+    monkeypatch.setenv(c.KEY_ENV, "pk_123")
+    seen = {}
+
+    async def fake_request(method, url, key, params=None, json=None, files=None):
+        seen.update(method=method, url=url)
+        return {"fields": FIELDS}
+
+    monkeypatch.setattr(c, "_request", fake_request)
+    out = await c.clickup_list_fields("901")
+    assert seen["method"] == "GET" and seen["url"].endswith("/list/901/field")
+    assert [f["name"] for f in out["fields"]] == ["Data Sensitivity", "Reviewer note", "Reviewed on"]
+    assert out["fields"][0]["options"] == [{"id": "o-1", "name": "Public"}, {"id": "o-2", "name": "FERPA"}] and "options" not in out["fields"][1]
+    assert "list_id is required" in (await c.clickup_list_fields(""))["error"]
+
+
+async def test_field_set_resolves_the_field_and_option_by_name(monkeypatch):
+    monkeypatch.setenv(c.KEY_ENV, "pk_123")
+    posts = []
+
+    async def fake_request(method, url, key, params=None, json=None, files=None):
+        if method == "GET":
+            return {**TASK, "custom_fields": FIELDS}
+        posts.append((url.split("/api/v2/")[1], json))
+        return {}
+
+    monkeypatch.setattr(c, "_request", fake_request)
+    out = await c.clickup_task_field_set("86czq1abc", "data sensitivity", "ferpa")
+    assert posts == [("task/86czq1abc/field/f-sens", {"value": "o-2"})] and out["ok"] is True and out["value"] == "FERPA" and out["field"]["id"] == "f-sens"
+    out = await c.clickup_task_field_set("86czq1abc", "f-note", "checked by Blair")
+    assert posts[-1] == ("task/86czq1abc/field/f-note", {"value": "checked by Blair"}) and out["value"] == "checked by Blair"
+    assert "no option 'secret'" in (await c.clickup_task_field_set("86czq1abc", "Data Sensitivity", "secret"))["error"]
+    assert "no field 'Owner'" in (await c.clickup_task_field_set("86czq1abc", "Owner", "x"))["error"]
+    assert "date field" in (await c.clickup_task_field_set("86czq1abc", "Reviewed on", "2026-10-07"))["error"]
+    assert "never clears" in (await c.clickup_task_field_set("86czq1abc", "Data Sensitivity", ""))["error"]
+    assert len(posts) == 2

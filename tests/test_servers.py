@@ -90,7 +90,7 @@ async def test_the_skills_with_a_short_input_declare_it():
         "ecfr/cfr-check": ["passage", "date"], "uidaho/policy-check": ["passage"],
         "nih/funding-history": ["person", "institution", "years", "sponsor"], "sam/subrecipient-check": ["entity", "award"],
         "grants/funding-opportunity-finder": ["topic", "constraints"], "lakehouse/lakehouse-answer": ["question"],
-        "uidaho/uidaho-lookup": ["question", "location"], "uidaho/uidaho-rates": ["location", "type"],
+        "uidaho/uidaho-lookup": ["question", "location"], "uidaho/uidaho-rates": ["location", "type"], "uidaho/feature-prd-interview": ["feature"],
         "general/actions-check": ["repository", "branch", "pull_request", "workflow", "run"], "general/code-change": ["repository", "change"],
         "ai4ra/sponsor-doc-defaults-udm": ["sponsor", "division"],
     }

@@ -96,7 +96,7 @@ works without one and a key raises its quota.
 
 | Path | Upstream | Key | Tools | Skills |
 |---|---|---|---|---|
-| `/clickup/mcp` | ClickUp, as the person | **required** (ClickUp personal API token) | `clickup_index`, `clickup_whoami`, `clickup_tasks_search` (the whole workspace in one call: by assignee, status, space or list), `clickup_workspace`, `clickup_tasks`, `clickup_task`; with `AI4RA_MCP_CLICKUP_WRITES=1` also `clickup_task_create`, `clickup_task_update`, `clickup_task_comment`, `clickup_task_attach` (off by default: read only) | none yet (the skill that files a piece of mail into a project goes here) |
+| `/clickup/mcp` | ClickUp, as the person | **required** (ClickUp personal API token) | `clickup_index`, `clickup_whoami`, `clickup_tasks_search` (the whole workspace in one call: by assignee, status, space, list or tag), `clickup_workspace`, `clickup_tasks`, `clickup_task`, `clickup_list_fields` (a list's custom fields with a drop-down's options); with `AI4RA_MCP_CLICKUP_WRITES=1` also `clickup_task_create`, `clickup_task_update`, `clickup_task_comment`, `clickup_task_attach`, `clickup_task_field_set` (off by default: read only) | none yet (the skill that files a piece of mail into a project goes here; `feature-prd-interview` on `uidaho` writes through these tools) |
 
 GitHub is not a server here: GitHub's own remote MCP server takes a personal
 access token as a bearer, so the Office pane reaches it through a proxy block
@@ -110,7 +110,7 @@ REST API.
 
 | Path | Upstream | Key | Tools | Skills |
 |---|---|---|---|---|
-| `/uidaho/mcp` | uidaho.edu policy pages and rate documents | none | `uidaho_guide`, `uidaho_guidance_index`, `uidaho_guidance_search`, `uidaho_guidance_get`, `uidaho_rates` | `uidaho-lookup`, `uidaho-rates`, `policy-check` |
+| `/uidaho/mcp` | uidaho.edu policy pages and rate documents | none | `uidaho_guide`, `uidaho_guidance_index`, `uidaho_guidance_search`, `uidaho_guidance_get`, `uidaho_rates` | `uidaho-lookup`, `uidaho-rates`, `policy-check`, `feature-prd-interview` (with the `openera-feature-guide` guide; its writes go through the `clickup` server) |
 | `/lakehouse/mcp` (one per configured client; the others at `/lakehouse-<id>/mcp`) | the University of Idaho data lakehouse, through Marina | **required** (the client's shared secret) | `lakehouse_guide`, `lakehouse_index`, `lakehouse_sql_catalog`, `lakehouse_sql`, `lakehouse_streams`, `lakehouse_schema`, `lakehouse_query`, `lakehouse_files`, `lakehouse_file` | `lakehouse-answer` |
 
 Tool names carry their upstream (`ecfr_`, `grants_gov_`, `uidaho_`) and
@@ -1057,6 +1057,26 @@ current-pending-support, and pi-memo on ai4ra) were removed on 2026-09-30
 (#12): none of them worked, and all were Excel-bound, which under the
 server-and-client rule is client code; they are in git history.
 
+`feature-prd-interview` (#32, 2026-10-07) interviews a subject matter
+expert about one OpenERA feature and writes the definition into the
+feature's ClickUp task: thirteen headings, acceptance criteria in Gherkin
+read back in plain English, the AI first pass taken apart section by
+section, a blind second reviewer compared and reconciled when a feature has
+two assignees, and the finished criteria fingerprinted against the index
+task rather than against other features' documents. It never takes an
+attachment or the contents of a real record. It is cell 3 of the grid: no
+host tools, Idaho's own knowledge. Every fact of the work (the OpenERA
+list, the `feature` tag, the subtask names, the thirteen headings, the
+Basis tags, the index task, the Data Sensitivity field) is in the
+`openera-feature-guide` guide beside it, fetched first through
+`uidaho_guide`, so the skill's text names none of them and the guide is the
+one file that changes when the list or the index moves. Its ClickUp work is
+the `clickup` server's tools, named fully qualified
+(`clickup:clickup_task`), so a client needs both servers connected and the
+`clickup` deployment's writes on. It was converted from a `.skill` package
+written for claude.ai; its two reference files were methods, so they are
+sections of the prompt, since a guide is never a method.
+
 ### lakehouse
 
 The University of Idaho data lakehouse through Marina, its query and file
@@ -1194,8 +1214,9 @@ server's components without a name and returns one with a name, so a
 client that lists tools but not prompts still gets it and the model can
 fetch the guide at the moment the job comes up. The UDM conversion guide
 (`udm_guide`), the five proposal guides, the compliance-concerns
-vocabulary on `ai4ra` (`ai4ra_guide`) and the AI-tells guide on `general`
-(`general_guide`) are the guides so far.
+vocabulary on `ai4ra` (`ai4ra_guide`), the AI-tells guide on `general`
+(`general_guide`) and the OpenERA feature guide on `uidaho` (`uidaho_guide`)
+are the guides so far.
 
 A skill is a prompt with a contract: what it needs, what it produces, which
 tools it calls. Each lives in its server's `skills/components/<slug>/` as
@@ -1214,14 +1235,15 @@ Only the prompt route takes them. `<server>_guide` and the static file serve
 the skill's text as it is, for a client that supplies the input in its own
 message; a prompt fetched with no arguments is the same text (#28).
 
-Eleven skills declare arguments (#29): the two checks (`passage`, and
+Twelve skills declare arguments (#29): the two checks (`passage`, and
 `date` on `cfr-check`), `funding-history` (`person`, `institution`, `years`,
 `sponsor`), `subrecipient-check` (`entity`, `award`),
 `funding-opportunity-finder` (`topic`, `constraints`), `lakehouse-answer`
 (`question`), `uidaho-lookup` (`question`, `location`), `uidaho-rates`
 (`location`, `type`), `actions-check` (`repository`, `branch`,
-`pull_request`, `workflow`, `run`), `code-change` (`repository`, `change`)
-and `sponsor-doc-defaults-udm` (`sponsor`, `division`). Three rules:
+`pull_request`, `workflow`, `run`), `code-change` (`repository`, `change`),
+`sponsor-doc-defaults-udm` (`sponsor`, `division`) and
+`feature-prd-interview` (`feature`). Three rules:
 
 - **Every argument is optional.** A prompt fetched with none is refused by
   no client and returns the text it always did; each skill already says

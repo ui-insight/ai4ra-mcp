@@ -7,8 +7,8 @@ wants. The tools are mechanical: what a workspace holds, a task by id, tasks in 
 commented on, updated or given a file. Which project a piece of mail belongs in is a skill's judgment,
 not this server's. ClickUp allows 100 requests a minute per token.
 
-Writes are off unless the deployment sets AI4RA_MCP_CLICKUP_WRITES=1: then the create, update, comment and attach
-tools are registered too. Off, the model sees the read tools only and cannot change anything in ClickUp.
+Writes are off unless the deployment sets AI4RA_MCP_CLICKUP_WRITES=1: then the create, update, comment, attach and
+field-set tools are registered too. Off, the model sees the read tools only and cannot change anything in ClickUp.
 """
 
 from __future__ import annotations
@@ -38,7 +38,7 @@ _cache = TTLCache()
 
 mcp = MCPServer(
     "clickup",
-    instructions="ClickUp with the person's own token: who they are, their workspaces, spaces, folders and lists, tasks across the workspace or in a list or by id" + (", and a task created, updated, commented on or given a file" if WRITES_ON else "; read only in this deployment") + ". Needs a ClickUp personal API token. Read clickup_index first.",
+    instructions="ClickUp with the person's own token: who they are, their workspaces, spaces, folders and lists, tasks across the workspace or in a list or by id, a list's custom fields" + (", and a task created, updated, commented on, given a file or a field value" if WRITES_ON else "; read only in this deployment") + ". Needs a ClickUp personal API token. Read clickup_index first.",
 )
 
 
@@ -134,6 +134,15 @@ def slim_comment(c: dict) -> dict:
             "resolved": c.get("resolved")}
 
 
+def slim_field(f: dict) -> dict:
+    """A custom field's definition: id, name, type, whether required, and for a drop-down or labels field its options with their ids."""
+    out = {"id": f.get("id"), "name": f.get("name"), "type": f.get("type"), "required": bool(f.get("required"))}
+    options = ((f.get("type_config") or {}).get("options")) or []
+    if options:
+        out["options"] = [{"id": o.get("id"), "name": o.get("name") if o.get("name") is not None else o.get("label")} for o in options]
+    return out
+
+
 def _strip(s: str | None, name: str, max_len: int) -> str:
     v = str(s or "").strip()
     if len(v) > max_len:
@@ -174,8 +183,8 @@ async def clickup_index() -> dict:
         "workflow": ["Tasks assigned to the person, or anyone, across the whole workspace: ONE call to clickup_tasks_search (assignee 'me' by default; the workspace is found on its own when the person has one). Never walk the lists with clickup_tasks to find them.",
                      "clickup_whoami: who the token is and the workspaces it reaches (members=true for the people and their ids, needed only to assign)",
                      "clickup_workspace by workspace id: every space, folder and list with their ids, in one call, when the question is about where things live or which list to file into",
-                     "clickup_tasks by list id for one list's tasks; clickup_task by task id (with description, comments, attachments)",
-                     "clickup_task_create in a list; clickup_task_update to change status, name, description, dates or assignees; clickup_task_comment to add a note; clickup_task_attach to put a file on it" if WRITES_ON else
+                     "clickup_tasks by list id for one list's tasks; clickup_task by task id (with description, comments, attachments, subtasks); clickup_list_fields by list id for the custom fields its tasks can carry, with a drop-down's options",
+                     "clickup_task_create in a list (parent makes it a subtask); clickup_task_update to change status, name, description (replaced whole), dates or assignees; clickup_task_comment to add a note; clickup_task_attach to put a file on it; clickup_task_field_set to set a drop-down or text field" if WRITES_ON else
                      "Writes are off in this deployment: nothing in ClickUp can be created, changed, commented on or given a file from here. When the person asks for one, say so and give them the link to do it in ClickUp."],
         "writes": WRITES_ON,
         "notes": ["Ids are strings for lists and tasks and numbers for workspaces and people; use them as the tools return them.",
@@ -230,8 +239,8 @@ async def clickup_whoami(members: bool = False) -> dict:
 
 @mcp.tool(name="clickup_tasks_search", annotations=_READ_ONLY)
 async def clickup_tasks_search(workspace_id: str = "", assignee: str = "me", statuses: list[str] | None = None, space_ids: list[str] | None = None,
-                               list_ids: list[str] | None = None, include_closed: bool = False, contains: str = "", updated_since: str = "", page: int = 0) -> dict:
-    """Tasks across a whole workspace in one call, filtered by assignee (the person by default), status, space or list: id, name, status, priority, assignees, tags, dates, list and folder, link. Use this for "my tasks", "what is assigned to X", "everything open in space Y".
+                               list_ids: list[str] | None = None, tags: list[str] | None = None, include_closed: bool = False, contains: str = "", updated_since: str = "", page: int = 0) -> dict:
+    """Tasks across a whole workspace in one call, filtered by assignee (the person by default), status, space, list or tag: id, name, status, priority, assignees, tags, dates, list and folder, link. Use this for "my tasks", "what is assigned to X", "everything open in space Y", "my tasks tagged feature".
 
     Args:
         workspace_id: The workspace (team) id; left empty, the person's only workspace is used.
@@ -239,6 +248,7 @@ async def clickup_tasks_search(workspace_id: str = "", assignee: str = "me", sta
         statuses: Keep only these statuses, as the lists name them.
         space_ids: Keep only tasks in these spaces.
         list_ids: Keep only tasks in these lists.
+        tags: Keep only tasks carrying one of these tags, by name.
         include_closed: Include closed and done tasks (default false).
         contains: Keep only tasks whose name contains this text (applied to the page fetched).
         updated_since: ISO date or datetime; only tasks updated after it.
@@ -263,6 +273,8 @@ async def clickup_tasks_search(workspace_id: str = "", assignee: str = "me", sta
             params["space_ids[]"] = [str(x).strip() for x in space_ids if str(x).strip()]
         if list_ids:
             params["list_ids[]"] = [str(x).strip() for x in list_ids if str(x).strip()]
+        if tags:
+            params["tags[]"] = [str(x).strip() for x in tags if str(x).strip()]
         if str(updated_since or "").strip():
             params["date_updated_gt"] = _ms(updated_since)
         body = await _call("GET", f"team/{wid}/task", params)
@@ -376,6 +388,25 @@ async def clickup_task(task_id: str, comments: bool = True) -> dict:
     return out
 
 
+@mcp.tool(name="clickup_list_fields", annotations=_READ_ONLY)
+async def clickup_list_fields(list_id: str) -> dict:
+    """The custom fields a list's tasks can carry: each field's id, name and type, and for a drop-down its options with their ids. clickup_task shows a task's values but leaves an unset field out; this is where a field is found by name, and where the option ids clickup_task_field_set takes come from.
+
+    Args:
+        list_id: The list, from clickup_workspace or a task's list.
+    """
+    lid = str(list_id or "").strip()
+    if not lid:
+        return {"error": "list_id is required (see clickup_workspace)"}
+    try:
+        body = await _call("GET", f"list/{lid}/field")
+    except LookupError:
+        return missing_key(KEY_ENV, KEY_HOW)
+    except ValueError as e:
+        return _refused(e)
+    return {"list_id": lid, "fields": [slim_field(f) for f in (body or {}).get("fields") or []]}
+
+
 @_write_tool(name="clickup_task_create")
 async def clickup_task_create(list_id: str, name: str, description: str = "", assignees: list[int] | None = None, tags: list[str] | None = None,
                               priority: int = 0, due_date: str = "", start_date: str = "", status: str = "", parent: str = "") -> dict:
@@ -475,6 +506,50 @@ async def clickup_task_update(task_id: str, name: str = "", description: str = "
     except ValueError as e:
         return _refused(e)
     return {"ok": True, "changed": sorted(k for k in payload if not k.endswith("_time")), "task": slim_task(t or {}, full=False)}
+
+
+@_write_tool(name="clickup_task_field_set")
+async def clickup_task_field_set(task_id: str, field: str, value: str) -> dict:
+    """Set one custom field on a task: a drop-down to one of its options, or a text field to a string. The field is found on the task's list by id or name, and a drop-down's value by option name or id, so the option ids ClickUp wants never have to be typed. Other field types are refused.
+
+    Args:
+        task_id: The task id.
+        field: The field's id or its exact name (as clickup_list_fields shows it).
+        value: For a drop-down, an option's name or id; for a text field, the text.
+    """
+    tid = str(task_id or "").strip().lstrip("#")
+    want = str(field or "").strip()
+    val = str(value or "").strip()
+    try:
+        if not tid or not want:
+            raise ValueError("task_id and field are required")
+        if not val:
+            raise ValueError("value is required; this tool sets a field and never clears one")
+        t = await _call("GET", f"task/{tid}")
+        fields = (t or {}).get("custom_fields") or []
+        match = [f for f in fields if f.get("id") == want or str(f.get("name") or "").strip().lower() == want.lower()]
+        if not match:
+            raise ValueError(f"the task's list has no field {want!r}; its fields are " + ", ".join(sorted(str(f.get("name")) for f in fields)))
+        f = match[0]
+        kind = f.get("type")
+        if kind == "drop_down":
+            options = ((f.get("type_config") or {}).get("options")) or []
+            chosen = [o for o in options if o.get("id") == val or str(o.get("name") or "").strip().lower() == val.lower()]
+            if not chosen:
+                raise ValueError(f"{f.get('name')!r} has no option {val!r}; its options are " + ", ".join(str(o.get("name")) for o in options))
+            payload = {"value": chosen[0]["id"]}
+            shown = chosen[0].get("name")
+        elif kind in ("text", "short_text"):
+            payload = {"value": _strip(val, "value", MAX_TEXT)}
+            shown = payload["value"]
+        else:
+            raise ValueError(f"{f.get('name')!r} is a {kind} field; this tool sets drop-down and text fields only")
+        await _call("POST", f"task/{tid}/field/{f['id']}", json=payload)
+    except LookupError:
+        return missing_key(KEY_ENV, KEY_HOW)
+    except ValueError as e:
+        return _refused(e)
+    return {"ok": True, "task_id": tid, "field": {"id": f.get("id"), "name": f.get("name"), "type": kind}, "value": shown}
 
 
 @_write_tool(name="clickup_task_comment")

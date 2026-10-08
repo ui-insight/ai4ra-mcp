@@ -2,7 +2,7 @@
   "catalog_version": "1.0",
   "repo": "ui-insight/ai4ra-mcp",
   "server": "uidaho",
-  "note": "Skills that use the uidaho server's tools: the policy and rate lookups, the check of a passage against university policy, and the rates skill that fetches and reports the university's F&A and fringe rates with their sources. Same shape as AI4RA/prompt-library's component_catalog.json, hand-maintained. Writing the rates onto a sheet is a client's job (Idaho's mindrouter-365-aware server holds that skill).",
+  "note": "Skills that use the uidaho server's tools: the policy and rate lookups, the check of a passage against university policy, the rates skill that fetches and reports the university's F&A and fringe rates with their sources, and the OpenERA feature-definition interview with its guide (the interview writes to ClickUp through the clickup server's tools, so a client needs both). Same shape as AI4RA/prompt-library's component_catalog.json, hand-maintained. Writing the rates onto a sheet is a client's job (Idaho's mindrouter-365-aware server holds that skill).",
   "components": [
     {
       "slug": "uidaho-lookup",
@@ -180,6 +180,111 @@
         "uidaho_guidance_get",
         "uidaho_rates"
       ]
+    },
+    {
+      "slug": "feature-prd-interview",
+      "name": "feature-prd-interview",
+      "summary": "Interview a subject matter expert about one OpenERA feature and write the finished definition into the feature's ClickUp task: thirteen headings, acceptance criteria in Gherkin read back in plain English, the AI first pass taken apart section by section, a blind second reviewer compared and reconciled when there are two assignees, and the criteria fingerprinted against the index task. Never takes attachments or the contents of a real record. Its facts come from openera-feature-guide; its ClickUp work is the clickup server's tools, so a client needs both servers.",
+      "triggers": [
+        "fill out my feature task",
+        "define this feature",
+        "write acceptance criteria",
+        "spec out a feature",
+        "OpenERA feature",
+        "feature PRD",
+        "how this feature should work"
+      ],
+      "version": "0.1.0",
+      "category": "research",
+      "domain": "research-administration",
+      "status": "experimental",
+      "paths": {
+        "component_dir": "components/feature-prd-interview",
+        "readme": "components/feature-prd-interview/README.md",
+        "prompt": "components/feature-prd-interview/prompt.md",
+        "evals_dir": "components/feature-prd-interview/evals"
+      },
+      "manifestations": [
+        {
+          "type": "prompt",
+          "path": "components/feature-prd-interview/prompt.md",
+          "version": "0.1.0",
+          "role": "canonical_prompt"
+        }
+      ],
+      "contracts": {
+        "input": {
+          "arguments": [
+            {
+              "name": "feature",
+              "description": "The feature's roadmap ID or task name (such as A9). Leave empty to work the person's queue of feature tasks.",
+              "required": false
+            }
+          ]
+        },
+        "output": {
+          "format": "markdown",
+          "scope": "repo_local",
+          "schema_path": null
+        }
+      },
+      "evaluation": {
+        "case_count": 0,
+        "report_count": 0,
+        "last_fully_evaluated_version": null,
+        "current_version_is_fully_evaluated": false
+      },
+      "requires": [
+        "uidaho_guide",
+        "clickup_tasks_search",
+        "clickup_task",
+        "clickup_list_fields",
+        "clickup_task_create",
+        "clickup_task_update",
+        "clickup_task_field_set"
+      ]
+    },
+    {
+      "slug": "openera-feature-guide",
+      "name": "openera-feature-guide",
+      "summary": "The facts of the University of Idaho's OpenERA feature-definition work: the OpenERA list and the feature tag, the Roadmap status block and the AI first pass with its Basis tags, the pass and discrepancy subtask names and the markers inside a definition, the thirteen headings, the shape of an acceptance criterion, the data a definition never holds, the connected systems, the acceptance-criteria index task with its line forms and vocabulary, the Data Sensitivity field, and whose decision each thing is. Facts and reference only; the interview is the feature-prd-interview skill's.",
+      "triggers": [
+        "OpenERA feature guide",
+        "AC index",
+        "feature definition headings"
+      ],
+      "version": "0.1.0",
+      "category": "guide",
+      "domain": "research-administration",
+      "status": "experimental",
+      "paths": {
+        "component_dir": "components/openera-feature-guide",
+        "readme": "components/openera-feature-guide/README.md",
+        "prompt": "components/openera-feature-guide/prompt.md",
+        "evals_dir": "components/openera-feature-guide/evals"
+      },
+      "manifestations": [
+        {
+          "type": "prompt",
+          "path": "components/openera-feature-guide/prompt.md",
+          "version": "0.1.0",
+          "role": "canonical_prompt"
+        }
+      ],
+      "contracts": {
+        "output": {
+          "format": null,
+          "scope": "repo_local",
+          "schema_path": null
+        }
+      },
+      "evaluation": {
+        "case_count": 0,
+        "report_count": 0,
+        "last_fully_evaluated_version": null,
+        "current_version_is_fully_evaluated": false
+      },
+      "requires": []
     }
   ]
 }
