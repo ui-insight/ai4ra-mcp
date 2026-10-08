@@ -14,7 +14,10 @@ def test_prepare_sql_wraps_a_bare_select_and_leaves_the_rest_alone():
     assert lh.prepare_sql("SELECT a FROM t", 200) == "SELECT * FROM (SELECT a FROM t) AS q LIMIT 200"
     assert lh.prepare_sql("select a from t;", 9000) == "SELECT * FROM (select a from t) AS q LIMIT 500"
     assert lh.prepare_sql("WITH x AS (SELECT 1) SELECT * FROM x LIMIT 5", 200) == "WITH x AS (SELECT 1) SELECT * FROM x LIMIT 5"
-    assert lh.prepare_sql("SELECT a FROM t LIMIT 10 OFFSET 20", 200) == "SELECT a FROM t LIMIT 10 OFFSET 20"
+    assert lh.prepare_sql("SELECT a FROM t OFFSET 20 LIMIT 10", 200) == "SELECT a FROM t OFFSET 20 LIMIT 10"   # Trino's order: OFFSET, then LIMIT
+    assert lh.prepare_sql("SELECT a FROM t ORDER BY a OFFSET 20", 200) == "SELECT * FROM (SELECT a FROM t ORDER BY a OFFSET 20) AS q LIMIT 200"
+    # "LIMIT n OFFSET m" is not Trino's grammar; it is no longer taken as a finished statement, and Marina's message says so
+    assert lh.prepare_sql("SELECT a FROM t LIMIT 10 OFFSET 20", 200) == "SELECT * FROM (SELECT a FROM t LIMIT 10 OFFSET 20) AS q LIMIT 200"
     assert lh.prepare_sql('SHOW PROFILE IN lakehouse."subaward"', 200) == 'SHOW PROFILE IN lakehouse."subaward"'
     assert lh.prepare_sql('DESCRIBE lakehouse."subaward"."v"', 200).startswith("DESCRIBE")
     meta = 'SELECT * FROM lakehouse."subaward"."_stats"'

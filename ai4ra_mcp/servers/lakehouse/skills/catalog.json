@@ -7,14 +7,14 @@
     {
       "slug": "lakehouse-answer",
       "name": "lakehouse-answer",
-      "summary": "Answer a question from the University of Idaho data lakehouse: discover the streams this client may query and their tables, then read the filtered rows or the grouped aggregates that answer it, each figure with its stream, table, filters and date; nothing from memory.",
+      "summary": "Answer a question from the University of Idaho data lakehouse: discover the streams this client may query and their tables, then read the filtered rows or the grouped aggregates that answer it, each figure with its stream, table, filters and date; every value one a tool returned and rows shown as rows; nothing from memory.",
       "triggers": [
         "lakehouse",
         "from the lakehouse",
         "in the lakehouse",
         "query the lakehouse"
       ],
-      "version": "0.3.2",
+      "version": "0.4.0",
       "category": "research",
       "domain": "research-administration",
       "status": "experimental",
@@ -28,7 +28,7 @@
         {
           "type": "prompt",
           "path": "components/lakehouse-answer/prompt.md",
-          "version": "0.3.2",
+          "version": "0.4.0",
           "role": "canonical_prompt"
         }
       ],

@@ -2,6 +2,13 @@
 
 All notable changes to this component. Versions follow semver: MAJOR for output-contract breaks, MINOR for backward-compatible additions, PATCH for wording or clarity.
 
+## [0.4.0] — 2026-10-02
+
+- Nothing invented, with an out: every cell shown is a value a tool returned in this conversation; data not fetched is fetched, and a call that returns no rows is reported as "no rows returned" with the call, a failed one with Marina's message. A session asked to "show all columns" and was given five rows written from nowhere (emails, costs and ids that no result held).
+- Rows as rows: records down, fields across, in the tool's order, one table; never transposed unless asked. A wide table shortens long cells and names the columns shortened or left out. The same session was shown a table turned on its side, with one table per row.
+- "Head", "first rows", "sample" and the like are a small `lakehouse_query`, 5 rows unless a number is given, shown as rows; not the catalog's columns and statistics. Rows have no order unless ordered: `lakehouse_sql` with ORDER BY orders and pages them (Trino's OFFSET before LIMIT).
+- A masked or hashed value is shown as it is and said to be masked; why is not guessed.
+
 ## [0.3.0] — 2026-09-28
 
 - Step 3: a plain count is `aggregate` with no `group_by` (the tool now runs it as one SQL statement and returns one row), so the prompt's promise that COUNT on `*` counts every row holds.

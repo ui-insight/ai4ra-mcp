@@ -273,7 +273,9 @@ _REFUSED_FIRST_WORDS = ("INSERT", "UPDATE", "DELETE", "MERGE", "CREATE", "DROP",
                         "EXPLAIN", "PREPARE", "EXECUTE", "DEALLOCATE", "SET", "RESET", "START", "COMMIT", "ROLLBACK", "USE", "CALL",
                         "ANALYZE", "COMMENT", "REFRESH")
 _META_TABLE = re.compile(r'\."_[A-Za-z0-9_]*"|\._[A-Za-z0-9_]+\b')   # a "_stats"-style table: evaluated by the gateway, never wrapped
-_TRAILING_LIMIT = re.compile(r"\bLIMIT\s+(?:\d+|ALL)(?:\s+OFFSET\s+\d+)?\s*$", re.IGNORECASE)
+# A statement that already ends in Trino's own form, OFFSET (if any) and then LIMIT, is sent as it is. The earlier form
+# accepted "LIMIT n OFFSET m", which Trino's grammar refuses (OFFSET comes before LIMIT; 2026-10-02).
+_TRAILING_LIMIT = re.compile(r"(?:\bOFFSET\s+\d+(?:\s+ROWS?)?\s+)?\bLIMIT\s+(?:\d+|ALL)\s*$", re.IGNORECASE)
 
 
 def schema_name(client_id: str, stream: str) -> str:
