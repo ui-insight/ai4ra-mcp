@@ -2,7 +2,8 @@
 
     /<server>/mcp       the server's streamable-HTTP endpoint
     /<server>/skills/   its skills folder as static files (catalog.json, components/)
-    /                   a JSON index of what is mounted
+    /                   a JSON index of what is mounted, with one sentence for the whole
+    /README.md          this repository's README, the server's own account of itself
 
 Run every server with `ai4ra-mcp`, a subset with `--only NAME`, or one server
 over stdio with `--stdio NAME` for a local MCP client.
@@ -24,7 +25,7 @@ from mcp.server.transport_security import TransportSecuritySettings
 from starlette.applications import Starlette
 from starlette.middleware import Middleware
 from starlette.middleware.cors import CORSMiddleware
-from starlette.responses import JSONResponse
+from starlette.responses import FileResponse, JSONResponse
 from starlette.routing import Mount, Route
 from starlette.staticfiles import StaticFiles
 
@@ -154,6 +155,12 @@ def _transport_security() -> TransportSecuritySettings:
     return TransportSecuritySettings(enable_dns_rebinding_protection=False)
 
 
+README = Path(__file__).parent.parent / "README.md"
+# What the whole is, for a model reading the index for the first time; the search first, since a model that searches the web
+# for "MindRouter" finds an unrelated inference gateway and its single-provider search (#33).
+ABOUT = ("ai4ra-mcp: one process of MCP servers for research administration, each over one public upstream or one institution's own (the eCFR, grants.gov, NIH, NSF, SAM.gov, the University of Idaho's policies and lakehouse, the person's ClickUp), with guides and skills a model follows and no client's document tools. Its web_search is a SearXNG metasearch beside the process that merges Google, Bing, DuckDuckGo, Brave, Startpage and more under strict safe search and a server-side blocklist: not a single provider's search. The whole account is README.md at this index's root.")
+
+
 def build_app(only: list[str] | None = None) -> Starlette:
     names = only or list(SERVERS)
     unknown = [n for n in names if n not in SERVERS]
@@ -181,9 +188,13 @@ def build_app(only: list[str] | None = None) -> Starlette:
                         "mcp": f"{name}/mcp", "skills": f"{name}/skills/catalog.json", "skills_base": f"{name}/skills/",
                         "web": f"{WEB}{name}/skills/", "key": meta.get("key"),
                         "tools": [t.name for t in tools], "prompts": [p.name for p in prompts]})
-        return JSONResponse({"v": 1, "servers": out})
+        return JSONResponse({"v": 1, "description": ABOUT, "readme": "README.md", "servers": out})
+
+    async def readme(_request):
+        return FileResponse(README, media_type="text/markdown; charset=utf-8")
 
     routes.append(Route("/", index))
+    routes.append(Route("/README.md", readme))
 
     @asynccontextmanager
     async def lifespan(_app):

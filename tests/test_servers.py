@@ -100,6 +100,9 @@ def test_app_mounts_every_server_and_its_skills():
     with TestClient(build_app()) as client:
         index = client.get("/").json()
         assert index["v"] == 1
+        assert index["description"].startswith("ai4ra-mcp:") and "SearXNG metasearch" in index["description"] and index["readme"] == "README.md"
+        readme = client.get("/README.md")
+        assert readme.status_code == 200 and readme.headers["content-type"].startswith("text/markdown") and readme.text.startswith("# ai4ra-mcp")
         assert [s["name"] for s in index["servers"]] == list(SERVERS)
         by = {s["name"]: s for s in index["servers"]}
         assert by["sam"]["key"]["required"] is True and by["sam"]["key"]["hint"]

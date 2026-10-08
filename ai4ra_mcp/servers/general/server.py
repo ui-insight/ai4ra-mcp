@@ -30,7 +30,7 @@ _cache = TTLCache()
 
 mcp = MCPServer(
     "general",
-    instructions="General tools. web_search finds pages on the open web (titles, addresses, snippets); fetch_document reads a page or PDF as text, in pages. Search first, then read.",
+    instructions="General tools. web_search is this server's own SearXNG metasearch, merging Google, Bing, DuckDuckGo, Brave, Startpage and more under strict safe search and a server-side blocklist (not a single provider's search): pages on the open web as titles, addresses and snippets. fetch_document reads a page or PDF as text, in pages. Search first, then read.",
 )
 
 
