@@ -1677,3 +1677,9 @@ because its API refuses every caller.
 - [AI4RA/grants-gov-s2s-mock](https://github.com/AI4RA/grants-gov-s2s-mock):
   the Grants.gov S2S test surface hosted beside this process (see Hosting).
   OpenERA #1418.
+
+## License
+
+Copyright 2026 Nathan Layman.
+
+Licensed under the [Apache License, Version 2.0](LICENSE). The [NOTICE](NOTICE) file carries the author attribution. Under Section 4(d) of the license, anyone who redistributes this software or a derivative work must keep that attribution. To cite the project, use [CITATION.cff](CITATION.cff).
