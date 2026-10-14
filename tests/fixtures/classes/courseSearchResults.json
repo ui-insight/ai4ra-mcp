@@ -1,0 +1,105 @@
+{
+  "success": true,
+  "totalCount": 1,
+  "data": 
+  [
+    {
+      "id": 42729,
+      "termEffective": "202500",
+      "courseNumber": "1120",
+      "courseDisplay": "1120",
+      "subject": "CHEM",
+      "subjectCode": "CHEM",
+      "college": "Science",
+      "collegeCode": "19",
+      "department": "Chemistry",
+      "departmentCode": "007",
+      "courseTitle": "General Chemistry II",
+      "durationUnit": null,
+      "numberOfUnits": null,
+      "attributes": null,
+      "gradeModes": null,
+      "ceu": null,
+      "courseScheduleTypes": null,
+      "courseLevels": null,
+      "creditHourHigh": null,
+      "creditHourLow": 4,
+      "creditHourIndicator": null,
+      "lectureHourLow": null,
+      "lectureHourHigh": null,
+      "lectureHourIndicator": null,
+      "billHourLow": 4,
+      "billHourHigh": null,
+      "billHourIndicator": null,
+      "labHourLow": null,
+      "labHourHigh": null,
+      "labHourIndicator": null,
+      "otherHourLow": null,
+      "otherHourHigh": null,
+      "otherHourIndicator": null,
+      "description": null,
+      "subjectDescription": "Chemistry",
+      "courseDescription": "4 credits.\nContinuation of CHEM 1111. Some work in inorganic chemistry, kinetics, equilibrium, liqui",
+      "division": null,
+      "termStart": "202500",
+      "termEnd": "999999",
+      "preRequisiteCheckMethodCde": "B",
+      "anySections": null
+    }
+  ],
+  "pageOffset": 0,
+  "pageMaxSize": 5,
+  "coursesFetchedCount": 1,
+  "pathMode": "courseSearch",
+  "courseSearchResultsConfigs": 
+  [
+    {
+      "config": "courseTitle",
+      "display": "Title",
+      "title": "Title",
+      "required": true,
+      "width": "9%"
+    },
+    {
+      "config": "subjectDescription",
+      "display": "Subject Description",
+      "title": "Subject Description",
+      "required": false,
+      "width": "5%"
+    },
+    {
+      "config": "subject",
+      "display": "Subject",
+      "title": "Subject",
+      "required": false,
+      "width": "3%"
+    },
+    {
+      "config": "courseNumber",
+      "display": "Course Number",
+      "title": "Course Number",
+      "required": false,
+      "width": "3%"
+    },
+    {
+      "config": "creditHours",
+      "display": "Credits",
+      "title": "Credits",
+      "required": false,
+      "width": "3%"
+    },
+    {
+      "config": "courseDescription",
+      "display": "Description",
+      "title": "Description",
+      "required": false,
+      "width": "5%"
+    }
+  ],
+  "displaySettings": {
+    "enrollmentDisplay": "Y",
+    "waitlistDisplay": "Y",
+    "crossListDisplay": "Y"
+  },
+  "isPlanByCrnSetForTerm": false
+}

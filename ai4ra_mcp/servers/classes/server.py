@@ -1,8 +1,9 @@
-"""classes: the University of Idaho class schedule, from the registrar's public Browse Classes.
+"""classes: the University of Idaho class schedule and course catalog, from the registrar's public Browse Classes
+and Browse Course Catalog.
 
-Who teaches what, when and where, by term, subject, course number or instructor, and one section's catalog
-description, meetings, prerequisites and enrollment. The upstream is the schedule page's own interface
-(banner.py); every tool is a read and no key is taken. Results are cached ten minutes, the term list an hour.
+The schedule: who teaches what, when and where, by term, subject, course number or instructor, and one section in
+full. The catalog: courses by subject, number or title, and one course's record. The upstream is the pages' own
+interface (banner.py); every tool is a read and no key is taken. Results are cached ten minutes, the term list an hour.
 """
 
 from __future__ import annotations
@@ -25,13 +26,15 @@ _cache = TTLCache()
 CAVEATS = [
     "This is the schedule page's own internal interface, not a published API: a Banner upgrade can change a route without notice, and the only test is the live site. A tool whose route stops answering returns the HTTP status and the route.",
     "Instructors are matched by name, and Banner has no public lookup from a NetID or email. A name that matches several instructors comes back as a list to choose from, never guessed: pass one of the listed names in full. Each section lists its instructors' names and university emails, so a match can be confirmed against an email.",
-    "The schedule knows who teaches what, when and where, and each section's catalog description and prerequisites; it does not know degree requirements, who is enrolled, or anything behind a login.",
+    "The schedule knows who teaches what, when and where, and the catalog knows what a course is; neither knows degree requirements, who is enrolled, or anything behind a login.",
+    "The catalog and the schedule disagree at the edges: a course can be in the catalog with no sections this term, and a section can exist for a course whose catalog entry has ended. Each tool says which it read: classes_search and classes_section the schedule, classes_catalog and classes_course the catalog.",
+    "Course materials are not here: Banner's bookstore panel carries no materials, only the Day One Access link classes_section returns.",
     "With no term given, the newest term open to registration is searched: today's term until the next term's registration opens, then the next. Name the term when it matters.",
 ]
 
 mcp = MCPServer(
     "classes",
-    instructions="The University of Idaho class schedule from the registrar's public Browse Classes: sections by term, subject, course number or instructor name (classes_search), one section's description, meetings, prerequisites and enrollment (classes_section), the terms (classes_terms). No key. Read classes_index first.",
+    instructions="The University of Idaho class schedule and course catalog from the registrar's public Browse Classes and Browse Course Catalog: sections by term, subject, course number or instructor name (classes_search), one section in full (classes_section), courses by subject, number or keyword (classes_catalog), one course's catalog record (classes_course), the terms (classes_terms). No key. Read classes_index first.",
 )
 
 
@@ -97,13 +100,16 @@ def choose_instructor(fragment: str, matches: list[dict]) -> tuple[dict | None, 
 async def classes_index() -> dict:
     """How to use the class schedule tools. READ THIS FIRST: what the schedule knows, the current term, and what to make of an instructor match."""
     out = {
-        "upstream": f"The registrar's public Browse Classes (Banner Student Registration Self-Service) at {banner.BROWSE}, read through the page's own interface; no login, no key",
-        "workflow": ["classes_search with a subject ('BIOL'), a course number, or an instructor's name (a fragment, 'Miura'; a full name 'Miura, Tanya A.' when the fragment matched several), for the newest open term unless term says otherwise",
-                     "classes_section with the term and the CRN of one result for its catalog description, meeting pattern with rooms and dates, prerequisites and enrollment",
+        "upstream": f"The registrar's public Browse Classes at {banner.BROWSE} and Browse Course Catalog at {banner.CATALOG} (Banner Student Registration Self-Service), read through the pages' own interface; no login, no key",
+        "workflow": ["classes_search with a subject ('BIOL'), a course number, or an instructor's name (a fragment, 'Miura'; a full name 'Miura, Tanya A.' when the fragment matched several), for the newest open term unless term says otherwise: the schedule's sections",
+                     "classes_section with the term and the CRN of one result: its description, meetings with rooms and dates, prerequisites, corequisites, restrictions, cross-listed and linked sections, attributes, fees, the Day One Access link and enrollment",
+                     "classes_catalog with a subject, a course number or a keyword (a word of the title or the catalog description), when a person names a topic rather than a section: the catalog's courses",
+                     "classes_course with the term, subject and course number: the catalog's record of the course, as opposed to one section of it",
                      "classes_terms for the term codes and names, newest first, with which are view-only (closed to registration)"],
         "notes": ["A section's instructors carry name, email and whether primary; a result's meets line is days (M T W R F S U), times, building and room, 'TBA' when none is scheduled.",
-                  "A search needs at least one of subject, course_number, instructor. rows up to 100 a page; next_start is the start of the next page when there is one.",
-                  "Cite a section by term, subject, number, section and CRN; the schedule changes through the term, and a result is at most ten minutes old."],
+                  "classes_search needs at least one of subject, course_number, instructor; classes_catalog one of subject, course_number, keyword. rows up to 100 a page; next_start is the start of the next page when there is one.",
+                  "Restrictions are the registrar's rules as published, one string each, with the majors, colleges, levels, cohorts or campuses named; attributes are the catalog's designations as published; fees are description and amount.",
+                  "Cite a section by term, subject, number, section and CRN, and a course by subject and number; the schedule changes through the term, and a result is at most ten minutes old."],
         "caveats": CAVEATS,
     }
     try:
@@ -202,16 +208,102 @@ async def classes_section(term: str, crn: str) -> dict:
         async with banner.session(code) as client:
             raw = await banner.details(client, code, crn)
         details = banner.parse_details(raw["details"])
+        labelled = banner._labelled(raw["details"])
         meetings = banner.parse_meetings(raw["meetings"])
-        return {"crn": crn, "term": code, "term_name": name, "title": banner._labelled(raw["details"]).get("Title"),
-                "subject": banner._labelled(raw["details"]).get("Subject"), "number": banner._labelled(raw["details"]).get("Course Number", "").split()[0] or None,
+        return {"crn": crn, "term": code, "term_name": name, "read_from": "the schedule",
+                "title": labelled.get("Title"), "subject": labelled.get("Subject"), "number": (labelled.get("Course Number", "").split() or [None])[0],
                 "description": banner.parse_description(raw["description"]), "details": details, "meetings": meetings,
                 "instructors": next((m["instructors"] for m in meetings if m["instructors"]), []),
-                "prerequisites": banner.parse_prerequisites(raw["prerequisites"]), "enrollment": banner.parse_enrollment(raw["enrollment"]),
-                "link": banner.BROWSE}
+                "prerequisites": banner.parse_prerequisites(raw["prerequisites"]), "corequisites": banner.parse_text_or_none(raw["corequisites"]),
+                "restrictions": banner.parse_restrictions(raw["restrictions"]),
+                "cross_listed": banner.parse_crn_table(raw["cross_listed"]), "linked": banner.parse_crn_table(raw["linked"]),
+                "attributes": banner.parse_attributes(raw["attributes"]), "fees": banner.parse_fees(raw["fees"]),
+                "day_one_access_url": banner.parse_day_one_link(raw["bookstore"]),
+                "enrollment": banner.parse_enrollment(raw["enrollment"]), "link": banner.BROWSE}
 
     try:
         return await _cache.remember(f"section:{code}:{crn}", TEN_MINUTES, make)
+    except banner.BannerError as e:
+        return e.as_error()
+
+
+@mcp.tool(name="classes_catalog", annotations=_READ_ONLY)
+async def classes_catalog(term: str = "", subject: str = "", course_number: str = "", keyword: str = "", rows: int = ROWS, start: int = 0) -> dict:
+    """Courses in the course catalog by subject, course number or a keyword of the title or description: what a course is, for a term.
+
+    The catalog's answer when a person names a topic rather than a section. At least one of subject, course_number,
+    keyword. Each course says whether it has sections this term (has_sections); classes_search finds them.
+
+    Args:
+        term: a term code ('202610') or name ('Fall 2026'); empty for the newest term open to registration.
+        subject: a subject code ('BIOL', 'CS'); empty for any.
+        course_number: a course number ('1010'); empty for any.
+        keyword: a word of the course title or catalog description ('microbiology'); empty for any.
+        rows: courses a page, 1 to 100 (default 25).
+        start: the offset of the first course (default 0); next_start of a page is the next page's start.
+    """
+    subject, course_number, keyword = (subject or "").strip().upper(), (course_number or "").strip(), (keyword or "").strip()
+    if not (subject or course_number or keyword):
+        return {"error": "at least one of subject, course_number, keyword"}
+    rows, start = max(1, min(int(rows or ROWS), MAX_ROWS)), max(0, int(start or 0))
+    try:
+        code, name = await _resolve_term(term)
+    except ValueError as e:
+        return {"error": str(e)}
+    except banner.BannerError as e:
+        return e.as_error()
+
+    async def make():
+        async with banner.session(code, "courseSearch") as client:
+            found = await banner.search_catalog(client, code, subject, course_number, keyword, rows, start)
+        courses = [banner.slim_course(c) for c in found.get("data") or []]
+        total = int(found.get("totalCount") or 0)
+        out = {"term": code, "term_name": name, "read_from": "the catalog", "total": total, "start": start, "courses": courses}
+        if start + len(courses) < total and courses:
+            out["next_start"] = start + len(courses)
+        return out
+
+    try:
+        return await _cache.remember(f"catalog:{code}:{subject}:{course_number}:{keyword.lower()}:{rows}:{start}", TEN_MINUTES, make)
+    except banner.BannerError as e:
+        return e.as_error()
+
+
+@mcp.tool(name="classes_course", annotations=_READ_ONLY)
+async def classes_course(term: str, subject: str, course_number: str) -> dict:
+    """One course's catalog record by term, subject and number: description, prerequisites, corequisites, restrictions, attributes and fees.
+
+    The course as the catalog defines it, as opposed to one section of it (classes_section).
+
+    Args:
+        term: a term code ('202610') or name ('Fall 2026'); empty for the newest term open to registration.
+        subject: the subject code ('CHEM').
+        course_number: the course number ('1120').
+    """
+    subject, course_number = (subject or "").strip().upper(), (course_number or "").strip()
+    if not (subject and course_number):
+        return {"error": "subject and course_number are both needed ('CHEM', '1120')"}
+    try:
+        code, name = await _resolve_term(term)
+    except ValueError as e:
+        return {"error": str(e)}
+    except banner.BannerError as e:
+        return e.as_error()
+
+    async def make():
+        async with banner.session(code, "courseSearch") as client:
+            found = await banner.search_catalog(client, code, subject, course_number, "", 5, 0)
+            course = next((c for c in found.get("data") or [] if c.get("courseNumber") == course_number), None)
+            if course is None:
+                return {"error": f"the catalog has no {subject} {course_number} in {name}", "term": code, "term_name": name, "read_from": "the catalog"}
+            raw = await banner.course_details(client, code, subject, course_number)
+        return {**banner.slim_course(course), "term": code, "term_name": name, "read_from": "the catalog",
+                "description": banner.parse_text_or_none(raw["description"]), "prerequisites": banner.parse_prerequisites(raw["prerequisites"]),
+                "corequisites": banner.parse_text_or_none(raw["corequisites"]), "restrictions": banner.parse_restrictions(raw["restrictions"]),
+                "attributes": banner.parse_attributes(raw["attributes"]), "fees": banner.parse_fees(raw["fees"]), "link": banner.CATALOG}
+
+    try:
+        return await _cache.remember(f"course:{code}:{subject}:{course_number}", TEN_MINUTES, make)
     except banner.BannerError as e:
         return e.as_error()
 

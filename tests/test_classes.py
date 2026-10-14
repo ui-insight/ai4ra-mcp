@@ -1,7 +1,9 @@
 """classes, offline from responses captured at banner.uidaho.edu on 2026-10-14: a section slimmed with its meets line and
 credits read from the three fields Banner uses; the instructor search's three outcomes (one match, several, none) and a full
-name among several; the detail panels' HTML read down to fields; the newest open term as the default and a term by name;
-a route that answers with a page where JSON was expected reported with its status and route."""
+name among several; the twelve section panels and the six course panels read down to fields (a restriction's cohort name
+passing through unchanged, a fee table, a cross-list table, the one bookstore link); the catalog searched and a course
+slimmed; the newest open term as the default and a term by name; a route that answers with a page where JSON was expected
+reported with its status and route."""
 
 import json
 from contextlib import asynccontextmanager
@@ -16,7 +18,11 @@ INSTRUCTORS = {name: json.loads((FIX / f"get_instructor_{name}.json").read_text(
 SEARCH = json.loads((FIX / "searchResults_instructor.json").read_text())
 DETAILS = {"description": (FIX / "getCourseDescription.html").read_text(), "details": (FIX / "getClassDetails.html").read_text(),
            "prerequisites": (FIX / "getSectionPrerequisites.html").read_text(), "enrollment": (FIX / "getEnrollmentInfo.html").read_text(),
-           "meetings": json.loads((FIX / "getFacultyMeetingTimes.json").read_text())}
+           "meetings": json.loads((FIX / "getFacultyMeetingTimes.json").read_text()),
+           **{key: (FIX / f"section_{route}.html").read_text() for key, route in banner.SECTION_PANELS if key not in ("description", "details", "prerequisites", "enrollment")}}
+COURSE = {key: (FIX / f"course_{route}.html").read_text() for key, route in banner.COURSE_PANELS}
+CATALOG = json.loads((FIX / "courseSearchResults.json").read_text())
+CATALOG_BY_KEYWORD = json.loads((FIX / "courseSearchResults_keyword.json").read_text())
 
 
 def _banner(monkeypatch, calls: list | None = None):
@@ -26,8 +32,8 @@ def _banner(monkeypatch, calls: list | None = None):
         return TERMS[:max]
 
     @asynccontextmanager
-    async def session(term):
-        calls.append(("session", term))
+    async def session(term, mode="search"):
+        calls.append(("session", term) if mode == "search" else ("session", term, mode))
         yield object()
         calls.append(("reset", term))
 
@@ -46,7 +52,19 @@ def _banner(monkeypatch, calls: list | None = None):
             raise banner.BannerError("searchResults/getClassDetails", 500, "not the 200 the route returns")
         return DETAILS
 
-    for name, fn in (("get_terms", get_terms), ("session", session), ("find_instructors", find_instructors), ("search", search), ("details", details)):
+    async def search_catalog(client, term, subject="", course_number="", keyword="", rows=25, start=0):
+        calls.append(("catalog", subject, course_number, keyword, rows, start))
+        if keyword:
+            return {**CATALOG_BY_KEYWORD, "data": CATALOG_BY_KEYWORD["data"][start:start + rows]}
+        data = [c for c in CATALOG["data"] if c["subject"] == subject and (not course_number or c["courseNumber"] == course_number)]
+        return {"totalCount": len(data), "data": data}
+
+    async def course_details(client, term, subject, course_number):
+        calls.append(("course", term, subject, course_number))
+        return COURSE
+
+    for name, fn in (("get_terms", get_terms), ("session", session), ("find_instructors", find_instructors), ("search", search), ("details", details),
+                     ("search_catalog", search_catalog), ("course_details", course_details)):
         monkeypatch.setattr(banner, name, fn)
     classes._cache._d.clear()
     return calls
@@ -122,9 +140,51 @@ async def test_a_section_s_panels_read_down_to_fields(monkeypatch):
     assert out["meetings"] == [{"days": "M", "start": "14:30", "end": "15:20", "building": "LIFE SCIENCES SOUTH", "room": "277", "from": "08/24/2026", "to": "12/18/2026", "type": "Class",
                                 "instructors": [{"name": "Miura, Tanya A.", "email": "tmiura@uidaho.edu", "primary": True}]}]
     assert out["instructors"] == [{"name": "Miura, Tanya A.", "email": "tmiura@uidaho.edu", "primary": True}]
-    assert out["prerequisites"] == "No prerequisite information available."
+    assert out["prerequisites"] == "No prerequisite information available." and out["corequisites"] is None
+    assert out["restrictions"] == ["Cannot be enrolled in one of the following Cohorts: Prison Education Initiative (PEI)",
+                                   "Cannot be enrolled in one of the following Majors: WSU (9998)"]   # the cohort's name as published; Banner's 'not all apply' note left out
+    assert out["cross_listed"] == [] and out["linked"] == [] and out["fees"] == [] and out["attributes"] == ["Lower-division LWDV"]
+    assert out["day_one_access_url"] == "https://vandalsuidaho.sharepoint.com/sites/InsideUI-Student-Accounts/SitePages/Vandal-Day-One-Access.aspx"
     assert out["enrollment"] == {"actual": 70, "maximum": 85, "seats_available": 15, "waitlist_actual": 0, "waitlist_capacity": 999, "waitlist_seats_available": 999}
+    assert out["read_from"] == "the schedule"
     assert "digits only" in (await classes.classes_section("Fall 2026", "abc"))["error"]
+
+
+def test_a_title_s_html_entities_are_unescaped():
+    assert banner.slim_course({"courseTitle": "Research &amp; Curriculum Progress"})["title"] == "Research & Curriculum Progress"
+    assert banner.slim_section({"courseTitle": "Research &amp; Curriculum Progress"})["title"] == "Research & Curriculum Progress"
+
+
+def test_a_cross_list_table_and_a_fee_table_are_read_as_rows():
+    assert banner.parse_crn_table((FIX / "section_getXlstSections_crosslisted.html").read_text()) == [{"crn": "51860", "subject": "Chemistry", "number": "5750", "title": "Organometallic Chemistry", "section": "01"}]
+    assert banner.parse_fees((FIX / "section_getFees_lab.html").read_text()) == [{"description": "CHEM 1111L Lab Fee", "amount": "$120.00", "level": None}]
+
+
+async def test_the_catalog_is_searched_in_its_own_mode_and_a_course_slimmed(monkeypatch):
+    calls = _banner(monkeypatch)
+    assert "at least one" in (await classes.classes_catalog())["error"]
+    out = await classes.classes_catalog(subject="chem", course_number="1120")
+    assert calls[:3] == [("session", "202610", "courseSearch"), ("catalog", "CHEM", "1120", "", 25, 0), ("reset", "202610")]
+    assert out["read_from"] == "the catalog" and out["total"] == 1 and "next_start" not in out
+    assert out["courses"] == [{"subject": "CHEM", "number": "1120", "title": "General Chemistry II", "credits": "4", "college": "Science", "department": "Chemistry",
+                               "levels": None, "schedule_types": None, "grade_modes": None, "attributes": None, "has_sections": None, "effective": {"from": "202500", "to": "999999"}}]
+    by_word = await classes.classes_catalog(keyword="Microbiology", rows=3)
+    assert calls[-2] == ("catalog", "", "", "Microbiology", 3, 0) and by_word["total"] == 18 and by_word["next_start"] == 3
+    assert [(c["subject"], c["number"], c["title"]) for c in by_word["courses"]] == [("BE", "4330", "Bioremediation"), ("BE", "5330", "Bioremediation"), ("BIOL", "2500", "General Microbiology")]   # a keyword matches the description too
+
+
+async def test_a_course_s_record_is_the_catalog_s_not_a_section_s(monkeypatch):
+    calls = _banner(monkeypatch)
+    assert "both needed" in (await classes.classes_course("", "CHEM", ""))["error"]
+    out = await classes.classes_course("Fall 2026", "chem", "1120")
+    assert calls[1:3] == [("catalog", "CHEM", "1120", "", 5, 0), ("course", "202610", "CHEM", "1120")]
+    assert out["subject"] == "CHEM" and out["number"] == "1120" and out["title"] == "General Chemistry II" and out["credits"] == "4" and out["read_from"] == "the catalog"
+    assert out["description"].startswith("4 credits. Continuation of CHEM 1111.") and out["description"].endswith("or Permission")
+    assert out["prerequisites"].startswith("( Chemistry 111 (Undergraduate, grade D) Or") and out["corequisites"] is None
+    assert out["restrictions"] == ["Cannot be enrolled in one of the following Majors: WSU (9998)", "Cannot be enrolled in one of the following Cohorts: Prison Education Initiative (PEI)"]
+    assert out["attributes"] == ["Natural Science (w/o lab) L", "Lower-division LWDV"] and out["fees"] == [] and out["link"].endswith("/courseSearch/courseSearch")
+    missing = await classes.classes_course("Fall 2026", "CHEM", "9999")
+    assert missing["error"] == "the catalog has no CHEM 9999 in Fall 2026" and calls[-2][0] != "course"
 
 
 def test_a_prerequisite_table_is_one_line_with_its_parentheses():
