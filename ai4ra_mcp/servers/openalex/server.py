@@ -13,6 +13,7 @@ from pathlib import Path
 from mcp.server.mcpserver import MCPServer
 
 from ai4ra_mcp.common.http import CONTACT, DAY, HOUR, TTLCache, get_json
+from ai4ra_mcp.common.given import given
 from ai4ra_mcp.common.skills import register_prompts
 
 _READ_ONLY = {"readOnlyHint": True, "destructiveHint": False, "idempotentHint": True, "openWorldHint": True}
@@ -271,3 +272,8 @@ async def openalex_funders_search(query: str) -> dict:
 
 SKILLS_DIR = Path(__file__).parent / "skills"
 register_prompts(mcp, SKILLS_DIR)
+# The OpenAlex ids a call names and the tool that lists them (#40): authors, institutions and funders from their
+# searches, a work from openalex_works_search; a DOI or id a person pastes passes as given.
+given(mcp, {"openalex_works_search": {"author_id": "openalex_authors_search", "institution_id": "openalex_institutions_search", "funder_id": "openalex_funders_search"},
+            "openalex_work": {"id": "openalex_works_search"},
+            "openalex_authors_search": {"institution_id": "openalex_institutions_search"}})

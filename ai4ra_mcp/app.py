@@ -2,7 +2,8 @@
 
     /<server>/mcp       the server's streamable-HTTP endpoint
     /<server>/skills/   its skills folder as static files (catalog.json, components/)
-    /                   a JSON index of what is mounted, with one sentence for the whole
+    /                   a JSON index of what is mounted, with one sentence for the whole and, per server,
+                        which tool arguments name a thing it holds (`given`)
     /README.md          this repository's README, the server's own account of itself
 
 Run every server with `ai4ra-mcp`, a subset with `--only NAME`, or one server
@@ -29,6 +30,7 @@ from starlette.responses import FileResponse, JSONResponse
 from starlette.routing import Mount, Route
 from starlette.staticfiles import StaticFiles
 
+from ai4ra_mcp.common.given import given_of
 from ai4ra_mcp.common.http import log_no_keys, request_key
 from ai4ra_mcp.servers.ai4ra.server import mcp as ai4ra
 from ai4ra_mcp.servers.bls.server import mcp as bls
@@ -189,7 +191,9 @@ def build_app(only: list[str] | None = None) -> Starlette:
                         # Relative to this index, so they resolve under whatever prefix a proxy mounts the server at.
                         "mcp": f"{name}/mcp", "skills": f"{name}/skills/catalog.json", "skills_base": f"{name}/skills/",
                         "web": f"{WEB}{name}/skills/", "key": meta.get("key"),
-                        "tools": [t.name for t in tools], "prompts": [p.name for p in prompts]})
+                        "tools": [t.name for t in tools], "prompts": [p.name for p in prompts],
+                        # Which arguments name a thing the server holds and which tool lists the values (common.given, #40).
+                        "given": given_of(SERVERS[name])})
         return JSONResponse({"v": 1, "description": ABOUT, "readme": "README.md", "servers": out})
 
     async def readme(_request):

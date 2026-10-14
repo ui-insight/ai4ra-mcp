@@ -14,6 +14,7 @@ from pathlib import Path
 from mcp.server.mcpserver import MCPServer
 
 from ai4ra_mcp.common.http import DAY, HOUR, TTLCache, api_key, get_json, missing_key
+from ai4ra_mcp.common.given import given
 from ai4ra_mcp.common.skills import register_prompts
 
 _READ_ONLY = {"readOnlyHint": True, "destructiveHint": False, "idempotentHint": True, "openWorldHint": True}
@@ -272,3 +273,8 @@ async def regulations_gov_comments_search(
 
 SKILLS_DIR = Path(__file__).parent / "skills"
 register_prompts(mcp, SKILLS_DIR)
+# The ids a call names come from regulations_gov_documents_search (#40): a document id, its docket id, and the
+# object id comments hang on; one a person pastes passes as given.
+given(mcp, {"regulations_gov_document": {"document_id": "regulations_gov_documents_search"},
+            "regulations_gov_docket": {"docket_id": "regulations_gov_documents_search"},
+            "regulations_gov_comments_search": {"document_object_id": "regulations_gov_documents_search", "docket_id": "regulations_gov_documents_search"}})

@@ -12,6 +12,7 @@ from pathlib import Path
 from mcp.server.mcpserver import MCPServer
 
 from ai4ra_mcp.common.http import DAY, HOUR, TTLCache, post_json
+from ai4ra_mcp.common.given import given
 from ai4ra_mcp.common.skills import register_prompts
 
 _READ_ONLY = {"readOnlyHint": True, "destructiveHint": False, "idempotentHint": True, "openWorldHint": True}
@@ -202,3 +203,6 @@ async def nih_publications(core_project_num: str, offset: int = 0, limit: int = 
 
 SKILLS_DIR = Path(__file__).parent / "skills"
 register_prompts(mcp, SKILLS_DIR)
+# The project numbers a call names come from nih_projects_search (#40); one a person pastes passes as given.
+given(mcp, {"nih_project": {"project_num": "nih_projects_search"},
+            "nih_publications": {"core_project_num": "nih_projects_search"}})

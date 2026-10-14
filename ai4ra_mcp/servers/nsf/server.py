@@ -11,6 +11,7 @@ from pathlib import Path
 from mcp.server.mcpserver import MCPServer
 
 from ai4ra_mcp.common.http import DAY, HOUR, TTLCache, get_json
+from ai4ra_mcp.common.given import given
 from ai4ra_mcp.common.skills import register_prompts
 
 _READ_ONLY = {"readOnlyHint": True, "destructiveHint": False, "idempotentHint": True, "openWorldHint": True}
@@ -164,3 +165,6 @@ async def nsf_award_outcomes(award_id: str) -> dict:
 
 SKILLS_DIR = Path(__file__).parent / "skills"
 register_prompts(mcp, SKILLS_DIR)
+# The award ids a call names come from nsf_awards_search (#40); one a person pastes passes as given.
+given(mcp, {"nsf_award": {"award_id": "nsf_awards_search"},
+            "nsf_award_outcomes": {"award_id": "nsf_awards_search"}})

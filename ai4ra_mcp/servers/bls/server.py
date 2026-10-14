@@ -12,6 +12,7 @@ from pathlib import Path
 from mcp.server.mcpserver import MCPServer
 
 from ai4ra_mcp.common.http import DAY, TTLCache, api_key, post_json
+from ai4ra_mcp.common.given import given
 from ai4ra_mcp.common.skills import register_prompts
 
 _READ_ONLY = {"readOnlyHint": True, "destructiveHint": False, "idempotentHint": True, "openWorldHint": True}
@@ -146,3 +147,5 @@ async def bls_common_series() -> dict:
 
 SKILLS_DIR = Path(__file__).parent / "skills"
 register_prompts(mcp, SKILLS_DIR)
+# The series ids a call names come from bls_common_series (#40); one a person pastes passes as given.
+given(mcp, {"bls_series": {"series_ids": "bls_common_series"}})

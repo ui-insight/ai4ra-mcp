@@ -14,6 +14,7 @@ from pathlib import Path
 from mcp.server.mcpserver import MCPServer
 
 from ai4ra_mcp.common.http import HOUR, TTLCache
+from ai4ra_mcp.common.given import given
 from ai4ra_mcp.common.skills import register_prompts
 from ai4ra_mcp.servers.classes import banner
 
@@ -310,3 +311,10 @@ async def classes_course(term: str, subject: str, course_number: str) -> dict:
 
 SKILLS_DIR = Path(__file__).parent / "skills"
 register_prompts(mcp, SKILLS_DIR)
+# The arguments that name a thing the schedule holds, and the tool that lists the values (#40): a term code the model
+# worked out waits on classes_terms, a CRN on classes_search; a term named by the person ("Fall 2026") resolves as typed.
+# Subject codes are left out: "biology" to BIOL is inference the person expects.
+given(mcp, {"classes_search": {"term": "classes_terms"},
+            "classes_section": {"term": "classes_terms", "crn": "classes_search"},
+            "classes_catalog": {"term": "classes_terms"},
+            "classes_course": {"term": "classes_terms"}})

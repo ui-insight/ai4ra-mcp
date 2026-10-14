@@ -7,6 +7,7 @@ import pytest
 from starlette.testclient import TestClient
 
 from ai4ra_mcp.app import SERVERS, build_app
+from ai4ra_mcp.common.given import given_of
 from ai4ra_mcp.common.skills import load_catalog
 from ai4ra_mcp.servers.s2s import server as s2s
 from ai4ra_mcp.servers.uidaho import server as uidaho
@@ -48,6 +49,30 @@ EXPECTED_TOOLS = {
 async def test_server_lists_its_tools(name):
     tools = {t.name for t in await SERVERS[name].list_tools()}
     assert tools == EXPECTED_TOOLS[name]
+
+
+@pytest.mark.parametrize("name", list(EXPECTED_TOOLS))
+async def test_given_names_a_tool_s_argument_and_a_listing_tool_on_the_same_server(name):
+    """The index's `given` (#40): every tool and argument it names exists in that tool's input schema, and the tool it
+    names as listing the values exists on the same server, so a client can hold a call whose identifier the conversation
+    never gave until the listing tool has run."""
+    tools = {t.name: t for t in await SERVERS[name].list_tools()}
+    for tool, args in given_of(SERVERS[name]).items():
+        assert tool in tools, (name, tool)
+        assert args, (name, tool)
+        for arg, lister in args.items():
+            assert arg in tools[tool].input_schema["properties"], (name, tool, arg)
+            assert lister in tools, (name, tool, arg, lister)
+
+
+async def test_the_first_wave_of_given_is_the_classes_server_s():
+    assert given_of(SERVERS["classes"]) == {
+        "classes_search": {"term": "classes_terms"},
+        "classes_section": {"term": "classes_terms", "crn": "classes_search"},
+        "classes_catalog": {"term": "classes_terms"},
+        "classes_course": {"term": "classes_terms"},
+    }
+    assert given_of(SERVERS["general"]) == {} and given_of(SERVERS["ai4ra"]) == {}
 
 
 @pytest.mark.parametrize("name", list(EXPECTED_TOOLS))
@@ -110,6 +135,8 @@ def test_app_mounts_every_server_and_its_skills():
         assert by["ecfr"]["key"] is None and by["ecfr"]["label"] == "eCFR"
         assert by["csl"]["key"]["required"] is True and by["bls"]["key"]["required"] is False and by["fedreg"]["key"] is None
         assert by["nih"]["skills_base"] == "nih/skills/" and by["nih"]["mcp"] == "nih/mcp" and by["nih"]["web"].endswith("/nih/skills/")
+        assert by["classes"]["given"]["classes_section"] == {"term": "classes_terms", "crn": "classes_search"}
+        assert all(s["given"] == given_of(SERVERS[s["name"]]) for s in index["servers"])
         for s in index["servers"]:
             assert client.get("/" + s["skills"]).status_code == 200
         r = client.post("/grants/mcp", json={"jsonrpc": "2.0", "id": 1, "method": "tools/list", "params": {}},

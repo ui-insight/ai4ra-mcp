@@ -13,6 +13,7 @@ from pathlib import Path
 from mcp.server.mcpserver import MCPServer
 
 from ai4ra_mcp.common.http import DAY, HOUR, TTLCache, get_json, post_json
+from ai4ra_mcp.common.given import given
 from ai4ra_mcp.common.skills import register_prompts
 
 _READ_ONLY = {"readOnlyHint": True, "destructiveHint": False, "idempotentHint": True, "openWorldHint": True}
@@ -246,3 +247,7 @@ async def usaspending_award(generated_internal_id: str) -> dict:
 
 SKILLS_DIR = Path(__file__).parent / "skills"
 register_prompts(mcp, SKILLS_DIR)
+# The ids a call names and the tool that lists them (#40): a recipient_id from usaspending_recipients (a name or UEI a
+# person gives passes as typed), a generated_internal_id from usaspending_awards_search.
+given(mcp, {"usaspending_recipient": {"recipient": "usaspending_recipients"},
+            "usaspending_award": {"generated_internal_id": "usaspending_awards_search"}})

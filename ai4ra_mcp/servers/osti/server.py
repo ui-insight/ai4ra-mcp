@@ -16,6 +16,7 @@ import httpx
 from mcp.server.mcpserver import MCPServer
 
 from ai4ra_mcp.common.http import DAY, HEADERS, HOUR, TIMEOUT_S, TTLCache
+from ai4ra_mcp.common.given import given
 from ai4ra_mcp.common.skills import register_prompts
 
 _READ_ONLY = {"readOnlyHint": True, "destructiveHint": False, "idempotentHint": True, "openWorldHint": True}
@@ -169,3 +170,5 @@ async def osti_record(osti_id: str) -> dict:
 
 SKILLS_DIR = Path(__file__).parent / "skills"
 register_prompts(mcp, SKILLS_DIR)
+# The OSTI ids a call names come from osti_search (#40).
+given(mcp, {"osti_record": {"osti_id": "osti_search"}})

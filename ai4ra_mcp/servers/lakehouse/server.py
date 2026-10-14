@@ -38,6 +38,7 @@ from mcp.server.mcpserver import MCPServer
 
 from ai4ra_mcp.common import fetch as _fetch
 from ai4ra_mcp.common.http import HEADERS, TIMEOUT_S, missing_key, request_key
+from ai4ra_mcp.common.given import given
 from ai4ra_mcp.common.skills import register_prompts
 
 _READ_ONLY = {"readOnlyHint": True, "destructiveHint": False, "idempotentHint": True, "openWorldHint": False}
@@ -832,6 +833,13 @@ def make_server(name: str, client_id: str, key_env_name: str) -> tuple[MCPServer
         return out
 
     register_prompts(mcp, Path(__file__).parent / "skills")
+    # The names a call uses and the tool that lists them (#40): streams from lakehouse_streams, a stream's tables from
+    # lakehouse_schema, a file's hash from lakehouse_files.
+    given(mcp, {"lakehouse_schema": {"stream": "lakehouse_streams"},
+                "lakehouse_query": {"stream": "lakehouse_streams", "table": "lakehouse_schema"},
+                "lakehouse_files": {"stream": "lakehouse_streams"},
+                "lakehouse_file": {"stream": "lakehouse_streams", "hash": "lakehouse_files"},
+                "lakehouse_sql_catalog": {"stream": "lakehouse_streams"}})
     return mcp, {"lakehouse_index": lakehouse_index, "lakehouse_streams": lakehouse_streams, "lakehouse_schema": lakehouse_schema,
                  "lakehouse_query": lakehouse_query, "lakehouse_files": lakehouse_files, "lakehouse_file": lakehouse_file,
                  "lakehouse_sql_catalog": lakehouse_sql_catalog, "lakehouse_sql": lakehouse_sql}

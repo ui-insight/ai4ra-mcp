@@ -22,6 +22,7 @@ import httpx
 from mcp.server.mcpserver import MCPServer
 
 from ai4ra_mcp.common.http import HEADERS, HOUR, TIMEOUT_S, TTLCache, _body, api_key, missing_key
+from ai4ra_mcp.common.given import given
 from ai4ra_mcp.common.skills import register_prompts
 
 _READ_ONLY = {"readOnlyHint": True, "destructiveHint": False, "idempotentHint": True, "openWorldHint": True}
@@ -610,3 +611,17 @@ async def clickup_task_attach(task_id: str, filename: str, content_base64: str) 
 
 SKILLS_DIR = Path(__file__).parent / "skills"
 register_prompts(mcp, SKILLS_DIR)
+# The ids a call names and the tool that lists them (#40): workspaces from clickup_whoami, spaces and lists from
+# clickup_workspace, tasks from clickup_tasks_search (a task id a person pastes from a link passes as given).
+_GIVEN = {"clickup_tasks_search": {"workspace_id": "clickup_whoami", "space_ids": "clickup_workspace", "list_ids": "clickup_workspace"},
+          "clickup_workspace": {"workspace_id": "clickup_whoami"},
+          "clickup_tasks": {"list_id": "clickup_workspace"},
+          "clickup_task": {"task_id": "clickup_tasks_search"},
+          "clickup_list_fields": {"list_id": "clickup_workspace"}}
+if WRITES_ON:
+    _GIVEN.update({"clickup_task_create": {"list_id": "clickup_workspace"},
+                   "clickup_task_update": {"task_id": "clickup_tasks_search"},
+                   "clickup_task_field_set": {"task_id": "clickup_tasks_search"},
+                   "clickup_task_comment": {"task_id": "clickup_tasks_search"},
+                   "clickup_task_attach": {"task_id": "clickup_tasks_search"}})
+given(mcp, _GIVEN)

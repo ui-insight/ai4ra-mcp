@@ -14,6 +14,7 @@ from pathlib import Path
 from mcp.server.mcpserver import MCPServer
 
 from ai4ra_mcp.common.http import CONTACT, DAY, HOUR, TTLCache, api_key, get_json
+from ai4ra_mcp.common.given import given
 from ai4ra_mcp.common.skills import register_prompts
 
 _READ_ONLY = {"readOnlyHint": True, "destructiveHint": False, "idempotentHint": True, "openWorldHint": True}
@@ -211,3 +212,6 @@ async def pmc_id_convert(ids: str) -> dict:
 
 SKILLS_DIR = Path(__file__).parent / "skills"
 register_prompts(mcp, SKILLS_DIR)
+# The ids a call names come from pubmed_search (#40); a PMID, PMCID or DOI a person pastes passes as given.
+given(mcp, {"pubmed_summary": {"pmids": "pubmed_search"},
+            "pmc_id_convert": {"ids": "pubmed_search"}})

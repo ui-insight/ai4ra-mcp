@@ -21,6 +21,7 @@ from mcp.server.mcpserver import MCPServer
 from ai4ra_mcp.common import fetch as _fetch
 from ai4ra_mcp.common import text as _text
 from ai4ra_mcp.common.http import DAY, USER_AGENT, TTLCache
+from ai4ra_mcp.common.given import given
 from ai4ra_mcp.common.skills import register_prompts
 
 _READ_ONLY = {"readOnlyHint": True, "destructiveHint": False, "idempotentHint": True, "openWorldHint": True}
@@ -439,3 +440,5 @@ async def uidaho_rates(kind: str, offset: int = 0, max_chars: int = 12000) -> di
 
 SKILLS_DIR = Path(__file__).parent / "skills"
 register_prompts(mcp, SKILLS_DIR)
+# The policy numbers a call names come from uidaho_guidance_search (#40); one a person cites passes as given.
+given(mcp, {"uidaho_guidance_get": {"policy": "uidaho_guidance_search"}})

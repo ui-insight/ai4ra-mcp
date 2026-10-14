@@ -7,6 +7,7 @@ from pathlib import Path
 from mcp.server.mcpserver import MCPServer
 
 from ai4ra_mcp.common import fetch as _fetch
+from ai4ra_mcp.common.given import given
 from ai4ra_mcp.common.skills import register_prompts
 
 _READ_ONLY = {"readOnlyHint": True, "destructiveHint": False, "idempotentHint": True, "openWorldHint": True}
@@ -65,3 +66,5 @@ async def grants_gov_opportunity(opportunity_id: str, offset: int = 0, max_chars
 
 SKILLS_DIR = Path(__file__).parent / "skills"
 register_prompts(mcp, SKILLS_DIR)
+# The opportunity ids a call names come from grants_gov_search (#40); one a person pastes passes as given.
+given(mcp, {"grants_gov_opportunity": {"opportunity_id": "grants_gov_search"}})

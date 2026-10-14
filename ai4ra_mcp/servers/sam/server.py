@@ -15,6 +15,7 @@ from urllib.parse import quote
 from mcp.server.mcpserver import MCPServer
 
 from ai4ra_mcp.common.http import DAY, HOUR, TTLCache, api_key, get_json, missing_key
+from ai4ra_mcp.common.given import given
 from ai4ra_mcp.common.skills import register_prompts
 
 _READ_ONLY = {"readOnlyHint": True, "destructiveHint": False, "idempotentHint": True, "openWorldHint": True}
@@ -297,3 +298,8 @@ async def sam_assistance_listings_search(organization_codes: str = "", organizat
 
 SKILLS_DIR = Path(__file__).parent / "skills"
 register_prompts(mcp, SKILLS_DIR)
+# The identifiers a call names and the tool that lists them (#40): a UEI or CAGE from an entity record (sam_entity by
+# name), a listing number from sam_assistance_listings_search; one a person pastes passes as given.
+given(mcp, {"sam_entity": {"uei": "sam_entity", "cage": "sam_entity"},
+            "sam_exclusions_search": {"uei": "sam_entity"},
+            "sam_assistance_listing": {"number": "sam_assistance_listings_search"}})

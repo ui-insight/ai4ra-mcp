@@ -13,6 +13,7 @@ from pathlib import Path
 from mcp.server.mcpserver import MCPServer
 
 from ai4ra_mcp.common.http import CONTACT, DAY, HOUR, TTLCache, get_json
+from ai4ra_mcp.common.given import given
 from ai4ra_mcp.common.skills import register_prompts
 
 _READ_ONLY = {"readOnlyHint": True, "destructiveHint": False, "idempotentHint": True, "openWorldHint": True}
@@ -195,3 +196,7 @@ async def crossref_funders_search(query: str, rows: int = 20) -> dict:
 
 SKILLS_DIR = Path(__file__).parent / "skills"
 register_prompts(mcp, SKILLS_DIR)
+# The identifiers a call names and the tool that lists them (#40): a funder id from crossref_funders_search, a DOI
+# from crossref_works_search; one a person pastes passes as given.
+given(mcp, {"crossref_works_search": {"funder_id": "crossref_funders_search"},
+            "crossref_work": {"doi": "crossref_works_search"}})
