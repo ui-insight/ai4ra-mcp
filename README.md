@@ -25,7 +25,7 @@ Every tool is read-only. Nothing here writes to an upstream.
 - [Skills](#skills): the catalog shape, the fields a client acts on, the Rates sheet contract
 - [Running](#running), [Environment](#environment), [Hosting](#hosting), [Connecting a client](#connecting-a-client)
 - [Rules](#rules), [Layout](#layout), [Adding a server](#adding-a-server), [Adding a skill](#adding-a-skill)
-- [Status](#status), [Related](#related)
+- [Status](#status), [Related](#related), [Contributing](#contributing), [License](#license), [Acknowledgments](#acknowledgments)
 
 ## The servers
 
@@ -1730,3 +1730,17 @@ because its API refuses every caller.
 - [AI4RA/grants-gov-s2s-mock](https://github.com/AI4RA/grants-gov-s2s-mock):
   the Grants.gov S2S test surface hosted beside this process (see Hosting).
   OpenERA #1418.
+
+## Contributing
+
+Contributions are welcome by pull request. By submitting a contribution you agree that it will be licensed under the [Apache License, Version 2.0](LICENSE), the same license as the project, and you represent that you have the right to license it under those terms. Contributions keep the attribution in [NOTICE](NOTICE) intact.
+
+## License
+
+Apache License 2.0, copyright 2026 Nathan Layman. See [LICENSE](LICENSE) for the terms and [NOTICE](NOTICE) for the attributions a redistribution keeps under Section 4(d): Nathan Layman as the author, the University of Idaho, the AI4RA project, and the National Science Foundation award that funded the work. To cite the project, use [CITATION.cff](CITATION.cff).
+
+## Acknowledgments
+
+<img src="https://github.com/user-attachments/assets/d2b43c22-84f6-4912-91dc-8b081d9e2c6f" alt="NSF Logo" width="157">
+
+ai4ra-mcp is a project of [AI4RA](https://github.com/AI4RA) at the University of Idaho, developed with support from the National Science Foundation under the GRANTED program ([NSF Award #2427549](https://www.nsf.gov/awardsearch/show-award?AWD_ID=2427549), "Crossing the Innovation Valley of Death: Democratizing Data and Artificial Intelligence for Research Administration"). Any opinions, findings, conclusions or recommendations expressed in this material are those of the author and do not necessarily reflect the views of the National Science Foundation.

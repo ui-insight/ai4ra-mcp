@@ -2,7 +2,15 @@
 name = "ai4ra-mcp"
 version = "0.1.0"
 description = "One process, several MCP servers: the federal, scholarly and screening upstreams a research administrator reads, University of Idaho guidance, and the AI4RA skills."
+license = {text = "Apache-2.0"}
 requires-python = ">=3.12"
+authors = [
+    {name = "Nathan Layman"}
+]
+classifiers = [
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3",
+]
 dependencies = [
   "mcp>=1.27",
   "cryptography",

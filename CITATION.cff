@@ -1,0 +1,14 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "ai4ra-mcp"
+type: software
+date-released: 2026-10-12
+license: Apache-2.0
+repository-code: "https://github.com/ui-insight/ai4ra-mcp"
+authors:
+  - family-names: Layman
+    given-names: Nathan
+    affiliation: "University of Idaho"
+abstract: >-
+  One process of MCP servers for research administration, each over one public
+  upstream or one institution's own, with the guides and skills a model follows.
