@@ -16,6 +16,7 @@ EXPECTED_TOOLS = {
              "ecfr_get_title_versions", "ecfr_get_regulation", "ecfr_get_title_structure", "ecfr_compare_regulations"},
     "grants": {"grants_guide", "grants_gov_search", "grants_gov_opportunity"},
     "uidaho": {"uidaho_guide", "uidaho_guidance_index", "uidaho_guidance_search", "uidaho_guidance_get", "uidaho_rates"},
+    "classes": {"classes_index", "classes_terms", "classes_search", "classes_section"},
     "lakehouse": {"lakehouse_guide", "lakehouse_index", "lakehouse_streams", "lakehouse_schema", "lakehouse_query", "lakehouse_files", "lakehouse_file", "lakehouse_sql_catalog", "lakehouse_sql"},
     "general": {"general_guide", "fetch_document", "web_search"},
     "ai4ra": {"ai4ra_guide"},   # skills and guides only

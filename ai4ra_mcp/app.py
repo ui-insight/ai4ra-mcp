@@ -32,6 +32,7 @@ from starlette.staticfiles import StaticFiles
 from ai4ra_mcp.common.http import log_no_keys, request_key
 from ai4ra_mcp.servers.ai4ra.server import mcp as ai4ra
 from ai4ra_mcp.servers.bls.server import mcp as bls
+from ai4ra_mcp.servers.classes.server import mcp as classes
 from ai4ra_mcp.servers.clickup.server import mcp as clickup
 from ai4ra_mcp.servers.clinicaltrials.server import mcp as clinicaltrials
 from ai4ra_mcp.servers.crossref.server import mcp as crossref
@@ -70,7 +71,7 @@ SERVERS: dict[str, MCPServer] = {
     "perdiem": perdiem, "bls": bls,
     "openalex": openalex, "pubmed": pubmed, "crossref": crossref, "orcid": orcid, "osti": osti, "clinicaltrials": clinicaltrials,
     "clickup": clickup,
-    "uidaho": uidaho, **lakehouse.SERVERS,
+    "uidaho": uidaho, "classes": classes, **lakehouse.SERVERS,
 }
 SERVERS_DIR = Path(__file__).parent / "servers"
 WEB = "https://github.com/ui-insight/ai4ra-mcp/blob/main/ai4ra_mcp/servers/"
@@ -82,6 +83,7 @@ META: dict[str, dict] = {
     "s2s": {"label": "Grants.gov S2S", "description": "The Grants.gov Applicant System-to-System service with the person's own certificate: an opportunity's package, a GrantApplication checked against the schemas, its submission (where the deployment allows), and the status of what was submitted. The deployment's default endpoint is a mock unless configured otherwise.",
             "key": {"required": False, "hint": "Paste your S2S credential bundle: the base64url JSON of your client certificate and key, made with `python -m ai4ra_mcp.servers.s2s.credentials cert.pem key.pem`. Without one the deployment's fallback certificate is used, which only the mock accepts."}},
     "uidaho": {"label": "University of Idaho", "description": "University policy for sponsored projects (APM, FSH), found by what each policy covers or by number and title; a report-only check of a passage against it; and the F&A and fringe rates from the rate agreement and the fringe-rate page, reported in the Rates contract's order."},
+    "classes": {"label": "Class schedule", "description": "The University of Idaho class schedule: who teaches what, when and where, by term, subject, course number or instructor, and one section's description, meetings, prerequisites and enrollment, from the registrar's public Browse Classes. No key."},
     "general": {"label": "General", "description": "Any office, any document: search the open web, read a page or PDF as text; the guide to AI writing tells; a change to a GitHub repository as a pull request and a look at its Actions runs."},
     "ai4ra": {"label": "AI4RA", "description": "Research-administration guides and prompts: an RFA record, a narrative, a work plan, a budget outline and the NSF budget form (each as a guide any client can follow), the compliance-concerns vocabulary for grouping statements, cost-allowability checks and budget justifications; one tool, ai4ra_guide, that serves them."},
     "udm": {"label": "UDM", "description": "The AI4RA Unified Data Model from its published schema: an overview, one table's columns with types, vocabularies and synonyms, one section, and the guide to converting records to it, served by udm_guide."},
@@ -158,7 +160,7 @@ def _transport_security() -> TransportSecuritySettings:
 README = Path(__file__).parent.parent / "README.md"
 # What the whole is, for a model reading the index for the first time; the search first, since a model that searches the web
 # for "MindRouter" finds an unrelated inference gateway and its single-provider search (#33).
-ABOUT = ("ai4ra-mcp: one process of MCP servers for research administration, each over one public upstream or one institution's own (the eCFR, grants.gov, NIH, NSF, SAM.gov, the University of Idaho's policies and lakehouse, the person's ClickUp), with guides and skills a model follows and no client's document tools. Its web_search is a SearXNG metasearch beside the process that merges Google, Bing, DuckDuckGo, Brave, Startpage and more under strict safe search and a server-side blocklist: not a single provider's search. The whole account is README.md at this index's root.")
+ABOUT = ("ai4ra-mcp: one process of MCP servers for research administration, each over one public upstream or one institution's own (the eCFR, grants.gov, NIH, NSF, SAM.gov, the University of Idaho's policies, class schedule and lakehouse, the person's ClickUp), with guides and skills a model follows and no client's document tools. Its web_search is a SearXNG metasearch beside the process that merges Google, Bing, DuckDuckGo, Brave, Startpage and more under strict safe search and a server-side blocklist: not a single provider's search. The whole account is README.md at this index's root.")
 
 
 def build_app(only: list[str] | None = None) -> Starlette:
