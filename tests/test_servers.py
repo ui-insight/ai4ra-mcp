@@ -9,6 +9,7 @@ from starlette.testclient import TestClient
 from ai4ra_mcp.app import SERVERS, build_app
 from ai4ra_mcp.common.given import given_of
 from ai4ra_mcp.common.skills import load_catalog
+from ai4ra_mcp.servers.lakehouse import server as lakehouse
 from ai4ra_mcp.servers.s2s import server as s2s
 from ai4ra_mcp.servers.uidaho import server as uidaho
 
@@ -136,6 +137,9 @@ def test_app_mounts_every_server_and_its_skills():
         assert by["csl"]["key"]["required"] is True and by["bls"]["key"]["required"] is False and by["fedreg"]["key"] is None
         assert by["nih"]["skills_base"] == "nih/skills/" and by["nih"]["mcp"] == "nih/mcp" and by["nih"]["web"].endswith("/nih/skills/")
         assert by["classes"]["given"]["classes_section"] == {"term": "classes_terms", "crn": "classes_search"}
+        # institution (#38): the three Idaho servers name it, every other server carries null.
+        assert {s["name"] for s in index["servers"] if s["institution"] == "University of Idaho"} == {"uidaho", "classes", *lakehouse.SERVERS}
+        assert all(s["institution"] is None for s in index["servers"] if s["name"] not in ("uidaho", "classes", *lakehouse.SERVERS))
         assert all(s["given"] == given_of(SERVERS[s["name"]]) for s in index["servers"])
         for s in index["servers"]:
             assert client.get("/" + s["skills"]).status_code == 200

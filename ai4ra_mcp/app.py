@@ -2,8 +2,9 @@
 
     /<server>/mcp       the server's streamable-HTTP endpoint
     /<server>/skills/   its skills folder as static files (catalog.json, components/)
-    /                   a JSON index of what is mounted, with one sentence for the whole and, per server,
-                        which tool arguments name a thing it holds (`given`)
+    /                   a JSON index of what is mounted, with one sentence for the whole and, per server, the
+                        institution whose own knowledge it needs (`institution`) and which tool arguments
+                        name a thing it holds (`given`)
     /README.md          this repository's README, the server's own account of itself
 
 Run every server with `ai4ra-mcp`, a subset with `--only NAME`, or one server
@@ -78,14 +79,17 @@ SERVERS: dict[str, MCPServer] = {
 SERVERS_DIR = Path(__file__).parent / "servers"
 WEB = "https://github.com/ui-insight/ai4ra-mcp/blob/main/ai4ra_mcp/servers/"
 
-# What a client's picker shows for each server, and whether it wants a key of the person's own.
+# What a client's picker shows for each server, whether it wants a key of the person's own, and, on a cell-3 server, the
+# institution whose own knowledge it needs (`institution`, #38): a fact the server knows, so a client can gather one
+# institution's servers; never a label for servers that share a job, which is a client's curation.
+UIDAHO = "University of Idaho"
 META: dict[str, dict] = {
     "ecfr": {"label": "eCFR", "description": "Federal regulations from the eCFR: search within a title and part, read a section (the current text, or as of a date), compare versions; a report-only check of a passage against 2 CFR 200."},
     "grants": {"label": "grants.gov", "description": "Federal funding opportunities: search, then one opportunity's record with its attachments."},
     "s2s": {"label": "Grants.gov S2S", "description": "The Grants.gov Applicant System-to-System service with the person's own certificate: an opportunity's package, a GrantApplication checked against the schemas, its submission (where the deployment allows), and the status of what was submitted. The deployment's default endpoint is a mock unless configured otherwise.",
             "key": {"required": False, "hint": "Paste your S2S credential bundle: the base64url JSON of your client certificate and key, made with `python -m ai4ra_mcp.servers.s2s.credentials cert.pem key.pem`. Without one the deployment's fallback certificate is used, which only the mock accepts."}},
-    "uidaho": {"label": "University of Idaho", "description": "University policy for sponsored projects (APM, FSH), found by what each policy covers or by number and title; a report-only check of a passage against it; and the F&A and fringe rates from the rate agreement and the fringe-rate page, reported in the Rates contract's order."},
-    "classes": {"label": "Class schedule", "description": "The University of Idaho class schedule and course catalog: who teaches what, when and where, by term, subject, course number or instructor; one section in full; courses by subject, number or title and one course's catalog record, from the registrar's public Browse Classes and Browse Course Catalog. No key."},
+    "uidaho": {"label": "University of Idaho", "institution": UIDAHO, "description": "University policy for sponsored projects (APM, FSH), found by what each policy covers or by number and title; a report-only check of a passage against it; and the F&A and fringe rates from the rate agreement and the fringe-rate page, reported in the Rates contract's order."},
+    "classes": {"label": "Class schedule", "institution": UIDAHO, "description": "The University of Idaho class schedule and course catalog: who teaches what, when and where, by term, subject, course number or instructor; one section in full; courses by subject, number or title and one course's catalog record, from the registrar's public Browse Classes and Browse Course Catalog. No key."},
     "general": {"label": "General", "description": "Any office, any document: search the open web, read a page or PDF as text; the guide to AI writing tells; a change to a GitHub repository as a pull request and a look at its Actions runs."},
     "ai4ra": {"label": "AI4RA", "description": "Research-administration guides and prompts: an RFA record, a narrative, a work plan, a budget outline and the NSF budget form (each as a guide any client can follow), the compliance-concerns vocabulary for grouping statements, cost-allowability checks and budget justifications; one tool, ai4ra_guide, that serves them."},
     "udm": {"label": "UDM", "description": "The AI4RA Unified Data Model from its published schema: an overview, one table's columns with types, vocabularies and synonyms, one section, and the guide to converting records to it, served by udm_guide."},
@@ -122,7 +126,7 @@ META: dict[str, dict] = {
 
 # One lakehouse server per configured client (AI4RA_MCP_LAKEHOUSE_CLIENTS): each its own fold and its own secret.
 for _name, _client in lakehouse.CLIENT_OF.items():
-    META[_name] = {"label": "Lakehouse" if len(lakehouse.CLIENT_OF) == 1 else f"Lakehouse ({_client})",
+    META[_name] = {"label": "Lakehouse" if len(lakehouse.CLIENT_OF) == 1 else f"Lakehouse ({_client})", "institution": UIDAHO,
                    "description": f"The University of Idaho data lakehouse (Marina) as client {_client}: the streams it may query, their tables and columns, rows filtered or aggregated, and the files a stream may read. Read only.",
                    "key": {"required": True, "hint": f"Paste the shared secret issued with the lakehouse client id {_client} by Research Computing and Data Services; or, to run as another client, its id, a colon and its secret (other-client:its-secret)."}}
 
@@ -187,7 +191,7 @@ def build_app(only: list[str] | None = None) -> Starlette:
             tools = await SERVERS[name].list_tools()
             prompts = await SERVERS[name].list_prompts()
             meta = META.get(name, {})
-            out.append({"name": name, "label": meta.get("label", name), "description": meta.get("description", ""),
+            out.append({"name": name, "label": meta.get("label", name), "institution": meta.get("institution"), "description": meta.get("description", ""),
                         # Relative to this index, so they resolve under whatever prefix a proxy mounts the server at.
                         "mcp": f"{name}/mcp", "skills": f"{name}/skills/catalog.json", "skills_base": f"{name}/skills/",
                         "web": f"{WEB}{name}/skills/", "key": meta.get("key"),
