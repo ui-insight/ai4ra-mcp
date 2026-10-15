@@ -114,8 +114,9 @@ LOG_HEADERS_ENV = "AI4RA_MCP_LOG_HEADERS"
 def log_headers() -> bool:
     """The one logging switch: on when AI4RA_MCP_LOG_HEADERS is `1`, off otherwise, read on each request so a
     deployment turns it on to troubleshoot a client and off again after. On, the middleware logs one line per
-    request: method, path, whether an Authorization header arrived and was accepted, the header's exact form with
-    its token redacted (redact_auth) and the names of the headers present; never a character of any value."""
+    request: method, path, whether an Authorization header arrived and was accepted (and why not), the header's
+    fields as received with its credential redacted (describe_auth) and the names of the headers present; never a
+    character of any value."""
     return os.environ.get(LOG_HEADERS_ENV, "").strip() == "1"
 
 
@@ -131,12 +132,56 @@ def redact_auth(value: str) -> str:
         w = m.group(0)
         if w.lower().rstrip(":") in _SCHEMES:
             return w
-        for scheme in _SCHEMES:
-            for prefix in (scheme + ":", scheme):
-                if w.lower().startswith(prefix) and len(w) > len(prefix):
-                    return f"{w[:len(prefix)]}<token:{len(w) - len(prefix)}>"
+        prefix = _scheme_prefix(w)
+        if prefix and len(w) > len(prefix):
+            return f"{prefix}<token:{len(w) - len(prefix)}>"
         return f"<token:{len(w)}>"
     return re.sub(r"\S+", word, value)
+
+
+def _scheme_prefix(word: str) -> str:
+    """The scheme word (with its colon, if one follows) that a word begins with, as sent; '' when none does."""
+    for scheme in sorted(_SCHEMES, key=len, reverse=True):
+        for prefix in (scheme + ":", scheme):
+            if word.lower().startswith(prefix):
+                return word[:len(prefix)]
+    return ""
+
+
+def describe_auth(raw: str) -> tuple[str, str | None]:
+    """The fields of an Authorization header as received, and why the middleware would refuse it (None when it
+    would accept): the redacted form (redact_auth), the whole value's length, the scheme word exactly as sent
+    (`none` when the first word is not one, since it may be the key), the separator between scheme and token as
+    code points (U+0020 is a space, U+00A0 a non-breaking one, `none` when the token is glued to the scheme),
+    the token's length, and whether whitespace pads either end. No character of a credential is among them."""
+    m = re.match(r"^(\s*)(\S*)(\s*)(.*?)(\s*)$", raw, re.S)
+    lead, first, sep, rest, trail = m.groups()
+    prefix = _scheme_prefix(first)
+    if first and prefix and first.lower().rstrip(":") in _SCHEMES:
+        scheme, token_len = first, len(rest)
+    elif prefix:  # the token glued to the scheme, perhaps after a colon
+        scheme, sep, token_len = prefix, "", len(first) - len(prefix) + (len(sep) + len(rest) if rest else 0)
+    else:
+        scheme, sep, token_len = "", "", len(first) + (len(sep) + len(rest) if rest else 0)
+    padded = {(True, True): "both", (True, False): "leading", (False, True): "trailing", (False, False): "no"}[(bool(lead), bool(trail))]
+    sep_points = " ".join(f"U+{ord(c):04X}" for c in sep) if sep else "none"
+    fields = (f"{redact_auth(raw)!r} len={len(raw)} scheme={scheme or 'none'} sep={sep_points} "
+              f"token_len={token_len} padded={padded}")
+    if not scheme:
+        reason = "no scheme word" if first else "empty"
+    elif scheme.lower().rstrip(":") != "bearer":
+        reason = f"scheme is {scheme}, not Bearer"
+    elif scheme.endswith(":"):
+        reason = "a colon after the scheme"
+    elif not sep:
+        reason = "no space between the scheme and the token"
+    elif sep != " " and not all(c == " " for c in sep):
+        reason = "the separator is not a space"
+    elif token_len == 0:
+        reason = "no token"
+    else:
+        reason = None
+    return fields, reason
 
 
 def api_key(env_name: str) -> str | None:

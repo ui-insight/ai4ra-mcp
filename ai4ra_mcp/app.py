@@ -32,7 +32,7 @@ from starlette.routing import Mount, Route
 from starlette.staticfiles import StaticFiles
 
 from ai4ra_mcp.common.given import given_of
-from ai4ra_mcp.common.http import headers_log, log_headers, log_no_keys, redact_auth, request_key
+from ai4ra_mcp.common.http import describe_auth, headers_log, log_headers, log_no_keys, request_key
 from ai4ra_mcp.servers.ai4ra.server import mcp as ai4ra
 from ai4ra_mcp.servers.bls.server import mcp as bls
 from ai4ra_mcp.servers.classes.server import mcp as classes
@@ -138,8 +138,8 @@ class BearerKeyMiddleware:
     """Reads `Authorization: Bearer <token>` and makes it this request's upstream key (see
     common.http.request_key). The token is held for the request only and never logged. With AI4RA_MCP_LOG_HEADERS=1
     (the one logging switch) every request is one WARNING line: method, path, whether an Authorization header
-    arrived and was accepted, its exact form with the credential redacted (common.http.redact_auth) and the names
-    of the headers present, so a deployment can set a call that worked beside one that did not; no credential and
+    arrived and was accepted (and why not), its fields as received with the credential redacted
+    (common.http.describe_auth) and the names of the headers present, so a deployment can set a call that worked beside one that did not; no credential and
     no other header's value is ever written."""
 
     def __init__(self, app):
@@ -152,10 +152,13 @@ class BearerKeyMiddleware:
             auth = "absent"
             for name, value in headers:
                 if name == b"authorization":
-                    v = value.decode("latin-1").strip()
+                    raw = value.decode("latin-1")
+                    v = raw.strip()
                     if v[:7].lower() == "bearer " and v[7:].strip():
                         token = v[7:].strip()
-                    auth = f"{'accepted' if token else 'present but not accepted'} {redact_auth(v)!r}"
+                    if log_headers():
+                        fields, reason = describe_auth(raw)
+                        auth = f"accepted {fields}" if token else f"rejected ({reason}) {fields}"
                     break
             if log_headers():
                 headers_log.warning("%s %s: authorization %s; headers: %s", scope.get("method"), scope.get("path"), auth,

@@ -381,29 +381,35 @@ to get one. Every other tool answers:
 With `AI4RA_MCP_LOG_HEADERS=1` in the environment, the one logging switch,
 the process logs one WARNING line per request on any path: method, path,
 whether an `Authorization` header arrived and whether the middleware
-accepted it, the header's exact form with its credential redacted, and the
-names of the headers present. In the form, every word that is not a scheme
-word is `<token:N>` with N its length, a word that begins with a scheme
-word keeps only that prefix, and whitespace is kept as sent and quoted, so
-a lost, doubled or odd space shows; no credential and no other header's
-value is written. A call that worked and one that did not sit side by
-side, and a grep on `not accepted` or `absent` keeps the failures:
+accepted it (and why not), the header's fields as received with its
+credential redacted, and the names of the headers present. The fields are
+the header's form (every word that is not a scheme word is `<token:N>` with
+N its length, a word that begins with a scheme word keeps only that prefix,
+whitespace kept as sent and quoted), the whole value's length, the scheme
+word exactly as sent (`none` when the first word is not one, since it may be
+the key), the separator between scheme and token as code points (`U+0020` a
+space, `U+00A0` a non-breaking one, `none` when the token is glued to the
+scheme), the token's length, and whether whitespace pads either end. No
+character of a credential and no other header's value is written. A call
+that worked and one that did not sit side by side, and a grep on `rejected`
+or `absent` keeps the failures:
 
 ```
-POST /perdiem/mcp: authorization accepted 'Bearer <token:40>'; headers: host, user-agent, accept, content-type, authorization
-POST /perdiem/mcp: authorization present but not accepted 'Bearer<token:40>'; headers: host, user-agent, accept, content-type, authorization
-POST /perdiem/mcp: authorization present but not accepted 'Bearer: <token:40>'; headers: host, user-agent, accept, content-type, authorization
+POST /perdiem/mcp: authorization accepted 'Bearer <token:40>' len=47 scheme=Bearer sep=U+0020 token_len=40 padded=no; headers: host, user-agent, accept, content-type, authorization
+POST /perdiem/mcp: authorization rejected (no space between the scheme and the token) 'Bearer<token:40>' len=46 scheme=Bearer sep=none token_len=40 padded=no; headers: host, user-agent, accept, content-type, authorization
+POST /perdiem/mcp: authorization rejected (a colon after the scheme) 'Bearer: <token:40>' len=48 scheme=Bearer: sep=U+0020 token_len=40 padded=no; headers: host, user-agent, accept, content-type, authorization
 POST /perdiem/mcp: authorization absent; headers: host, user-agent, accept, content-type
 ```
 
 The first is the accepted form. The second is the key glued to `Bearer`
 with the space between them lost, what Claude.ai's header field did to a
 typed space (2026-10-15, the first thing this line found); the third a colon
-that crept in; `'<token:40>'` would be a key pasted bare, `'Bearer Bearer
-<token:40>'` a doubled prefix. The switch is read on each request and is
-off unless set, so a deployment turns it on to troubleshoot a client (on
-the demo VM, the line in the `.env` beside the compose file and
-`docker compose up -d`) and off again after.
+that crept in. The other reasons are `no scheme word` (a key pasted bare),
+`scheme is Basic, not Bearer`, `the separator is not a space`, `no token`
+and `empty`. The switch is read on each request and is off unless set, so a
+deployment turns it on to troubleshoot a client (on the demo VM, the line
+in the `.env` beside the compose file and `docker compose up -d`) and off
+again after.
 
 The second line is there because a refused lookup once became an invented
 answer: a per diem question got made-up figures with a made-up source line
@@ -1616,7 +1622,7 @@ no keys.
 | `AI4RA_MCP_S2S_CERT_FILE`, `AI4RA_MCP_S2S_KEY_FILE` | Fallback client certificate and key for a request that sends no bearer bundle; the compose file points them at a mock-minted pair | unset |
 | `AI4RA_MCP_S2S_WRITES` | `1` registers `s2s_submit` | unset: read only |
 | `AI4RA_MCP_S2S_PRODUCTION` | `1` lets `s2s_submit` reach `ws07.grants.gov`; otherwise production is refused | unset |
-| `AI4RA_MCP_LOG_HEADERS` | `1` logs one line per request: method, path, whether an `Authorization` header arrived and was accepted, its exact form with the credential redacted, the header names, never a credential (see [What a request without a key gets](#what-a-request-without-a-key-gets)); the compose file passes it through from `.env` | unset: nothing logged |
+| `AI4RA_MCP_LOG_HEADERS` | `1` logs one line per request: method, path, whether an `Authorization` header arrived and was accepted and why not, its fields (form, length, scheme, separator code points, token length, padding) with the credential redacted, the header names, never a credential (see [What a request without a key gets](#what-a-request-without-a-key-gets)); the compose file passes it through from `.env` | unset: nothing logged |
 | `SEARXNG_SECRET` | SearXNG's own secret, read by the compose file from the environment or a `.env` file beside it | a placeholder that should be changed |
 
 ## Hosting
@@ -1772,10 +1778,11 @@ plan it is the organization's, shared by everyone who connects.
   keeps it out of the log. Decided 2026-09-30, after the per diem key was
   found in the demo host's container log. The line per request that
   `AI4RA_MCP_LOG_HEADERS` turns on (under *What a request without a key
-  gets*) carries header names and the Authorization header's form with
+  gets*) carries header names and the Authorization header's fields with
   every word that is not a scheme word replaced by its length, since any
   such word may be the key; no credential reaches the line whatever a
-  client did to it.
+  client did to it, and no masked or hashed part of one either, since a
+  part of a credential is still the credential.
 - **Nothing from memory.** A tool that cannot reach its upstream, or has no
   key for it, says so and tells the model to stop there. A skill reports
   only what the tools returned, with the address of every figure.

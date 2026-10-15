@@ -77,10 +77,36 @@ def test_redact_auth_keeps_the_form_and_no_character_of_a_token():
         assert key not in redacted and key[:4] not in redacted and "extra" not in redacted
 
 
+def test_describe_auth_fields_and_reasons_agree_with_the_middleware():
+    key = "aBYgwiZVVeIdD5y1GuItf5UTqFvb7hAH58LjiULo"
+    cases = {
+        f"Bearer {key}": ("'Bearer <token:40>' len=47 scheme=Bearer sep=U+0020 token_len=40 padded=no", None),
+        f"bearer {key}": ("'bearer <token:40>' len=47 scheme=bearer sep=U+0020 token_len=40 padded=no", None),
+        f"Bearer  {key}": ("'Bearer  <token:40>' len=48 scheme=Bearer sep=U+0020 U+0020 token_len=40 padded=no", None),
+        f" Bearer {key} ": ("' Bearer <token:40> ' len=49 scheme=Bearer sep=U+0020 token_len=40 padded=both", None),
+        f"Bearer{key}": ("'Bearer<token:40>' len=46 scheme=Bearer sep=none token_len=40 padded=no", "no space between the scheme and the token"),
+        f"Bearer: {key}": ("'Bearer: <token:40>' len=48 scheme=Bearer: sep=U+0020 token_len=40 padded=no", "a colon after the scheme"),
+        f"Bearer:{key}": ("'Bearer:<token:40>' len=47 scheme=Bearer: sep=none token_len=40 padded=no", "a colon after the scheme"),
+        key: ("'<token:40>' len=40 scheme=none sep=none token_len=40 padded=no", "no scheme word"),
+        f"Basic {key}": ("'Basic <token:40>' len=46 scheme=Basic sep=U+0020 token_len=40 padded=no", "scheme is Basic, not Bearer"),
+        f"Bearer\xa0{key}": ("'Bearer\\xa0<token:40>' len=47 scheme=Bearer sep=U+00A0 token_len=40 padded=no", "the separator is not a space"),
+        "Bearer": ("'Bearer' len=6 scheme=Bearer sep=none token_len=0 padded=no", "no space between the scheme and the token"),
+        "Bearer ": ("'Bearer ' len=7 scheme=Bearer sep=U+0020 token_len=0 padded=no", "no token"),
+        "": ("'' len=0 scheme=none sep=none token_len=0 padded=no", "empty"),
+    }
+    for raw, (fields, reason) in cases.items():
+        assert h.describe_auth(raw) == (fields, reason), raw
+        assert key not in fields and key[:4] not in fields
+        # The reason is None exactly when the middleware's own check accepts the value.
+        v = raw.strip()
+        assert (reason is None) == (v[:7].lower() == "bearer " and bool(v[7:].strip())), raw
+
+
 def test_header_log_describes_every_request_and_never_a_value(monkeypatch, caplog):
     """With AI4RA_MCP_LOG_HEADERS=1 the middleware logs one WARNING per request: method, path, whether an
-    Authorization header arrived and was accepted, its redacted form, and the header names (the happy path and the
-    sad ones alike, so a grep picks either); off, or unset, nothing is logged; no credential appears in any record."""
+    Authorization header arrived and was accepted (and why not), its fields with the credential redacted, and the
+    header names (the happy path and the sad ones alike, so a grep picks either); off, or unset, nothing is logged;
+    no credential appears in any record."""
     monkeypatch.delenv("AI4RA_MCP_PERDIEM_KEY", raising=False)
     monkeypatch.setenv(h.LOG_HEADERS_ENV, "1")
 
@@ -104,7 +130,7 @@ def test_header_log_describes_every_request_and_never_a_value(monkeypatch, caplo
         assert call({"Authorization": "Bearer SECRET_ACCEPTED_KEY"})["returned"] == 0
         (line,) = lines()
         head, names = line.split("; headers: ")
-        assert head == "POST /perdiem/mcp: authorization accepted 'Bearer <token:19>'"
+        assert head == "POST /perdiem/mcp: authorization accepted 'Bearer <token:19>' len=26 scheme=Bearer sep=U+0020 token_len=19 padded=no"
         assert "authorization" in names.split(", ") and "accept" in names.split(", ")
         caplog.clear()
         assert "no API key" in call({})["error"]
@@ -113,13 +139,13 @@ def test_header_log_describes_every_request_and_never_a_value(monkeypatch, caplo
         assert head == "POST /perdiem/mcp: authorization absent" and "authorization" not in names.split(", ")
         caplog.clear()
         assert "no API key" in call({"Authorization": "Bearer: SECRET_COLON_KEY"})["error"]
-        assert lines()[0].startswith("POST /perdiem/mcp: authorization present but not accepted 'Bearer: <token:16>'; headers: ")
+        assert lines()[0].startswith("POST /perdiem/mcp: authorization rejected (a colon after the scheme) 'Bearer: <token:16>' len=24 scheme=Bearer: sep=U+0020 token_len=16 padded=no; headers: ")
         caplog.clear()
         assert "no API key" in call({"Authorization": "BearerSECRET_NOSPACE_"})["error"]
-        assert lines()[0].startswith("POST /perdiem/mcp: authorization present but not accepted 'Bearer<token:15>'; headers: ")
+        assert lines()[0].startswith("POST /perdiem/mcp: authorization rejected (no space between the scheme and the token) 'Bearer<token:15>' len=21 scheme=Bearer sep=none token_len=15 padded=no; headers: ")
         caplog.clear()
         assert "no API key" in call({"Authorization": "SECRET_BARE_KEY_1"})["error"]
-        assert lines()[0].startswith("POST /perdiem/mcp: authorization present but not accepted '<token:17>'; headers: ")
+        assert lines()[0].startswith("POST /perdiem/mcp: authorization rejected (no scheme word) '<token:17>' len=17 scheme=none sep=none token_len=17 padded=no; headers: ")
         caplog.clear()
         assert client.get("/").status_code == 200
         assert lines()[0].startswith("GET /: authorization absent; headers: ")
