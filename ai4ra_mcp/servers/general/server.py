@@ -3,7 +3,7 @@
 Two tools: the page reader, and a web search answered by a SearXNG instance beside this process
 (AI4RA_MCP_SEARXNG_URL, default http://127.0.0.1:8080). Its skills are the ones any office uses
 from any client: the AI-tells guide (the families, the word lists and the invariants a placement skill
-applies), and two for a GitHub repository through GitHub's own MCP server.
+applies). The two GitHub skills moved to the github server on 2026-10-14.
 """
 
 from __future__ import annotations

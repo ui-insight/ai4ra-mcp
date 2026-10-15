@@ -44,6 +44,7 @@ from ai4ra_mcp.servers.ecfr.server import mcp as ecfr
 from ai4ra_mcp.servers.fac.server import mcp as fac
 from ai4ra_mcp.servers.fedreg.server import mcp as fedreg
 from ai4ra_mcp.servers.general.server import mcp as general
+from ai4ra_mcp.servers.github.server import mcp as github
 from ai4ra_mcp.servers.grants.server import mcp as grants
 from ai4ra_mcp.servers.lakehouse import server as lakehouse
 from ai4ra_mcp.servers.nih.server import mcp as nih
@@ -73,24 +74,26 @@ SERVERS: dict[str, MCPServer] = {
     "sam": sam, "fac": fac, "csl": csl, "oig": oig, "propublica": propublica, "ror": ror,
     "perdiem": perdiem, "bls": bls,
     "openalex": openalex, "pubmed": pubmed, "crossref": crossref, "orcid": orcid, "osti": osti, "clinicaltrials": clinicaltrials,
-    "clickup": clickup,
+    "clickup": clickup, "github": github,
     "uidaho": uidaho, "classes": classes, **lakehouse.SERVERS,
 }
 SERVERS_DIR = Path(__file__).parent / "servers"
 WEB = "https://github.com/ui-insight/ai4ra-mcp/blob/main/ai4ra_mcp/servers/"
 
-# What a client's picker shows for each server, whether it wants a key of the person's own, and, on a cell-3 server, the
-# institution whose own knowledge it needs (`institution`, #38): a fact the server knows, so a client can gather one
-# institution's servers; never a label for servers that share a job, which is a client's curation.
+# What a client's picker shows for each server, whether it wants a key of the person's own, and the institution whose own
+# stuff the server is about (`institution`, #38): Idaho's own knowledge on its three, GitHub on the server whose skills
+# run over GitHub's own MCP server (so a client folds it with that server, 2026-10-14); a fact the server knows, never a
+# label for servers that share a job, which is a client's curation.
 UIDAHO = "University of Idaho"
 META: dict[str, dict] = {
     "ecfr": {"label": "eCFR", "description": "Federal regulations from the eCFR: search within a title and part, read a section (the current text, or as of a date), compare versions; a report-only check of a passage against 2 CFR 200."},
     "grants": {"label": "grants.gov", "description": "Federal funding opportunities: search, then one opportunity's record with its attachments."},
     "s2s": {"label": "Grants.gov S2S", "description": "The Grants.gov Applicant System-to-System service with the person's own certificate: an opportunity's package, a GrantApplication checked against the schemas, its submission (where the deployment allows), and the status of what was submitted. The deployment's default endpoint is a mock unless configured otherwise.",
             "key": {"required": False, "hint": "Paste your S2S credential bundle: the base64url JSON of your client certificate and key, made with `python -m ai4ra_mcp.servers.s2s.credentials cert.pem key.pem`. Without one the deployment's fallback certificate is used, which only the mock accepts."}},
-    "uidaho": {"label": "University of Idaho", "institution": UIDAHO, "description": "University policy for sponsored projects (APM, FSH), found by what each policy covers or by number and title; a report-only check of a passage against it; and the F&A and fringe rates from the rate agreement and the fringe-rate page, reported in the Rates contract's order."},
+    "uidaho": {"label": "UI guidance", "institution": UIDAHO, "description": "University policy for sponsored projects (APM, FSH), found by what each policy covers or by number and title; a report-only check of a passage against it; and the F&A and fringe rates from the rate agreement and the fringe-rate page, reported in the Rates contract's order."},
     "classes": {"label": "Class schedule", "institution": UIDAHO, "description": "The University of Idaho class schedule and course catalog: who teaches what, when and where, by term, subject, course number or instructor; one section in full; courses by subject, number or title and one course's catalog record, from the registrar's public Browse Classes and Browse Course Catalog. No key."},
-    "general": {"label": "General", "description": "Any office, any document: search the open web, read a page or PDF as text; the guide to AI writing tells; a change to a GitHub repository as a pull request and a look at its Actions runs."},
+    "general": {"label": "General", "description": "Any office, any document: search the open web, read a page or PDF as text; the guide to AI writing tells."},
+    "github": {"label": "GitHub skills", "institution": "GitHub", "description": "Two skills for a GitHub repository through GitHub's own MCP server, whose tools they name: a change as a pull request on an agent branch, and one look at the Actions runs. No tools of its own; no key, since the key is GitHub's server's."},
     "ai4ra": {"label": "AI4RA", "description": "Research-administration guides and prompts: an RFA record, a narrative, a work plan, a budget outline and the NSF budget form (each as a guide any client can follow), the compliance-concerns vocabulary for grouping statements, cost-allowability checks and budget justifications; one tool, ai4ra_guide, that serves them."},
     "udm": {"label": "UDM", "description": "The AI4RA Unified Data Model from its published schema: an overview, one table's columns with types, vocabularies and synonyms, one section, and the guide to converting records to it, served by udm_guide."},
     "nih": {"label": "NIH RePORTER", "description": "NIH-funded projects by PI, organization or topic; one project by number; its publications."},
