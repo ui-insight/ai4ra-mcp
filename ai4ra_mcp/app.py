@@ -32,7 +32,7 @@ from starlette.routing import Mount, Route
 from starlette.staticfiles import StaticFiles
 
 from ai4ra_mcp.common.given import given_of
-from ai4ra_mcp.common.http import auth_shape, log_no_keys, request_auth_shape, request_key
+from ai4ra_mcp.common.http import headers_log, log_headers, log_no_keys, redact_auth, request_key
 from ai4ra_mcp.servers.ai4ra.server import mcp as ai4ra
 from ai4ra_mcp.servers.bls.server import mcp as bls
 from ai4ra_mcp.servers.classes.server import mcp as classes
@@ -136,29 +136,35 @@ for _name, _client in lakehouse.CLIENT_OF.items():
 
 class BearerKeyMiddleware:
     """Reads `Authorization: Bearer <token>` and makes it this request's upstream key (see
-    common.http.request_key). The token is held for the request only and never logged. A header that arrived in
-    another form is kept as its shape alone (common.http.auth_shape), for the line a keyed tool logs when it refuses."""
+    common.http.request_key). The token is held for the request only and never logged. With AI4RA_MCP_LOG_HEADERS=1
+    (the one logging switch) every request is one WARNING line: method, path, whether an Authorization header
+    arrived and was accepted, its exact form with the credential redacted (common.http.redact_auth) and the names
+    of the headers present, so a deployment can set a call that worked beside one that did not; no credential and
+    no other header's value is ever written."""
 
     def __init__(self, app):
         self.app = app
 
     async def __call__(self, scope, receive, send):
-        token = shape = None
+        token = None
         if scope["type"] == "http":
-            for name, value in scope.get("headers") or []:
+            headers = scope.get("headers") or []
+            auth = "absent"
+            for name, value in headers:
                 if name == b"authorization":
                     v = value.decode("latin-1").strip()
                     if v[:7].lower() == "bearer " and v[7:].strip():
                         token = v[7:].strip()
-                    else:
-                        shape = auth_shape(v)
+                    auth = f"{'accepted' if token else 'present but not accepted'} {redact_auth(v)!r}"
                     break
-        reset_key, reset_shape = request_key.set(token), request_auth_shape.set(shape)
+            if log_headers():
+                headers_log.warning("%s %s: authorization %s; headers: %s", scope.get("method"), scope.get("path"), auth,
+                                    ", ".join(n.decode("latin-1") for n, _ in headers) or "none")
+        reset = request_key.set(token)
         try:
             await self.app(scope, receive, send)
         finally:
-            request_key.reset(reset_key)
-            request_auth_shape.reset(reset_shape)
+            request_key.reset(reset)
 
 
 def _transport_security() -> TransportSecuritySettings:

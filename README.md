@@ -345,11 +345,11 @@ person pastes the same key into each of those three servers.
   enters a fixed header once and Claude.ai sends it on every request for
   everyone in the organization. For a keyed server here, that is one
   connector per server with authentication *No sign-in* and a request
-  header `authorization` whose value is `bearer <key>`, the scheme typed in
-  and in lower case: a value that begins `Bearer ` with a capital never
-  reaches the server (Claude.ai takes it for an OAuth token of its own and
-  drops it, as of 2026-10-15), while `bearer ` is sent as typed and the
-  server reads the scheme case-insensitively; the key is then shared by the
+  header `authorization` whose value is `Bearer <key>`, pasted in whole:
+  a space typed into Claude.ai's value field is removed, so a typed value
+  arrives as `Bearer<key>` in one word and the server sees no scheme (seen
+  2026-10-15 by the request log, the header's form `'Bearer<token:40>'`),
+  while a pasted value arrives intact; the key is then shared by the
   organization on a Team or Enterprise plan, and the person's own on a
   Free, Pro or Max plan. The headers cannot be edited after the connector
   is added, only removed and re-added. Without that beta, a keyed server
@@ -378,18 +378,32 @@ to get one. Every other tool answers:
 }
 ```
 
-With `AI4RA_MCP_LOG_REFUSALS=1` in the environment, each such refusal is one
-WARNING line in the process log saying whether an `Authorization` header
-arrived at all and, when one did, its shape and nothing of its value: the
-scheme word if it is a known one (else only its length), how many
-space-separated parts there are, and the last part's length. The switch is
-read at each refusal and is off unless set, so a deployment turns it on to
-troubleshoot a client (on the demo VM, the line in the `.env` beside the
-compose file and `docker compose up -d`) and off again after. `authorization header absent` is a client that sent nothing (what
-Claude.ai did with a capitalised `Bearer`, 2026-10-15); `present but not
-accepted (scheme=Bearer: parts=2 last_len=40)` is a colon that crept in;
-`scheme=<40 chars> parts=1` is a key pasted bare; `parts=3` a doubled
-prefix. An accepted key logs nothing.
+With `AI4RA_MCP_LOG_HEADERS=1` in the environment, the one logging switch,
+the process logs one WARNING line per request on any path: method, path,
+whether an `Authorization` header arrived and whether the middleware
+accepted it, the header's exact form with its credential redacted, and the
+names of the headers present. In the form, every word that is not a scheme
+word is `<token:N>` with N its length, a word that begins with a scheme
+word keeps only that prefix, and whitespace is kept as sent and quoted, so
+a lost, doubled or odd space shows; no credential and no other header's
+value is written. A call that worked and one that did not sit side by
+side, and a grep on `not accepted` or `absent` keeps the failures:
+
+```
+POST /perdiem/mcp: authorization accepted 'Bearer <token:40>'; headers: host, user-agent, accept, content-type, authorization
+POST /perdiem/mcp: authorization present but not accepted 'Bearer<token:40>'; headers: host, user-agent, accept, content-type, authorization
+POST /perdiem/mcp: authorization present but not accepted 'Bearer: <token:40>'; headers: host, user-agent, accept, content-type, authorization
+POST /perdiem/mcp: authorization absent; headers: host, user-agent, accept, content-type
+```
+
+The first is the accepted form. The second is the key glued to `Bearer`
+with the space between them lost, what Claude.ai's header field did to a
+typed space (2026-10-15, the first thing this line found); the third a colon
+that crept in; `'<token:40>'` would be a key pasted bare, `'Bearer Bearer
+<token:40>'` a doubled prefix. The switch is read on each request and is
+off unless set, so a deployment turns it on to troubleshoot a client (on
+the demo VM, the line in the `.env` beside the compose file and
+`docker compose up -d`) and off again after.
 
 The second line is there because a refused lookup once became an invented
 answer: a per diem question got made-up figures with a made-up source line
@@ -1602,7 +1616,7 @@ no keys.
 | `AI4RA_MCP_S2S_CERT_FILE`, `AI4RA_MCP_S2S_KEY_FILE` | Fallback client certificate and key for a request that sends no bearer bundle; the compose file points them at a mock-minted pair | unset |
 | `AI4RA_MCP_S2S_WRITES` | `1` registers `s2s_submit` | unset: read only |
 | `AI4RA_MCP_S2S_PRODUCTION` | `1` lets `s2s_submit` reach `ws07.grants.gov`; otherwise production is refused | unset |
-| `AI4RA_MCP_LOG_REFUSALS` | `1` logs one line per keyed call refused for want of a key, with the `Authorization` header's shape and never its value (see [What a request without a key gets](#what-a-request-without-a-key-gets)); the compose file passes it through from `.env` | unset: nothing logged |
+| `AI4RA_MCP_LOG_HEADERS` | `1` logs one line per request: method, path, whether an `Authorization` header arrived and was accepted, its exact form with the credential redacted, the header names, never a credential (see [What a request without a key gets](#what-a-request-without-a-key-gets)); the compose file passes it through from `.env` | unset: nothing logged |
 | `SEARXNG_SECRET` | SearXNG's own secret, read by the compose file from the environment or a `.env` file beside it | a placeholder that should be changed |
 
 ## Hosting
@@ -1696,12 +1710,14 @@ You need the server's URL and your own api.data.gov key.
 3. Leave No sign-in selected. The yellow notice that anyone with the URL can
    use the connector is generic to that choice; your key is not part of it.
 4. Under **Request headers**, click Add header. Name: `authorization`.
-   Value: `bearer ` in lower case, then your key, with the space. The case
-   matters to Claude.ai, not to the server: a value that begins `Bearer `
-   with a capital is never sent (seen 2026-10-15; the server then answers
-   "no API key on this request"), while `bearer ` arrives as typed, and the
-   server accepts the scheme in any case. Without the scheme the server
-   ignores the value. Mark the header Required.
+   Value: `Bearer ` and then your key, with the space, and paste the whole
+   value rather than typing it: a space typed into that field is dropped,
+   so a typed value reaches the server as `Bearer<key>` in one word and the
+   server answers "no API key on this request" (seen 2026-10-15, when the
+   request log showed the header as `'Bearer<token:40>'`, the key glued to
+   the scheme). The scheme's case does not matter to the
+   server. Without the scheme the server ignores the value. Mark the
+   header Required.
 5. Click **Add**. In a chat, turn the connector on from the + menu and ask
    for a rate (Boise, Idaho, fiscal year 2026). The `gsa_perdiem_index` tool
    reports `on_this_request: true` when the key arrived; a refused key comes
@@ -1754,10 +1770,12 @@ plan it is the organization's, shared by everyone who connects.
   accepts a header gets the key there (api.data.gov's `X-Api-Key` for per
   diem); SAM.gov and PubMed want it in the URL, so the filter is what
   keeps it out of the log. Decided 2026-09-30, after the per diem key was
-  found in the demo host's container log. The one line a refused call logs
-  (under *What a request without a key gets*) carries the header's shape
-  and never a character of its value; a first word that is not a known
-  scheme is logged as its length alone, since it may be the key itself.
+  found in the demo host's container log. The line per request that
+  `AI4RA_MCP_LOG_HEADERS` turns on (under *What a request without a key
+  gets*) carries header names and the Authorization header's form with
+  every word that is not a scheme word replaced by its length, since any
+  such word may be the key; no credential reaches the line whatever a
+  client did to it.
 - **Nothing from memory.** A tool that cannot reach its upstream, or has no
   key for it, says so and tells the model to stop there. A skill reports
   only what the tools returned, with the address of every figure.

@@ -54,28 +54,35 @@ async def test_perdiem_sends_its_key_as_a_header(monkeypatch):
     assert "FAKEKEY_header_test" not in seen["url"] and not seen["params"]
 
 
-def test_auth_shape_carries_no_character_of_a_token():
+def test_redact_auth_keeps_the_form_and_no_character_of_a_token():
     key = "aBYgwiZVVeIdD5y1GuItf5UTqFvb7hAH58LjiULo"
     cases = {
-        f"Bearer: {key}": "scheme=Bearer: parts=2 last_len=40",
-        key: "scheme=<40 chars> parts=1 last_len=40",
-        f"Bearer Bearer {key}": "scheme=Bearer parts=3 last_len=40",
-        f"Bearer:{key}": "scheme=<47 chars> parts=1 last_len=47",
-        f"Basic {key}": "scheme=Basic parts=2 last_len=40",
-        "Bearer": "scheme=Bearer parts=1 last_len=6",
-        "": "scheme=<0 chars> parts=0 last_len=0",
+        f"Bearer {key}": "Bearer <token:40>",
+        f"bearer {key}": "bearer <token:40>",
+        f"Bearer  {key}": "Bearer  <token:40>",
+        f"Bearer: {key}": "Bearer: <token:40>",
+        key: "<token:40>",
+        f"Bearer Bearer {key}": "Bearer Bearer <token:40>",
+        f"Bearer{key}": "Bearer<token:40>",
+        f"Bearer:{key}": "Bearer:<token:40>",
+        f"Basic {key}": "Basic <token:40>",
+        f"Bearer {key} extra": "Bearer <token:40> <token:5>",
+        f"Bearer\xa0{key}": "Bearer\xa0<token:40>",
+        "Bearer": "Bearer",
+        "": "",
+        "abc": "<token:3>",
     }
-    for value, shape in cases.items():
-        assert h.auth_shape(value) == shape, value
-        assert key not in shape and key[:8] not in shape
+    for value, redacted in cases.items():
+        assert h.redact_auth(value) == redacted, value
+        assert key not in redacted and key[:4] not in redacted and "extra" not in redacted
 
 
-def test_refusal_logs_the_header_shape_and_never_the_token(monkeypatch, caplog):
-    """A keyed tool's refusal logs one WARNING saying whether an Authorization header arrived and, when one did,
-    its shape; an accepted key logs nothing; the token's characters appear in no record either way. The line is
-    written only with AI4RA_MCP_LOG_REFUSALS=1, the switch a deployment turns on to troubleshoot a client."""
+def test_header_log_describes_every_request_and_never_a_value(monkeypatch, caplog):
+    """With AI4RA_MCP_LOG_HEADERS=1 the middleware logs one WARNING per request: method, path, whether an
+    Authorization header arrived and was accepted, its redacted form, and the header names (the happy path and the
+    sad ones alike, so a grep picks either); off, or unset, nothing is logged; no credential appears in any record."""
     monkeypatch.delenv("AI4RA_MCP_PERDIEM_KEY", raising=False)
-    monkeypatch.setenv(h.LOG_REFUSALS_ENV, "1")
+    monkeypatch.setenv(h.LOG_HEADERS_ENV, "1")
 
     async def fake_get_json(url, params=None, headers=None):
         return {"rates": []}
@@ -90,27 +97,43 @@ def test_refusal_logs_the_header_shape_and_never_the_token(monkeypatch, caplog):
             assert r.status_code == 200
             return json.loads(r.json()["result"]["content"][0]["text"])
 
+        def lines():
+            return [r.getMessage() for r in caplog.records if r.name == "ai4ra_mcp.headers"]
+
         caplog.clear()
         assert call({"Authorization": "Bearer SECRET_ACCEPTED_KEY"})["returned"] == 0
-        assert "no API key" not in caplog.text
+        (line,) = lines()
+        head, names = line.split("; headers: ")
+        assert head == "POST /perdiem/mcp: authorization accepted 'Bearer <token:19>'"
+        assert "authorization" in names.split(", ") and "accept" in names.split(", ")
         caplog.clear()
         assert "no API key" in call({})["error"]
-        assert "no API key on this request (AI4RA_MCP_PERDIEM_KEY): authorization header absent" in caplog.text
+        (line,) = lines()
+        head, names = line.split("; headers: ")
+        assert head == "POST /perdiem/mcp: authorization absent" and "authorization" not in names.split(", ")
         caplog.clear()
         assert "no API key" in call({"Authorization": "Bearer: SECRET_COLON_KEY"})["error"]
-        assert "authorization header present but not accepted (scheme=Bearer: parts=2 last_len=16)" in caplog.text
+        assert lines()[0].startswith("POST /perdiem/mcp: authorization present but not accepted 'Bearer: <token:16>'; headers: ")
+        caplog.clear()
+        assert "no API key" in call({"Authorization": "BearerSECRET_NOSPACE_"})["error"]
+        assert lines()[0].startswith("POST /perdiem/mcp: authorization present but not accepted 'Bearer<token:15>'; headers: ")
         caplog.clear()
         assert "no API key" in call({"Authorization": "SECRET_BARE_KEY_1"})["error"]
-        assert "present but not accepted (scheme=<17 chars> parts=1 last_len=17)" in caplog.text
-        assert "SECRET" not in caplog.text
-        assert all(r.levelno == logging.WARNING for r in caplog.records if r.name == "ai4ra_mcp.keys")
+        assert lines()[0].startswith("POST /perdiem/mcp: authorization present but not accepted '<token:17>'; headers: ")
+        caplog.clear()
+        assert client.get("/").status_code == 200
+        assert lines()[0].startswith("GET /: authorization absent; headers: ")
+        assert "SECRET" not in "".join(lines()) and "SECRET" not in caplog.text
+        assert all(r.levelno == logging.WARNING for r in caplog.records if r.name == "ai4ra_mcp.headers")
         for off in ("", "0", "true", "yes"):
-            monkeypatch.setenv(h.LOG_REFUSALS_ENV, off)
+            monkeypatch.setenv(h.LOG_HEADERS_ENV, off)
             caplog.clear()
+            assert call({"Authorization": "Bearer SECRET_ACCEPTED_KEY"})["returned"] == 0
             assert "no API key" in call({"Authorization": "Bearer: SECRET_COLON_KEY"})["error"]
-            assert not [r for r in caplog.records if r.name == "ai4ra_mcp.keys"], off
-        monkeypatch.delenv(h.LOG_REFUSALS_ENV)
+            assert "no API key" in call({})["error"]
+            assert not lines(), off
+        monkeypatch.delenv(h.LOG_HEADERS_ENV)
         caplog.clear()
         assert "no API key" in call({})["error"]
-        assert not [r for r in caplog.records if r.name == "ai4ra_mcp.keys"]
+        assert not lines()
         assert "SECRET" not in caplog.text

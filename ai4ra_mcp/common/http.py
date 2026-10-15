@@ -106,29 +106,37 @@ TIMEOUT_S = 30.0
 # scope. A keyed server uses it in place of its own environment key, so a person with their own
 # SAM.gov or FAC key can spend their quota rather than the institution's. It is never logged.
 request_key: ContextVar[str | None] = ContextVar("request_key", default=None)
-# The shape of an Authorization header that arrived but was not accepted (auth_shape below), None when none arrived.
-request_auth_shape: ContextVar[str | None] = ContextVar("request_auth_shape", default=None)
 _SCHEMES = {"bearer", "basic", "token", "apikey", "api-key"}
-_log = logging.getLogger("ai4ra_mcp.keys")
-LOG_REFUSALS_ENV = "AI4RA_MCP_LOG_REFUSALS"
+headers_log = logging.getLogger("ai4ra_mcp.headers")
+LOG_HEADERS_ENV = "AI4RA_MCP_LOG_HEADERS"
 
 
-def log_refusals() -> bool:
-    """Whether a keyed tool's refusal writes its one log line: on when AI4RA_MCP_LOG_REFUSALS is `1`, off otherwise.
-    Read at each refusal, so a deployment turns it on to troubleshoot a client and off again after."""
-    return os.environ.get(LOG_REFUSALS_ENV, "").strip() == "1"
+def log_headers() -> bool:
+    """The one logging switch: on when AI4RA_MCP_LOG_HEADERS is `1`, off otherwise, read on each request so a
+    deployment turns it on to troubleshoot a client and off again after. On, the middleware logs one line per
+    request: method, path, whether an Authorization header arrived and was accepted, the header's exact form with
+    its token redacted (redact_auth) and the names of the headers present; never a character of any value."""
+    return os.environ.get(LOG_HEADERS_ENV, "").strip() == "1"
 
 
-def auth_shape(value: str) -> str:
-    """The shape of an Authorization header the middleware did not accept, carrying none of its characters beyond
-    a scheme word: the first word if it is a known scheme (else only its length), how many space-separated parts
-    there are, and the length of the last. `scheme=Bearer: parts=2 last_len=40` says a colon crept in,
-    `scheme=<40 chars> parts=1` that the key came bare, `parts=3` that a prefix was doubled. A first word that is
-    not a known scheme may be the key itself, which is why only its length is kept."""
-    parts = value.split()
-    first = parts[0] if parts else ""
-    scheme = first if first.lower().rstrip(":") in _SCHEMES else f"<{len(first)} chars>"
-    return f"scheme={scheme} parts={len(parts)} last_len={len(parts[-1]) if parts else 0}"
+def redact_auth(value: str) -> str:
+    """An Authorization header's exact form with its credential gone: every whitespace-separated word that is not a
+    scheme word becomes `<token:N>`, N its length, and a word that begins with a scheme word keeps that prefix
+    only (`Bearer<token:40>` is the key glued to the scheme). Whitespace is kept as sent, so the result is quoted
+    with repr when logged and a lost, doubled or odd space shows. `'Bearer <token:40>'` is the form the middleware
+    accepts; `'Bearer<token:40>'` the space lost (what Claude.ai's header field did to a typed one, 2026-10-15);
+    `'Bearer: <token:40>'` a colon; `'<token:40>'` a bare key; `'Bearer Bearer <token:40>'` a doubled prefix.
+    Nothing a client sent reaches the log but scheme words, so a key is safe whatever a client did to it."""
+    def word(m: re.Match) -> str:
+        w = m.group(0)
+        if w.lower().rstrip(":") in _SCHEMES:
+            return w
+        for scheme in _SCHEMES:
+            for prefix in (scheme + ":", scheme):
+                if w.lower().startswith(prefix) and len(w) > len(prefix):
+                    return f"{w[:len(prefix)]}<token:{len(w) - len(prefix)}>"
+        return f"<token:{len(w)}>"
+    return re.sub(r"\S+", word, value)
 
 
 def api_key(env_name: str) -> str | None:
@@ -148,14 +156,8 @@ def missing_key(env_name: str, where: str) -> dict:
     key comes from, and nothing about where a client keeps one: that is the client's own help text (the index
     carries the hint a client shows beside its key field).
 
-    With AI4RA_MCP_LOG_REFUSALS=1 (log_refusals), one WARNING line per refusal says whether an Authorization header
-    arrived at all and, when one did, its shape (auth_shape), so a deployment can tell a client that sends nothing
-    from one that sends the wrong form; it never carries the value. Added 2026-10-15, when Claude.ai dropped a
-    `Bearer` header and nothing said so."""
-    if log_refusals():
-        shape = request_auth_shape.get()
-        _log.warning("no API key on this request (%s): authorization header %s", env_name,
-                     "absent" if shape is None else f"present but not accepted ({shape})")
+    The request's headers, with whether an Authorization header arrived in a form the middleware accepts, are
+    the middleware's one log line per request under AI4RA_MCP_LOG_HEADERS=1 (log_headers)."""
     return {"error": f"no API key on this request: send your own key as a bearer token. {where}",
             "do_not": "Do not answer this from memory or from a web search. Tell the person this server needs their key and how to get one, and stop there."}
 
