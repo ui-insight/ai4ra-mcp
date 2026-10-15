@@ -27,7 +27,7 @@ EXPECTED_TOOLS = {
     "sam": {"sam_guide", "sam_index", "sam_entity", "sam_exclusions_search", "sam_assistance_listing", "sam_assistance_listings_search"},
     "usaspending": {"usaspending_index", "usaspending_recipients", "usaspending_recipient", "usaspending_awards_search", "usaspending_subawards_search", "usaspending_award"},
     "fac": {"fac_index", "fac_audits_search", "fac_findings", "fac_federal_awards"},
-    "fedreg": {"federal_register_index", "federal_register_search", "federal_register_document", "federal_register_agencies"},
+    "fedreg": {"federal_register_index", "federal_register_search", "federal_register_document", "federal_register_executive_order", "federal_register_agencies"},
     "regulations": {"regulations_gov_index", "regulations_gov_documents_search", "regulations_gov_document", "regulations_gov_docket", "regulations_gov_comments_search"},
     "csl": {"csl_index", "csl_search", "csl_sources"},
     "oig": {"oig_leie_index", "oig_leie_search", "oig_leie_status"},

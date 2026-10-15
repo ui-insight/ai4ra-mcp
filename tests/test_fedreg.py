@@ -24,6 +24,16 @@ DOC = {**ROW, "document_number": "2024-07496", "title": "Guidance for Federal Fi
        "regulations_dot_gov_info": {"supporting_documents": [], "comments_count": 0, "agency_id": "OMB", "docket_id": "OMB_FRDOC_0001",
                                     "document_id": "OMB_FRDOC_0001-0366", "regulation_id_number": None},
        "topics": ["Administrative practice and procedure", "Colleges and universities", "Grant programs"], "images": {"ER22AP24.805": {}}}
+EO = {"title": "Improving Oversight of Federal Grantmaking", "document_number": "2025-15344", "type": "Presidential Document", "subtype": "Executive Order",
+      "publication_date": "2025-08-12", "agencies": [{"name": "Executive Office of the President", "slug": "executive-office-of-the-president"}],
+      "abstract": None, "html_url": "https://www.federalregister.gov/documents/2025/08/12/2025-15344/improving-oversight-of-federal-grantmaking",
+      "pdf_url": "https://www.govinfo.gov/content/pkg/FR-2025-08-12/pdf/2025-15344.pdf", "comments_close_on": None, "effective_on": None,
+      "docket_ids": [], "regulation_id_numbers": [], "cfr_references": [], "action": None,
+      "executive_order_number": "14332", "presidential_document_number": None, "signing_date": "2025-08-07",
+      "president": {"identifier": "donald-trump", "name": "Donald J. Trump"}, "citation": "90 FR 38921",
+      "disposition_notes": "Revokes: EO 13853, December 20, 2018\r\nRevoked by: EO 14148, January 20, 2025",
+      "raw_text_url": "https://www.federalregister.gov/documents/full_text/text/2025/08/12/2025-15344.txt"}
+OTHER_EO = {**EO, "document_number": "2025-99999", "title": "Another order whose text cites 14332", "executive_order_number": "14340", "disposition_notes": None}
 AGENCIES = [OMB | {"short_name": "OMB", "child_ids": [184], "description": "long"},
             {"name": "National Science Foundation", "short_name": "NSF", "slug": "national-science-foundation", "url": "https://www.federalregister.gov/agencies/national-science-foundation", "parent_id": None, "id": 1},
             {"name": "Science and Technology Policy Office", "short_name": "OSTP", "slug": "science-and-technology-policy-office", "url": "", "parent_id": None, "id": 2}]
@@ -43,6 +53,16 @@ def test_slim_document_carries_text_links_pages_and_the_regulations_gov_docket()
     assert d["page_count"] == 163 and d["citation"] == "89 FR 30046" and d["full_text_xml_url"].endswith("2024-07496.xml") and d["body_html_url"].endswith(".html")
     assert d["regulations_gov"] == {"docket_id": "OMB_FRDOC_0001", "document_id": "OMB_FRDOC_0001-0366", "comments_count": 0, "comment_url": None}
     assert d["topics"][1] == "Colleges and universities" and "images" not in d and "abstract" in d
+
+
+def test_slim_keeps_a_presidential_document_s_own_fields_and_gives_a_rule_none():
+    e = fr._slim(EO)
+    assert e["executive_order_number"] == "14332" and e["signing_date"] == "2025-08-07" and e["citation"] == "90 FR 38921"
+    assert e["president"] == {"name": "Donald J. Trump", "identifier": "donald-trump"}
+    assert e["disposition_notes"] == "Revokes: EO 13853, December 20, 2018\r\nRevoked by: EO 14148, January 20, 2025"
+    assert e["raw_text_url"].endswith("2025-15344.txt") and "presidential_document_number" not in e
+    r = fr._slim(ROW)
+    assert "executive_order_number" not in r and "president" not in r and "signing_date" not in r and "disposition_notes" not in r
 
 
 def test_slim_agency():
@@ -72,6 +92,26 @@ async def test_search_sends_repeated_keys_as_pairs(monkeypatch):
     assert out["total"] == 38 and out["total_pages"] == 19 and out["next_page"] == 2 and out["returned"] == 1 and out["documents"][0]["document_number"] == "2024-22520"
 
 
+async def test_search_by_presidential_kind_signer_and_signing_date(monkeypatch):
+    seen = {}
+
+    async def fake_get_json(url, params=None, headers=None):
+        seen["params"] = params
+        return {"count": 1, "total_pages": 1, "results": [EO]}
+
+    monkeypatch.setattr(fr, "get_json", fake_get_json)
+    fr._cache._d.clear()
+    out = await fr.federal_register_search(presidential_type="executive_order")
+    p = seen["params"]
+    assert ("conditions[presidential_document_type]", "executive_order") in p and ("conditions[type][]", "PRESDOCU") in p
+    assert out["documents"][0]["executive_order_number"] == "14332" and out["documents"][0]["president"]["identifier"] == "donald-trump"
+    fr._cache._d.clear()
+    await fr.federal_register_search(president="joe-biden", signing_from="2025-01-01", signing_to="2025-01-20", document_types="PRESDOCU")
+    p = seen["params"]
+    assert ("conditions[president]", "joe-biden") in p and ("conditions[signing_date][gte]", "2025-01-01") in p and ("conditions[signing_date][lte]", "2025-01-20") in p
+    assert [v for k, v in p if k == "fields[]"] == fr.LIST_FIELDS and "disposition_notes" in fr.LIST_FIELDS
+
+
 async def test_search_rejects_bad_input(monkeypatch):
     async def fake_get_json(url, params=None, headers=None):
         raise AssertionError("no request should be made")
@@ -84,6 +124,39 @@ async def test_search_rejects_bad_input(monkeypatch):
     assert "YYYY-MM-DD" in (await fr.federal_register_search(term="x", date_from="01/01/2024"))["error"]
     assert "significant" in (await fr.federal_register_search(term="x", significant="yes"))["error"]
     assert "document_number" in (await fr.federal_register_document("not a number"))["error"]
+    e = (await fr.federal_register_search(presidential_type="bogus"))["error"]
+    assert all(k in e for k in fr.PRESIDENTIAL_TYPES) and len(fr.PRESIDENTIAL_TYPES) == 6
+    assert "PRESDOCU" in (await fr.federal_register_search(presidential_type="executive_order", document_types="RULE"))["error"]
+    assert "YYYY-MM-DD" in (await fr.federal_register_search(presidential_type="executive_order", signing_from="2025-8-7"))["error"]
+    assert "identifier" in (await fr.federal_register_search(president="Joe Biden"))["error"]
+    assert "digits" in (await fr.federal_register_executive_order("EO 14332"))["error"]
+
+
+async def test_executive_order_by_number_keeps_the_result_whose_number_matches(monkeypatch):
+    seen = {}
+
+    async def fake_get_json(url, params=None, headers=None):
+        seen["params"] = params
+        return {"count": 2, "results": [OTHER_EO, EO]}
+
+    monkeypatch.setattr(fr, "get_json", fake_get_json)
+    fr._cache._d.clear()
+    out = await fr.federal_register_executive_order("14332")
+    assert ("conditions[presidential_document_type]", "executive_order") in seen["params"] and ("conditions[term]", "14332") in seen["params"]
+    assert out["executive_order_number"] == "14332" and out["document_number"] == "2025-15344" and out["signing_date"] == "2025-08-07"
+    assert out["raw_text_url"].endswith("2025-15344.txt") and "fetch_document" in out["note"] and "candidates" not in out
+    assert out["disposition_notes"].startswith("Revokes: EO 13853")
+    fr._cache._d.clear()
+    none = await fr.federal_register_executive_order("14333")
+    assert none["error"].startswith("no executive order 14333") and "1994" in none["error"] and none["number"] == "14333"
+    fr._cache._d.clear()
+    monkeypatch.setattr(fr, "get_json", lambda url, params=None, headers=None: _two())
+    both = await fr.federal_register_executive_order("14332")
+    assert [c["document_number"] for c in both["candidates"]] == ["2025-15344", "2025-00001"] and "executive_order_number" not in both
+
+
+async def _two():
+    return {"count": 2, "results": [EO, {**EO, "document_number": "2025-00001"}]}
 
 
 async def test_document_and_agencies(monkeypatch):
@@ -102,4 +175,5 @@ async def test_document_and_agencies(monkeypatch):
 
 
 async def test_lists_tools():
-    assert {t.name for t in await fr.mcp.list_tools()} == {"federal_register_index", "federal_register_search", "federal_register_document", "federal_register_agencies"}
+    assert {t.name for t in await fr.mcp.list_tools()} == {"federal_register_index", "federal_register_search", "federal_register_document",
+                                                            "federal_register_executive_order", "federal_register_agencies"}
