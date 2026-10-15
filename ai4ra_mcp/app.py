@@ -36,6 +36,7 @@ from ai4ra_mcp.common.http import describe_auth, headers_log, log_headers, log_n
 from ai4ra_mcp.servers.ai4ra.server import mcp as ai4ra
 from ai4ra_mcp.servers.bls.server import mcp as bls
 from ai4ra_mcp.servers.classes.server import mcp as classes
+from ai4ra_mcp.servers.directory.server import mcp as directory
 from ai4ra_mcp.servers.clickup.server import mcp as clickup
 from ai4ra_mcp.servers.clinicaltrials.server import mcp as clinicaltrials
 from ai4ra_mcp.servers.crossref.server import mcp as crossref
@@ -75,7 +76,7 @@ SERVERS: dict[str, MCPServer] = {
     "perdiem": perdiem, "bls": bls,
     "openalex": openalex, "pubmed": pubmed, "crossref": crossref, "orcid": orcid, "osti": osti, "clinicaltrials": clinicaltrials,
     "clickup": clickup, "github": github,
-    "uidaho": uidaho, "classes": classes, **lakehouse.SERVERS,
+    "uidaho": uidaho, "classes": classes, "directory": directory, **lakehouse.SERVERS,
 }
 SERVERS_DIR = Path(__file__).parent / "servers"
 WEB = "https://github.com/ui-insight/ai4ra-mcp/blob/main/ai4ra_mcp/servers/"
@@ -92,6 +93,7 @@ META: dict[str, dict] = {
             "key": {"required": False, "hint": "Paste your S2S credential bundle: the base64url JSON of your client certificate and key, made with `python -m ai4ra_mcp.servers.s2s.credentials cert.pem key.pem`. Without one the deployment's fallback certificate is used, which only the mock accepts."}},
     "uidaho": {"label": "UI guidance", "institution": UIDAHO, "description": "University policy for sponsored projects (APM, FSH), found by what each policy covers or by number and title; a report-only check of a passage against it; and the F&A and fringe rates from the rate agreement and the fringe-rate page, reported in the Rates contract's order."},
     "classes": {"label": "Class schedule", "institution": UIDAHO, "description": "The University of Idaho class schedule and course catalog: who teaches what, when and where, by term, subject, course number or instructor; one section in full; courses by subject, number or title and one course's catalog record, from the registrar's public Browse Classes and Browse Course Catalog. No key."},
+    "directory": {"label": "Campus directory", "institution": UIDAHO, "description": "The University of Idaho campus directory, the employees the university publishes at directory.uidaho.edu: a person by last name, first name, email or department, their university email, phone, title, department and office, and the department list. Employees only, read through the directory's own search form. No key."},
     "general": {"label": "General", "description": "Any office, any document: search the open web, read a page or PDF as text; the guide to AI writing tells."},
     "github": {"label": "GitHub skills", "institution": "GitHub", "description": "Two skills for a GitHub repository through GitHub's own MCP server, whose tools they name: a change as a pull request on an agent branch, and one look at the Actions runs. No tools of its own; no key, since the key is GitHub's server's."},
     "ai4ra": {"label": "AI4RA", "description": "Research-administration guides and prompts: an RFA record, a narrative, a work plan, a budget outline and the NSF budget form (each as a guide any client can follow), the compliance-concerns vocabulary for grouping statements, cost-allowability checks and budget justifications; one tool, ai4ra_guide, that serves them."},
