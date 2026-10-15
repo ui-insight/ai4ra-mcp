@@ -95,11 +95,11 @@ async def fac_index() -> dict:
 
 
 @mcp.tool(name="fac_audits_search", annotations=_READ_ONLY)
-async def fac_audits_search(name: str = "", uei: str = "", ein: str = "", audit_year: str = "", state: str = "", limit: int = 25) -> dict:
+async def fac_audits_search(name: str = "", uei: str = "", ein: str = "", audit_year: str = "", state: str = "", limit: int = 25, offset: int = 0) -> dict:
     """Single audits filed with the Federal Audit Clearinghouse, newest fiscal year first.
 
     Give one of name, uei or ein. Returns each audit with its report id, fiscal year, auditor, opinion, flags,
-    total federal expenditure and a link.
+    total federal expenditure and a link; next_offset when there are more.
 
     Args:
         name: Auditee name, partial (e.g. 'University of Idaho').
@@ -108,8 +108,12 @@ async def fac_audits_search(name: str = "", uei: str = "", ein: str = "", audit_
         audit_year: One audit year, e.g. '2024'; empty for all.
         state: Two-letter state to narrow a name search.
         limit: Audits to return, 1-100. Default 25.
+        offset: Audits to skip, from a previous result's next_offset. Default 0.
     """
-    params: dict = {"select": ",".join(GENERAL_FIELDS), "order": "fy_end_date.desc", "limit": max(1, min(int(limit or 25), 100))}
+    limit = max(1, min(int(limit or 25), 100))
+    offset = max(0, int(offset or 0))
+    # One more than asked, so the result can say there are more without a count the API only gives on request.
+    params: dict = {"select": ",".join(GENERAL_FIELDS), "order": "fy_end_date.desc", "limit": limit + 1, "offset": offset}
     if uei.strip():
         params["auditee_uei"] = "eq." + uei.strip().upper()
     elif ein.strip():
@@ -128,9 +132,12 @@ async def fac_audits_search(name: str = "", uei: str = "", ein: str = "", audit_
         return missing_key(KEY_ENV, KEY_HOW)
     except ValueError as e:
         return {"error": str(e)}
-    audits = [slim_audit(g) for g in rows]
-    return {"returned": len(audits), "audits": audits,
-            "note": "Newest first. No rows means no single audit is on file for these terms; the entity may be below the expenditure threshold."}
+    audits = [slim_audit(g) for g in rows[:limit]]
+    out = {"offset": offset, "returned": len(audits), "audits": audits,
+           "note": "Newest first. No rows means no single audit is on file for these terms; the entity may be below the expenditure threshold."}
+    if len(rows) > limit:
+        out["next_offset"] = offset + limit
+    return out
 
 
 @mcp.tool(name="fac_findings", annotations=_READ_ONLY)

@@ -44,8 +44,10 @@ def term_entry(t: dict) -> dict:
     return {"code": t.get("code"), "name": re.sub(r"\s*\(View Only\)\s*$", "", desc, flags=re.I).strip(), "view_only": "view only" in desc.lower()}
 
 
-async def _terms(max: int = 10) -> list[dict]:
-    return await _cache.remember(f"terms:{max}", HOUR, lambda: banner.get_terms(max))
+async def _terms() -> list[dict]:
+    """Every term, newest first, cached an hour: one list for the terms tool and for resolving a term a person names, so a
+    term older than the newest few resolves and the list the model reads is the schedule's whole reach (#43)."""
+    return await _cache.remember("terms", HOUR, banner.get_terms)
 
 
 async def _resolve_term(term: str) -> tuple[str, str]:
@@ -106,7 +108,7 @@ async def classes_index() -> dict:
                      "classes_section with the term and the CRN of one result: its description, meetings with rooms and dates, prerequisites, corequisites, restrictions, cross-listed and linked sections, attributes, fees, the Day One Access link and enrollment",
                      "classes_catalog with a subject, a course number or a keyword (a word of the title or the catalog description), when a person names a topic rather than a section: the catalog's courses",
                      "classes_course with the term, subject and course number: the catalog's record of the course, as opposed to one section of it",
-                     "classes_terms for the term codes and names, newest first, with which are view-only (closed to registration)"],
+                     "classes_terms for every term the schedule has, newest first, with code, name and which are view-only (closed to registration): the whole list, so how far back the schedule reaches is read from it"],
         "notes": ["A section's instructors carry name, email and whether primary; a result's meets line is days (M T W R F S U), times, building and room, 'TBA' when none is scheduled.",
                   "classes_search needs at least one of subject, course_number, instructor; classes_catalog one of subject, course_number, keyword. rows up to 100 a page; next_start is the start of the next page when there is one.",
                   "Restrictions are the registrar's rules as published, one string each, with the majors, colleges, levels, cohorts or campuses named; attributes are the catalog's designations as published; fees are description and amount.",
@@ -122,18 +124,14 @@ async def classes_index() -> dict:
 
 
 @mcp.tool(name="classes_terms", annotations=_READ_ONLY)
-async def classes_terms(max: int = 10) -> dict:
-    """The schedule's terms, newest first, as code, name and whether view-only (closed to registration; still searchable).
-
-    Args:
-        max: how many, newest first (default 10).
-    """
-    limit = int(max or 10)   # the argument shadows the builtin, so no max() here
+async def classes_terms() -> dict:
+    """Every term the schedule has, newest first, as code, name and whether view-only (closed to registration; still
+    searchable). The whole list: the oldest term here is as far back as the schedule reaches."""
     try:
-        terms = await _terms(1 if limit < 1 else 50 if limit > 50 else limit)
+        terms = await _terms()
     except banner.BannerError as e:
         return e.as_error()
-    return {"terms": [term_entry(t) for t in terms]}
+    return {"total": len(terms), "terms": [term_entry(t) for t in terms]}
 
 
 @mcp.tool(name="classes_search", annotations=_READ_ONLY)

@@ -28,8 +28,8 @@ CATALOG_BY_KEYWORD = json.loads((FIX / "courseSearchResults_keyword.json").read_
 def _banner(monkeypatch, calls: list | None = None):
     calls = calls if calls is not None else []
 
-    async def get_terms(max=10):
-        return TERMS[:max]
+    async def get_terms():
+        return TERMS
 
     @asynccontextmanager
     async def session(term, mode="search"):
@@ -88,7 +88,28 @@ async def test_the_newest_open_term_is_the_default_and_a_term_goes_by_code_or_na
     assert await classes._resolve_term("") == ("202610", "Fall 2026")          # Spring 2027 is view-only, so not it
     assert await classes._resolve_term("fall 2026") == ("202610", "Fall 2026")
     assert await classes._resolve_term("202520") == ("202520", "Spring 2026")
-    assert (await classes.classes_terms(2))["terms"] == [t for t in map(classes.term_entry, TERMS)][:2] == [{"code": "202620", "name": "Spring 2027", "view_only": True}, {"code": "202610", "name": "Fall 2026", "view_only": False}]
+    out = await classes.classes_terms()
+    assert out["total"] == len(TERMS) == 10 and out["terms"] == [t for t in map(classes.term_entry, TERMS)]
+    assert out["terms"][:2] == [{"code": "202620", "name": "Spring 2027", "view_only": True}, {"code": "202610", "name": "Fall 2026", "view_only": False}]
+    assert await classes._resolve_term("Fall 2024") == ("202410", "Fall 2024")   # the oldest listed resolves by name, not only the newest few (#43)
+
+
+async def test_banner_s_terms_are_paged_until_a_short_page(monkeypatch):
+    pages = {1: [{"code": str(202620 - i * 10), "description": f"term {i}"} for i in range(banner.TERMS_PAGE)], 51: [{"code": "199910", "description": "old"}]}
+    seen = []
+
+    async def fake_json(client, method, route, params=None, **kw):
+        seen.append(params["offset"])
+        return pages[params["offset"]]
+
+    @asynccontextmanager
+    async def client():
+        yield object()
+
+    monkeypatch.setattr(banner, "_json", fake_json)
+    monkeypatch.setattr(banner, "_client", client)
+    terms = await banner.get_terms()
+    assert len(terms) == banner.TERMS_PAGE + 1 and terms[-1]["code"] == "199910" and seen == [1, 51]
 
 
 async def test_a_search_needs_a_subject_number_or_instructor_and_pages(monkeypatch):

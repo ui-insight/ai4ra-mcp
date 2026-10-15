@@ -78,10 +78,21 @@ async def _json(client: httpx.AsyncClient, method: str, route: str, **kw):
         raise BannerError(route, resp.status_code, "a page where JSON was expected") from None
 
 
-async def get_terms(max: int = 10) -> list[dict]:
-    """Banner's terms, newest first: [{code, description}]; a term closed to registration says '(View Only)'."""
+TERMS_PAGE = 50
+
+
+async def get_terms() -> list[dict]:
+    """Every term Banner lists, newest first: [{code, description}]; a term closed to registration says '(View Only)'.
+    Paged through the form's own list until a short page, so the list has no cut to say (#43)."""
+    out: list[dict] = []
     async with _client() as client:
-        return await _json(client, "GET", "classSearch/getTerms", params={"searchTerm": "", "offset": 1, "max": max})
+        offset = 1
+        while True:
+            page = await _json(client, "GET", "classSearch/getTerms", params={"searchTerm": "", "offset": offset, "max": TERMS_PAGE})
+            out.extend(page if isinstance(page, list) else [])
+            if not isinstance(page, list) or len(page) < TERMS_PAGE:
+                return out
+            offset += TERMS_PAGE
 
 
 @asynccontextmanager
