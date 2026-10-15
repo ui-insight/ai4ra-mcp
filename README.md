@@ -345,8 +345,11 @@ person pastes the same key into each of those three servers.
   enters a fixed header once and Claude.ai sends it on every request for
   everyone in the organization. For a keyed server here, that is one
   connector per server with authentication *No sign-in* and a request
-  header `Authorization` whose value is `Bearer <key>` (the scheme typed in,
-  since Claude.ai sends the value as entered); the key is then shared by the
+  header `authorization` whose value is `bearer <key>`, the scheme typed in
+  and in lower case: a value that begins `Bearer ` with a capital never
+  reaches the server (Claude.ai takes it for an OAuth token of its own and
+  drops it, as of 2026-10-15), while `bearer ` is sent as typed and the
+  server reads the scheme case-insensitively; the key is then shared by the
   organization on a Team or Enterprise plan, and the person's own on a
   Free, Pro or Max plan. The headers cannot be edited after the connector
   is added, only removed and re-added. Without that beta, a keyed server
@@ -1679,9 +1682,12 @@ You need the server's URL and your own api.data.gov key.
 3. Leave No sign-in selected. The yellow notice that anyone with the URL can
    use the connector is generic to that choice; your key is not part of it.
 4. Under **Request headers**, click Add header. Name: `authorization`.
-   Value: `Bearer ` and then your key, with the space. Claude.ai sends the
-   value exactly as typed, so without the `Bearer ` prefix the server
-   ignores it. Mark the header Required.
+   Value: `bearer ` in lower case, then your key, with the space. The case
+   matters to Claude.ai, not to the server: a value that begins `Bearer `
+   with a capital is never sent (seen 2026-10-15; the server then answers
+   "no API key on this request"), while `bearer ` arrives as typed, and the
+   server accepts the scheme in any case. Without the scheme the server
+   ignores the value. Mark the header Required.
 5. Click **Add**. In a chat, turn the connector on from the + menu and ask
    for a rate (Boise, Idaho, fiscal year 2026). The `gsa_perdiem_index` tool
    reports `on_this_request: true` when the key arrived; a refused key comes
