@@ -32,7 +32,7 @@ from starlette.routing import Mount, Route
 from starlette.staticfiles import StaticFiles
 
 from ai4ra_mcp.common.given import given_of
-from ai4ra_mcp.common.http import log_no_keys, request_key
+from ai4ra_mcp.common.http import auth_shape, log_no_keys, request_auth_shape, request_key
 from ai4ra_mcp.servers.ai4ra.server import mcp as ai4ra
 from ai4ra_mcp.servers.bls.server import mcp as bls
 from ai4ra_mcp.servers.classes.server import mcp as classes
@@ -136,25 +136,29 @@ for _name, _client in lakehouse.CLIENT_OF.items():
 
 class BearerKeyMiddleware:
     """Reads `Authorization: Bearer <token>` and makes it this request's upstream key (see
-    common.http.request_key). The token is held for the request only and never logged."""
+    common.http.request_key). The token is held for the request only and never logged. A header that arrived in
+    another form is kept as its shape alone (common.http.auth_shape), for the line a keyed tool logs when it refuses."""
 
     def __init__(self, app):
         self.app = app
 
     async def __call__(self, scope, receive, send):
-        token = None
+        token = shape = None
         if scope["type"] == "http":
             for name, value in scope.get("headers") or []:
                 if name == b"authorization":
                     v = value.decode("latin-1").strip()
                     if v[:7].lower() == "bearer " and v[7:].strip():
                         token = v[7:].strip()
+                    else:
+                        shape = auth_shape(v)
                     break
-        reset = request_key.set(token)
+        reset_key, reset_shape = request_key.set(token), request_auth_shape.set(shape)
         try:
             await self.app(scope, receive, send)
         finally:
-            request_key.reset(reset)
+            request_key.reset(reset_key)
+            request_auth_shape.reset(reset_shape)
 
 
 def _transport_security() -> TransportSecuritySettings:

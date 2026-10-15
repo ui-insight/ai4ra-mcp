@@ -25,6 +25,10 @@ services:
       AI4RA_MCP_S2S_CERT_FILE: /srv/s2s-certs/client.crt
       AI4RA_MCP_S2S_KEY_FILE: /srv/s2s-certs/client.key
       AI4RA_MCP_S2S_WRITES: "1"
+      # Troubleshooting a client that sends no key: `AI4RA_MCP_LOG_REFUSALS=1` in the .env beside this file and
+      # `docker compose up -d` logs one line per refused keyed call, the header's shape and never its value; remove
+      # the line and run the same command to turn it off.
+      AI4RA_MCP_LOG_REFUSALS: ${AI4RA_MCP_LOG_REFUSALS:-}
     depends_on:
       - searxng
       - grants-gov-s2s-mock

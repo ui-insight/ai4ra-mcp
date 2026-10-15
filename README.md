@@ -378,6 +378,19 @@ to get one. Every other tool answers:
 }
 ```
 
+With `AI4RA_MCP_LOG_REFUSALS=1` in the environment, each such refusal is one
+WARNING line in the process log saying whether an `Authorization` header
+arrived at all and, when one did, its shape and nothing of its value: the
+scheme word if it is a known one (else only its length), how many
+space-separated parts there are, and the last part's length. The switch is
+read at each refusal and is off unless set, so a deployment turns it on to
+troubleshoot a client (on the demo VM, the line in the `.env` beside the
+compose file and `docker compose up -d`) and off again after. `authorization header absent` is a client that sent nothing (what
+Claude.ai did with a capitalised `Bearer`, 2026-10-15); `present but not
+accepted (scheme=Bearer: parts=2 last_len=40)` is a colon that crept in;
+`scheme=<40 chars> parts=1` is a key pasted bare; `parts=3` a doubled
+prefix. An accepted key logs nothing.
+
 The second line is there because a refused lookup once became an invented
 answer: a per diem question got made-up figures with a made-up source line
 after the tool asked for a key. The answer now tells the model to stop, and
@@ -1589,6 +1602,7 @@ no keys.
 | `AI4RA_MCP_S2S_CERT_FILE`, `AI4RA_MCP_S2S_KEY_FILE` | Fallback client certificate and key for a request that sends no bearer bundle; the compose file points them at a mock-minted pair | unset |
 | `AI4RA_MCP_S2S_WRITES` | `1` registers `s2s_submit` | unset: read only |
 | `AI4RA_MCP_S2S_PRODUCTION` | `1` lets `s2s_submit` reach `ws07.grants.gov`; otherwise production is refused | unset |
+| `AI4RA_MCP_LOG_REFUSALS` | `1` logs one line per keyed call refused for want of a key, with the `Authorization` header's shape and never its value (see [What a request without a key gets](#what-a-request-without-a-key-gets)); the compose file passes it through from `.env` | unset: nothing logged |
 | `SEARXNG_SECRET` | SearXNG's own secret, read by the compose file from the environment or a `.env` file beside it | a placeholder that should be changed |
 
 ## Hosting
@@ -1740,7 +1754,10 @@ plan it is the organization's, shared by everyone who connects.
   accepts a header gets the key there (api.data.gov's `X-Api-Key` for per
   diem); SAM.gov and PubMed want it in the URL, so the filter is what
   keeps it out of the log. Decided 2026-09-30, after the per diem key was
-  found in the demo host's container log.
+  found in the demo host's container log. The one line a refused call logs
+  (under *What a request without a key gets*) carries the header's shape
+  and never a character of its value; a first word that is not a known
+  scheme is logged as its length alone, since it may be the key itself.
 - **Nothing from memory.** A tool that cannot reach its upstream, or has no
   key for it, says so and tells the model to stop there. A skill reports
   only what the tools returned, with the address of every figure.

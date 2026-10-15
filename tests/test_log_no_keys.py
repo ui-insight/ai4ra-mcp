@@ -2,8 +2,12 @@
 loggers are held at WARNING (their INFO line is the request's full URL), key-like query parameters are
 redacted from what they and the root handlers still emit, and the per diem server sends its key as a header."""
 
+import json
 import logging
 
+from starlette.testclient import TestClient
+
+from ai4ra_mcp.app import build_app
 from ai4ra_mcp.common import http as h
 from ai4ra_mcp.servers.perdiem import server as perdiem
 
@@ -48,3 +52,65 @@ async def test_perdiem_sends_its_key_as_a_header(monkeypatch):
         h.request_key.reset(token)
     assert seen["headers"] == {"X-Api-Key": "FAKEKEY_header_test"}
     assert "FAKEKEY_header_test" not in seen["url"] and not seen["params"]
+
+
+def test_auth_shape_carries_no_character_of_a_token():
+    key = "aBYgwiZVVeIdD5y1GuItf5UTqFvb7hAH58LjiULo"
+    cases = {
+        f"Bearer: {key}": "scheme=Bearer: parts=2 last_len=40",
+        key: "scheme=<40 chars> parts=1 last_len=40",
+        f"Bearer Bearer {key}": "scheme=Bearer parts=3 last_len=40",
+        f"Bearer:{key}": "scheme=<47 chars> parts=1 last_len=47",
+        f"Basic {key}": "scheme=Basic parts=2 last_len=40",
+        "Bearer": "scheme=Bearer parts=1 last_len=6",
+        "": "scheme=<0 chars> parts=0 last_len=0",
+    }
+    for value, shape in cases.items():
+        assert h.auth_shape(value) == shape, value
+        assert key not in shape and key[:8] not in shape
+
+
+def test_refusal_logs_the_header_shape_and_never_the_token(monkeypatch, caplog):
+    """A keyed tool's refusal logs one WARNING saying whether an Authorization header arrived and, when one did,
+    its shape; an accepted key logs nothing; the token's characters appear in no record either way. The line is
+    written only with AI4RA_MCP_LOG_REFUSALS=1, the switch a deployment turns on to troubleshoot a client."""
+    monkeypatch.delenv("AI4RA_MCP_PERDIEM_KEY", raising=False)
+    monkeypatch.setenv(h.LOG_REFUSALS_ENV, "1")
+
+    async def fake_get_json(url, params=None, headers=None):
+        return {"rates": []}
+
+    monkeypatch.setattr(perdiem, "get_json", fake_get_json)
+    perdiem._cache._d.clear()
+    rpc = {"jsonrpc": "2.0", "id": 1, "method": "tools/call", "params": {"name": "gsa_perdiem_rates", "arguments": {"state": "ID", "year": 2026}}}
+    hdr = {"Accept": "application/json, text/event-stream"}
+    with TestClient(build_app(["perdiem"])) as client, caplog.at_level(logging.DEBUG):
+        def call(headers):
+            r = client.post("/perdiem/mcp", json=rpc, headers={**hdr, **headers})
+            assert r.status_code == 200
+            return json.loads(r.json()["result"]["content"][0]["text"])
+
+        caplog.clear()
+        assert call({"Authorization": "Bearer SECRET_ACCEPTED_KEY"})["returned"] == 0
+        assert "no API key" not in caplog.text
+        caplog.clear()
+        assert "no API key" in call({})["error"]
+        assert "no API key on this request (AI4RA_MCP_PERDIEM_KEY): authorization header absent" in caplog.text
+        caplog.clear()
+        assert "no API key" in call({"Authorization": "Bearer: SECRET_COLON_KEY"})["error"]
+        assert "authorization header present but not accepted (scheme=Bearer: parts=2 last_len=16)" in caplog.text
+        caplog.clear()
+        assert "no API key" in call({"Authorization": "SECRET_BARE_KEY_1"})["error"]
+        assert "present but not accepted (scheme=<17 chars> parts=1 last_len=17)" in caplog.text
+        assert "SECRET" not in caplog.text
+        assert all(r.levelno == logging.WARNING for r in caplog.records if r.name == "ai4ra_mcp.keys")
+        for off in ("", "0", "true", "yes"):
+            monkeypatch.setenv(h.LOG_REFUSALS_ENV, off)
+            caplog.clear()
+            assert "no API key" in call({"Authorization": "Bearer: SECRET_COLON_KEY"})["error"]
+            assert not [r for r in caplog.records if r.name == "ai4ra_mcp.keys"], off
+        monkeypatch.delenv(h.LOG_REFUSALS_ENV)
+        caplog.clear()
+        assert "no API key" in call({})["error"]
+        assert not [r for r in caplog.records if r.name == "ai4ra_mcp.keys"]
+        assert "SECRET" not in caplog.text
