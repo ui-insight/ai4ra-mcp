@@ -65,7 +65,7 @@ async def events_index() -> dict:
     return {
         "upstream": f"The University of Idaho campus calendar at {trumba.SITE}, read from its public Trumba feed {trumba.FEED}; no login, no key",
         "workflow": ["events_search for a date window (start and end, or start and days, or the next days from today), narrowed by words or by calendar: a short row per event (title, start and end, where, calendar, a line of description, the event's own web link and its calendar link). Athletics is here too: the sport's name as the words ('volleyball', 'football') lists the games, each linking its schedule page. A month of the whole campus is some three hundred events; ask for a week, a calendar or words.",
-                     "events_closures for the days the university is closed in a window (the next 120 days when none is given): a holiday or closure question is this one call, found by what the events say, never a calendar's name guessed",
+                     "events_closures for the days the university is closed in a window (the next 120 days when none is given): a holiday or closure question is this one call, found by what the events say, never a calendar's name guessed. The feed names no holiday ('University Holiday - Closed' is the whole title), so a holiday's name is the reader's inference and is said as such, never written as the calendar's.",
                      "events_event for one event by id in full: the whole description, the calendar's wording of when, the web link, image, contact, registration",
                      "events_calendars for the calendars that feed the university's, with how many events each has in the coming months, the names a calendar argument is matched against"],
         "notes": ["Dates are YYYY-MM-DD; with no window the next 30 days are read. The feed searches words anywhere in an event's text; a phrase in quotes matches nothing, so give words.",
@@ -154,7 +154,7 @@ async def events_closures(start: str = "", end: str = "", days: int = CLOSURE_DA
         row = trumba.slim(e)
         rows.append({k: row[k] for k in ("id", "title", "start", "end", "all_day", "calendar", "description", "link")})
     out = {"window": window, "total": len(rows), "closures": rows, "link": trumba.SITE,
-           "note": "Found by the words closed, closure and holiday in the feed, kept where the title or the calendar says closed or closure; a holiday concert or a holiday trip is not one. The calendar names the office that posted the closure."}
+           "note": "Found by the words closed, closure and holiday in the feed, kept where the title or the calendar says closed or closure; a holiday concert or a holiday trip is not one. The calendar names the office that posted the closure. The feed names no holiday: a closure is 'University Holiday - Closed' and nothing more, so a name (Thanksgiving, Christmas) is the reader's own and is not written as the calendar's."}
     if not rows:
         out["note"] = "No event in the window says the university is closed. Closures are posted as events by the university's calendar owners; a holiday not yet posted is not here, and the official holiday schedule is Human Resources'."
     return out
