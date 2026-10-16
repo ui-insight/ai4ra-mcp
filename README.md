@@ -95,10 +95,11 @@ works without one and a key raises its quota.
 |---|---|---|---|---|
 | `/treasury/mcp` | Treasury Reporting Rates of Exchange (Fiscal Data) | none | `treasury_index`, `treasury_currencies`, `treasury_rates`, `treasury_convert` | none |
 | `/osm/mcp` | OpenStreetMap's Nominatim and the FOSSGIS Valhalla router | none (fair use, one call a second) | `osm_index`, `osm_geocode`, `osm_route` | none |
+| `/weather/mcp` | The National Weather Service API | none | `weather_index`, `weather_forecast`, `weather_now`, `weather_alerts` | none |
 | `/openalex/mcp` | OpenAlex | optional (OpenAlex key) | `openalex_index`, `openalex_works_search`, `openalex_works_group`, `openalex_work`, `openalex_citations`, `openalex_authors_search`, `openalex_institutions_search`, `openalex_funders_search` | none |
 | `/pubmed/mcp` | NCBI E-utilities and the PMC ID converter | optional (NCBI key) | `pubmed_index`, `pubmed_search`, `pubmed_summary`, `pubmed_article`, `pmc_id_convert` | none |
 | `/icite/mcp` | NIH iCite | none | `icite_index`, `icite_metrics`, `icite_links` | none |
-| `/crossref/mcp` | Crossref | none | `crossref_index`, `crossref_works_search`, `crossref_work`, `crossref_funders_search` | none |
+| `/crossref/mcp` | Crossref | none | `crossref_index`, `crossref_works_search`, `crossref_work`, `crossref_updates`, `crossref_funders_search` | none |
 | `/datacite/mcp` | DataCite | none | `datacite_index`, `datacite_search`, `datacite_doi` | none |
 | `/re3data/mcp` | re3data, the Registry of Research Data Repositories | none | `re3data_index`, `re3data_search`, `re3data_repository` | none |
 | `/orcid/mcp` | ORCID public API | none | `orcid_index`, `orcid_search`, `orcid_record` | none |
@@ -1289,6 +1290,27 @@ and steps with the streets OSM names, and a link that opens the same route
 on openstreetmap.org. Offline tests run on a geocode and a route captured
 in `tests/fixtures/osm/`.
 
+### weather
+
+The National Weather Service API, `https://api.weather.gov/`, no key, an
+identifying User-Agent on every call; the United States and its territories
+and nothing else. A point (`/points/{lat},{lon}`) names its forecast office
+and grid and links the forecasts, so `weather_forecast(lat, lon, hourly)`
+returns seven days in the Service's half-day periods ("This Afternoon",
+"Tonight", "Friday") with temperature, chance of precipitation, wind and the
+forecaster's wording, or 48 hours by the hour; `weather_now(lat, lon)` the
+latest observation at the nearest reporting station (for campus, the
+Pullman-Moscow airport, KPUW) with the Service's Celsius, km/h, metres and
+pascals also given in Fahrenheit, miles an hour, miles and inches of
+mercury; `weather_alerts(lat, lon)` the watches, warnings and advisories in
+force at the point, most severe first, an empty list when none. A point is a
+latitude and longitude from the person, from `campusmap_search` for a
+university building or from `osm_geocode` for an address; nothing here
+names one. Points are cached a day, forecasts half an hour, observations
+ten minutes, alerts five. Offline tests run on the campus point, its
+forecast, stations, an observation and an alert list captured in
+`tests/fixtures/weather/`.
+
 ### openalex
 
 OpenAlex, https://api.openalex.org/. Since February 2026 OpenAlex meters
@@ -1391,7 +1413,15 @@ or Funder Registry id, with years and type, most relevant first: DOI, title,
 authors (ORCID and affiliations when deposited), journal, year, publisher,
 volume, issue, pages, the funders with their award numbers, and citation
 count; one work by DOI, exact and free, with its abstract (JATS stripped),
-license URLs, ISSN and reference count; funders by name with the registry
+license URLs, ISSN and reference count, and whether it has been retracted;
+`crossref_updates(doi)` for whether a work has been retracted, corrected or
+given an expression of concern, each notice with its type, date and DOI,
+read from the work's `updated-by` (which Crossref fills from publishers'
+deposits and the Retraction Watch database, open since 2023) joined with the
+notices that name the work (`filter=updates:<DOI>`), and for a notice the
+work it updates; the answer says no record is not a clean bill. Tested on
+the Wakefield paper: a 2004 correction and the 2010 retraction, both from
+Retraction Watch. Funders by name with the registry
 id, its alternate names and location. The registry id is the one Crossref,
 OpenAlex and ROR share, and its DOI is 10.13039/<id>. Crossref keeps titles
 as lists and dates as date-parts; the tools flatten both. The index tells

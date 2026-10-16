@@ -25,7 +25,7 @@ _cache = TTLCache()
 
 mcp = MCPServer(
     "crossref",
-    instructions="Crossref: publications by words, author or funder with their funding acknowledgments; one work by DOI with its abstract; funders in the Funder Registry by name. Read crossref_index first.",
+    instructions="Crossref: publications by words, author or funder with their funding acknowledgments; one work by DOI with its abstract; whether a work has been retracted or corrected (crossref_updates); funders in the Funder Registry by name. Read crossref_index first.",
 )
 
 
@@ -169,9 +169,64 @@ async def crossref_work(doi: str) -> dict:
     if not w.get("DOI"):
         return {"error": f"no work with DOI {d} in Crossref"}
     abstract = w.get("abstract")
+    updates = slim_updates(w)
     return {**slim_work(w), "abstract": re.sub(r"\s+", " ", _TAG.sub(" ", abstract)).strip() if abstract else None,
             "licenses": [x.get("URL") for x in w.get("license") or [] if x.get("URL")], "references_count": w.get("references-count"),
-            "issn": w.get("ISSN") or []}
+            "issn": w.get("ISSN") or [], "retracted": updates["retracted"], "updated_by": updates["updated_by"], "updates": updates["updates"]}
+
+
+def _update(u: dict) -> dict:
+    date = (u.get("updated") or {}).get("date-parts") or [[]]
+    return {"type": u.get("type"), "label": u.get("label"), "doi": u.get("DOI"), "date": "-".join(f"{x:02d}" if i else str(x) for i, x in enumerate(date[0])) or None,
+            "source": u.get("source"), "link": f"https://doi.org/{u.get('DOI')}" if u.get("DOI") else None}
+
+
+def slim_updates(w: dict) -> dict:
+    """What has been published about a work since: the retractions, corrections and expressions of concern applied to it
+    (updated-by, which Crossref fills from publishers' deposits and Retraction Watch) and, for a notice, the work it updates."""
+    updated_by = [_update(u) for u in w.get("updated-by") or []]
+    return {"retracted": any((u.get("type") or "").lower() == "retraction" for u in updated_by), "updated_by": updated_by,
+            "updates": [_update(u) for u in w.get("update-to") or []]}
+
+
+@mcp.tool(name="crossref_updates", annotations=_READ_ONLY)
+async def crossref_updates(doi: str) -> dict:
+    """Whether a work has been retracted, corrected or given an expression of concern, with each notice's type, date and DOI; and, for a notice, the work it updates.
+
+    Ask before citing a paper in a review, a proposal or a report. Crossref's record joins the publisher's own deposits
+    with the Retraction Watch database, so a retraction appears here whether or not the journal marked it.
+
+    Args:
+        doi: The DOI of the paper, e.g. '10.1016/S0140-6736(97)11096-0', with or without https://doi.org/.
+    """
+    d = _doi(doi)
+    if not d:
+        return {"error": "doi must look like 10.xxxx/..."}
+    try:
+        w = await _get(f"works/{d}", {}, DAY)
+        if not w.get("DOI"):
+            return {"error": f"no work with DOI {d} in Crossref"}
+        # The filter finds notices that name this work even when the work's own record was not updated.
+        found = await _get("works", {"filter": f"updates:{d}", "rows": 20, "select": "DOI,title,update-to,type,issued"}, DAY)
+    except ValueError as e:
+        return {"error": str(e)}
+    updates = slim_updates(w)
+    notices = []
+    seen = {u["doi"] for u in updates["updated_by"] if u.get("doi")}
+    for item in found.get("items") or []:
+        for u in item.get("update-to") or []:
+            if (u.get("DOI") or "").lower() == d.lower() and (item.get("DOI") or "").lower() not in {x.lower() for x in seen}:
+                notices.append({**_update({**u, "DOI": item.get("DOI")}), "title": _first(item.get("title"))})
+                seen.add(item.get("DOI"))
+    all_updates = updates["updated_by"] + notices
+    status = "retracted" if any((u.get("type") or "").lower() == "retraction" for u in all_updates) else \
+        "has an expression of concern" if any("concern" in (u.get("type") or "").lower() for u in all_updates) else \
+        "corrected" if all_updates else \
+        f"this is itself a {updates['updates'][0]['type'] or 'notice'} notice for {updates['updates'][0]['doi']}" if updates["updates"] else \
+        "no retraction, correction or expression of concern on record"
+    return {"doi": d, "title": _first(w.get("title")), "status": status, "retracted": status == "retracted", "notices": all_updates, "this_work_updates": updates["updates"],
+            "note": "From Crossref's record (publishers' deposits and the Retraction Watch database). 'No record' is not a clean bill: a retraction not yet deposited or indexed is not here. Cite the notice's DOI with the retraction.",
+            "link": f"https://doi.org/{d}"}
 
 
 @mcp.tool(name="crossref_funders_search", annotations=_READ_ONLY)
@@ -199,4 +254,4 @@ register_prompts(mcp, SKILLS_DIR)
 # The identifiers a call names and the tool that lists them (#40): a funder id from crossref_funders_search, a DOI
 # from crossref_works_search; one a person pastes passes as given.
 given(mcp, {"crossref_works_search": {"funder_id": "crossref_funders_search"},
-            "crossref_work": {"doi": "crossref_works_search"}})
+            "crossref_work": {"doi": "crossref_works_search"}, "crossref_updates": {"doi": "crossref_works_search"}})

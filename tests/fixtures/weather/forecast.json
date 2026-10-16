@@ -1,0 +1,129 @@
+{
+"@context": [
+"https://geojson.org/geojson-ld/geojson-context.jsonld",
+{
+"@version": "1.1",
+"wx": "https://api.weather.gov/ontology#",
+"geo": "http://www.opengis.net/ont/geosparql#",
+"unit": "http://codes.wmo.int/common/unit/",
+"@vocab": "https://api.weather.gov/ontology#"
+}
+],
+"type": "Feature",
+"geometry": {
+"type": "Polygon",
+"coordinates": [
+[
+[
+-116.9692,
+46.7217
+],
+[
+-116.9741,
+46.7425
+],
+[
+-117.0046,
+46.7391
+],
+[
+-116.9997,
+46.7183
+],
+[
+-116.9692,
+46.7217
+]
+]
+]
+},
+"properties": {
+"units": "us",
+"forecastGenerator": "BaselineForecastGenerator",
+"generatedAt": "2026-10-16T19:30:15+00:00",
+"updateTime": "2026-10-16T18:31:58+00:00",
+"validTimes": "2026-10-16T12:00:00+00:00/P7DT13H",
+"elevation": {
+"unitCode": "wmoUnit:m",
+"value": 791.8704
+},
+"periods": [
+{
+"number": 1,
+"name": "This Afternoon",
+"startTime": "2026-10-16T12:00:00-07:00",
+"endTime": "2026-10-16T18:00:00-07:00",
+"isDaytime": true,
+"temperature": 69,
+"temperatureUnit": "F",
+"temperatureTrend": null,
+"probabilityOfPrecipitation": {
+"unitCode": "wmoUnit:percent",
+"value": 0
+},
+"windSpeed": "5 to 8 mph",
+"windDirection": "SE",
+"icon": "https://api.weather.gov/icons/land/day/few?size=medium",
+"shortForecast": "Sunny",
+"detailedForecast": "Sunny. High near 69, with temperatures falling to around 67 in the afternoon. Southeast wind 5 to 8 mph."
+},
+{
+"number": 2,
+"name": "Tonight",
+"startTime": "2026-10-16T18:00:00-07:00",
+"endTime": "2026-10-17T06:00:00-07:00",
+"isDaytime": false,
+"temperature": 44,
+"temperatureUnit": "F",
+"temperatureTrend": null,
+"probabilityOfPrecipitation": {
+"unitCode": "wmoUnit:percent",
+"value": 0
+},
+"windSpeed": "7 mph",
+"windDirection": "SE",
+"icon": "https://api.weather.gov/icons/land/night/sct?size=medium",
+"shortForecast": "Partly Cloudy",
+"detailedForecast": "Partly cloudy, with a low around 44. Southeast wind around 7 mph."
+},
+{
+"number": 3,
+"name": "Saturday",
+"startTime": "2026-10-17T06:00:00-07:00",
+"endTime": "2026-10-17T18:00:00-07:00",
+"isDaytime": true,
+"temperature": 64,
+"temperatureUnit": "F",
+"temperatureTrend": null,
+"probabilityOfPrecipitation": {
+"unitCode": "wmoUnit:percent",
+"value": 1
+},
+"windSpeed": "3 to 17 mph",
+"windDirection": "SW",
+"icon": "https://api.weather.gov/icons/land/day/sct/rain_showers?size=medium",
+"shortForecast": "Mostly Sunny then Slight Chance Rain Showers",
+"detailedForecast": "A slight chance of rain showers between 4pm and 5pm. Mostly sunny. High near 64, with temperatures falling to around 59 in the afternoon. Southwest wind 3 to 17 mph, with gusts as high as 29 mph."
+},
+{
+"number": 4,
+"name": "Saturday Night",
+"startTime": "2026-10-17T18:00:00-07:00",
+"endTime": "2026-10-18T06:00:00-07:00",
+"isDaytime": false,
+"temperature": 38,
+"temperatureUnit": "F",
+"temperatureTrend": null,
+"probabilityOfPrecipitation": {
+"unitCode": "wmoUnit:percent",
+"value": 0
+},
+"windSpeed": "0 to 8 mph",
+"windDirection": "NW",
+"icon": "https://api.weather.gov/icons/land/night/sct?size=medium",
+"shortForecast": "Partly Cloudy then Areas Of Frost",
+"detailedForecast": "Areas of frost after 3am. Partly cloudy, with a low around 38. Northwest wind 0 to 8 mph, with gusts as high as 21 mph."
+}
+]
+}
+}

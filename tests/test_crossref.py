@@ -83,4 +83,52 @@ async def test_funders_search(monkeypatch):
 
 
 async def test_lists_tools():
-    assert {t.name for t in await cr.mcp.list_tools()} == {"crossref_index", "crossref_works_search", "crossref_work", "crossref_funders_search"}
+    assert {t.name for t in await cr.mcp.list_tools()} == {"crossref_index", "crossref_works_search", "crossref_work", "crossref_updates", "crossref_funders_search"}
+
+
+async def test_updates_join_the_record_with_the_notices_that_name_it(monkeypatch):
+    """The Wakefield paper as Crossref holds it (2026-10-16): a 2004 correction and the 2010 retraction, both from Retraction Watch."""
+    import json
+    from pathlib import Path
+
+    fix = Path(__file__).parent / "fixtures" / "crossref"
+    work = json.loads((fix / "retracted_work.json").read_text(encoding="utf-8"))
+    found = json.loads((fix / "updates_filter.json").read_text(encoding="utf-8"))
+    seen = []
+
+    async def fake_get_json(url, params=None, headers=None):
+        seen.append((url, dict(params or {})))
+        if url.endswith("/works"):
+            return found
+        return work if "11096" in url else {"status": "ok", "message": WORK}
+
+    monkeypatch.setattr(cr, "get_json", fake_get_json)
+    cr._cache._d.clear()
+    out = await cr.crossref_updates("https://doi.org/10.1016/S0140-6736(97)11096-0")
+    assert out["retracted"] and out["status"] == "retracted" and seen[1][1]["filter"] == "updates:10.1016/S0140-6736(97)11096-0"
+    assert [(n["type"], n["date"], n["doi"], n["source"]) for n in out["notices"]] == [("correction", "2004-03-06", "10.1016/s0140-6736(04)15715-2", "retraction-watch"),
+                                                                                        ("retraction", "2010-02-06", "10.1016/s0140-6736(10)60175-4", "retraction-watch")]
+    assert out["this_work_updates"] == [] and "not a clean bill" in out["note"]
+    # The same notices found only by the filter are not listed twice; one found only by the filter is added with its title.
+    clean = await cr.crossref_updates(WORK["DOI"])
+    assert not clean["retracted"] and clean["status"].startswith("no retraction") and clean["notices"] == []
+    cr._cache._d.clear()
+    found["message"]["items"][1]["DOI"] = "10.9999/other-notice"
+    found["message"]["items"][1]["update-to"][0]["DOI"] = WORK["DOI"]
+    found["message"]["items"][1]["update-to"][0]["type"] = "expression_of_concern"
+    out = await cr.crossref_updates(WORK["DOI"])
+    assert out["status"] == "has an expression of concern" and out["notices"][0]["doi"] == "10.9999/other-notice" and out["notices"][0]["title"].startswith("Retraction")
+    assert "error" in await cr.crossref_updates("not a doi")
+    w = cr.slim_updates(work["message"])
+    assert w["retracted"] and len(w["updated_by"]) == 2 and (await cr.crossref_work("10.1016/S0140-6736(97)11096-0"))["retracted"]
+    cr._cache._d.clear()
+    retraction = dict(work["message"]["updated-by"][1], DOI="10.1016/s0140-6736(97)11096-0")  # update-to names the paper, not the notice
+    notice = dict(work["message"], DOI="10.1016/s0140-6736(10)60175-4", title=["Retraction"], **{"update-to": [retraction]})
+    notice.pop("updated-by")
+
+    async def notice_json(url, params=None, headers=None):
+        return {"status": "ok", "message": {"items": []}} if url.endswith("/works") else {"status": "ok", "message": notice}
+
+    monkeypatch.setattr(cr, "get_json", notice_json)
+    out = await cr.crossref_updates("10.1016/s0140-6736(10)60175-4")
+    assert out["status"] == "this is itself a retraction notice for 10.1016/s0140-6736(97)11096-0" and not out["retracted"]

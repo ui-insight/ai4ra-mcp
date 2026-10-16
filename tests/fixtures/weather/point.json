@@ -1,0 +1,112 @@
+{
+    "@context": [
+        "https://geojson.org/geojson-ld/geojson-context.jsonld",
+        {
+            "@version": "1.1",
+            "wx": "https://api.weather.gov/ontology#",
+            "s": "https://schema.org/",
+            "geo": "http://www.opengis.net/ont/geosparql#",
+            "unit": "http://codes.wmo.int/common/unit/",
+            "@vocab": "https://api.weather.gov/ontology#",
+            "geometry": {
+                "@id": "s:GeoCoordinates",
+                "@type": "geo:wktLiteral"
+            },
+            "city": "s:addressLocality",
+            "state": "s:addressRegion",
+            "distance": {
+                "@id": "s:Distance",
+                "@type": "s:QuantitativeValue"
+            },
+            "bearing": {
+                "@type": "s:QuantitativeValue"
+            },
+            "value": {
+                "@id": "s:value"
+            },
+            "unitCode": {
+                "@id": "s:unitCode",
+                "@type": "@id"
+            },
+            "forecastOffice": {
+                "@type": "@id"
+            },
+            "forecastGridData": {
+                "@type": "@id"
+            },
+            "publicZone": {
+                "@type": "@id"
+            },
+            "county": {
+                "@type": "@id"
+            }
+        }
+    ],
+    "id": "https://api.weather.gov/points/46.7324,-117.0002",
+    "type": "Feature",
+    "geometry": {
+        "type": "Point",
+        "coordinates": [
+            -117.0002,
+            46.7324
+        ]
+    },
+    "properties": {
+        "@id": "https://api.weather.gov/points/46.7324,-117.0002",
+        "@type": "wx:Point",
+        "cwa": "OTX",
+        "type": "land",
+        "forecastOffice": "https://api.weather.gov/offices/OTX",
+        "gridId": "OTX",
+        "gridX": 147,
+        "gridY": 44,
+        "forecast": "https://api.weather.gov/gridpoints/OTX/147,44/forecast",
+        "forecastHourly": "https://api.weather.gov/gridpoints/OTX/147,44/forecast/hourly",
+        "forecastGridData": "https://api.weather.gov/gridpoints/OTX/147,44",
+        "observationStations": "https://api.weather.gov/gridpoints/OTX/147,44/stations",
+        "relativeLocation": {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -116.998909,
+                    46.7306091
+                ]
+            },
+            "properties": {
+                "city": "Moscow",
+                "state": "ID",
+                "distance": {
+                    "unitCode": "wmoUnit:m",
+                    "value": 0
+                },
+                "bearing": {
+                    "unitCode": "wmoUnit:degree_(angle)",
+                    "value": 0
+                }
+            }
+        },
+        "forecastZone": "https://api.weather.gov/zones/forecast/IDZ003",
+        "county": "https://api.weather.gov/zones/county/IDC057",
+        "fireWeatherZone": "https://api.weather.gov/zones/fire/IDZ102",
+        "timeZone": "America/Los_Angeles",
+        "radarStation": "KOTX",
+        "astronomicalData": {
+            "sunrise": "2026-10-15T07:06:14-07:00",
+            "sunset": "2026-10-15T18:01:09-07:00",
+            "transit": "2026-10-15T12:33:41-07:00",
+            "civilTwilightBegin": "2026-10-15T06:35:47-07:00",
+            "civilTwilightEnd": "2026-10-15T18:31:36-07:00",
+            "nauticalTwilightBegin": "2026-10-15T06:00:42-07:00",
+            "nauticalTwilightEnd": "2026-10-15T19:06:41-07:00",
+            "astronomicalTwilightBegin": "2026-10-15T05:25:36-07:00",
+            "astronomicalTwilightEnd": "2026-10-15T19:41:47-07:00"
+        },
+        "nwr": {
+            "transmitter": "WXK98",
+            "sameCode": "016057",
+            "areaBroadcast": "https://api.weather.gov/radio/WXK98/broadcast",
+            "pointBroadcast": "https://api.weather.gov/points/46.7324,-117.0002/radio"
+        }
+    }
+}

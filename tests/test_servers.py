@@ -26,6 +26,7 @@ EXPECTED_TOOLS = {
     "events": {"events_index", "events_search", "events_closures", "events_event", "events_calendars"},
     "campusmap": {"campusmap_index", "campusmap_categories", "campusmap_search", "campusmap_near", "campusmap_place"},
     "osm": {"osm_index", "osm_geocode", "osm_route"},
+    "weather": {"weather_index", "weather_forecast", "weather_now", "weather_alerts"},
     "lakehouse": {"lakehouse_guide", "lakehouse_index", "lakehouse_streams", "lakehouse_schema", "lakehouse_query", "lakehouse_files", "lakehouse_file", "lakehouse_sql_catalog", "lakehouse_sql"},
     "general": {"general_guide", "fetch_document", "web_search"},
     "github": {"github_guide"},   # the two GitHub skills; their tools are GitHub's own server's
@@ -53,7 +54,7 @@ EXPECTED_TOOLS = {
     "pubmed": {"pubmed_index", "pubmed_search", "pubmed_summary", "pubmed_article", "pmc_id_convert"},
     "icite": {"icite_index", "icite_metrics", "icite_links"},
     "treasury": {"treasury_index", "treasury_currencies", "treasury_rates", "treasury_convert"},
-    "crossref": {"crossref_index", "crossref_works_search", "crossref_work", "crossref_funders_search"},
+    "crossref": {"crossref_index", "crossref_works_search", "crossref_work", "crossref_updates", "crossref_funders_search"},
     "datacite": {"datacite_index", "datacite_search", "datacite_doi"},
     "re3data": {"re3data_index", "re3data_search", "re3data_repository"},
     "orcid": {"orcid_index", "orcid_search", "orcid_record"},
