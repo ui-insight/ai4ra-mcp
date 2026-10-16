@@ -1,0 +1,293 @@
+{
+ "data": [
+  {
+   "id": "10.3886/e249735v1",
+   "type": "dois",
+   "attributes": {
+    "doi": "10.3886/e249735v1",
+    "identifiers": [],
+    "creators": [
+     {
+      "nameType": "Organizational",
+      "affiliation": [],
+      "name": "US Department of Agriculture",
+      "nameIdentifiers": []
+     },
+     {
+      "nameType": "Organizational",
+      "affiliation": [],
+      "name": "US Forest Service",
+      "nameIdentifiers": []
+     }
+    ],
+    "titles": [
+     {
+      "lang": "en",
+      "title": "Airborne and Lidar measurements of smoke plume rise, emissions, and dispersion"
+     }
+    ],
+    "publisher": "ICPSR - Interuniversity Consortium for Political and Social Research",
+    "container": {},
+    "publicationYear": 2026,
+    "subjects": [
+     {
+      "subject": "climatologyMeteorologyAtmosphere",
+      "lang": "en"
+     },
+     {
+      "subject": "environment",
+      "lang": "en"
+     },
+     {
+      "subject": "Climate change",
+      "lang": "en"
+     },
+     {
+      "subject": "Carbon",
+      "lang": "en"
+     },
+     {
+      "subject": "Fire",
+      "lang": "en"
+     },
+     {
+      "subject": "Prescribed fire",
+      "lang": "en"
+     }
+    ],
+    "contributors": [],
+    "dates": [
+     {
+      "date": "2009-08-01/2011-08-01",
+      "dateType": "Collected"
+     },
+     {
+      "date": "2026",
+      "dateType": "Issued"
+     }
+    ],
+    "language": "en",
+    "types": {
+     "schemaOrg": "Dataset",
+     "resourceTypeGeneral": "Dataset",
+     "citeproc": "dataset",
+     "bibtex": "misc",
+     "ris": "DATA",
+     "resourceType": "geographic information system (GIS) data, observational data"
+    },
+    "relatedIdentifiers": [
+     {
+      "relationType": "IsVersionOf",
+      "relatedIdentifier": "10.3886/e249735",
+      "relatedIdentifierType": "DOI"
+     }
+    ],
+    "relatedItems": [],
+    "sizes": [],
+    "formats": [],
+    "version": "v1",
+    "rightsList": [],
+    "descriptions": [
+     {
+      "descriptionType": "Abstract",
+      "description": "This data publication consists of measurements of smoke plume rise, emissions, and dispersion in and around eight wildfires in the western United States and prescribed fires in California, Idaho, and North Carolina. Eleven wildland fires were investigated between August 2009 and August 2011, allowin",
+      "lang": "en"
+     },
+     {
+      "descriptionType": "Methods",
+      "description": "DOI: https://doi.org/10.2737/RDS-2013-0010\nAuthors: Urbanski, Shawn P. ; Kovalev, Vladimir A. ; Hao, Wei Min\nPublication year: 2013 (Downloaded 2026-06-05)",
+      "lang": "en"
+     }
+    ],
+    "geoLocations": [
+     {
+      "geoLocationPlace": "Oregon"
+     },
+     {
+      "geoLocationPlace": "North Carolina"
+     },
+     {
+      "geoLocationPlace": "Montana"
+     },
+     {
+      "geoLocationPlace": "California"
+     },
+     {
+      "geoLocationPlace": "Utah"
+     },
+     {
+      "geoLocationPlace": "Idaho"
+     }
+    ],
+    "fundingReferences": [],
+    "url": "https://www.datalumos.org/datalumos/project/249735/version/V1/view",
+    "contentUrl": null,
+    "metadataVersion": 0,
+    "schemaVersion": "http://datacite.org/schema/kernel-4",
+    "source": "api",
+    "isActive": true,
+    "state": "findable",
+    "reason": null,
+    "viewCount": 0,
+    "downloadCount": 0,
+    "referenceCount": 0,
+    "citationCount": 0,
+    "partCount": 0,
+    "partOfCount": 0,
+    "versionCount": 0,
+    "versionOfCount": 1,
+    "created": "2026-06-08T17:49:55Z",
+    "registered": "2026-06-08T17:49:55Z",
+    "published": null,
+    "updated": "2026-06-08T17:49:55Z"
+   }
+  },
+  {
+   "id": "10.3886/e249735",
+   "type": "dois",
+   "attributes": {
+    "doi": "10.3886/e249735",
+    "identifiers": [],
+    "creators": [
+     {
+      "nameType": "Organizational",
+      "affiliation": [],
+      "name": "US Department of Agriculture",
+      "nameIdentifiers": []
+     },
+     {
+      "nameType": "Organizational",
+      "affiliation": [],
+      "name": "US Forest Service",
+      "nameIdentifiers": []
+     }
+    ],
+    "titles": [
+     {
+      "lang": "en",
+      "title": "Airborne and Lidar measurements of smoke plume rise, emissions, and dispersion"
+     }
+    ],
+    "publisher": "ICPSR - Interuniversity Consortium for Political and Social Research",
+    "container": {},
+    "publicationYear": 2026,
+    "subjects": [
+     {
+      "subject": "climatologyMeteorologyAtmosphere",
+      "lang": "en"
+     },
+     {
+      "subject": "environment",
+      "lang": "en"
+     },
+     {
+      "subject": "Climate change",
+      "lang": "en"
+     },
+     {
+      "subject": "Carbon",
+      "lang": "en"
+     },
+     {
+      "subject": "Fire",
+      "lang": "en"
+     },
+     {
+      "subject": "Prescribed fire",
+      "lang": "en"
+     }
+    ],
+    "contributors": [],
+    "dates": [
+     {
+      "date": "2009-08-01/2011-08-01",
+      "dateType": "Collected"
+     },
+     {
+      "date": "2026",
+      "dateType": "Issued"
+     }
+    ],
+    "language": "en",
+    "types": {
+     "schemaOrg": "Dataset",
+     "resourceTypeGeneral": "Dataset",
+     "citeproc": "dataset",
+     "bibtex": "misc",
+     "ris": "DATA",
+     "resourceType": "geographic information system (GIS) data, observational data"
+    },
+    "relatedIdentifiers": [
+     {
+      "relationType": "HasVersion",
+      "relatedIdentifier": "10.3886/e249735v1",
+      "relatedIdentifierType": "DOI"
+     }
+    ],
+    "relatedItems": [],
+    "sizes": [],
+    "formats": [],
+    "version": "v0",
+    "rightsList": [],
+    "descriptions": [
+     {
+      "descriptionType": "Abstract",
+      "description": "This data publication consists of measurements of smoke plume rise, emissions, and dispersion in and around eight wildfires in the western United States and prescribed fires in California, Idaho, and North Carolina. Eleven wildland fires were investigated between August 2009 and August 2011, allowin",
+      "lang": "en"
+     },
+     {
+      "descriptionType": "Methods",
+      "description": "DOI: https://doi.org/10.2737/RDS-2013-0010\nAuthors: Urbanski, Shawn P. ; Kovalev, Vladimir A. ; Hao, Wei Min\nPublication year: 2013 (Downloaded 2026-06-05)",
+      "lang": "en"
+     }
+    ],
+    "geoLocations": [
+     {
+      "geoLocationPlace": "Oregon"
+     },
+     {
+      "geoLocationPlace": "North Carolina"
+     },
+     {
+      "geoLocationPlace": "Montana"
+     },
+     {
+      "geoLocationPlace": "California"
+     },
+     {
+      "geoLocationPlace": "Utah"
+     },
+     {
+      "geoLocationPlace": "Idaho"
+     }
+    ],
+    "fundingReferences": [],
+    "url": "https://www.datalumos.org/datalumos/project/249735/view",
+    "contentUrl": null,
+    "metadataVersion": 0,
+    "schemaVersion": "http://datacite.org/schema/kernel-4",
+    "source": "api",
+    "isActive": true,
+    "state": "findable",
+    "reason": null,
+    "viewCount": 0,
+    "downloadCount": 0,
+    "referenceCount": 0,
+    "citationCount": 0,
+    "partCount": 0,
+    "partOfCount": 0,
+    "versionCount": 1,
+    "versionOfCount": 0,
+    "created": "2026-06-08T17:49:54Z",
+    "registered": "2026-06-08T17:49:54Z",
+    "published": null,
+    "updated": "2026-06-08T17:49:54Z"
+   }
+  }
+ ],
+ "meta": {
+  "total": 12,
+  "totalPages": 6,
+  "page": 1
+ }
+}

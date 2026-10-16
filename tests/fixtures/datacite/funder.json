@@ -1,0 +1,277 @@
+{
+ "data": [
+  {
+   "id": "10.25810/9vsh-pb94",
+   "type": "dois",
+   "attributes": {
+    "doi": "10.25810/9vsh-pb94",
+    "identifiers": [],
+    "creators": [
+     {
+      "nameType": "Personal",
+      "affiliation": [
+       {
+        "affiliationIdentifier": "https://ror.org/02ttsq026",
+        "schemeUri": "https://ror.org",
+        "name": "University of Colorado Boulder",
+        "affiliationIdentifierScheme": "ROR"
+       }
+      ],
+      "givenName": "Virginia",
+      "familyName": "Iglesias",
+      "name": "Iglesias, Virginia",
+      "nameIdentifiers": [
+       {
+        "nameIdentifierScheme": "ORCID",
+        "schemeUri": "https://orcid.org",
+        "nameIdentifier": "https://orcid.org/0000-0001-5732-3714"
+       }
+      ]
+     }
+    ],
+    "titles": [
+     {
+      "titleType": null,
+      "lang": "en",
+      "title": "The cost of wildfire-resilient construction in Colorado"
+     }
+    ],
+    "publisher": "Cooperative Institute for Research in Environmental Sciences",
+    "container": {},
+    "publicationYear": 2026,
+    "subjects": [],
+    "contributors": [],
+    "dates": [],
+    "language": null,
+    "types": {
+     "schemaOrg": "Report",
+     "resourceTypeGeneral": "Report",
+     "citeproc": "report",
+     "bibtex": "misc",
+     "ris": "RRPT"
+    },
+    "relatedIdentifiers": [],
+    "relatedItems": [],
+    "sizes": [],
+    "formats": [],
+    "version": null,
+    "rightsList": [],
+    "descriptions": [
+     {
+      "descriptionType": "Abstract",
+      "description": "The western United States is navigating two converging pressures: rising wildfire risk and a persistent housing affordability crisis. Wildfire risk has escalated over recent decades, driven primarily by the expansion of residential development into fire-prone landscapes and compounded by land manage",
+      "lang": "en"
+     }
+    ],
+    "geoLocations": [],
+    "fundingReferences": [
+     {
+      "funderIdentifierType": "Crossref Funder ID",
+      "funderName": "National Science Foundation",
+      "funderIdentifier": "https://doi.org/10.13039/100000001",
+      "awardTitle": null,
+      "awardNumber": "2315760",
+      "awardUri": null
+     }
+    ],
+    "url": "https://scholar.colorado.edu/concern/reports/r207tr50r",
+    "contentUrl": null,
+    "metadataVersion": 1,
+    "schemaVersion": "http://datacite.org/schema/kernel-4",
+    "source": "fabricaForm",
+    "isActive": true,
+    "state": "findable",
+    "reason": null,
+    "viewCount": 0,
+    "downloadCount": 0,
+    "referenceCount": 0,
+    "citationCount": 0,
+    "partCount": 0,
+    "partOfCount": 0,
+    "versionCount": 0,
+    "versionOfCount": 0,
+    "created": "2026-09-28T21:10:28Z",
+    "registered": "2026-10-16T15:16:31Z",
+    "published": null,
+    "updated": "2026-10-16T15:16:31Z"
+   }
+  },
+  {
+   "id": "10.5518/1890",
+   "type": "dois",
+   "attributes": {
+    "doi": "10.5518/1890",
+    "identifiers": [],
+    "creators": [
+     {
+      "nameType": "Personal",
+      "affiliation": [
+       {
+        "affiliationIdentifier": "https://ror.org/024mrxd33",
+        "schemeUri": "https://ror.org",
+        "name": "University of Leeds",
+        "affiliationIdentifierScheme": "ROR"
+       }
+      ],
+      "givenName": "Jie",
+      "familyName": "Ren",
+      "name": "Ren, Jie",
+      "nameIdentifiers": [
+       {
+        "nameIdentifierScheme": "ORCID",
+        "schemeUri": "https://orcid.org",
+        "nameIdentifier": "https://orcid.org/0000-0002-8489-1968"
+       }
+      ]
+     }
+    ],
+    "titles": [
+     {
+      "titleType": null,
+      "lang": "en",
+      "title": "Data supporting \"Quantum many-body mixed phase space revealed by hybrid feedback control\""
+     }
+    ],
+    "publisher": "University of Leeds",
+    "container": {},
+    "publicationYear": 2026,
+    "subjects": [
+     {
+      "classificationCode": "1.3",
+      "schemeUri": "https://web-archive.oecd.org/2012-06-15/138575-38235147.pdf",
+      "subject": "FOS: Physical sciences",
+      "valueUri": null,
+      "lang": null,
+      "subjectScheme": "Fields of Science and Technology (FOS)"
+     }
+    ],
+    "contributors": [],
+    "dates": [
+     {
+      "date": "2026",
+      "dateType": "Issued",
+      "dateInformation": null
+     }
+    ],
+    "language": "en",
+    "types": {
+     "schemaOrg": "Dataset",
+     "resourceTypeGeneral": "Dataset",
+     "citeproc": "dataset",
+     "bibtex": "misc",
+     "ris": "DATA",
+     "resourceType": "data set"
+    },
+    "relatedIdentifiers": [
+     {
+      "relationType": "IsReferencedBy",
+      "resourceTypeGeneral": "JournalArticle",
+      "schemeType": null,
+      "schemeUri": null,
+      "relatedIdentifier": "https://doi.org/10.1038/s41567-026-03431-z",
+      "relatedIdentifierType": "DOI",
+      "relationTypeInformation": "",
+      "relatedMetadataScheme": null
+     },
+     {
+      "relationType": "IsReferencedBy",
+      "resourceTypeGeneral": "Preprint",
+      "schemeType": null,
+      "schemeUri": null,
+      "relatedIdentifier": "https://doi.org/10.48550/arXiv.2607.14223",
+      "relatedIdentifierType": "DOI",
+      "relationTypeInformation": null,
+      "relatedMetadataScheme": null
+     },
+     {
+      "relationType": "IsReferencedBy",
+      "resourceTypeGeneral": "Preprint",
+      "schemeType": null,
+      "schemeUri": null,
+      "relatedIdentifier": "https://eprints.whiterose.ac.uk/id/eprint/243527/",
+      "relatedIdentifierType": "URL",
+      "relationTypeInformation": null,
+      "relatedMetadataScheme": null
+     }
+    ],
+    "relatedItems": [],
+    "sizes": [
+     "3 MB"
+    ],
+    "formats": [
+     "text/plain",
+     "application/zip"
+    ],
+    "version": null,
+    "rightsList": [
+     {
+      "rightsIdentifierScheme": "SPDX",
+      "rightsUri": "https://creativecommons.org/licenses/by/4.0/legalcode",
+      "schemeUri": "https://spdx.org/licenses/",
+      "rights": "Creative Commons Attribution 4.0 International",
+      "rightsIdentifier": "cc-by-4.0"
+     }
+    ],
+    "descriptions": [
+     {
+      "descriptionType": "Abstract",
+      "description": "Final source data for the quantitative main-text figures of a study of mixed phase-space dynamics and hybrid feedback control in an interacting Su-Schrieffer-Heeger ladder. The dataset contains TDVP trajectories and Poincare-section crossings, exact-diagonalization maps, and experimental imbalance a",
+      "lang": "en"
+     }
+    ],
+    "geoLocations": [],
+    "fundingReferences": [
+     {
+      "funderIdentifierType": "Crossref Funder ID",
+      "funderName": "Leverhulme Trust",
+      "funderIdentifier": "https://doi.org/10.13039/501100000275",
+      "awardTitle": null,
+      "awardNumber": "RL-2019-015",
+      "awardUri": null
+     },
+     {
+      "funderIdentifierType": "Crossref Funder ID",
+      "funderName": "Engineering and Physical Sciences Research Council",
+      "funderIdentifier": "https://doi.org/10.13039/501100000266",
+      "awardTitle": null,
+      "awardNumber": "EP/Z533634/1",
+      "awardUri": null
+     },
+     {
+      "funderIdentifierType": "Crossref Funder ID",
+      "funderName": "National Science Foundation",
+      "funderIdentifier": "https://doi.org/10.13039/100000001",
+      "awardTitle": null,
+      "awardNumber": "PHY-2309135",
+      "awardUri": null
+     }
+    ],
+    "url": "https://archive.researchdata.leeds.ac.uk/1577/",
+    "contentUrl": null,
+    "metadataVersion": 4,
+    "schemaVersion": "http://datacite.org/schema/kernel-4",
+    "source": "fabricaForm",
+    "isActive": true,
+    "state": "findable",
+    "reason": null,
+    "viewCount": 0,
+    "downloadCount": 0,
+    "referenceCount": 0,
+    "citationCount": 1,
+    "partCount": 0,
+    "partOfCount": 0,
+    "versionCount": 0,
+    "versionOfCount": 0,
+    "created": "2026-07-28T14:15:06Z",
+    "registered": "2026-07-28T14:15:06Z",
+    "published": null,
+    "updated": "2026-10-16T14:43:37Z"
+   }
+  }
+ ],
+ "meta": {
+  "total": 14286,
+  "totalPages": 5000,
+  "page": 1
+ }
+}

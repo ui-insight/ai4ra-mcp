@@ -1,0 +1,608 @@
+{
+ "data": [
+  {
+   "id": "10.60841/000000328",
+   "type": "dois",
+   "attributes": {
+    "doi": "10.60841/000000328",
+    "identifiers": [],
+    "creators": [
+     {
+      "nameType": "Personal",
+      "affiliation": [
+       {
+        "affiliationIdentifier": "https://ror.org/03hbp5t65",
+        "schemeUri": "https://ror.org/",
+        "name": "University of Idaho (United States, Moscow) - UI",
+        "affiliationIdentifierScheme": "ROR"
+       }
+      ],
+      "givenName": "Mostafa",
+      "familyName": "Kamyabi",
+      "name": "Kamyabi, Mostafa",
+      "nameIdentifiers": []
+     },
+     {
+      "nameType": "Personal",
+      "affiliation": [
+       {
+        "affiliationIdentifier": "https://ror.org/03hbp5t65",
+        "schemeUri": "https://ror.org/",
+        "name": "University of Idaho (United States, Moscow) - UI",
+        "affiliationIdentifierScheme": "ROR"
+       }
+      ],
+      "givenName": "Alexandra",
+      "familyName": "Pace",
+      "name": "Pace, Alexandra",
+      "nameIdentifiers": []
+     },
+     {
+      "nameType": "Personal",
+      "affiliation": [
+       {
+        "affiliationIdentifier": "https://ror.org/038x7ta12",
+        "schemeUri": "https://ror.org/",
+        "name": "Lewis Clark State College (United States, Lewiston) - LCSC",
+        "affiliationIdentifierScheme": "ROR"
+       }
+      ],
+      "givenName": "J. R.",
+      "familyName": "Kok",
+      "name": "Kok, J. R.",
+      "nameIdentifiers": [
+       {
+        "nameIdentifierScheme": "ORCID",
+        "schemeUri": "https://orcid.org",
+        "nameIdentifier": "https://orcid.org/0009-0001-2630-4649"
+       }
+      ]
+     },
+     {
+      "nameType": "Personal",
+      "affiliation": [
+       {
+        "affiliationIdentifier": "https://ror.org/03hbp5t65",
+        "schemeUri": "https://ror.org/",
+        "name": "University of Idaho (United States, Moscow) - UI",
+        "affiliationIdentifierScheme": "ROR"
+       }
+      ],
+      "givenName": "Alistair M.S.",
+      "familyName": "Smith",
+      "name": "Smith, Alistair M.S.",
+      "nameIdentifiers": []
+     },
+     {
+      "nameType": "Personal",
+      "affiliation": [
+       {
+        "affiliationIdentifier": "https://ror.org/03hbp5t65",
+        "schemeUri": "https://ror.org/",
+        "name": "University of Idaho (United States, Moscow) - UI",
+        "affiliationIdentifierScheme": "ROR"
+       }
+      ],
+      "givenName": "Delaney",
+      "familyName": "Sarantopulos",
+      "name": "Sarantopulos, Delaney",
+      "nameIdentifiers": []
+     },
+     {
+      "nameType": "Personal",
+      "affiliation": [
+       {
+        "affiliationIdentifier": "https://ror.org/03hbp5t65",
+        "schemeUri": "https://ror.org/",
+        "name": "University of Idaho (United States, Moscow) - UI",
+        "affiliationIdentifierScheme": "ROR"
+       }
+      ],
+      "givenName": "Lauren",
+      "familyName": "Christensen",
+      "name": "Christensen, Lauren",
+      "nameIdentifiers": [
+       {
+        "nameIdentifierScheme": "ORCID",
+        "schemeUri": "https://orcid.org",
+        "nameIdentifier": "https://orcid.org/0009-0002-7173-3765"
+       }
+      ]
+     }
+    ],
+    "titles": [
+     {
+      "title": "Supplemental material for \"A novel controlled wood smoke exposure model to evaluate physiological responses to smoke-derived air pollution in dairy calves\""
+     }
+    ],
+    "publisher": "University of Idaho",
+    "container": {},
+    "publicationYear": 2026,
+    "subjects": [
+     {
+      "subject": "wildfire smoke"
+     },
+     {
+      "subject": "pulmonary ventilation"
+     },
+     {
+      "subject": "inhalation toxicology"
+     },
+     {
+      "subject": "Agriculture"
+     },
+     {
+      "subject": "Air Quality"
+     },
+     {
+      "subject": "Animal Science"
+     }
+    ],
+    "contributors": [
+     {
+      "nameType": "Personal",
+      "affiliation": [
+       {
+        "affiliationIdentifier": "https://ror.org/03hbp5t65",
+        "schemeUri": "https://ror.org/",
+        "name": "University of Idaho (United States, Moscow) - UI",
+        "affiliationIdentifierScheme": "ROR"
+       }
+      ],
+      "givenName": "Andrew Wright",
+      "familyName": "Child",
+      "name": "Child, Andrew Wright",
+      "nameIdentifiers": [
+       {
+        "nameIdentifierScheme": "ORCID",
+        "schemeUri": "https://orcid.org",
+        "nameIdentifier": "https://orcid.org/0000-0001-6666-0739"
+       }
+      ],
+      "contributorType": "DataCurator"
+     }
+    ],
+    "dates": [],
+    "language": "en",
+    "types": {
+     "schemaOrg": "CreativeWork",
+     "resourceTypeGeneral": "Other",
+     "citeproc": "article",
+     "bibtex": "misc",
+     "ris": "GEN",
+     "resourceType": "Other"
+    },
+    "relatedIdentifiers": [
+     {
+      "relationType": "IsSupplementTo",
+      "relatedIdentifier": "10.3168/jds.2026-29100",
+      "relatedIdentifierType": "DOI"
+     }
+    ],
+    "relatedItems": [],
+    "sizes": [
+     "350 kb"
+    ],
+    "formats": [
+     "text/plain",
+     "application/pdf"
+    ],
+    "version": null,
+    "rightsList": [
+     {
+      "rightsIdentifierScheme": "SPDX",
+      "rightsUri": "https://creativecommons.org/licenses/by/4.0/legalcode",
+      "schemeUri": "https://spdx.org/licenses/",
+      "rights": "Creative Commons Attribution 4.0 International",
+      "rightsIdentifier": "cc-by-4.0"
+     },
+     {
+      "rights": "Open"
+     },
+     {
+      "rights": "Copyright 2026 University of Idaho"
+     }
+    ],
+    "descriptions": [
+     {
+      "descriptionType": "Abstract",
+      "description": "Single pdf document containing 1 table and 1 figure (Supplemental Material for peer-reviewed manuscript submitted to the Journal of Dairy Science: A novel controlled wood smoke exposure model to evaluate physiological responses to smoke-derived air pollution in dairy calves)."
+     }
+    ],
+    "geoLocations": [],
+    "fundingReferences": [],
+    "url": "https://verso.uidaho.edu/esploro/outputs/other/996994089201851",
+    "contentUrl": null,
+    "metadataVersion": 0,
+    "schemaVersion": "http://datacite.org/schema/kernel-4",
+    "source": "mds",
+    "isActive": true,
+    "state": "findable",
+    "reason": null,
+    "viewCount": 0,
+    "downloadCount": 0,
+    "referenceCount": 0,
+    "citationCount": 1,
+    "partCount": 0,
+    "partOfCount": 0,
+    "versionCount": 0,
+    "versionOfCount": 0,
+    "created": "2026-10-14T17:59:55Z",
+    "registered": "2026-10-14T17:59:56Z",
+    "published": null,
+    "updated": "2026-10-14T17:59:56Z"
+   }
+  },
+  {
+   "id": "10.17632/whjfcnw4y5.3",
+   "type": "dois",
+   "attributes": {
+    "doi": "10.17632/whjfcnw4y5.3",
+    "identifiers": [],
+    "creators": [
+     {
+      "nameType": "Personal",
+      "affiliation": [
+       {
+        "affiliationIdentifier": "https://ror.org/03hbp5t65",
+        "schemeUri": "https://ror.org/",
+        "name": "University of Idaho",
+        "affiliationIdentifierScheme": "ROR"
+       }
+      ],
+      "givenName": "Pedro",
+      "familyName": "Sampaio",
+      "name": "Sampaio, Pedro",
+      "nameIdentifiers": []
+     },
+     {
+      "nameType": "Personal",
+      "affiliation": [
+       {
+        "affiliationIdentifier": "https://ror.org/00987cb86",
+        "schemeUri": "https://ror.org/",
+        "name": "Universidade Estadual Paulista (Unesp)",
+        "affiliationIdentifierScheme": "ROR"
+       }
+      ],
+      "givenName": "Pedro",
+      "familyName": "Ribeiro",
+      "name": "Ribeiro, Pedro",
+      "nameIdentifiers": []
+     },
+     {
+      "nameType": "Personal",
+      "affiliation": [
+       {
+        "affiliationIdentifier": "https://ror.org/00987cb86",
+        "schemeUri": "https://ror.org/",
+        "name": "Universidade Estadual Paulista (Unesp)",
+        "affiliationIdentifierScheme": "ROR"
+       }
+      ],
+      "givenName": "Gercino",
+      "familyName": "Virginio J\u00fanior",
+      "name": "Virginio J\u00fanior, Gercino",
+      "nameIdentifiers": [
+       {
+        "nameIdentifierScheme": "ORCID",
+        "schemeUri": "https://orcid.org",
+        "nameIdentifier": "https://orcid.org/0000-0001-7437-138X"
+       }
+      ]
+     },
+     {
+      "nameType": "Personal",
+      "affiliation": [
+       {
+        "affiliationIdentifier": "https://ror.org/00987cb86",
+        "schemeUri": "https://ror.org/",
+        "name": "Universidade Estadual Paulista (Unesp)",
+        "affiliationIdentifierScheme": "ROR"
+       }
+      ],
+      "givenName": "Danilo",
+      "familyName": "Millen",
+      "name": "Millen, Danilo",
+      "nameIdentifiers": [
+       {
+        "nameIdentifierScheme": "ORCID",
+        "schemeUri": "https://orcid.org",
+        "nameIdentifier": "https://orcid.org/0000-0002-1253-7310"
+       }
+      ]
+     }
+    ],
+    "titles": [
+     {
+      "title": "Supplemental material - Effect of dietary factors on milk fatty acid profile in Holstein cows: A meta-regression analysis"
+     }
+    ],
+    "publisher": "Mendeley Data",
+    "container": {},
+    "publicationYear": 2026,
+    "subjects": [
+     {
+      "subject": "Animal Nutrition"
+     }
+    ],
+    "contributors": [
+     {
+      "nameType": "Organizational",
+      "name": "Universidade Estadual Paulista (Unesp)",
+      "nameIdentifiers": [
+       {
+        "nameIdentifierScheme": "ROR",
+        "schemeUri": "https://ror.org",
+        "nameIdentifier": "https://ror.org/00987cb86"
+       }
+      ],
+      "contributorType": "Other",
+      "affiliation": []
+     }
+    ],
+    "dates": [
+     {
+      "date": "2026-10-14T14:50:39Z",
+      "dateType": "Issued"
+     }
+    ],
+    "language": null,
+    "types": {
+     "schemaOrg": "Dataset",
+     "resourceTypeGeneral": "Dataset",
+     "citeproc": "dataset",
+     "bibtex": "misc",
+     "ris": "DATA",
+     "resourceType": "Dataset"
+    },
+    "relatedIdentifiers": [
+     {
+      "relationType": "IsVersionOf",
+      "resourceTypeGeneral": "Dataset",
+      "relatedIdentifier": "10.17632/whjfcnw4y5",
+      "relatedIdentifierType": "DOI"
+     }
+    ],
+    "relatedItems": [],
+    "sizes": [],
+    "formats": [],
+    "version": null,
+    "rightsList": [
+     {
+      "rightsUri": "info:eu-repo/semantics/openAccess"
+     },
+     {
+      "rightsIdentifierScheme": "SPDX",
+      "rightsUri": "https://creativecommons.org/licenses/by/4.0/legalcode",
+      "schemeUri": "https://spdx.org/licenses/",
+      "rights": "Creative Commons Attribution 4.0 International",
+      "rightsIdentifier": "cc-by-4.0"
+     }
+    ],
+    "descriptions": [
+     {
+      "descriptionType": "Abstract",
+      "description": "Supplementary material containing additional tables and figures supporting the meta-regression analysis of dietary factors associated with milk fatty acid composition in Holstein dairy cows."
+     }
+    ],
+    "geoLocations": [],
+    "fundingReferences": [],
+    "url": "https://data.mendeley.com/datasets/whjfcnw4y5/3",
+    "contentUrl": null,
+    "metadataVersion": 0,
+    "schemaVersion": "http://datacite.org/schema/kernel-4",
+    "source": "api",
+    "isActive": true,
+    "state": "findable",
+    "reason": null,
+    "viewCount": 0,
+    "downloadCount": 0,
+    "referenceCount": 0,
+    "citationCount": 0,
+    "partCount": 0,
+    "partOfCount": 0,
+    "versionCount": 0,
+    "versionOfCount": 1,
+    "created": "2026-10-14T14:50:41Z",
+    "registered": "2026-10-14T14:50:41Z",
+    "published": null,
+    "updated": "2026-10-14T14:50:41Z"
+   }
+  },
+  {
+   "id": "10.17632/whjfcnw4y5",
+   "type": "dois",
+   "attributes": {
+    "doi": "10.17632/whjfcnw4y5",
+    "identifiers": [],
+    "creators": [
+     {
+      "nameType": "Personal",
+      "affiliation": [
+       {
+        "affiliationIdentifier": "https://ror.org/03hbp5t65",
+        "schemeUri": "https://ror.org/",
+        "name": "University of Idaho",
+        "affiliationIdentifierScheme": "ROR"
+       }
+      ],
+      "givenName": "Pedro",
+      "familyName": "Sampaio",
+      "name": "Sampaio, Pedro",
+      "nameIdentifiers": []
+     },
+     {
+      "nameType": "Personal",
+      "affiliation": [
+       {
+        "affiliationIdentifier": "https://ror.org/00987cb86",
+        "schemeUri": "https://ror.org/",
+        "name": "Universidade Estadual Paulista (Unesp)",
+        "affiliationIdentifierScheme": "ROR"
+       }
+      ],
+      "givenName": "Pedro",
+      "familyName": "Ribeiro",
+      "name": "Ribeiro, Pedro",
+      "nameIdentifiers": []
+     },
+     {
+      "nameType": "Personal",
+      "affiliation": [
+       {
+        "affiliationIdentifier": "https://ror.org/00987cb86",
+        "schemeUri": "https://ror.org/",
+        "name": "Universidade Estadual Paulista (Unesp)",
+        "affiliationIdentifierScheme": "ROR"
+       }
+      ],
+      "givenName": "Gercino",
+      "familyName": "Virginio J\u00fanior",
+      "name": "Virginio J\u00fanior, Gercino",
+      "nameIdentifiers": [
+       {
+        "nameIdentifierScheme": "ORCID",
+        "schemeUri": "https://orcid.org",
+        "nameIdentifier": "https://orcid.org/0000-0001-7437-138X"
+       }
+      ]
+     },
+     {
+      "nameType": "Personal",
+      "affiliation": [
+       {
+        "affiliationIdentifier": "https://ror.org/00987cb86",
+        "schemeUri": "https://ror.org/",
+        "name": "Universidade Estadual Paulista (Unesp)",
+        "affiliationIdentifierScheme": "ROR"
+       }
+      ],
+      "givenName": "Danilo",
+      "familyName": "Millen",
+      "name": "Millen, Danilo",
+      "nameIdentifiers": [
+       {
+        "nameIdentifierScheme": "ORCID",
+        "schemeUri": "https://orcid.org",
+        "nameIdentifier": "https://orcid.org/0000-0002-1253-7310"
+       }
+      ]
+     }
+    ],
+    "titles": [
+     {
+      "title": "Supplemental material - Effect of dietary factors on milk fatty acid profile in Holstein cows: A meta-regression analysis"
+     }
+    ],
+    "publisher": "Mendeley Data",
+    "container": {},
+    "publicationYear": 2026,
+    "subjects": [
+     {
+      "subject": "Animal Nutrition"
+     }
+    ],
+    "contributors": [
+     {
+      "nameType": "Organizational",
+      "name": "Universidade Estadual Paulista (Unesp)",
+      "nameIdentifiers": [
+       {
+        "nameIdentifierScheme": "ROR",
+        "schemeUri": "https://ror.org",
+        "nameIdentifier": "https://ror.org/00987cb86"
+       }
+      ],
+      "contributorType": "Other",
+      "affiliation": []
+     }
+    ],
+    "dates": [
+     {
+      "date": "2026-10-14T14:50:39Z",
+      "dateType": "Issued"
+     }
+    ],
+    "language": null,
+    "types": {
+     "schemaOrg": "Dataset",
+     "resourceTypeGeneral": "Dataset",
+     "citeproc": "dataset",
+     "bibtex": "misc",
+     "ris": "DATA",
+     "resourceType": "Dataset"
+    },
+    "relatedIdentifiers": [
+     {
+      "relationType": "HasVersion",
+      "resourceTypeGeneral": "Dataset",
+      "relatedIdentifier": "10.17632/whjfcnw4y5.3",
+      "relatedIdentifierType": "DOI"
+     },
+     {
+      "relationType": "HasVersion",
+      "resourceTypeGeneral": "Dataset",
+      "relatedIdentifier": "10.17632/whjfcnw4y5.2",
+      "relatedIdentifierType": "DOI"
+     },
+     {
+      "relationType": "HasVersion",
+      "resourceTypeGeneral": "Dataset",
+      "relatedIdentifier": "10.17632/whjfcnw4y5.1",
+      "relatedIdentifierType": "DOI"
+     }
+    ],
+    "relatedItems": [],
+    "sizes": [],
+    "formats": [],
+    "version": null,
+    "rightsList": [
+     {
+      "rightsUri": "info:eu-repo/semantics/openAccess"
+     },
+     {
+      "rightsIdentifierScheme": "SPDX",
+      "rightsUri": "https://creativecommons.org/licenses/by/4.0/legalcode",
+      "schemeUri": "https://spdx.org/licenses/",
+      "rights": "Creative Commons Attribution 4.0 International",
+      "rightsIdentifier": "cc-by-4.0"
+     }
+    ],
+    "descriptions": [
+     {
+      "descriptionType": "Abstract",
+      "description": "Supplementary material containing additional tables and figures supporting the meta-regression analysis of dietary factors associated with milk fatty acid composition in Holstein dairy cows."
+     }
+    ],
+    "geoLocations": [],
+    "fundingReferences": [],
+    "url": "https://data.mendeley.com/datasets/whjfcnw4y5",
+    "contentUrl": null,
+    "metadataVersion": 2,
+    "schemaVersion": "http://datacite.org/schema/kernel-4",
+    "source": "api",
+    "isActive": true,
+    "state": "findable",
+    "reason": null,
+    "viewCount": 0,
+    "downloadCount": 0,
+    "referenceCount": 0,
+    "citationCount": 0,
+    "partCount": 0,
+    "partOfCount": 0,
+    "versionCount": 3,
+    "versionOfCount": 0,
+    "created": "2026-10-12T16:16:20Z",
+    "registered": "2026-10-12T16:16:20Z",
+    "published": null,
+    "updated": "2026-10-14T14:50:39Z"
+   }
+  }
+ ],
+ "meta": {
+  "total": 933,
+  "totalPages": 311,
+  "page": 1
+ }
+}

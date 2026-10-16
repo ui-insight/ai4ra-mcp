@@ -1,0 +1,7 @@
+{
+  "catalog_version": "1.0",
+  "repo": "ui-insight/ai4ra-mcp",
+  "server": "datacite",
+  "note": "Skills that use the datacite server's tools. None yet.",
+  "components": []
+}

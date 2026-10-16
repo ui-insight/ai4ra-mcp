@@ -1,0 +1,151 @@
+{
+ "data": {
+  "id": "10.3886/e249735v1",
+  "type": "dois",
+  "attributes": {
+   "doi": "10.3886/e249735v1",
+   "prefix": "10.3886",
+   "suffix": "e249735v1",
+   "identifiers": [],
+   "alternateIdentifiers": [],
+   "creators": [
+    {
+     "name": "US Department of Agriculture",
+     "nameType": "Organizational",
+     "affiliation": [],
+     "nameIdentifiers": []
+    },
+    {
+     "name": "US Forest Service",
+     "nameType": "Organizational",
+     "affiliation": [],
+     "nameIdentifiers": []
+    }
+   ],
+   "titles": [
+    {
+     "lang": "en",
+     "title": "Airborne and Lidar measurements of smoke plume rise, emissions, and dispersion"
+    }
+   ],
+   "publisher": "ICPSR - Interuniversity Consortium for Political and Social Research",
+   "container": {},
+   "publicationYear": 2026,
+   "subjects": [
+    {
+     "lang": "en",
+     "subject": "climatologyMeteorologyAtmosphere"
+    },
+    {
+     "lang": "en",
+     "subject": "environment"
+    },
+    {
+     "lang": "en",
+     "subject": "Climate change"
+    },
+    {
+     "lang": "en",
+     "subject": "Carbon"
+    },
+    {
+     "lang": "en",
+     "subject": "Fire"
+    },
+    {
+     "lang": "en",
+     "subject": "Prescribed fire"
+    }
+   ],
+   "contributors": [],
+   "dates": [
+    {
+     "date": "2009-08-01/2011-08-01",
+     "dateType": "Collected"
+    },
+    {
+     "date": "2026",
+     "dateType": "Issued"
+    }
+   ],
+   "language": "en",
+   "types": {
+    "ris": "DATA",
+    "bibtex": "misc",
+    "citeproc": "dataset",
+    "schemaOrg": "Dataset",
+    "resourceType": "geographic information system (GIS) data, observational data",
+    "resourceTypeGeneral": "Dataset"
+   },
+   "relatedIdentifiers": [
+    {
+     "relationType": "IsVersionOf",
+     "relatedIdentifier": "10.3886/e249735",
+     "relatedIdentifierType": "DOI"
+    }
+   ],
+   "relatedItems": [],
+   "sizes": [],
+   "formats": [],
+   "version": "v1",
+   "rightsList": [],
+   "descriptions": [
+    {
+     "lang": "en",
+     "description": "This data publication consists of measurements of smoke plume rise, emissions, and dispersion in and around eight wildfires in the western United States and prescribed fires in California, Idaho, and North Carolina. Eleven wildland fires were investigated between August 2009 and August 2011, allowin",
+     "descriptionType": "Abstract"
+    },
+    {
+     "lang": "en",
+     "description": "DOI: https://doi.org/10.2737/RDS-2013-0010\nAuthors: Urbanski, Shawn P. ; Kovalev, Vladimir A. ; Hao, Wei Min\nPublication year: 2013 (Downloaded 2026-06-05)",
+     "descriptionType": "Methods"
+    }
+   ],
+   "geoLocations": [
+    {
+     "geoLocationPlace": "Oregon"
+    },
+    {
+     "geoLocationPlace": "North Carolina"
+    },
+    {
+     "geoLocationPlace": "Montana"
+    },
+    {
+     "geoLocationPlace": "California"
+    },
+    {
+     "geoLocationPlace": "Utah"
+    },
+    {
+     "geoLocationPlace": "Idaho"
+    }
+   ],
+   "fundingReferences": [],
+   "xml": "PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9InllcyI/Pgo8cmVzb3VyY2UgeG1sbnM9Imh0dHA6Ly9kYXRhY2l0ZS5vcmcvc2NoZW1hL2tlcm5lbC00IiB4bWxuczp4c2k9Imh0dHA6Ly93d3cudzMub3JnLzIwMDEvWE1MU2NoZW1hLWluc3RhbmNlIiB4c2k6c2NoZW1hTG9jYXRpb249Imh0dHA6Ly9kYXRhY2l0ZS5vcmcvc2NoZW1hL2tlcm5lbC00IGh0dHBzOi8vc2NoZW1hLmRhdGFjaXRlLm9yZy9tZXRhL2tlcm5lbC00LjMvbWV0YWRhdGEueHNkIj4KICA8aWRlbnRpZmllciBpZGVudGlmaWVyVHlwZT0iRE9JIj4xMC4zODg2L0UyNDk3MzVWMTwvaWRlbnRpZmllcj4KICA8Y3JlYXRvcnM+CiAgICA8Y3JlYXRvcj4KICAgICAgPGNyZWF0b3JOYW1lIG5hbWVUeXBlPSJPcmdhbml6YXRpb25hbCI+VVMgRGVwYXJ0bWVudCBvZiBBZ3JpY3VsdHVyZTwvY3JlYXRvck5hbWU+CiAgICA8L2NyZWF0b3I+CiAgICA8Y3JlYXRvcj4KICAgICAgPGNyZWF0b3JOYW1lIG5hbWVUeXBlPSJPcmdhbml6YXRpb25hbCI+VVMgRm9yZXN0IFNlcnZpY2U8L2NyZWF0b3JOYW1lPgogICAgPC9jcmVhdG9yPgogIDwvY3JlYXRvcnM+CiAgPHRpdGxlcz4KICAgIDx0aXRsZSB4bWw6bGFuZz0iZW4iPkFpcmJvcm5lIGFuZCBMaWRhciBtZWFzdXJlbWVudHMgb2Ygc21va2UgcGx1bWUgcmlzZSwgZW1pc3Npb25zLCBhbmQgZGlzcGVyc2lvbjwvdGl0bGU+CiAgPC90aXRsZXM+CiAgPHB1Ymxpc2hlcj5JQ1BTUiAtIEludGVydW5pdmVyc2l0eSBDb25zb3J0aXVtIGZvciBQb2xpdGljYWwgYW5kIFNvY2lhbCBSZXNlYXJjaDwvcHVibGlzaGVyPgogIDxwdWJsaWNhdGlvblllYXI+MjAyNjwvcHVibGljYXRpb25ZZWFyPgogIDxyZXNvdXJjZVR5cGUgcmVzb3VyY2VUeXBlR2VuZXJhbD0iRGF0YXNldCI+Z2VvZ3JhcGhpYyBpbmZvcm1hdGlvbiBzeXN0ZW0gKEdJUykgZGF0YSwgb2JzZXJ2YXRpb25hbCBkYXRhPC9yZXNvdXJjZVR5cGU+CiAgPHN1YmplY3RzPgogICAgPHN1YmplY3QgeG1sOmxhbmc9ImVuIj5jbGltYXRvbG9neU1ldGVvcm9sb2d5QXRtb3NwaGVyZTwvc3ViamVjdD4KICAgIDxzdWJqZWN0IHhtbDpsYW5nPSJlbiI+ZW52aXJvbm1lbnQ8L3N1YmplY3Q+CiAgICA8c3ViamVjdCB4bWw6bGFuZz0iZW4iPkNsaW1hdGUgY2hhbmdlPC9zdWJqZWN0PgogICAgPHN1YmplY3QgeG1sOmxhbmc9ImVuIj5DYXJib248L3N1YmplY3Q+CiAgICA8c3ViamVjdCB4bWw6bGFuZz0iZW4iPkZpcmU8L3N1YmplY3Q+CiAgICA8c3ViamVjdCB4bWw6bGFuZz0iZW4iPlByZXNjcmliZWQgZmlyZTwvc3ViamVjdD4KICAgIDxzdWJqZWN0IHhtbDpsYW5nPSJlbiI+U21va2U8L3N1YmplY3Q+CiAgICA8c3ViamVjdCB4bWw6bGFuZz0iZW4iPkludmVudG9yeTwvc3ViamVjdD4KICAgIDxzdWJqZWN0IHhtbDpsYW5nPSJlbiI+QW5hbHlzaXM8L3N1YmplY3Q+CiAgICA8c3ViamVjdCB4bWw6bGFuZz0iZW4iPmJpb21hc3MgYnVybmluZzwvc3ViamVjdD4KICAgIDxzdWJqZWN0IHhtbDpsYW5nPSJlbiI+d2lsZGxhbmQgZmlyZTwvc3ViamVjdD4KICAgIDxzdWJqZWN0IHhtbDpsYW5nPSJlbiI+c21va2UgZGlzcGVyc2lvbjwvc3ViamVjdD4KICAgIDxzdWJqZWN0IHhtbDpsYW5nPSJlbiI+c21va2UgZW1pc3Npb25zPC9zdWJqZWN0PgogICAgPHN1YmplY3QgeG1sOmxhbmc9ImVuIj53aWxkZmlyZTwvc3ViamVjdD4KICAgIDxzdWJqZWN0IHhtbDpsYW5nPSJlbiI+cGx1bWUgcmlzZTwvc3ViamVjdD4KICAgIDxzdWJqZWN0IHhtbDpsYW5nPSJlbiI+Sm9pbnQgRmlyZSBTY2llbmNlIFByb2dyYW08L3N1YmplY3Q+CiAgICA8c3ViamVjdCB4bWw6bGFuZz0iZW4iPkpGU1A8L3N1YmplY3Q+CiAgICA8c3ViamVjdCB4bWw6bGFuZz0iZW4iPkJvYiBNYXJzaGFsbCBXaWxkZXJuZXNzPC9zdWJqZWN0PgogICAgPHN1YmplY3QgeG1sOmxhbmc9ImVuIj5TYWxtb24tQ2hhbGxpcyBOYXRpb25hbCBGb3Jlc3Q8L3N1YmplY3Q+CiAgICA8c3ViamVjdCB4bWw6bGFuZz0iZW4iPkNsZWFyd2F0ZXIgTmF0aW9uYWwgRm9yZXN0PC9zdWJqZWN0PgogICAgPHN1YmplY3QgeG1sOmxhbmc9ImVuIj5EaXhpZSBOYXRpb25hbCBGb3Jlc3Q8L3N1YmplY3Q+CiAgICA8c3ViamVjdCB4bWw6bGFuZz0iZW4iPkRlc2NodXRlcyBOYXRpb25hbCBGb3Jlc3Q8L3N1YmplY3Q+CiAgICA8c3ViamVjdCB4bWw6bGFuZz0iZW4iPkZpc2hsYWtlIE5hdGlvbmFsIEZvcmVzdDwvc3ViamVjdD4KICAgIDxzdWJqZWN0IHhtbDpsYW5nPSJlbiI+Qm9pc2UgTmF0aW9uYWwgRm9yZXN0PC9zdWJqZWN0PgogICAgPHN1YmplY3QgeG1sOmxhbmc9ImVuIj5WYW5kZW5iZXJnIEFpciBGb3JjZSBCYXNlPC9zdWJqZWN0PgogICAgPHN1YmplY3QgeG1sOmxhbmc9ImVuIj5NYXJpbmUgQ29ycHMgQmFzZSBDYW1wIExlamV1bmU8L3N1YmplY3Q+CiAgICA8c3ViamVjdCB4bWw6bGFuZz0iZW4iPk1vbnRhbmE8L3N1YmplY3Q+CiAgICA8c3ViamVjdCB4bWw6bGFuZz0iZW4iPklkYWhvPC9zdWJqZWN0PgogICAgPHN1YmplY3QgeG1sOmxhbmc9ImVuIj5VdGFoPC9zdWJqZWN0PgogICAgPHN1YmplY3QgeG1sOmxhbmc9ImVuIj5PcmVnb248L3N1YmplY3Q+CiAgICA8c3ViamVjdCB4bWw6bGFuZz0iZW4iPkNhbGlmb3JuaWE8L3N1YmplY3Q+CiAgICA8c3ViamVjdCB4bWw6bGFuZz0iZW4iPk5vcnRoIENhcm9saW5hPC9zdWJqZWN0PgogIDwvc3ViamVjdHM+CiAgPGRhdGVzPgogICAgPGRhdGUgZGF0ZVR5cGU9IkNvbGxlY3RlZCI+MjAwOS0wOC0wMS8yMDExLTA4LTAxPC9kYXRlPgogIDwvZGF0ZXM+CiAgPGxhbmd1YWdlPmVuZzwvbGFuZ3VhZ2U+CiAgPHJlbGF0ZWRJZGVudGlmaWVycz4KICAgIDxyZWxhdGVkSWRlbnRpZmllciByZWxhdGVkSWRlbnRpZmllclR5cGU9IkRPSSIgcmVsYXRpb25UeXBlPSJJc1ZlcnNpb25PZiI+MTAuMzg4Ni9FMjQ5NzM1PC9yZWxhdGVkSWRlbnRpZmllcj4KICA8L3JlbGF0ZWRJZGVudGlmaWVycz4KICA8dmVyc2lvbj52MTwvdmVyc2lvbj4KICA8ZGVzY3JpcHRpb25zPgogICAgPGRlc2NyaXB0aW9uIGRlc2NyaXB0aW9uVHlwZT0iQWJzdHJhY3QiIHhtbDpsYW5nPSJlbiI+VGhpcyBkYXRhIHB1YmxpY2F0aW9uIGNvbnNpc3RzIG9mIG1lYXN1cmVtZW50cyBvZiBzbW9rZSBwbHVtZSByaXNlLCBlbWlzc2lvbnMsIGFuZCBkaXNwZXJzaW9uIGluIGFuZCBhcm91bmQgZWlnaHQgd2lsZGZpcmVzIGluIHRoZSB3ZXN0ZXJuIFVuaXRlZCBTdGF0ZXMgYW5kIHByZXNjcmliZWQgZmlyZXMgaW4gQ2FsaWZvcm5pYSwgSWRhaG8sIGFuZCBOb3J0aCBDYXJvbGluYS4gRWxldmVuIHdpbGRsYW5kIGZpcmVzIHdlcmUgaW52ZXN0aWdhdGVkIGJldHdlZW4gQXVndXN0IDIwMDkgYW5kIEF1Z3VzdCAyMDExLCBhbGxvd2luZyB0aGUgcmVzZWFyY2ggdGVhbSB0byBtZWFzdXJlIHBsdW1lIHJpc2UgYW5kIHNtb2tlIHRyYW5zcG9ydCBvdmVyIGEgd2lkZSByYW5nZSBvZiBtZXRlb3JvbG9naWNhbCBjb25kaXRpb25zLCBmaXJlIGFjdGl2aXR5LCBmdWVscywgYW5kIHRlcnJhaW4uIFRoaXMgZGF0YSBwdWJsaWNhdGlvbiBwcm92aWRlcyBvYnNlcnZhdGlvbnMgZm9yIHRoZSBldmFsdWF0aW9uIG9mIHNtb2tlIGRpc3BlcnNpb24gYW5kIGFpciBxdWFsaXR5IGZvcmVjYXN0aW5nIG1vZGVscy4gVGhlIGRhdGEgcHVibGljYXRpb24gaW5jbHVkZXMgbWVhc3VyZW1lbnRzIG9mIHByb2dub3N0aWMgdmFyaWFibGVzIChwbHVtZSBoZWlnaHQgYW5kIHRoZSBjb25jZW50cmF0aW9ucyBvZiBhZXJvc29sLCBjYXJib24gZGlveGlkZSwgY2FyYm9uIG1vbm94aWRlLCBhbmQgbWV0aGFuZSkgb2YgcGx1bWUgcmlzZSBtb2RlbHMsIHNtb2tlIGRpc3BlcnNpb24gbW9kZWxzLCBhbmQgYXRtb3NwaGVyaWMgY2hlbWlzdHJ5IHRyYW5zcG9ydCBtb2RlbHMuIFRoZSBzdWJjb21wb25lbnQgbW9kZWxzIG9mIHNtb2tlIG1vZGVsaW5nIHN5c3RlbXMsIHN1Y2ggYXMgcGx1bWUgcmlzZSBhbmQgZmlyZSBlZmZlY3RzIG1vZGVscyByZWx5IG9uIGEgdmFyaWV0eSBvZiBmaXJlIGVudmlyb25tZW50IGRhdGEgYXMgaW5wdXQgaW5jbHVkaW5nIGFtYmllbnQgbWV0ZW9yb2xvZ2ljYWwgY29uZGl0aW9ucywgZnVlbCB0eXBlLCBmdWVsIGxvYWRpbmcsIGFuZCBmdWVsIGNvbmRpdGlvbi4gSW4gYWRkaXRpb24gdG8gbWVhc3VyaW5nIG1vZGVsIHByb2dub3N0aWMgdmFyaWFibGVzLCB0aGlzIGRhdGEgcHVibGljYXRpb24gYWxzbyBoYXMgYW5jaWxsYXJ5IGRhdGEgY29uc2lzdGluZyBvZiBmaXJlIGVudmlyb25tZW50IHZhcmlhYmxlcyB3aGljaCBhcmUgaW5wdXQgZm9yIHRoZSBzdWJjb21wb25lbnQgbW9kZWxzIG9mIHNtb2tlIG1vZGVsaW5nIHN5c3RlbXMuPC9kZXNjcmlwdGlvbj4KICAgIDxkZXNjcmlwdGlvbiBkZXNjcmlwdGlvblR5cGU9Ik1ldGhvZHMiIHhtbDpsYW5nPSJlbiI+Jmx0O3AmZ3Q7RE9JOiBodHRwczovL2RvaS5vcmcvMTAuMjczNy9SRFMtMjAxMy0wMDEwCkF1dGhvcnM6IFVyYmFuc2tpLCBTaGF3biBQLiA7IEtvdmFsZXYsIFZsYWRpbWlyIEEuIDsgSGFvLCBXZWkgTWluClB1YmxpY2F0aW9uIHllYXI6IDIwMTMgKERvd25sb2FkZWQgMjAyNi0wNi0wNSkmbHQ7L3AmZ3Q7PC9kZXNjcmlwdGlvbj4KICA8L2Rlc2NyaXB0aW9ucz4KICA8Z2VvTG9jYXRpb25zPgogICAgPGdlb0xvY2F0aW9uPgogICAgICA8Z2VvTG9jYXRpb25QbGFjZSB4bWxuczp4cz0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEiIHhzaTp0eXBlPSJ4czpzdHJpbmciPk9yZWdvbjwvZ2VvTG9jYXRpb25QbGFjZT4KICAgIDwvZ2VvTG9jYXRpb24+CiAgICA8Z2VvTG9jYXRpb24+CiAgICAgIDxnZW9Mb2NhdGlvblBsYWNlIHhtbG5zOnhzPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxL1hNTFNjaGVtYSIgeHNpOnR5cGU9InhzOnN0cmluZyI+Tm9ydGggQ2Fyb2xpbmE8L2dlb0xvY2F0aW9uUGxhY2U+CiAgICA8L2dlb0xvY2F0aW9uPgogICAgPGdlb0xvY2F0aW9uPgogICAgICA8Z2VvTG9jYXRpb25QbGFjZSB4bWxuczp4cz0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEiIHhzaTp0eXBlPSJ4czpzdHJpbmciPk1vbnRhbmE8L2dlb0xvY2F0aW9uUGxhY2U+CiAgICA8L2dlb0xvY2F0aW9uPgogICAgPGdlb0xvY2F0aW9uPgogICAgICA8Z2VvTG9jYXRpb25QbGFjZSB4bWxuczp4cz0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEiIHhzaTp0eXBlPSJ4czpzdHJpbmciPkNhbGlmb3JuaWE8L2dlb0xvY2F0aW9uUGxhY2U+CiAgICA8L2dlb0xvY2F0aW9uPgogICAgPGdlb0xvY2F0aW9uPgogICAgICA8Z2VvTG9jYXRpb25QbGFjZSB4bWxuczp4cz0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEiIHhzaTp0eXBlPSJ4czpzdHJpbmciPlV0YWg8L2dlb0xvY2F0aW9uUGxhY2U+CiAgICA8L2dlb0xvY2F0aW9uPgogICAgPGdlb0xvY2F0aW9uPgogICAgICA8Z2VvTG9jYXRpb25QbGFjZSB4bWxuczp4cz0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEiIHhzaTp0eXBlPSJ4czpzdHJpbmciPklkYWhvPC9nZW9Mb2NhdGlvblBsYWNlPgogICAgPC9nZW9Mb2NhdGlvbj4KICA8L2dlb0xvY2F0aW9ucz4KPC9yZXNvdXJjZT4=",
+   "url": "https://www.datalumos.org/datalumos/project/249735/version/V1/view",
+   "contentUrl": null,
+   "metadataVersion": 0,
+   "schemaVersion": "http://datacite.org/schema/kernel-4",
+   "source": "api",
+   "isActive": true,
+   "state": "findable",
+   "reason": null,
+   "viewCount": 0,
+   "viewsOverTime": [],
+   "downloadCount": 0,
+   "downloadsOverTime": [],
+   "referenceCount": 0,
+   "citationCount": 0,
+   "citationsOverTime": [],
+   "partCount": 0,
+   "partOfCount": 0,
+   "versionCount": 0,
+   "versionOfCount": 1,
+   "created": "2026-06-08T17:49:55.000Z",
+   "registered": "2026-06-08T17:49:55.000Z",
+   "published": "2026",
+   "updated": "2026-06-08T17:49:55.000Z"
+  }
+ }
+}

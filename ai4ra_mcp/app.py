@@ -36,6 +36,7 @@ from ai4ra_mcp.common.http import describe_auth, headers_log, log_headers, log_n
 from ai4ra_mcp.servers.ai4ra.server import mcp as ai4ra
 from ai4ra_mcp.servers.bls.server import mcp as bls
 from ai4ra_mcp.servers.classes.server import mcp as classes
+from ai4ra_mcp.servers.datacite.server import mcp as datacite
 from ai4ra_mcp.servers.directory.server import mcp as directory
 from ai4ra_mcp.servers.clickup.server import mcp as clickup
 from ai4ra_mcp.servers.clinicaltrials.server import mcp as clinicaltrials
@@ -78,7 +79,7 @@ SERVERS: dict[str, MCPServer] = {
     "nih": nih, "nsf": nsf, "usaspending": usaspending,
     "sam": sam, "fac": fac, "csl": csl, "oig": oig, "propublica": propublica, "ror": ror,
     "perdiem": perdiem, "bls": bls, "treasury": treasury,
-    "openalex": openalex, "pubmed": pubmed, "icite": icite, "crossref": crossref, "orcid": orcid, "osti": osti, "clinicaltrials": clinicaltrials,
+    "openalex": openalex, "pubmed": pubmed, "icite": icite, "crossref": crossref, "datacite": datacite, "orcid": orcid, "osti": osti, "clinicaltrials": clinicaltrials,
     "clickup": clickup, "github": github,
     "uidaho": uidaho, "classes": classes, "directory": directory, "events": events, **lakehouse.SERVERS,
 }
@@ -130,6 +131,7 @@ META: dict[str, dict] = {
                "key": {"required": False, "hint": "Optional: paste an NCBI API key (free from your NCBI account settings) for 10 requests a second instead of the shared 3."}},
     "icite": {"label": "NIH iCite", "description": "Citation metrics for PubMed papers by PMID: citations, the Relative Citation Ratio and its NIH percentile, translation measures, and the papers citing or cited by one. No key."},
     "crossref": {"label": "Crossref", "description": "Publications by words, author or funder with the funding acknowledgments publishers deposited, one work by DOI with its abstract, and funders in the Funder Registry."},
+    "datacite": {"label": "DataCite", "description": "The DOIs of datasets, software and other research outputs by institution (ROR), funder, award number, type or words, with creators, funding and the paper each supplements; one DOI's record in full. No key."},
     "orcid": {"label": "ORCID", "description": "A researcher's ORCID iD by name and institution, and their public record: employments, educations, funding with grant numbers, and works with DOIs."},
     "osti": {"label": "OSTI.GOV", "description": "What a DOE award reported: papers, technical reports, data and software in OSTI by contract number, author, institution or words."},
     "clinicaltrials": {"label": "ClinicalTrials.gov", "description": "Clinical studies by condition, intervention, sponsor or status, and one study's registration and results dates, grant ids and design."},

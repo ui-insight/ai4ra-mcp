@@ -91,6 +91,7 @@ works without one and a key raises its quota.
 | `/pubmed/mcp` | NCBI E-utilities and the PMC ID converter | optional (NCBI key) | `pubmed_index`, `pubmed_search`, `pubmed_summary`, `pubmed_article`, `pmc_id_convert` | none |
 | `/icite/mcp` | NIH iCite | none | `icite_index`, `icite_metrics`, `icite_links` | none |
 | `/crossref/mcp` | Crossref | none | `crossref_index`, `crossref_works_search`, `crossref_work`, `crossref_funders_search` | none |
+| `/datacite/mcp` | DataCite | none | `datacite_index`, `datacite_search`, `datacite_doi` | none |
 | `/orcid/mcp` | ORCID public API | none | `orcid_index`, `orcid_search`, `orcid_record` | none |
 | `/osti/mcp` | OSTI.GOV | none | `osti_index`, `osti_search`, `osti_record` | none |
 | `/clinicaltrials/mcp` | ClinicalTrials.gov | none | `clinicaltrials_index`, `clinicaltrials_search`, `clinicaltrials_study` | none |
@@ -1168,6 +1169,35 @@ the model that a work's funders are what the publisher deposited, that
 author matching is by words, and to cite https://doi.org/<DOI>. Searches
 are cached for an hour, records and funders for a day; 50 rows a page,
 offset at most 10,000.
+
+### datacite
+
+DataCite, https://api.datacite.org/dois, the registry of DOIs for datasets,
+software, preprints, reports and other research outputs, a JSON:API with no
+key: filters `affiliation-id` (a ROR, matched on creators' affiliations, with
+`affiliation=true` so the names come back), `funder-id` (a Crossref Funder
+Registry DOI), `resource-type-id` (dataset, software, text, image, ...),
+`published` (a year range), and `query` in Elasticsearch syntax over the
+metadata, which is how an award is found
+(`fundingReferences.awardNumber:"1754803"`); `sort=-created` when no words
+are given, relevance when they are. Every record carries what the
+repository deposited: creators with affiliations and ORCIDs, publisher,
+year, DataCite's general type and the depositor's own, description,
+subjects, funding references with award numbers, related identifiers (the
+paper a dataset supplements), license, sizes and formats, and DataCite's
+citation, view and download counts. The University of Idaho's own DOIs
+(prefix 10.60841, 933 records with its ROR on 2026-10-16) are minted
+through VERSO and resolve to it. `datacite_search(query, affiliation_ror,
+funder_id, award_number, resource_type, from_year, to_year, page,
+per_page)` lists records 1-100 a page with `next_page`; `datacite_doi(doi)`
+gives one in full, and says of a DOI DataCite does not hold that it is
+likely a Crossref DOI (the crossref server). Searches are cached an hour,
+records a day. The index tells the model what DataCite holds and does not,
+that an institution's count is a floor since a repository that deposited no
+ROR leaves its records out, what the counts mean, and how a data management
+and sharing plan's outputs are found (by award number, or by affiliation and
+type dataset in a period). Offline tests run on records captured in
+`tests/fixtures/datacite/`.
 
 ### orcid
 
