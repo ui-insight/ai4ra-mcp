@@ -55,6 +55,7 @@ from ai4ra_mcp.servers.lakehouse import server as lakehouse
 from ai4ra_mcp.servers.nih.server import mcp as nih
 from ai4ra_mcp.servers.nsf.server import mcp as nsf
 from ai4ra_mcp.servers.oig.server import mcp as oig
+from ai4ra_mcp.servers.openpayments.server import mcp as openpayments
 from ai4ra_mcp.servers.openalex.server import mcp as openalex
 from ai4ra_mcp.servers.orcid.server import mcp as orcid
 from ai4ra_mcp.servers.osti.server import mcp as osti
@@ -77,7 +78,7 @@ SERVERS: dict[str, MCPServer] = {
     "general": general, "ai4ra": ai4ra, "udm": udm,
     "ecfr": ecfr, "fedreg": fedreg, "regulations": regulations, "idstat": idstat, "grants": grants, "s2s": s2s,
     "nih": nih, "nsf": nsf, "usaspending": usaspending,
-    "sam": sam, "fac": fac, "csl": csl, "oig": oig, "propublica": propublica, "ror": ror,
+    "sam": sam, "fac": fac, "csl": csl, "oig": oig, "openpayments": openpayments, "propublica": propublica, "ror": ror,
     "perdiem": perdiem, "bls": bls, "treasury": treasury,
     "openalex": openalex, "pubmed": pubmed, "icite": icite, "crossref": crossref, "datacite": datacite, "orcid": orcid, "osti": osti, "clinicaltrials": clinicaltrials,
     "clickup": clickup, "github": github,
@@ -118,6 +119,7 @@ META: dict[str, dict] = {
     "csl": {"label": "Consolidated Screening List", "description": "Export-control and sanctions screening of a name against the BIS, OFAC and State lists (Entity List, SDN, Denied Persons, ITAR debarred and the rest).",
             "key": {"required": True, "hint": "Paste your trade.gov subscription key, from https://developer.trade.gov/ (subscribe to the Consolidated Screening List API)."}},
     "oig": {"label": "OIG exclusions (LEIE)", "description": "Whether a person or business is excluded from federal health care programs, from the HHS OIG List of Excluded Individuals/Entities, by name or NPI."},
+    "openpayments": {"label": "Open Payments", "description": "CMS Open Payments: the payments drug and device companies reported to a physician or practitioner, found by name and state or NPI; the records for a program year (general, research as recipient or principal investigator, ownership) and totals by year, for conflict-of-interest review. No key."},
     "propublica": {"label": "Nonprofit Explorer", "description": "A tax-exempt organization by name or EIN, its IRS status and its Form 990 revenue, expenses, assets and liabilities by year, from ProPublica."},
     "ror": {"label": "Research Organization Registry", "description": "The ROR id, names, location, type, relationships and Crossref Funder, GRID, ISNI and Wikidata ids of a research organization, by name or affiliation string."},
     "perdiem": {"label": "GSA per diem", "description": "Federal lodging and M&IE rates by city, state or zip for a fiscal year, and the M&IE meal breakdown.",

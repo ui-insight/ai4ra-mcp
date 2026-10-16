@@ -36,6 +36,7 @@ EXPECTED_TOOLS = {
     "idstat": {"idstat_index", "idstat_titles", "idstat_chapters", "idstat_sections", "idstat_section", "idstat_search"},
     "csl": {"csl_index", "csl_search", "csl_sources"},
     "oig": {"oig_leie_index", "oig_leie_search", "oig_leie_status"},
+    "openpayments": {"openpayments_index", "openpayments_recipients", "openpayments_payments", "openpayments_summary"},
     "propublica": {"propublica_nonprofit_index", "propublica_nonprofit_search", "propublica_nonprofit_organization"},
     "ror": {"ror_index", "ror_search", "ror_organization"},
     "perdiem": {"gsa_perdiem_index", "gsa_perdiem_rates", "gsa_perdiem_mie_breakdown"},

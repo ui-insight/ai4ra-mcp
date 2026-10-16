@@ -1,0 +1,7 @@
+{
+  "catalog_version": "1.0",
+  "repo": "ui-insight/ai4ra-mcp",
+  "server": "openpayments",
+  "note": "Skills that use the openpayments server's tools. None yet.",
+  "components": []
+}

@@ -71,6 +71,7 @@ works without one and a key raises its quota.
 | `/sam/mcp` | SAM.gov | **required** (SAM.gov personal key) | `sam_guide`, `sam_index`, `sam_entity`, `sam_exclusions_search`, `sam_assistance_listing`, `sam_assistance_listings_search` | `subrecipient-check` |
 | `/fac/mcp` | Federal Audit Clearinghouse | **required** (api.data.gov) | `fac_index`, `fac_audits_search`, `fac_findings`, `fac_federal_awards` | none |
 | `/csl/mcp` | trade.gov Consolidated Screening List | **required** (trade.gov subscription key) | `csl_index`, `csl_search`, `csl_sources` | none |
+| `/openpayments/mcp` | CMS Open Payments (DKAN datastore) | none | `openpayments_index`, `openpayments_recipients`, `openpayments_payments`, `openpayments_summary` | none |
 | `/oig/mcp` | HHS OIG LEIE, from its daily CSV | none | `oig_leie_index`, `oig_leie_search`, `oig_leie_status` | none |
 | `/propublica/mcp` | ProPublica Nonprofit Explorer | none | `propublica_nonprofit_index`, `propublica_nonprofit_search`, `propublica_nonprofit_organization` | none |
 | `/ror/mcp` | Research Organization Registry | none | `ror_index`, `ror_search`, `ror_organization` | none |
@@ -956,6 +957,40 @@ download time. The index says the LEIE check is required of anyone paid with
 HHS funds and of their contractors and subrecipients (42 CFR 1001.1901), that
 a name match is a lead to confirm by NPI and on OIG's online search, and that
 OIG updates the list monthly while this copy is refreshed daily.
+
+### openpayments
+
+CMS Open Payments, https://openpaymentsdata.cms.gov/api/1/, the DKAN
+datastore behind the Open Payments site, no key: the payments drug and
+device manufacturers and group purchasing organisations reported making to
+physicians, other practitioners (since program year 2021: physician
+assistants, nurse practitioners, clinical nurse specialists, nurse
+anesthetists, midwives) and teaching hospitals under the Sunshine Act,
+published each June for the prior year. The metastore lists one dataset per
+program year and kind (General, Research and Ownership Payment Data, 2019 to
+2025 on 2026-10-16) and the Covered Recipient Profile Supplement, read once a
+day and mapped by year and kind; the datastore answers `GET
+/datastore/query/<dataset>/0` with `conditions[i][property|value|operator]`,
+`limit`, `sorts` and `schema=false`, and a `POST` of the same as JSON with
+`sum` and `count` expressions and `groupings`. Conditions are exact and names
+are stored upper case; a query by NPI is indexed and answers in a second or
+two, a query by name in a few. `openpayments_recipients(last_name,
+first_name, state, npi)` finds a person in the profile supplement (profile
+id, NPI, name, type, specialty, city, state, license states);
+`openpayments_payments(npi, program_year, kind, rows)` lists one year's
+records newest first, general ones with the totals by nature from the POST
+query, research ones in two views (as the covered recipient and as the
+study's principal investigator, with the study, its ClinicalTrials.gov id,
+the payer and the products), ownership ones as interests;
+`openpayments_summary(npi, from_year, to_year)` totals each year's general
+payments, research payments in both views and ownership records, with grand
+totals. Rows are cached an hour, the profile lookup and the dataset list a
+day. The index tells the model who is a covered recipient and that absence
+says nothing about anyone else, that a record is the company's report and
+may be disputed, how to go from a name to an NPI, and which view a
+conflict-of-interest review wants. Offline tests run on rows captured in
+`tests/fixtures/openpayments/` with recipient names and addresses
+anonymised.
 
 ### propublica
 
