@@ -97,7 +97,7 @@ works without one and a key raises its quota.
 |---|---|---|---|---|
 | `/treasury/mcp` | Treasury Reporting Rates of Exchange (Fiscal Data) | none | `treasury_index`, `treasury_currencies`, `treasury_rates`, `treasury_convert` | none |
 | `/osm/mcp` | OpenStreetMap's Nominatim and the FOSSGIS Valhalla router | none (fair use, one call a second) | `osm_index`, `osm_geocode`, `osm_route` | none |
-| `/weather/mcp` | The National Weather Service API | none | `weather_index`, `weather_forecast`, `weather_now`, `weather_alerts` | none |
+| `/weather/mcp` | The National Weather Service API | none | `weather_index`, `weather_forecast`, `weather_now`, `weather_alerts`, `weather_office` | none |
 | `/openalex/mcp` | OpenAlex | optional (OpenAlex key) | `openalex_index`, `openalex_works_search`, `openalex_works_group`, `openalex_work`, `openalex_citations`, `openalex_authors_search`, `openalex_institutions_search`, `openalex_funders_search` | none |
 | `/pubmed/mcp` | NCBI E-utilities and the PMC ID converter | optional (NCBI key) | `pubmed_index`, `pubmed_search`, `pubmed_summary`, `pubmed_article`, `pmc_id_convert` | none |
 | `/icite/mcp` | NIH iCite | none | `icite_index`, `icite_metrics`, `icite_links` | none |
@@ -1338,7 +1338,9 @@ in `tests/fixtures/osm/`.
 The National Weather Service API, `https://api.weather.gov/`, no key, an
 identifying User-Agent on every call; the United States and its territories
 and nothing else. A point (`/points/{lat},{lon}`) names its forecast office
-and grid and links the forecasts, so `weather_forecast(lat, lon, hourly)`
+and grid and links the forecasts (the office's own record gives its name,
+Spokane, WA for OTX, so an answer names the office rather than leaving a
+three-letter id to be guessed at), so `weather_forecast(lat, lon, hourly)`
 returns seven days in the Service's half-day periods ("This Afternoon",
 "Tonight", "Friday") with temperature, chance of precipitation, wind and the
 forecaster's wording, or 48 hours by the hour; `weather_now(lat, lon)` the
@@ -1346,13 +1348,17 @@ latest observation at the nearest reporting station (for campus, the
 Pullman-Moscow airport, KPUW) with the Service's Celsius, km/h, metres and
 pascals also given in Fahrenheit, miles an hour, miles and inches of
 mercury; `weather_alerts(lat, lon)` the watches, warnings and advisories in
-force at the point, most severe first, an empty list when none. A point is a
+force at the point, most severe first, an empty list when none;
+`weather_office(office)` the office an answer names, by id, with its name,
+address, telephone, region and the counties it is responsible for (the
+county zones named in one `/zones` call), read from the Service rather than
+held here. A point is a
 latitude and longitude from the person, from `campusmap_search` for a
 university building or from `osm_geocode` for an address; nothing here
 names one. Points are cached a day, forecasts half an hour, observations
 ten minutes, alerts five. Offline tests run on the campus point, its
-forecast, stations, an observation and an alert list captured in
-`tests/fixtures/weather/`.
+forecast, stations, an observation, the office, its county zones and an
+alert list captured in `tests/fixtures/weather/`.
 
 ### openalex
 
@@ -1978,8 +1984,9 @@ headings, accordion labels, paragraphs, lists and tables (`blocks`,
 `sections`) and returns a section's lists as labelled items ('Full-time
 (9-20 credits)': '$5,898') and its tables by column, under the page's own
 headings. `costs_tuition(schedule, students)` is the schedule for the
-semester (by student group), summer, winter or the prior year;
-`costs_attendance(students)` the cost of attendance tables, filtered by
+semester (by student group; the insurance fee group, a sentence on that
+page rather than a rate list, carries its text and names `costs_insurance`),
+summer, winter or the prior year; `costs_attendance(students)` the cost of attendance tables, filtered by
 words with punctuation ignored ('MBA' finds 'M.B.A.'); `costs_deadlines`
 the late fee dates by term, the due sentences, the refund schedule and the
 payment plan rules; `costs_insurance` the SHIP premiums by period, coverage

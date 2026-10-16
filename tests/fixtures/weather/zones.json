@@ -1,0 +1,617 @@
+{
+    "@context": {
+        "@version": "1.1"
+    },
+    "type": "FeatureCollection",
+    "features": [
+        {
+            "id": "https://api.weather.gov/zones/county/IDC009",
+            "type": "Feature",
+            "geometry": null,
+            "properties": {
+                "@id": "https://api.weather.gov/zones/county/IDC009",
+                "@type": "wx:Zone",
+                "id": "IDC009",
+                "type": "county",
+                "name": "Benewah",
+                "effectiveDate": "2026-04-16T18:00:00+00:00",
+                "expirationDate": "2200-01-01T00:00:00+00:00",
+                "state": "ID",
+                "forecastOffice": "https://api.weather.gov/offices/OTX",
+                "gridIdentifier": "OTX",
+                "awipsLocationIdentifier": "OTX",
+                "cwa": [
+                    "OTX"
+                ],
+                "forecastOffices": [
+                    "https://api.weather.gov/offices/OTX"
+                ],
+                "timeZone": [
+                    "America/Los_Angeles"
+                ],
+                "observationStations": [],
+                "radarStation": null
+            }
+        },
+        {
+            "id": "https://api.weather.gov/zones/county/IDC017",
+            "type": "Feature",
+            "geometry": null,
+            "properties": {
+                "@id": "https://api.weather.gov/zones/county/IDC017",
+                "@type": "wx:Zone",
+                "id": "IDC017",
+                "type": "county",
+                "name": "Bonner",
+                "effectiveDate": "2026-04-16T18:00:00+00:00",
+                "expirationDate": "2200-01-01T00:00:00+00:00",
+                "state": "ID",
+                "forecastOffice": "https://api.weather.gov/offices/OTX",
+                "gridIdentifier": "OTX",
+                "awipsLocationIdentifier": "OTX",
+                "cwa": [
+                    "OTX"
+                ],
+                "forecastOffices": [
+                    "https://api.weather.gov/offices/OTX"
+                ],
+                "timeZone": [
+                    "America/Los_Angeles"
+                ],
+                "observationStations": [],
+                "radarStation": null
+            }
+        },
+        {
+            "id": "https://api.weather.gov/zones/county/IDC021",
+            "type": "Feature",
+            "geometry": null,
+            "properties": {
+                "@id": "https://api.weather.gov/zones/county/IDC021",
+                "@type": "wx:Zone",
+                "id": "IDC021",
+                "type": "county",
+                "name": "Boundary",
+                "effectiveDate": "2026-04-16T18:00:00+00:00",
+                "expirationDate": "2200-01-01T00:00:00+00:00",
+                "state": "ID",
+                "forecastOffice": "https://api.weather.gov/offices/OTX",
+                "gridIdentifier": "OTX",
+                "awipsLocationIdentifier": "OTX",
+                "cwa": [
+                    "OTX"
+                ],
+                "forecastOffices": [
+                    "https://api.weather.gov/offices/OTX"
+                ],
+                "timeZone": [
+                    "America/Los_Angeles"
+                ],
+                "observationStations": [],
+                "radarStation": null
+            }
+        },
+        {
+            "id": "https://api.weather.gov/zones/county/IDC055",
+            "type": "Feature",
+            "geometry": null,
+            "properties": {
+                "@id": "https://api.weather.gov/zones/county/IDC055",
+                "@type": "wx:Zone",
+                "id": "IDC055",
+                "type": "county",
+                "name": "Kootenai",
+                "effectiveDate": "2026-04-16T18:00:00+00:00",
+                "expirationDate": "2200-01-01T00:00:00+00:00",
+                "state": "ID",
+                "forecastOffice": "https://api.weather.gov/offices/OTX",
+                "gridIdentifier": "OTX",
+                "awipsLocationIdentifier": "OTX",
+                "cwa": [
+                    "OTX"
+                ],
+                "forecastOffices": [
+                    "https://api.weather.gov/offices/OTX"
+                ],
+                "timeZone": [
+                    "America/Los_Angeles"
+                ],
+                "observationStations": [],
+                "radarStation": null
+            }
+        },
+        {
+            "id": "https://api.weather.gov/zones/county/IDC057",
+            "type": "Feature",
+            "geometry": null,
+            "properties": {
+                "@id": "https://api.weather.gov/zones/county/IDC057",
+                "@type": "wx:Zone",
+                "id": "IDC057",
+                "type": "county",
+                "name": "Latah",
+                "effectiveDate": "2026-04-16T18:00:00+00:00",
+                "expirationDate": "2200-01-01T00:00:00+00:00",
+                "state": "ID",
+                "forecastOffice": "https://api.weather.gov/offices/OTX",
+                "gridIdentifier": "OTX",
+                "awipsLocationIdentifier": "OTX",
+                "cwa": [
+                    "OTX"
+                ],
+                "forecastOffices": [
+                    "https://api.weather.gov/offices/OTX"
+                ],
+                "timeZone": [
+                    "America/Los_Angeles"
+                ],
+                "observationStations": [],
+                "radarStation": null
+            }
+        },
+        {
+            "id": "https://api.weather.gov/zones/county/IDC061",
+            "type": "Feature",
+            "geometry": null,
+            "properties": {
+                "@id": "https://api.weather.gov/zones/county/IDC061",
+                "@type": "wx:Zone",
+                "id": "IDC061",
+                "type": "county",
+                "name": "Lewis",
+                "effectiveDate": "2026-04-16T18:00:00+00:00",
+                "expirationDate": "2200-01-01T00:00:00+00:00",
+                "state": "ID",
+                "forecastOffice": "https://api.weather.gov/offices/OTX",
+                "gridIdentifier": "OTX",
+                "awipsLocationIdentifier": "OTX",
+                "cwa": [
+                    "OTX"
+                ],
+                "forecastOffices": [
+                    "https://api.weather.gov/offices/OTX"
+                ],
+                "timeZone": [
+                    "America/Los_Angeles"
+                ],
+                "observationStations": [],
+                "radarStation": null
+            }
+        },
+        {
+            "id": "https://api.weather.gov/zones/county/IDC069",
+            "type": "Feature",
+            "geometry": null,
+            "properties": {
+                "@id": "https://api.weather.gov/zones/county/IDC069",
+                "@type": "wx:Zone",
+                "id": "IDC069",
+                "type": "county",
+                "name": "Nez Perce",
+                "effectiveDate": "2026-04-16T18:00:00+00:00",
+                "expirationDate": "2200-01-01T00:00:00+00:00",
+                "state": "ID",
+                "forecastOffice": "https://api.weather.gov/offices/OTX",
+                "gridIdentifier": "OTX",
+                "awipsLocationIdentifier": "OTX",
+                "cwa": [
+                    "OTX"
+                ],
+                "forecastOffices": [
+                    "https://api.weather.gov/offices/OTX"
+                ],
+                "timeZone": [
+                    "America/Los_Angeles"
+                ],
+                "observationStations": [],
+                "radarStation": null
+            }
+        },
+        {
+            "id": "https://api.weather.gov/zones/county/IDC079",
+            "type": "Feature",
+            "geometry": null,
+            "properties": {
+                "@id": "https://api.weather.gov/zones/county/IDC079",
+                "@type": "wx:Zone",
+                "id": "IDC079",
+                "type": "county",
+                "name": "Shoshone",
+                "effectiveDate": "2026-04-16T18:00:00+00:00",
+                "expirationDate": "2200-01-01T00:00:00+00:00",
+                "state": "ID",
+                "forecastOffice": "https://api.weather.gov/offices/OTX",
+                "gridIdentifier": "OTX",
+                "awipsLocationIdentifier": "OTX",
+                "cwa": [
+                    "OTX"
+                ],
+                "forecastOffices": [
+                    "https://api.weather.gov/offices/OTX"
+                ],
+                "timeZone": [
+                    "America/Los_Angeles"
+                ],
+                "observationStations": [],
+                "radarStation": null
+            }
+        },
+        {
+            "id": "https://api.weather.gov/zones/county/WAC001",
+            "type": "Feature",
+            "geometry": null,
+            "properties": {
+                "@id": "https://api.weather.gov/zones/county/WAC001",
+                "@type": "wx:Zone",
+                "id": "WAC001",
+                "type": "county",
+                "name": "Adams",
+                "effectiveDate": "2026-04-16T18:00:00+00:00",
+                "expirationDate": "2200-01-01T00:00:00+00:00",
+                "state": "WA",
+                "forecastOffice": "https://api.weather.gov/offices/OTX",
+                "gridIdentifier": "OTX",
+                "awipsLocationIdentifier": "OTX",
+                "cwa": [
+                    "OTX"
+                ],
+                "forecastOffices": [
+                    "https://api.weather.gov/offices/OTX"
+                ],
+                "timeZone": [
+                    "America/Los_Angeles"
+                ],
+                "observationStations": [],
+                "radarStation": null
+            }
+        },
+        {
+            "id": "https://api.weather.gov/zones/county/WAC003",
+            "type": "Feature",
+            "geometry": null,
+            "properties": {
+                "@id": "https://api.weather.gov/zones/county/WAC003",
+                "@type": "wx:Zone",
+                "id": "WAC003",
+                "type": "county",
+                "name": "Asotin",
+                "effectiveDate": "2026-04-16T18:00:00+00:00",
+                "expirationDate": "2200-01-01T00:00:00+00:00",
+                "state": "WA",
+                "forecastOffice": "https://api.weather.gov/offices/OTX",
+                "gridIdentifier": "OTX",
+                "awipsLocationIdentifier": "OTX",
+                "cwa": [
+                    "OTX"
+                ],
+                "forecastOffices": [
+                    "https://api.weather.gov/offices/OTX"
+                ],
+                "timeZone": [
+                    "America/Los_Angeles"
+                ],
+                "observationStations": [],
+                "radarStation": null
+            }
+        },
+        {
+            "id": "https://api.weather.gov/zones/county/WAC007",
+            "type": "Feature",
+            "geometry": null,
+            "properties": {
+                "@id": "https://api.weather.gov/zones/county/WAC007",
+                "@type": "wx:Zone",
+                "id": "WAC007",
+                "type": "county",
+                "name": "Chelan",
+                "effectiveDate": "2026-04-16T18:00:00+00:00",
+                "expirationDate": "2200-01-01T00:00:00+00:00",
+                "state": "WA",
+                "forecastOffice": "https://api.weather.gov/offices/OTX",
+                "gridIdentifier": "OTX",
+                "awipsLocationIdentifier": "OTX",
+                "cwa": [
+                    "OTX"
+                ],
+                "forecastOffices": [
+                    "https://api.weather.gov/offices/OTX"
+                ],
+                "timeZone": [
+                    "America/Los_Angeles"
+                ],
+                "observationStations": [],
+                "radarStation": null
+            }
+        },
+        {
+            "id": "https://api.weather.gov/zones/county/WAC017",
+            "type": "Feature",
+            "geometry": null,
+            "properties": {
+                "@id": "https://api.weather.gov/zones/county/WAC017",
+                "@type": "wx:Zone",
+                "id": "WAC017",
+                "type": "county",
+                "name": "Douglas",
+                "effectiveDate": "2026-04-16T18:00:00+00:00",
+                "expirationDate": "2200-01-01T00:00:00+00:00",
+                "state": "WA",
+                "forecastOffice": "https://api.weather.gov/offices/OTX",
+                "gridIdentifier": "OTX",
+                "awipsLocationIdentifier": "OTX",
+                "cwa": [
+                    "OTX"
+                ],
+                "forecastOffices": [
+                    "https://api.weather.gov/offices/OTX"
+                ],
+                "timeZone": [
+                    "America/Los_Angeles"
+                ],
+                "observationStations": [],
+                "radarStation": null
+            }
+        },
+        {
+            "id": "https://api.weather.gov/zones/county/WAC019",
+            "type": "Feature",
+            "geometry": null,
+            "properties": {
+                "@id": "https://api.weather.gov/zones/county/WAC019",
+                "@type": "wx:Zone",
+                "id": "WAC019",
+                "type": "county",
+                "name": "Ferry",
+                "effectiveDate": "2026-04-16T18:00:00+00:00",
+                "expirationDate": "2200-01-01T00:00:00+00:00",
+                "state": "WA",
+                "forecastOffice": "https://api.weather.gov/offices/OTX",
+                "gridIdentifier": "OTX",
+                "awipsLocationIdentifier": "OTX",
+                "cwa": [
+                    "OTX"
+                ],
+                "forecastOffices": [
+                    "https://api.weather.gov/offices/OTX"
+                ],
+                "timeZone": [
+                    "America/Los_Angeles"
+                ],
+                "observationStations": [],
+                "radarStation": null
+            }
+        },
+        {
+            "id": "https://api.weather.gov/zones/county/WAC023",
+            "type": "Feature",
+            "geometry": null,
+            "properties": {
+                "@id": "https://api.weather.gov/zones/county/WAC023",
+                "@type": "wx:Zone",
+                "id": "WAC023",
+                "type": "county",
+                "name": "Garfield",
+                "effectiveDate": "2026-04-16T18:00:00+00:00",
+                "expirationDate": "2200-01-01T00:00:00+00:00",
+                "state": "WA",
+                "forecastOffice": "https://api.weather.gov/offices/OTX",
+                "gridIdentifier": "OTX",
+                "awipsLocationIdentifier": "OTX",
+                "cwa": [
+                    "OTX"
+                ],
+                "forecastOffices": [
+                    "https://api.weather.gov/offices/OTX"
+                ],
+                "timeZone": [
+                    "America/Los_Angeles"
+                ],
+                "observationStations": [],
+                "radarStation": null
+            }
+        },
+        {
+            "id": "https://api.weather.gov/zones/county/WAC025",
+            "type": "Feature",
+            "geometry": null,
+            "properties": {
+                "@id": "https://api.weather.gov/zones/county/WAC025",
+                "@type": "wx:Zone",
+                "id": "WAC025",
+                "type": "county",
+                "name": "Grant",
+                "effectiveDate": "2026-04-16T18:00:00+00:00",
+                "expirationDate": "2200-01-01T00:00:00+00:00",
+                "state": "WA",
+                "forecastOffice": "https://api.weather.gov/offices/OTX",
+                "gridIdentifier": "OTX",
+                "awipsLocationIdentifier": "OTX",
+                "cwa": [
+                    "OTX"
+                ],
+                "forecastOffices": [
+                    "https://api.weather.gov/offices/OTX"
+                ],
+                "timeZone": [
+                    "America/Los_Angeles"
+                ],
+                "observationStations": [],
+                "radarStation": null
+            }
+        },
+        {
+            "id": "https://api.weather.gov/zones/county/WAC043",
+            "type": "Feature",
+            "geometry": null,
+            "properties": {
+                "@id": "https://api.weather.gov/zones/county/WAC043",
+                "@type": "wx:Zone",
+                "id": "WAC043",
+                "type": "county",
+                "name": "Lincoln",
+                "effectiveDate": "2026-04-16T18:00:00+00:00",
+                "expirationDate": "2200-01-01T00:00:00+00:00",
+                "state": "WA",
+                "forecastOffice": "https://api.weather.gov/offices/OTX",
+                "gridIdentifier": "OTX",
+                "awipsLocationIdentifier": "OTX",
+                "cwa": [
+                    "OTX"
+                ],
+                "forecastOffices": [
+                    "https://api.weather.gov/offices/OTX"
+                ],
+                "timeZone": [
+                    "America/Los_Angeles"
+                ],
+                "observationStations": [],
+                "radarStation": null
+            }
+        },
+        {
+            "id": "https://api.weather.gov/zones/county/WAC047",
+            "type": "Feature",
+            "geometry": null,
+            "properties": {
+                "@id": "https://api.weather.gov/zones/county/WAC047",
+                "@type": "wx:Zone",
+                "id": "WAC047",
+                "type": "county",
+                "name": "Okanogan",
+                "effectiveDate": "2026-04-16T18:00:00+00:00",
+                "expirationDate": "2200-01-01T00:00:00+00:00",
+                "state": "WA",
+                "forecastOffice": "https://api.weather.gov/offices/OTX",
+                "gridIdentifier": "OTX",
+                "awipsLocationIdentifier": "OTX",
+                "cwa": [
+                    "OTX"
+                ],
+                "forecastOffices": [
+                    "https://api.weather.gov/offices/OTX"
+                ],
+                "timeZone": [
+                    "America/Los_Angeles"
+                ],
+                "observationStations": [],
+                "radarStation": null
+            }
+        },
+        {
+            "id": "https://api.weather.gov/zones/county/WAC051",
+            "type": "Feature",
+            "geometry": null,
+            "properties": {
+                "@id": "https://api.weather.gov/zones/county/WAC051",
+                "@type": "wx:Zone",
+                "id": "WAC051",
+                "type": "county",
+                "name": "Pend Oreille",
+                "effectiveDate": "2026-04-16T18:00:00+00:00",
+                "expirationDate": "2200-01-01T00:00:00+00:00",
+                "state": "WA",
+                "forecastOffice": "https://api.weather.gov/offices/OTX",
+                "gridIdentifier": "OTX",
+                "awipsLocationIdentifier": "OTX",
+                "cwa": [
+                    "OTX"
+                ],
+                "forecastOffices": [
+                    "https://api.weather.gov/offices/OTX"
+                ],
+                "timeZone": [
+                    "America/Los_Angeles"
+                ],
+                "observationStations": [],
+                "radarStation": null
+            }
+        },
+        {
+            "id": "https://api.weather.gov/zones/county/WAC063",
+            "type": "Feature",
+            "geometry": null,
+            "properties": {
+                "@id": "https://api.weather.gov/zones/county/WAC063",
+                "@type": "wx:Zone",
+                "id": "WAC063",
+                "type": "county",
+                "name": "Spokane",
+                "effectiveDate": "2026-04-16T18:00:00+00:00",
+                "expirationDate": "2200-01-01T00:00:00+00:00",
+                "state": "WA",
+                "forecastOffice": "https://api.weather.gov/offices/OTX",
+                "gridIdentifier": "OTX",
+                "awipsLocationIdentifier": "OTX",
+                "cwa": [
+                    "OTX"
+                ],
+                "forecastOffices": [
+                    "https://api.weather.gov/offices/OTX"
+                ],
+                "timeZone": [
+                    "America/Los_Angeles"
+                ],
+                "observationStations": [],
+                "radarStation": null
+            }
+        },
+        {
+            "id": "https://api.weather.gov/zones/county/WAC065",
+            "type": "Feature",
+            "geometry": null,
+            "properties": {
+                "@id": "https://api.weather.gov/zones/county/WAC065",
+                "@type": "wx:Zone",
+                "id": "WAC065",
+                "type": "county",
+                "name": "Stevens",
+                "effectiveDate": "2026-04-16T18:00:00+00:00",
+                "expirationDate": "2200-01-01T00:00:00+00:00",
+                "state": "WA",
+                "forecastOffice": "https://api.weather.gov/offices/OTX",
+                "gridIdentifier": "OTX",
+                "awipsLocationIdentifier": "OTX",
+                "cwa": [
+                    "OTX"
+                ],
+                "forecastOffices": [
+                    "https://api.weather.gov/offices/OTX"
+                ],
+                "timeZone": [
+                    "America/Los_Angeles"
+                ],
+                "observationStations": [],
+                "radarStation": null
+            }
+        },
+        {
+            "id": "https://api.weather.gov/zones/county/WAC075",
+            "type": "Feature",
+            "geometry": null,
+            "properties": {
+                "@id": "https://api.weather.gov/zones/county/WAC075",
+                "@type": "wx:Zone",
+                "id": "WAC075",
+                "type": "county",
+                "name": "Whitman",
+                "effectiveDate": "2026-04-16T18:00:00+00:00",
+                "expirationDate": "2200-01-01T00:00:00+00:00",
+                "state": "WA",
+                "forecastOffice": "https://api.weather.gov/offices/OTX",
+                "gridIdentifier": "OTX",
+                "awipsLocationIdentifier": "OTX",
+                "cwa": [
+                    "OTX"
+                ],
+                "forecastOffices": [
+                    "https://api.weather.gov/offices/OTX"
+                ],
+                "timeZone": [
+                    "America/Los_Angeles"
+                ],
+                "observationStations": [],
+                "radarStation": null
+            }
+        }
+    ]
+}

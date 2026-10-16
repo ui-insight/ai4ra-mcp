@@ -227,6 +227,17 @@ async def costs_index() -> dict:
     }
 
 
+def group(s: dict) -> dict:
+    """A student group's section as its labelled parts; a group with no rates on this page (the insurance fee is a sentence
+    pointing at the SHIP page) carries its paragraphs as text, and the insurance group names costs_insurance for the premium."""
+    out = {"students": s["heading"], "parts": parts(s["blocks"])}
+    if not out["parts"]:
+        out["text"] = [b["text"] for b in s["blocks"] if b["kind"] == "paragraph"]
+    if re.search(r"insurance", s["heading"], re.I):
+        out["see"] = "costs_insurance for the SHIP premium by period, coverage dates and dependent rates"
+    return out
+
+
 @mcp.tool(name="costs_tuition", annotations=_READ_ONLY)
 async def costs_tuition(schedule: str = "semester", students: str = "") -> dict:
     """The University of Idaho tuition and fee schedule from the student billing page: by student group, full-time and per-credit, with the extra charges.
@@ -264,7 +275,7 @@ async def costs_tuition(schedule: str = "semester", students: str = "") -> dict:
     for s in tree[1:] if len(tree) > 1 else tree:
         if words and not matches(words, s["heading"]):
             continue
-        groups.append({"students": s["heading"], "parts": parts(s["blocks"])})
+        groups.append(group(s))
     if len(tree) == 1:
         groups = [{"students": top["heading"], "parts": parts(top["blocks"])}]
     intro = [b["text"] for b in top["blocks"] if b["kind"] == "paragraph"] if len(tree) > 1 else []

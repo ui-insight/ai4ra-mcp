@@ -26,7 +26,7 @@ EXPECTED_TOOLS = {
     "events": {"events_index", "events_search", "events_closures", "events_event", "events_calendars"},
     "campusmap": {"campusmap_index", "campusmap_categories", "campusmap_search", "campusmap_near", "campusmap_place"},
     "osm": {"osm_index", "osm_geocode", "osm_route"},
-    "weather": {"weather_index", "weather_forecast", "weather_now", "weather_alerts"},
+    "weather": {"weather_index", "weather_forecast", "weather_now", "weather_alerts", "weather_office"},
     "costs": {"costs_index", "costs_tuition", "costs_attendance", "costs_deadlines", "costs_insurance"},
     "nihdates": {"nihdates_index", "nihdates_due", "nihdates_cycles", "nihdates_salary_cap"},
     "omb": {"omb_index", "omb_memoranda", "omb_memorandum"},

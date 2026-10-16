@@ -3,7 +3,8 @@
 Upstream: https://api.weather.gov/ (JSON, no key; an identifying User-Agent, which every call here carries). A point
 (/points/{lat},{lon}) names its forecast office and grid and links the forecasts: /gridpoints/{office}/{x},{y}/forecast
 (twelve-hour periods for seven days), /forecast/hourly, and the observation stations near it, whose latest observation
-is /stations/{id}/observations/latest. Active alerts for a point are /alerts/active?point=lat,lon. The service covers
+is /stations/{id}/observations/latest; the office itself (/offices/{id}) gives its name, address and the county zones it
+is responsible for, which /zones?type=county&id=... names in one call. Active alerts for a point are /alerts/active?point=lat,lon. The service covers
 the United States and its territories and nothing else. Points are cached a day, forecasts half an hour, observations
 ten minutes, alerts five.
 """
@@ -25,7 +26,7 @@ _cache = TTLCache()
 
 mcp = MCPServer(
     "weather",
-    instructions="The National Weather Service: the forecast for a point (weather_forecast, by half-day or by hour), the latest observation near it (weather_now) and active alerts (weather_alerts). United States only, no key. Read weather_index first.",
+    instructions="The National Weather Service: the forecast for a point (weather_forecast, by half-day or by hour), the latest observation near it (weather_now), active alerts (weather_alerts) and the forecast office behind them with the counties it covers (weather_office). United States only, no key. Read weather_index first.",
 )
 
 
@@ -52,6 +53,19 @@ async def _point(la: float, lo: float) -> dict:
     if not props.get("forecast"):
         raise ValueError(no_grid)
     return props
+
+
+async def _office(point: dict) -> dict:
+    """The forecast office responsible for a point, by id and name (OTX is Spokane, WA); the name read from the office's own record, cached a day."""
+    oid, url = point.get("cwa") or point.get("gridId"), point.get("forecastOffice")
+    name = None
+    if url:
+        try:
+            body = await _cache.remember(f"office:{url}", DAY, lambda: get_json(url))
+            name = body.get("name") if isinstance(body, dict) else None
+        except ValueError:
+            name = None  # the forecast stands without the office's name; the id is still the Service's own
+    return {"id": oid, "name": name, "link": url}
 
 
 def _f(v) -> float | None:
@@ -98,13 +112,14 @@ async def weather_index() -> dict:
         "upstream": f"The National Weather Service API at {API}; no key; United States and territories only",
         "workflow": ["weather_forecast with a latitude and longitude: seven days in half-day periods, or 48 hours by the hour, as the forecast office words it",
                      "weather_now for the latest observation at the nearest reporting station: temperature, wind, humidity, visibility, pressure",
-                     "weather_alerts for the watches, warnings and advisories in force at the point"],
-        "notes": ["A point is a latitude and longitude; the campusmap server gives one for any University of Idaho building, osm_geocode for any address or town. The forecast office and grid are the Service's own and are named on each answer.",
+                     "weather_alerts for the watches, warnings and advisories in force at the point",
+                     "weather_office with the office id an answer names (OTX) for the office's name, address, telephone and the counties it forecasts for"],
+        "notes": ["A point is a latitude and longitude; the campusmap server gives one for any University of Idaho building, osm_geocode for any address or town. The forecast office is named on each answer by id and name (OTX, Spokane, WA, for the Palouse); the name is the Service's, not a guess from the id.",
                   "Temperatures are Fahrenheit as the Service issues them for forecasts; observations arrive in Celsius and are given in both. Winds in miles an hour, pressure in inches of mercury, visibility in miles.",
                   "Forecast periods are the Service's half days ('This Afternoon', 'Tonight', 'Friday'); the hourly forecast runs 48 hours. Times carry the point's own offset.",
                   "An observation is the nearest station's latest report, often an airport some miles away, and can be an hour old; the time says.",
                   "Alerts are the official watches, warnings and advisories; none in force is an empty list, not an error.",
-                  "Cite as 'National Weather Service, <office>' with the time of the forecast or observation."],
+                  "Cite as 'National Weather Service, <office name>' with the time of the forecast or observation."],
         "link": SITE,
     }
 
@@ -123,6 +138,7 @@ async def weather_forecast(lat: float, lon: float, hourly: bool = False) -> dict
         point = await _point(la, lo)
         url = point["forecastHourly"] if hourly else point["forecast"]
         body = await _cache.remember(f"forecast:{url}", HALF_HOUR, lambda: get_json(url))
+        office = await _office(point)
     except ValueError as e:
         return {"error": str(e), "upstream": API}
     props = (body.get("properties") if isinstance(body, dict) else None) or {}
@@ -131,7 +147,7 @@ async def weather_forecast(lat: float, lon: float, hourly: bool = False) -> dict
         periods = periods[:48]
     rel = (point.get("relativeLocation") or {}).get("properties") or {}
     return {"point": {"lat": la, "lon": lo, "near": f"{rel.get('city')}, {rel.get('state')}" if rel.get("city") else None, "timezone": point.get("timeZone")},
-            "office": point.get("cwa"), "issued": props.get("updateTime") or props.get("generatedAt"), "hourly": hourly, "periods": periods,
+            "office": office, "issued": props.get("updateTime") or props.get("generatedAt"), "hourly": hourly, "periods": periods,
             "link": f"https://forecast.weather.gov/MapClick.php?lat={la}&lon={lo}"}
 
 
@@ -153,10 +169,11 @@ async def weather_now(lat: float, lon: float) -> dict:
         st = feats[0]
         sid = (st.get("properties") or {}).get("stationIdentifier")
         obs = await _cache.remember(f"obs:{sid}", TEN_MINUTES, lambda: get_json(f"{API}/stations/{sid}/observations/latest"))
+        office = await _office(point)
     except ValueError as e:
         return {"error": str(e), "upstream": API}
     o = (obs.get("properties") if isinstance(obs, dict) else None) or {}
-    return {"point": {"lat": la, "lon": lo}, "station": {"id": sid, "name": (st.get("properties") or {}).get("name")}, **slim_observation(o),
+    return {"point": {"lat": la, "lon": lo}, "office": office, "station": {"id": sid, "name": (st.get("properties") or {}).get("name")}, **slim_observation(o),
             "link": f"https://forecast.weather.gov/MapClick.php?lat={la}&lon={lo}"}
 
 
@@ -177,6 +194,41 @@ async def weather_alerts(lat: float, lon: float) -> dict:
     order = {"Extreme": 0, "Severe": 1, "Moderate": 2, "Minor": 3}
     alerts = sorted((slim_alert(a) for a in feats), key=lambda a: order.get(a["severity"] or "", 9))
     return {"point": {"lat": la, "lon": lo}, "total": len(alerts), "alerts": alerts, "link": f"https://alerts.weather.gov/search?point={la},{lo}"}
+
+
+@mcp.tool(name="weather_office", annotations=_READ_ONLY)
+async def weather_office(office: str) -> dict:
+    """A National Weather Service forecast office by its id: name, address, telephone, region and the counties it is responsible for.
+
+    Args:
+        office: The three-letter office id a forecast or observation names, e.g. 'OTX' (Spokane), 'BOI' (Boise), 'PDT' (Pendleton).
+    """
+    oid = office.strip().upper()
+    if not oid.isalpha() or len(oid) != 3:
+        return {"error": "office must be a three-letter id such as OTX; weather_forecast names the one for a point", "upstream": API}
+    url = f"{API}/offices/{oid}"
+    try:
+        body = await _cache.remember(f"office:{url}", DAY, lambda: get_json(url))
+    except ValueError as e:
+        if str(e)[:3] == "404":
+            return {"error": f"the Weather Service has no office {oid}", "upstream": API}
+        return {"error": str(e), "upstream": API}
+    if not isinstance(body, dict) or not body.get("name"):
+        return {"error": f"the Weather Service has no office {oid}", "upstream": API}
+    county_ids = [u.rsplit("/", 1)[-1] for u in body.get("responsibleCounties") or []]
+    counties, counties_error = [], None
+    if county_ids:
+        try:
+            zones = await _cache.remember(f"zones:{','.join(county_ids)}", DAY, lambda: get_json(f"{API}/zones", {"type": "county", "id": ",".join(county_ids)}))
+            counties = sorted(({"id": z.get("id"), "county": z.get("name"), "state": z.get("state")} for z in ((f.get("properties") or {}) for f in (zones.get("features") or []))),
+                              key=lambda c: (c["state"] or "", c["county"] or ""))
+        except ValueError as e:
+            counties_error = str(e)
+    addr = body.get("address") or {}
+    return {"id": oid, "name": body.get("name"), "address": " ".join(x for x in (addr.get("streetAddress"), addr.get("addressLocality"), addr.get("addressRegion"), addr.get("postalCode")) if x) or None,
+            "telephone": body.get("telephone"), "email": body.get("email"), "region": body.get("nwsRegion"), "parent": (body.get("parentOrganization") or "").rsplit("/", 1)[-1] or None,
+            "counties": counties, "total_counties": len(county_ids), "counties_error": counties_error,
+            "observation_stations": len(body.get("approvedObservationStations") or []), "link": url, "site": f"https://www.weather.gov/{oid.lower()}/"}
 
 
 SKILLS_DIR = Path(__file__).parent / "skills"

@@ -45,6 +45,8 @@ async def test_tuition_schedules(monkeypatch):
     grad = out["groups"][1]["parts"][0]
     assert grad["group"].startswith("All graduate students") and grad["rates"][0]["items"][0] == {"name": "Full-time (9-20 credits)", "value": "$5,898"}
     assert out["source"]["url"] == c.PAGES["billing"]["url"] and out["source"]["heading"] == "2026-27 per semester tuition and fee schedule"
+    ship = out["groups"][-1]
+    assert ship["parts"] == [] and ship["text"][0].startswith("University of Idaho requires") and ship["see"].startswith("costs_insurance") and "see" not in grad
     law = await c.costs_tuition(students="law")
     assert [g["students"] for g in law["groups"]] == ["Law"] and len(calls) == 1  # cached
     summer = await c.costs_tuition("summer")
