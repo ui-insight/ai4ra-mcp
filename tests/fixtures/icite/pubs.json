@@ -1,0 +1,206 @@
+{
+ "data": [
+  {
+   "_id": "1",
+   "pmid": 1,
+   "title": "Formate assay in body fluids: application in methanol poisoning.",
+   "doi": "10.1016/0006-2944(75)90147-7",
+   "authors": [
+    {
+     "lastName": "Makar",
+     "fullName": "Makar, A B",
+     "firstName": "A B"
+    },
+    {
+     "lastName": "McMartin",
+     "fullName": "McMartin, K E",
+     "firstName": "K E"
+    },
+    {
+     "lastName": "Palese",
+     "fullName": "Palese, M",
+     "firstName": "M"
+    }
+   ],
+   "animal": 0.3333333333333333,
+   "human": 0.16666666666666666,
+   "apt": 0.25,
+   "citedByClinicalArticle": false,
+   "citedByPmidsByYear": [
+    {
+     "37004547": 2023
+    },
+    {
+     "36139467": 2022
+    },
+    {
+     "41080567": 2025
+    }
+   ],
+   "year": 1975,
+   "journal": "Biochem Med",
+   "is_research_article": true,
+   "citation_count": 134,
+   "field_citation_rate": 5.650140324222507,
+   "expected_citations_per_year": 0.8555410540176898,
+   "citations_per_year": 2.627450980392157,
+   "relative_citation_ratio": 3.0710986551182264,
+   "nih_percentile": null,
+   "molecular_cellular": 0.5,
+   "x_coord": -0.14433756729740643,
+   "y_coord": -0.25,
+   "is_clinical": false,
+   "cited_by_clin": null,
+   "cited_by": [
+    37004547,
+    36139467,
+    41080567,
+    39161495,
+    18553624,
+    35724934
+   ],
+   "references": [
+    4990046,
+    4972128,
+    4988806,
+    4332837,
+    14323813
+   ],
+   "provisional": false
+  },
+  {
+   "_id": "33744490",
+   "pmid": 33744490,
+   "title": "Coronavirus entry: how we arrived at SARS-CoV-2.",
+   "doi": "10.1016/j.coviro.2021.02.006",
+   "authors": [
+    {
+     "lastName": "Whittaker",
+     "fullName": "Whittaker, Gary R",
+     "firstName": "Gary R"
+    },
+    {
+     "lastName": "Daniel",
+     "fullName": "Daniel, Susan",
+     "firstName": "Susan"
+    },
+    {
+     "lastName": "Millet",
+     "fullName": "Millet, Jean K",
+     "firstName": "Jean K"
+    }
+   ],
+   "animal": 0.0,
+   "human": 0.3333333333333333,
+   "apt": 0.25,
+   "citedByClinicalArticle": false,
+   "citedByPmidsByYear": [
+    {
+     "38555403": 2024
+    },
+    {
+     "35678602": 2022
+    },
+    {
+     "39203956": 2024
+    }
+   ],
+   "year": 2021,
+   "journal": "Curr Opin Virol",
+   "is_research_article": false,
+   "citation_count": 50,
+   "field_citation_rate": 9.886825433080414,
+   "expected_citations_per_year": 3.90659380233764,
+   "citations_per_year": 10.0,
+   "relative_citation_ratio": 2.5597747055289366,
+   "nih_percentile": 80.2,
+   "molecular_cellular": 0.6666666666666666,
+   "x_coord": -0.5773502691896257,
+   "y_coord": 0.0,
+   "is_clinical": false,
+   "cited_by_clin": null,
+   "cited_by": [
+    38555403,
+    35678602,
+    39203956,
+    34255499,
+    41363008,
+    35002532
+   ],
+   "references": [
+    32907861,
+    32532094,
+    25375324,
+    32272173,
+    33465165
+   ],
+   "provisional": false
+  },
+  {
+   "_id": "37391585",
+   "pmid": 37391585,
+   "title": "Molecular cloning, prokaryotic expression and its application potential evaluation of interferon (IFN)-\u03c9 of forest musk deer.",
+   "doi": "10.1038/s41598-023-37437-x",
+   "authors": [
+    {
+     "lastName": "Wu",
+     "fullName": "Wu, Xi",
+     "firstName": "Xi"
+    },
+    {
+     "lastName": "Yang",
+     "fullName": "Yang, Wei",
+     "firstName": "Wei"
+    },
+    {
+     "lastName": "Cheng",
+     "fullName": "Cheng, Jian-Guo",
+     "firstName": "Jian-Guo"
+    }
+   ],
+   "animal": 0.8,
+   "human": 0.0,
+   "apt": 0.05,
+   "citedByClinicalArticle": false,
+   "citedByPmidsByYear": [
+    {
+     "42070732": 2026
+    },
+    {
+     "40732192": 2025
+    },
+    {
+     "41463848": 2025
+    }
+   ],
+   "year": 2023,
+   "journal": "Sci Rep",
+   "is_research_article": true,
+   "citation_count": 4,
+   "field_citation_rate": 8.02033031843275,
+   "expected_citations_per_year": 3.12944186482169,
+   "citations_per_year": 1.3333333333333333,
+   "relative_citation_ratio": 0.4260610648567853,
+   "nih_percentile": 25.3,
+   "molecular_cellular": 0.2,
+   "x_coord": 0.5196152422706632,
+   "y_coord": -0.5,
+   "is_clinical": false,
+   "cited_by_clin": null,
+   "cited_by": [
+    42070732,
+    40732192,
+    41463848,
+    40646853
+   ],
+   "references": [
+    24548425,
+    24574413,
+    21856167,
+    25747956,
+    17507184
+   ],
+   "provisional": false
+  }
+ ]
+}

@@ -48,6 +48,7 @@ from ai4ra_mcp.servers.fedreg.server import mcp as fedreg
 from ai4ra_mcp.servers.general.server import mcp as general
 from ai4ra_mcp.servers.github.server import mcp as github
 from ai4ra_mcp.servers.grants.server import mcp as grants
+from ai4ra_mcp.servers.icite.server import mcp as icite
 from ai4ra_mcp.servers.idstat.server import mcp as idstat
 from ai4ra_mcp.servers.lakehouse import server as lakehouse
 from ai4ra_mcp.servers.nih.server import mcp as nih
@@ -76,7 +77,7 @@ SERVERS: dict[str, MCPServer] = {
     "nih": nih, "nsf": nsf, "usaspending": usaspending,
     "sam": sam, "fac": fac, "csl": csl, "oig": oig, "propublica": propublica, "ror": ror,
     "perdiem": perdiem, "bls": bls,
-    "openalex": openalex, "pubmed": pubmed, "crossref": crossref, "orcid": orcid, "osti": osti, "clinicaltrials": clinicaltrials,
+    "openalex": openalex, "pubmed": pubmed, "icite": icite, "crossref": crossref, "orcid": orcid, "osti": osti, "clinicaltrials": clinicaltrials,
     "clickup": clickup, "github": github,
     "uidaho": uidaho, "classes": classes, "directory": directory, "events": events, **lakehouse.SERVERS,
 }
@@ -125,6 +126,7 @@ META: dict[str, dict] = {
                  "key": {"required": False, "hint": "Optional: paste your OpenAlex API key (free at openalex.org/settings/api) to spend your own $1-a-day budget instead of the $0.10 everyone without a key shares."}},
     "pubmed": {"label": "PubMed", "description": "Papers by grant number, author or affiliation with PMID, DOI and PMCID for NIH public access compliance; one paper's abstract, MeSH terms and grant acknowledgments; PMID/PMCID/DOI conversion.",
                "key": {"required": False, "hint": "Optional: paste an NCBI API key (free from your NCBI account settings) for 10 requests a second instead of the shared 3."}},
+    "icite": {"label": "NIH iCite", "description": "Citation metrics for PubMed papers by PMID: citations, the Relative Citation Ratio and its NIH percentile, translation measures, and the papers citing or cited by one. No key."},
     "crossref": {"label": "Crossref", "description": "Publications by words, author or funder with the funding acknowledgments publishers deposited, one work by DOI with its abstract, and funders in the Funder Registry."},
     "orcid": {"label": "ORCID", "description": "A researcher's ORCID iD by name and institution, and their public record: employments, educations, funding with grant numbers, and works with DOIs."},
     "osti": {"label": "OSTI.GOV", "description": "What a DOE award reported: papers, technical reports, data and software in OSTI by contract number, author, institution or words."},

@@ -42,6 +42,7 @@ EXPECTED_TOOLS = {
     "bls": {"bls_index", "bls_series", "bls_common_series"},
     "openalex": {"openalex_index", "openalex_works_search", "openalex_works_group", "openalex_work", "openalex_citations", "openalex_authors_search", "openalex_institutions_search", "openalex_funders_search"},
     "pubmed": {"pubmed_index", "pubmed_search", "pubmed_summary", "pubmed_article", "pmc_id_convert"},
+    "icite": {"icite_index", "icite_metrics", "icite_links"},
     "crossref": {"crossref_index", "crossref_works_search", "crossref_work", "crossref_funders_search"},
     "orcid": {"orcid_index", "orcid_search", "orcid_record"},
     "osti": {"osti_index", "osti_search", "osti_record"},

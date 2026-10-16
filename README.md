@@ -88,6 +88,7 @@ works without one and a key raises its quota.
 |---|---|---|---|---|
 | `/openalex/mcp` | OpenAlex | optional (OpenAlex key) | `openalex_index`, `openalex_works_search`, `openalex_works_group`, `openalex_work`, `openalex_citations`, `openalex_authors_search`, `openalex_institutions_search`, `openalex_funders_search` | none |
 | `/pubmed/mcp` | NCBI E-utilities and the PMC ID converter | optional (NCBI key) | `pubmed_index`, `pubmed_search`, `pubmed_summary`, `pubmed_article`, `pmc_id_convert` | none |
+| `/icite/mcp` | NIH iCite | none | `icite_index`, `icite_metrics`, `icite_links` | none |
 | `/crossref/mcp` | Crossref | none | `crossref_index`, `crossref_works_search`, `crossref_work`, `crossref_funders_search` | none |
 | `/orcid/mcp` | ORCID public API | none | `orcid_index`, `orcid_search`, `orcid_record` | none |
 | `/osti/mcp` | OSTI.GOV | none | `osti_index`, `osti_search`, `osti_record` | none |
@@ -1094,6 +1095,33 @@ peer-reviewed paper arising from NIH funding, so a paper with a PMID and no
 PMCID is the one to chase; that grant searches use the institute code and
 serial (`AI135270[Grant Number]`; the RePORTER form `R01AI135270` finds
 nothing); and to cite the PubMed link.
+
+### icite
+
+NIH iCite, https://icite.od.nih.gov/api/pubs, the Office of Portfolio
+Analysis's citation metrics over PubMed and the NIH Open Citation Collection,
+a monthly snapshot, no key; `fl` picks the fields so a call for metrics does
+not carry every citing PMID. `icite_metrics` takes up to 100 PMIDs and
+returns, for each, the citation count and citations a year, the Relative
+Citation Ratio (citations a year against the field citation rate of the
+papers co-cited with it, normalised so 1.0 is the median NIH-funded paper of
+its year), the NIH percentile of that ratio, whether the ratio is
+provisional (under two years old or few citations), the expected citations a
+year and field citation rate behind it, the translation measures (the human,
+animal and molecular/cellular shares of its MeSH terms, the Approximate
+Potential to Translate, and whether a clinical article has cited it), the
+first author and author count, and a summary across the set (papers, with an
+RCR, citations in total, median and mean RCR, how many at or above 1.0, how
+many provisional). `icite_links` gives one paper's citing PMIDs, its
+references and the clinical articles among its citers, with full counts and
+the lists cut at 500. The API answers a PMID it does not hold by leaving it
+out, and an overlong number with a different paper, so every record is
+matched to the PMIDs asked for and the rest come back as `not_found`.
+Records are cached a day. The index explains the ratio and the percentile,
+says to quote the provisional flag with a value, that citation counts are
+PubMed-to-PubMed only, and that iCite takes no DOIs (`pmc_id_convert`
+first). Offline tests run on three records captured in
+`tests/fixtures/icite/`.
 
 ### crossref
 
