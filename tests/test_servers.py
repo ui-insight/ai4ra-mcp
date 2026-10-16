@@ -47,6 +47,7 @@ EXPECTED_TOOLS = {
     "treasury": {"treasury_index", "treasury_currencies", "treasury_rates", "treasury_convert"},
     "crossref": {"crossref_index", "crossref_works_search", "crossref_work", "crossref_funders_search"},
     "datacite": {"datacite_index", "datacite_search", "datacite_doi"},
+    "re3data": {"re3data_index", "re3data_search", "re3data_repository"},
     "orcid": {"orcid_index", "orcid_search", "orcid_record"},
     "osti": {"osti_index", "osti_search", "osti_record"},
     "clinicaltrials": {"clinicaltrials_index", "clinicaltrials_search", "clinicaltrials_study"},

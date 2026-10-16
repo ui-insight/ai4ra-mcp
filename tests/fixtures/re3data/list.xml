@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<list>
+<repository>
+            <id>r3d100011709</id>
+                        <doi>https://doi.org/10.17616/R3NP8M</doi>
+                        <name>Complete Genomics</name>
+            <link href="https://www.re3data.org/api/beta/repository/r3d100011709" rel="self" />
+        </repository>
+<repository>
+            <id>r3d100013743</id>
+                        <doi>https://doi.org/10.17616/R31NJN3J</doi>
+                        <name>National Genomics Data Center</name>
+            <link href="https://www.re3data.org/api/beta/repository/r3d100013743" rel="self" />
+        </repository>
+<repository>
+            <id>r3d100012078</id>
+                        <doi>https://doi.org/10.17616/R3FS95</doi>
+                        <name>SOL Genomics Network</name>
+            <link href="https://www.re3data.org/api/beta/repository/r3d100012078" rel="self" />
+        </repository>
+<repository>
+            <id>r3d100014041</id>
+                        <doi>https://doi.org/10.17616/R31NJNBT</doi>
+                        <name>FILER: Functional genomics repository</name>
+            <link href="https://www.re3data.org/api/beta/repository/r3d100014041" rel="self" />
+        </repository>
+<repository>
+            <id>r3d100010222</id>
+                        <doi>https://doi.org/10.17616/R3302G</doi>
+                        <name>Array Express</name>
+            <link href="https://www.re3data.org/api/beta/repository/r3d100010222" rel="self" />
+        </repository>
+</list>

@@ -1,0 +1,7 @@
+{
+  "catalog_version": "1.0",
+  "repo": "ui-insight/ai4ra-mcp",
+  "server": "re3data",
+  "note": "Skills that use the re3data server's tools. None yet.",
+  "components": []
+}

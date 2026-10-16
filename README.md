@@ -93,6 +93,7 @@ works without one and a key raises its quota.
 | `/icite/mcp` | NIH iCite | none | `icite_index`, `icite_metrics`, `icite_links` | none |
 | `/crossref/mcp` | Crossref | none | `crossref_index`, `crossref_works_search`, `crossref_work`, `crossref_funders_search` | none |
 | `/datacite/mcp` | DataCite | none | `datacite_index`, `datacite_search`, `datacite_doi` | none |
+| `/re3data/mcp` | re3data, the Registry of Research Data Repositories | none | `re3data_index`, `re3data_search`, `re3data_repository` | none |
 | `/orcid/mcp` | ORCID public API | none | `orcid_index`, `orcid_search`, `orcid_record` | none |
 | `/osti/mcp` | OSTI.GOV | none | `osti_index`, `osti_search`, `osti_record` | none |
 | `/clinicaltrials/mcp` | ClinicalTrials.gov | none | `clinicaltrials_index`, `clinicaltrials_search`, `clinicaltrials_study` | none |
@@ -1233,6 +1234,31 @@ ROR leaves its records out, what the counts mean, and how a data management
 and sharing plan's outputs are found (by award number, or by affiliation and
 type dataset in a period). Offline tests run on records captured in
 `tests/fixtures/datacite/`.
+
+### re3data
+
+re3data, the Registry of Research Data Repositories,
+https://www.re3data.org/api/beta/, XML, no key: about 3,000 repositories
+described in the registry's own schema (version 2.2). The list call,
+`/repositories`, takes `query` and the registry's facets as repeated
+parameters (`subjects[]`, `contentTypes[]`, `countries[]`, `dataAccesses[]`,
+`pidSystems[]`, `certificates[]`) and returns every match's id, DOI and name,
+unpaged; the record call, `/repository/<id>`, returns one repository: name,
+URL, description, type, subjects in the DFG classification as the registry
+writes it (`2 Life Sciences`, `20105 General Genetics`), content types,
+keywords, data access and upload terms (open, restricted, embargoed,
+closed), data licenses, persistent identifier system, certificates
+(CoreTrustSeal and the like), APIs, the institutions behind it with their
+roles and RORs, size, start date, versioning, quality management, citation
+guideline, policies and last update. `re3data_search(query, subject,
+content_type, country, data_access, pid_system, certificate, rows)` reads
+the list and then the first rows' records together, 1-25 a call, with the
+total and the rest named by id in a note; `re3data_repository(id)` reads one.
+Both cached a day. The index tells the model how subjects are named, what the
+access and identifier fields mean for a data management and sharing plan
+(open access and a DOI), that a search is as many requests as rows, and to
+confirm deposit terms on the repository's own site. Offline tests run on a
+list and two records captured in `tests/fixtures/re3data/`.
 
 ### orcid
 

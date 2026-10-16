@@ -62,6 +62,7 @@ from ai4ra_mcp.servers.osti.server import mcp as osti
 from ai4ra_mcp.servers.perdiem.server import mcp as perdiem
 from ai4ra_mcp.servers.propublica.server import mcp as propublica
 from ai4ra_mcp.servers.pubmed.server import mcp as pubmed
+from ai4ra_mcp.servers.re3data.server import mcp as re3data
 from ai4ra_mcp.servers.regulations.server import mcp as regulations
 from ai4ra_mcp.servers.ror.server import mcp as ror
 from ai4ra_mcp.servers.s2s.server import mcp as s2s
@@ -80,7 +81,7 @@ SERVERS: dict[str, MCPServer] = {
     "nih": nih, "nsf": nsf, "usaspending": usaspending,
     "sam": sam, "fac": fac, "csl": csl, "oig": oig, "openpayments": openpayments, "propublica": propublica, "ror": ror,
     "perdiem": perdiem, "bls": bls, "treasury": treasury,
-    "openalex": openalex, "pubmed": pubmed, "icite": icite, "crossref": crossref, "datacite": datacite, "orcid": orcid, "osti": osti, "clinicaltrials": clinicaltrials,
+    "openalex": openalex, "pubmed": pubmed, "icite": icite, "crossref": crossref, "datacite": datacite, "re3data": re3data, "orcid": orcid, "osti": osti, "clinicaltrials": clinicaltrials,
     "clickup": clickup, "github": github,
     "uidaho": uidaho, "classes": classes, "directory": directory, "events": events, **lakehouse.SERVERS,
 }
@@ -134,6 +135,7 @@ META: dict[str, dict] = {
     "icite": {"label": "NIH iCite", "description": "Citation metrics for PubMed papers by PMID: citations, the Relative Citation Ratio and its NIH percentile, translation measures, and the papers citing or cited by one. No key."},
     "crossref": {"label": "Crossref", "description": "Publications by words, author or funder with the funding acknowledgments publishers deposited, one work by DOI with its abstract, and funders in the Funder Registry."},
     "datacite": {"label": "DataCite", "description": "The DOIs of datasets, software and other research outputs by institution (ROR), funder, award number, type or words, with creators, funding and the paper each supplements; one DOI's record in full. No key."},
+    "re3data": {"label": "re3data", "description": "The Registry of Research Data Repositories: repositories by words, subject, content type, country, access terms, identifier system or certificate, each with its registry record, for choosing where a plan's data goes; one repository by id. No key."},
     "orcid": {"label": "ORCID", "description": "A researcher's ORCID iD by name and institution, and their public record: employments, educations, funding with grant numbers, and works with DOIs."},
     "osti": {"label": "OSTI.GOV", "description": "What a DOE award reported: papers, technical reports, data and software in OSTI by contract number, author, institution or words."},
     "clinicaltrials": {"label": "ClinicalTrials.gov", "description": "Clinical studies by condition, intervention, sponsor or status, and one study's registration and results dates, grant ids and design."},

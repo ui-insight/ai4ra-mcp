@@ -207,7 +207,10 @@ def missing_key(env_name: str, where: str) -> dict:
             "do_not": "Do not answer this from memory or from a web search. Tell the person this server needs their key and how to get one, and stop there."}
 
 
-async def get_json(url: str, params: dict | None = None, headers: dict | None = None) -> dict | list:
+Params = dict | list[tuple[str, Any]] | None  # a list of pairs when a parameter repeats (re3data's facets[])
+
+
+async def get_json(url: str, params: Params = None, headers: dict | None = None) -> dict | list:
     """GET JSON with the shared User-Agent. A 429 or 5xx becomes a ValueError the tool reports."""
     async with httpx.AsyncClient(timeout=TIMEOUT_S, headers={**HEADERS, **(headers or {})}, follow_redirects=True) as client:
         resp = await client.get(url, params=params)
@@ -220,7 +223,7 @@ async def post_json(url: str, payload: dict, headers: dict | None = None) -> dic
     return _body(resp, url)
 
 
-async def get_text(url: str, params: dict | None = None, headers: dict | None = None) -> str:
+async def get_text(url: str, params: Params = None, headers: dict | None = None) -> str:
     """GET a text body (XML, HTML) with the shared User-Agent and the same status handling as get_json."""
     async with httpx.AsyncClient(timeout=TIMEOUT_S, headers={**HEADERS, **(headers or {})}, follow_redirects=True) as client:
         resp = await client.get(url, params=params)
