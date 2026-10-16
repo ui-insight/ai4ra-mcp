@@ -33,6 +33,7 @@ EXPECTED_TOOLS = {
     "fac": {"fac_index", "fac_audits_search", "fac_findings", "fac_federal_awards"},
     "fedreg": {"federal_register_index", "federal_register_search", "federal_register_document", "federal_register_executive_order", "federal_register_agencies"},
     "regulations": {"regulations_gov_index", "regulations_gov_documents_search", "regulations_gov_document", "regulations_gov_docket", "regulations_gov_comments_search"},
+    "idstat": {"idstat_index", "idstat_titles", "idstat_chapters", "idstat_sections", "idstat_section", "idstat_search"},
     "csl": {"csl_index", "csl_search", "csl_sources"},
     "oig": {"oig_leie_index", "oig_leie_search", "oig_leie_status"},
     "propublica": {"propublica_nonprofit_index", "propublica_nonprofit_search", "propublica_nonprofit_organization"},

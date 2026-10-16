@@ -48,6 +48,7 @@ from ai4ra_mcp.servers.fedreg.server import mcp as fedreg
 from ai4ra_mcp.servers.general.server import mcp as general
 from ai4ra_mcp.servers.github.server import mcp as github
 from ai4ra_mcp.servers.grants.server import mcp as grants
+from ai4ra_mcp.servers.idstat.server import mcp as idstat
 from ai4ra_mcp.servers.lakehouse import server as lakehouse
 from ai4ra_mcp.servers.nih.server import mcp as nih
 from ai4ra_mcp.servers.nsf.server import mcp as nsf
@@ -71,7 +72,7 @@ from ai4ra_mcp.servers.usaspending.server import mcp as usaspending
 # budget figures, the scholarly record, the project trackers), and last the one institution's own servers.
 SERVERS: dict[str, MCPServer] = {
     "general": general, "ai4ra": ai4ra, "udm": udm,
-    "ecfr": ecfr, "fedreg": fedreg, "regulations": regulations, "grants": grants, "s2s": s2s,
+    "ecfr": ecfr, "fedreg": fedreg, "regulations": regulations, "idstat": idstat, "grants": grants, "s2s": s2s,
     "nih": nih, "nsf": nsf, "usaspending": usaspending,
     "sam": sam, "fac": fac, "csl": csl, "oig": oig, "propublica": propublica, "ror": ror,
     "perdiem": perdiem, "bls": bls,
@@ -108,6 +109,7 @@ META: dict[str, dict] = {
     "fac": {"label": "Federal Audit Clearinghouse", "description": "Single audits, findings and federal awards for subrecipient risk assessment.",
             "key": {"required": True, "hint": "Paste your api.data.gov key for the FAC API (free, from the signup at fac.gov/api)."}},
     "fedreg": {"label": "Federal Register", "description": "Rules, proposed rules and notices in the Federal Register: search by words, agency, CFR part or date; one document with its dates and links; agency slugs."},
+    "idstat": {"label": "Idaho Statutes", "description": "The Idaho Code as the Legislature publishes it: the titles, a title's chapters, a chapter's sections, one section's text and history by citation, and the Legislature's full-text search of the code. Current law only, updated each July 1. No key."},
     "regulations": {"label": "Regulations.gov", "description": "Rulemaking dockets, documents and public comments on Regulations.gov: search, one document with its files, one docket, the comments on a document.",
                     "key": {"required": True, "hint": "Paste your api.data.gov key, from https://api.data.gov/signup/ (DEMO_KEY works for a few requests an hour)."}},
     "csl": {"label": "Consolidated Screening List", "description": "Export-control and sanctions screening of a name against the BIS, OFAC and State lists (Entity List, SDN, Denied Persons, ITAR debarred and the rest).",

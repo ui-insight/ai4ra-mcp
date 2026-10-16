@@ -52,6 +52,7 @@ works without one and a key raises its quota.
 | `/ecfr/mcp` | ecfr.gov | none | `ecfr_guide`, `ecfr_regulatory_index`, `ecfr_search`, `ecfr_list_titles`, `ecfr_list_agencies`, `ecfr_get_title_versions`, `ecfr_get_regulation`, `ecfr_get_title_structure`, `ecfr_compare_regulations` | `cfr-check` |
 | `/fedreg/mcp` | Federal Register | none | `federal_register_index`, `federal_register_search`, `federal_register_document`, `federal_register_executive_order`, `federal_register_agencies` | none |
 | `/regulations/mcp` | Regulations.gov | **required** (api.data.gov) | `regulations_gov_index`, `regulations_gov_documents_search`, `regulations_gov_document`, `regulations_gov_docket`, `regulations_gov_comments_search` | none |
+| `/idstat/mcp` | the Idaho Statutes at legislature.idaho.gov and the Legislature's search of them | none | `idstat_index`, `idstat_titles`, `idstat_chapters`, `idstat_sections`, `idstat_section`, `idstat_search` | none |
 | `/grants/mcp` | grants.gov | none | `grants_gov_search`, `grants_gov_opportunity`, `grants_guide` | `funding-opportunity-finder` |
 | `/s2s/mcp` | the Grants.gov Applicant System-to-System (S2S) SOAP service, at any endpoint: training, production, or the deployment's default (a mock) | optional (the person's own S2S certificate and key as a bearer bundle; a deployment may hold a fallback that only the mock accepts) | `s2s_index`, `s2s_check`, `s2s_opportunity`, `s2s_validate_package`, `s2s_submissions`, `s2s_application_info`; with `AI4RA_MCP_S2S_WRITES=1` also `s2s_submit` (off by default) | none yet |
 
@@ -734,6 +735,65 @@ docket. Searches are cached an hour, records a day. The index tells the
 model that comments are filtered by the document's `object_id`, not its
 document id, that timestamps are UTC and date filters YYYY-MM-DD, and to
 cite the link on each record.
+
+### idstat
+
+The Idaho Statutes, the codified law of the State of Idaho, as the
+Legislative Services Office publishes them at
+`https://legislature.idaho.gov/statutesrules/idstat/`: one HTML page per
+title (74), chapter and section, a PDF of each chapter beside them, the
+current law only, updated to the web each July 1 after the session. The
+site is WordPress and the statute text inside each page is the office's
+Arbortext export (a `pgbrk` block: title and chapter lines, the section's
+number, heading and text, then its History line); the site's WordPress REST
+API does not answer, and there is no other API or bulk download (checked
+2026-10-16), so the pages are read as published, anchored on the outline
+tables and that block. No login, no key; cell 4, since the state's law is
+no one institution's own knowledge.
+
+Full-text search is the Legislature's own ISYS engine at
+`https://legislature.search.idaho.gov/search`, a GET with
+`IW_FIELD_WEB_STYLE` (web-style words, a quoted phrase, AND and OR),
+`IW_DATABASE=Idaho Statutes` and `IW_BATCHSIZE` for the results a page
+(tested to 50). Its results page lists each matching page with a hit count,
+a snippet with the matches marked and the page's URL; the matches are
+section pages and, now and then, a chapter or title outline, which the
+result's `kind` says. Later pages of a result set live under a query id the
+engine mints per search, so the server asks for the rows it wants in one
+batch and pages no further. The engine answers nothing (200, an empty body)
+to a User-Agent that does not begin `Mozilla/5.0`, and to one that nests
+parentheses, so the search alone is sent as
+`Mozilla/5.0 (compatible; ai4ra-mcp/0.1; +<AI4RA_MCP_CONTACT>)`, the
+convention for an identified robot, which still names this project and its
+contact; the statute pages take the plain agent string.
+
+- `idstat_titles()`: every title with its name and link.
+- `idstat_chapters(title)`: a title's chapters with name, link and chapter
+  PDF.
+- `idstat_sections(title, chapter)`: a chapter's sections with citation and
+  heading, the title and chapter headings and the PDF.
+- `idstat_section(citation)`: one section by citation (`33-2901`,
+  `67-5309A`): the title and chapter headings, number, heading, text as
+  paragraphs in the code's order, and History. A citation is TT-CCSS, title,
+  hyphen, chapter and a two-digit section, so the chapter is read from the
+  citation and a citation alone finds its page; a section that is not there
+  returns the 404 and the page it tried.
+- `idstat_search(query, rows)`: the engine's results, `sections_matched`,
+  `hits`, and for each result its kind, section, page, hit count, snippet
+  (matches as `**word**`) and link, 1-50 a call, with a note when more
+  matched.
+
+The index reports the office's own statement of how current the text is,
+read from its "How current is this law?" page (`current through the 2026
+Legislative Session` on 2026-10-16), and tells the model which titles
+research administration reaches for (33 Education, 67 State Government and
+State Affairs, 74 Transparent and Ethical Government with the Public Records
+Act and Ethics in Government), to read a section
+before quoting it, and to cite Idaho Code § TT-CCSS with the link. Pages are
+cached a day, searches an hour. Offline tests run on pages captured in
+`tests/fixtures/idstat/` with the WordPress chrome cut; the live site is the
+only test of the routes and the engine themselves. The Idaho Administrative
+Code (IDAPA) is published only as PDFs and is not here.
 
 ### grants
 
