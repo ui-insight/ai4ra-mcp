@@ -20,13 +20,16 @@ EXPECTED_TOOLS = {
     "pappg": {"pappg_index", "pappg_chapters", "pappg_outline", "pappg_section", "pappg_search"},
     "nihgps": {"nihgps_index", "nihgps_toc", "nihgps_section", "nihgps_search"},
     "nihguide": {"nihguide_index", "nihguide_search", "nihguide_notice", "nihguide_weekly"},
-    "uidaho": {"uidaho_guide", "uidaho_guidance_index", "uidaho_guidance_search", "uidaho_guidance_get", "uidaho_rates"},
+    "uidaho": {"uidaho_guide", "uidaho_guidance_index", "uidaho_guidance_search", "uidaho_guidance_get", "uidaho_rates", "uidaho_salaries"},
     "classes": {"classes_index", "classes_terms", "classes_search", "classes_section", "classes_catalog", "classes_course"},
     "directory": {"directory_index", "directory_search", "directory_person", "directory_departments"},
     "events": {"events_index", "events_search", "events_closures", "events_event", "events_calendars"},
     "campusmap": {"campusmap_index", "campusmap_categories", "campusmap_search", "campusmap_near", "campusmap_place"},
     "osm": {"osm_index", "osm_geocode", "osm_route"},
     "weather": {"weather_index", "weather_forecast", "weather_now", "weather_alerts"},
+    "costs": {"costs_index", "costs_tuition", "costs_attendance", "costs_deadlines", "costs_insurance"},
+    "nihdates": {"nihdates_index", "nihdates_due", "nihdates_cycles", "nihdates_salary_cap"},
+    "omb": {"omb_index", "omb_memoranda", "omb_memorandum"},
     "lakehouse": {"lakehouse_guide", "lakehouse_index", "lakehouse_streams", "lakehouse_schema", "lakehouse_query", "lakehouse_files", "lakehouse_file", "lakehouse_sql_catalog", "lakehouse_sql"},
     "general": {"general_guide", "fetch_document", "web_search"},
     "github": {"github_guide"},   # the two GitHub skills; their tools are GitHub's own server's
@@ -156,9 +159,9 @@ def test_app_mounts_every_server_and_its_skills():
         assert by["nih"]["skills_base"] == "nih/skills/" and by["nih"]["mcp"] == "nih/mcp" and by["nih"]["web"].endswith("/nih/skills/")
         assert by["classes"]["given"]["classes_section"] == {"term": "classes_terms", "crn": "classes_search"}
         # institution (#38): the three Idaho servers name Idaho, the GitHub skills server names GitHub, every other server carries null.
-        assert {s["name"] for s in index["servers"] if s["institution"] == "University of Idaho"} == {"uidaho", "classes", "directory", "events", "campusmap", *lakehouse.SERVERS}
+        assert {s["name"] for s in index["servers"] if s["institution"] == "University of Idaho"} == {"uidaho", "classes", "directory", "events", "campusmap", "costs", *lakehouse.SERVERS}
         assert by["github"]["institution"] == "GitHub" and by["uidaho"]["label"] == "UI guidance"
-        assert all(s["institution"] is None for s in index["servers"] if s["name"] not in ("uidaho", "classes", "directory", "events", "campusmap", "github", *lakehouse.SERVERS))
+        assert all(s["institution"] is None for s in index["servers"] if s["name"] not in ("uidaho", "classes", "directory", "events", "campusmap", "costs", "github", *lakehouse.SERVERS))
         assert all(s["given"] == given_of(SERVERS[s["name"]]) for s in index["servers"])
         for s in index["servers"]:
             assert client.get("/" + s["skills"]).status_code == 200

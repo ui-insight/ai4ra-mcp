@@ -65,6 +65,8 @@ works without one and a key raises its quota.
 | `/pappg/mcp` | the NSF PAPPG (NSF 24-1) at nsf.gov/policies/pappg | none | `pappg_index`, `pappg_chapters`, `pappg_outline`, `pappg_section`, `pappg_search` | none |
 | `/nihgps/mcp` | the NIH Grants Policy Statement, web edition at grants.nih.gov | none | `nihgps_index`, `nihgps_toc`, `nihgps_section`, `nihgps_search` | none |
 | `/nihguide/mcp` | the NIH Guide for Grants and Contracts: its search service, notice pages and weekly index | none | `nihguide_index`, `nihguide_search`, `nihguide_notice`, `nihguide_weekly` | none |
+| `/nihdates/mcp` | grants.nih.gov's standard due dates and salary cap pages | none | `nihdates_index`, `nihdates_due`, `nihdates_cycles`, `nihdates_salary_cap` | none |
+| `/omb/mcp` | OMB's memoranda page on whitehouse.gov and the archived prior-administration page | none | `omb_index`, `omb_memoranda`, `omb_memorandum` | none |
 | `/nih/mcp` | NIH RePORTER | none | `nih_guide`, `nih_index`, `nih_projects_search`, `nih_project`, `nih_publications` | `funding-history` |
 | `/nsf/mcp` | NSF Award Search | none | `nsf_index`, `nsf_awards_search`, `nsf_award`, `nsf_award_outcomes` | none |
 | `/usaspending/mcp` | USAspending | none | `usaspending_index`, `usaspending_recipients`, `usaspending_recipient`, `usaspending_awards_search`, `usaspending_subawards_search`, `usaspending_award` | none |
@@ -131,11 +133,12 @@ over ClickUp's REST API.
 
 | Path | Upstream | Key | Tools | Skills |
 |---|---|---|---|---|
-| `/uidaho/mcp` | uidaho.edu policy pages and rate documents | none | `uidaho_guide`, `uidaho_guidance_index`, `uidaho_guidance_search`, `uidaho_guidance_get`, `uidaho_rates` | `uidaho-lookup`, `uidaho-rates`, `policy-check`, `feature-prd-interview` (with the `openera-feature-guide` guide; its writes go through the `clickup` server) |
+| `/uidaho/mcp` | uidaho.edu policy pages and rate documents | none | `uidaho_guide`, `uidaho_guidance_index`, `uidaho_guidance_search`, `uidaho_guidance_get`, `uidaho_rates`, `uidaho_salaries` | `uidaho-lookup`, `uidaho-rates`, `policy-check`, `feature-prd-interview` (with the `openera-feature-guide` guide; its writes go through the `clickup` server) |
 | `/classes/mcp` | the registrar's public class schedule and course catalog (Browse Classes and Browse Course Catalog in Banner) | none | `classes_index`, `classes_terms`, `classes_search`, `classes_section`, `classes_catalog`, `classes_course` | none yet |
 | `/directory/mcp` | the campus directory at directory.uidaho.edu, the employees the university publishes | none | `directory_index`, `directory_search`, `directory_person`, `directory_departments` | none yet |
 | `/events/mcp` | the campus calendar at uidaho.edu/events, through its public Trumba feed | none | `events_index`, `events_search`, `events_closures`, `events_event`, `events_calendars` | none yet |
 | `/campusmap/mcp` | the campus map, Concept3D map 2155, through its locations and categories API | none of the person's (the map page's own client key) | `campusmap_index`, `campusmap_categories`, `campusmap_search`, `campusmap_near`, `campusmap_place` | none yet |
+| `/costs/mcp` | www.uidaho.edu's student billing, account payments, cost of attendance and SHIP pages | none | `costs_index`, `costs_tuition`, `costs_attendance`, `costs_deadlines`, `costs_insurance` | none |
 | `/lakehouse/mcp` (one per configured client; the others at `/lakehouse-<id>/mcp`) | the University of Idaho data lakehouse, through Marina | **required** (the client's shared secret) | `lakehouse_guide`, `lakehouse_index`, `lakehouse_sql_catalog`, `lakehouse_sql`, `lakehouse_streams`, `lakehouse_schema`, `lakehouse_query`, `lakehouse_files`, `lakehouse_file` | `lakehouse-answer` |
 
 Tool names carry their upstream (`ecfr_`, `grants_gov_`, `uidaho_`) and
@@ -996,6 +999,46 @@ the Grants Policy Statement's revision governs. Offline tests run on the
 service's answers, a notice page and the weekly index captured in
 `tests/fixtures/nihguide/`.
 
+### nihdates
+
+Two pages on grants.nih.gov, read as HTML and cached a day, no key: the
+standard due dates page, `https://grants.nih.gov/grants-process/submit/submission-policies/standard-due-dates`,
+and the salary cap summary,
+`https://grants.nih.gov/policy-and-compliance/policy-topics/nih-fiscal-policies/salary-cap-summary`.
+`nihdates_due(activity_code)` returns the due dates table's rows for a code
+(R01, R21, K08, F31, a series such as 'K series'), each with the activity
+codes, which applications the row is for (new; renewal, resubmission,
+revision), the program and the Cycle I, II and III dates, and the page's
+note that AIDS applications no longer have their own dates (NOT-OD-26-029);
+`nihdates_cycles` the table of what follows a due date in each cycle (merit
+review, council, earliest start); `nihdates_salary_cap(fiscal_year)` the
+Executive Level II cap for each period of award issue dates since FY 1990
+with the Guide notice that set it, the cap in force today when a period
+covers it and the latest posted when none does (the page had no FY 2027
+period on 2026-10-16). Every answer carries the page URL and the date the
+page says it was last updated. Offline tests run on both pages' main content
+captured in `tests/fixtures/nihdates/`.
+
+### omb
+
+OMB's memoranda to agencies (M-26-01, M-24-11), from the memoranda page on
+whitehouse.gov, `https://www.whitehouse.gov/omb/information-resources/guidance/memoranda/`
+(the current administration's), and the same page as the National Archives
+preserved it for the prior administration,
+`https://bidenwhitehouse.archives.gov/omb/information-for-agencies/memoranda/`
+(late 1990s to January 2025); together 691 memoranda, 1999 to 2026, when
+read 2026-10-16. Both are read as HTML with a browser-like User-Agent
+(whitehouse.gov's edge refuses the generic one), cached a day, no key. Each
+entry is the number, title, date, year heading, PDF link and page count when
+the list gives it; a number on both lists is kept from whitehouse.gov; and
+each entry's `referenced_by` is the later memoranda whose titles name its
+number (M-25-14 'Rescission of M-25-13'), since the list says nothing else
+about whether a memorandum is in force. `omb_memoranda(year, query, rows)`
+searches by year heading and title words newest first; `omb_memorandum(number)`
+takes 'M-24-11', 'M 24 11' or '24-11'. The PDF itself is read with the
+ai4ra server's fetch tools. Offline tests run on the current page and the
+2025 and 2024 sections of the archive captured in `tests/fixtures/omb/`.
+
 ### nih
 
 NIH RePORTER, https://api.reporter.nih.gov/ v2, no key, about one request a
@@ -1619,6 +1662,16 @@ makes a search-and-cite layer cheap:
   77,000 characters of policy for three sentences, most of it whole
   policies for one clause each (#21). The reader is shared with the ecfr
   server (`common/text.py`).
+- `uidaho_salaries`: the Budget and Planning Office's salary book, the
+  published PDF of every filled position's salary for the newest fiscal year
+  that has one (FY2026, as of May 14, 2025, when added 2026-10-16), linked from
+  the budget-planning page's budget books and read whole once a day: lines
+  matching a name, title or department, each with name, title and rank, FY or
+  AY basis, the annual salary, whether an administrative stipend is paid, and
+  the division, unit and department lines above it, with the book's fiscal
+  year, as-of date and link. For a budget's salary line (a named
+  co-investigator's institutional base salary, what a title is paid), never a
+  listing by itself.
 - `uidaho_rates`: the F&A rate agreement PDF (`fa`) or the fringe-rate page
   (`fringe`) as text. The agreement comes as its Sections I and II (the
   rates by type and location, the base, the fringe rates, the special
@@ -1909,6 +1962,33 @@ building (surname first, the given name in parentheses: `Albertson (J.A.)`,
 `Pitman Center (Bruce M.)`), that distances here are straight-line, and to
 cite a place by its map name and link. Offline tests run on the categories
 and a cut of the locations captured in `tests/fixtures/campusmap/`.
+
+### costs
+
+What the University of Idaho charges, from five pages on www.uidaho.edu
+read as HTML and cached a day, no key: Student Accounts' student billing
+page (the per-semester tuition and fee schedule by student group, the
+summer and winter per-credit rates, the prior year's schedule, the late fee
+schedule by term and the refund schedule), its account payments page (the
+payment plan rules), Financial Aid's cost of attendance page (the estimated
+annual cost tables by student type and program) and Student Health
+Services' SHIP page and insurance requirement page. The pages are the
+university's content management system, so the server reads each into its
+headings, accordion labels, paragraphs, lists and tables (`blocks`,
+`sections`) and returns a section's lists as labelled items ('Full-time
+(9-20 credits)': '$5,898') and its tables by column, under the page's own
+headings. `costs_tuition(schedule, students)` is the schedule for the
+semester (by student group), summer, winter or the prior year;
+`costs_attendance(students)` the cost of attendance tables, filtered by
+words with punctuation ignored ('MBA' finds 'M.B.A.'); `costs_deadlines`
+the late fee dates by term, the due sentences, the refund schedule and the
+payment plan rules; `costs_insurance` the SHIP premiums by period, coverage
+dates, dependent rates and the requirement. Every answer carries the page
+URL, the heading it was read from and the day it was read, so a figure is
+checked against the page when the university changes it; a page down or a
+heading gone is said with the link. Fringe and F&A rates for budgets are
+the uidaho server's. Offline tests run on the five pages' main content
+captured in `tests/fixtures/costs/`.
 
 ### lakehouse
 

@@ -438,6 +438,105 @@ async def uidaho_rates(kind: str, offset: int = 0, max_chars: int = 12000) -> di
     return {"kind": kind, **RATES[kind], **page, "url": page.get("url", url), "resolved_via": how}
 
 
+# The salary book: the Budget and Planning Office's "Employee salaries" PDF for the newest fiscal year that has one,
+# linked from the budget-planning page's budget books. One line per filled position: name, title, rank for faculty,
+# FY (fiscal year, 12 months) or AY (academic year, 9 months), the salary, and 'Yes' when an administrative stipend
+# is paid; department lines between them. A public record the university publishes; read for budgets (a named
+# person's salary and appointment basis, what a title is paid), never a listing by itself.
+SALARIES_PAGE = RATES["fringe"]["url"]
+_BOOKS = re.compile(r"FY(\d{4}) Budget books(.*?)(?=FY\d{4} Budget books|$)", re.S)
+_SALARY_LINK = re.compile(r'<a[^>]+href="(https://content-hub\.uidaho\.edu/api/public/content/[^"]+)"[^>]*>\s*(?:<[^>]+>\s*)*Employee salaries\s*(?:<[^>]+>\s*)*</a>', re.S)
+_SALARY_LINE = re.compile(r"^(?P<who>.+?) (?P<basis>FY|AY) (?P<salary>\d{1,3}(?:,\d{3})*\.\d{2})(?P<stipend>Yes)?$")
+_AS_OF = re.compile(r"^FY(\d{4}) SALARIES AS OF (.+)$", re.M)
+_NAME = re.compile(r"^(?P<last>[^,]+), (?P<first>[A-Z][\w'\-]+(?: [A-Z]\.)?)(?= [A-Z]|$)")  # Last, First M.; a long name the book cut short leaves the title's first word in the name
+_DIVISION = re.compile(r"^\d{4} - ")
+_UNIT = re.compile(r" - \d{4}$")
+_SKIP = re.compile(r"^(\[page \d+\]|\d+|Name Title Rank Yr\. Type .*|EMPLOYEE|SALARIES|OPERATING BUDGETS|FY\d{4} - \d{4}|This report has been modified.*)$")
+SALARY_ROWS, SALARY_MAX_ROWS = 25, 200
+
+
+def pick_salary_book(page_html: str) -> tuple[int, str] | None:
+    """(fiscal year, url) of the newest budget book 'Employee salaries' link on the budget-planning page; a year whose
+    book is 'coming soon' has no link and is passed over."""
+    for m in _BOOKS.finditer(page_html):
+        link = _SALARY_LINK.search(m.group(2))
+        if link:
+            return int(m.group(1)), link.group(1)
+    return None
+
+
+def parse_salary_book(text: str) -> dict:
+    """The salary book's text as rows with the department lines above each kept as context."""
+    m = _AS_OF.search(text)
+    rows, division, unit, department = [], None, None, None
+    for raw in text.split("\n"):
+        line = raw.strip()
+        if not line or _SKIP.match(line) or _AS_OF.match(line):
+            continue
+        sm = _SALARY_LINE.match(line)
+        if not sm:
+            if _DIVISION.match(line):
+                division, unit, department = line, None, None
+            elif _UNIT.search(line):
+                unit, department = line, None
+            else:
+                department = line
+            continue
+        who = sm.group("who")
+        nm = _NAME.match(who)
+        rows.append({"name": nm.group(0) if nm else None, "title": who[len(nm.group(0)):].strip() if nm else who, "who": who,
+                     "basis": sm.group("basis"), "salary_usd": float(sm.group("salary").replace(",", "")), "admin_stipend": bool(sm.group("stipend")),
+                     "division": division, "unit": unit, "department": department})
+    return {"fiscal_year": int(m.group(1)) if m else None, "as_of": m.group(2).strip() if m else None, "rows": rows}
+
+
+async def _salary_book() -> dict:
+    async def make():
+        async with httpx.AsyncClient(timeout=30, follow_redirects=True, headers={"User-Agent": USER_AGENT}) as client:
+            r = await client.get(SALARIES_PAGE)
+            r.raise_for_status()
+            found = pick_salary_book(r.text)
+            if not found:
+                raise ValueError("the budget-planning page links no 'Employee salaries' budget book today")
+            year, url = found
+            pdf = await client.get(url)
+            pdf.raise_for_status()
+        book = parse_salary_book(_fetch.pdf_to_text(pdf.content))
+        if not book["rows"]:
+            raise ValueError("the salary book PDF has no lines of the shape this tool reads; the office may have changed its layout")
+        return {**book, "book_year": year, "url": url}
+    return await _cache.remember("salary-book", DAY, make)
+
+
+@mcp.tool(name="uidaho_salaries", annotations=_READ_ONLY)
+async def uidaho_salaries(query: str, rows: int = SALARY_ROWS) -> dict:
+    """The University of Idaho salary book, the Budget and Planning Office's published list of every filled position's salary: lines matching a name, title or department, for a budget's salary line.
+
+    Each line is a person, title (and rank for faculty), FY or AY appointment basis, the annual salary and whether an
+    administrative stipend is paid, with the department lines above it. Read for a budget: a named co-investigator's
+    institutional base salary and basis, or what the university pays a title (a research scientist, a postdoctoral
+    fellow). Cite the book's fiscal year and as-of date with any figure; the department sets the actual rate.
+
+    Args:
+        query: Words that must all appear in the line or its department, e.g. 'Layman', 'Postdoctoral Fellow', 'Sponsored Programs', 'Research Scientist Biological'.
+        rows: How many lines to return, 1-200. Default 25.
+    """
+    words = [w for w in re.findall(r"[a-z0-9'&\-\.]+", (query or "").lower()) if w]
+    if not words:
+        return {"error": "query must be a name, title or department"}
+    rows = max(1, min(int(rows or SALARY_ROWS), SALARY_MAX_ROWS))
+    try:
+        book = await _salary_book()
+    except (httpx.HTTPError, ValueError) as e:
+        return {"error": str(e), "linked_from": SALARIES_PAGE, "note": "The salary book is a PDF linked from the Budget and Planning Office's page, under the newest fiscal year's budget books; open the page."}
+    hay = lambda r: " ".join(x for x in (r["who"], r["division"], r["unit"], r["department"]) if x).lower()  # noqa: E731
+    found = [r for r in book["rows"] if all(w in hay(r) for w in words)]
+    return {"query": query, "fiscal_year": book["fiscal_year"], "as_of": book["as_of"], "total": len(found), "returned": min(rows, len(found)), "positions": found[:rows],
+            "columns": "name (Last, First M.), title and rank as one field when the name cannot be told apart, basis FY (12-month) or AY (9-month academic year), salary_usd annual, admin_stipend when an administrative stipend is paid",
+            "source": {"book": f"FY{book['book_year']} Employee salaries (budget book), as of {book['as_of']}", "url": book["url"], "linked_from": SALARIES_PAGE,
+                       "note": "The university's published salary book, a snapshot at its as-of date; raises since then are not in it. A proposal budget uses the person's current institutional base salary from the department; this is the published figure to check it against."}}
+
+
 SKILLS_DIR = Path(__file__).parent / "skills"
 register_prompts(mcp, SKILLS_DIR)
 # The policy numbers a call names come from uidaho_guidance_search (#40); one a person cites passes as given.

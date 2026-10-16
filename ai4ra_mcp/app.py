@@ -42,6 +42,7 @@ from ai4ra_mcp.servers.directory.server import mcp as directory
 from ai4ra_mcp.servers.clickup.server import mcp as clickup
 from ai4ra_mcp.servers.clinicaltrials.server import mcp as clinicaltrials
 from ai4ra_mcp.servers.congress.server import mcp as congress
+from ai4ra_mcp.servers.costs.server import mcp as costs
 from ai4ra_mcp.servers.crossref.server import mcp as crossref
 from ai4ra_mcp.servers.csl.server import mcp as csl
 from ai4ra_mcp.servers.ecfr.server import mcp as ecfr
@@ -56,10 +57,12 @@ from ai4ra_mcp.servers.icite.server import mcp as icite
 from ai4ra_mcp.servers.idstat.server import mcp as idstat
 from ai4ra_mcp.servers.lakehouse import server as lakehouse
 from ai4ra_mcp.servers.nih.server import mcp as nih
+from ai4ra_mcp.servers.nihdates.server import mcp as nihdates
 from ai4ra_mcp.servers.nihgps.server import mcp as nihgps
 from ai4ra_mcp.servers.nihguide.server import mcp as nihguide
 from ai4ra_mcp.servers.nsf.server import mcp as nsf
 from ai4ra_mcp.servers.oig.server import mcp as oig
+from ai4ra_mcp.servers.omb.server import mcp as omb
 from ai4ra_mcp.servers.openpayments.server import mcp as openpayments
 from ai4ra_mcp.servers.openalex.server import mcp as openalex
 from ai4ra_mcp.servers.orcid.server import mcp as orcid
@@ -86,13 +89,13 @@ from ai4ra_mcp.servers.weather.server import mcp as weather
 # budget figures, the scholarly record, the project trackers), and last the one institution's own servers.
 SERVERS: dict[str, MCPServer] = {
     "general": general, "ai4ra": ai4ra, "udm": udm,
-    "ecfr": ecfr, "fedreg": fedreg, "regulations": regulations, "idstat": idstat, "govinfo": govinfo, "congress": congress, "grants": grants, "s2s": s2s, "pappg": pappg, "nihgps": nihgps, "nihguide": nihguide,
+    "ecfr": ecfr, "fedreg": fedreg, "regulations": regulations, "idstat": idstat, "govinfo": govinfo, "congress": congress, "grants": grants, "s2s": s2s, "pappg": pappg, "nihgps": nihgps, "nihguide": nihguide, "nihdates": nihdates, "omb": omb,
     "nih": nih, "nsf": nsf, "usaspending": usaspending,
     "sam": sam, "fac": fac, "csl": csl, "oig": oig, "openpayments": openpayments, "propublica": propublica, "ror": ror, "scorecard": scorecard,
     "perdiem": perdiem, "bls": bls, "treasury": treasury, "osm": osm, "weather": weather,
     "openalex": openalex, "pubmed": pubmed, "icite": icite, "crossref": crossref, "datacite": datacite, "re3data": re3data, "orcid": orcid, "osti": osti, "clinicaltrials": clinicaltrials,
     "clickup": clickup, "github": github,
-    "uidaho": uidaho, "classes": classes, "directory": directory, "events": events, "campusmap": campusmap, **lakehouse.SERVERS,
+    "uidaho": uidaho, "classes": classes, "directory": directory, "events": events, "campusmap": campusmap, "costs": costs, **lakehouse.SERVERS,
 }
 SERVERS_DIR = Path(__file__).parent / "servers"
 WEB = "https://github.com/ui-insight/ai4ra-mcp/blob/main/ai4ra_mcp/servers/"
@@ -110,7 +113,10 @@ META: dict[str, dict] = {
     "pappg": {"label": "NSF PAPPG", "description": "The NSF Proposal & Award Policies & Procedures Guide (NSF 24-1) as NSF publishes it: the chapters, a chapter's outline, one section's text by label (II.D.2.b), anchor or heading words, and words across the guide. No key."},
     "nihgps": {"label": "NIH Grants Policy Statement", "description": "The NIH Grants Policy Statement, web edition, as NIH publishes it: the table of contents, one section's text and tables by number (7.9.1) or title, and words across a chapter's sections, with the revision each page carries. No key."},
     "nihguide": {"label": "NIH Guide", "description": "The NIH Guide for Grants and Contracts: notices and funding opportunities by words, institute, kind and date from the Guide's own search; one notice's text by number; the week's notices. No key."},
+    "nihdates": {"label": "NIH due dates and salary cap", "description": "NIH's standard application due dates by activity code, the three review and award cycles, and the salary cap by fiscal year and award date, from grants.nih.gov's pages with their links. No key."},
+    "omb": {"label": "OMB memoranda", "description": "OMB's memoranda to agencies (M-26-01, M-24-11) from whitehouse.gov and the archived prior-administration page, 2017 on: by year or title words, one by number with the later memoranda that name it, each with its date and PDF link. No key."},
     "campusmap": {"label": "Campus map", "institution": UIDAHO, "description": "The University of Idaho campus map (Concept3D): buildings and places by name or category with coordinates and building numbers, what is near a point (accessible entrances, restrooms, parking, bike racks, dining), one place with its entrances and parking, the categories. Read with the map page's own client key, no key of the person's; a route between two places is the osm server's."},
+    "costs": {"label": "UI costs", "institution": UIDAHO, "description": "What the University of Idaho charges, from its own pages with their links: the tuition and fee schedule by student group, the estimated cost of attendance by student type and program, payment deadlines, late fees and refunds, and the Student Health Insurance Program's premiums and dates."},
     "uidaho": {"label": "UI guidance", "institution": UIDAHO, "description": "University policy for sponsored projects (APM, FSH), found by what each policy covers or by number and title; a report-only check of a passage against it; and the F&A and fringe rates from the rate agreement and the fringe-rate page, reported in the Rates contract's order."},
     "classes": {"label": "Class schedule", "institution": UIDAHO, "description": "The University of Idaho class schedule and course catalog: who teaches what, when and where, by term, subject, course number or instructor; one section in full; courses by subject, number or title and one course's catalog record, from the registrar's public Browse Classes and Browse Course Catalog. No key."},
     "directory": {"label": "Campus directory", "institution": UIDAHO, "description": "The University of Idaho campus directory, the employees the university publishes at directory.uidaho.edu: a person by last name, first name, email or department, their university email, phone, title, department and office, and the department list. Employees only, read through the directory's own search form. No key."},

@@ -1,0 +1,7 @@
+{
+  "catalog_version": "1.0",
+  "repo": "ui-insight/ai4ra-mcp",
+  "server": "omb",
+  "note": "Skills that use the omb server's tools. None yet.",
+  "components": []
+}
