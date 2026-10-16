@@ -84,7 +84,8 @@ USAGE_NOTES = [
     "uidaho_guidance_get returns a short policy whole and one over 6,000 characters as an outline of its sections (A., E-1.) with their offsets and sizes: read the section you need by its offset, not the whole policy.",
     "uidaho_guidance_search matches policy numbers and titles, not full text: use it when you have a title word or a number.",
     "uidaho_guidance_get takes a policy number ('APM 45.06', 'FSH 5100'); every result carries the page URL and its 'Last updated' date. Cite both.",
-    "uidaho_rates reads the F&A rate agreement PDF or the fringe-rate page; quote figures with their effective period.",
+    "uidaho_rates reads the F&A rate agreement PDF or the fringe-rate page; quote figures with their effective period. uidaho_salaries reads the published salary book for a named person's or a title's salary.",
+    "Not on this server: tuition, fees, the cost of attendance, payment deadlines and the student health insurance premium are the costs server's (costs_tuition, costs_attendance, costs_deadlines, costs_insurance), read from Student Accounts', Financial Aid's and Student Health Services' pages. Nothing about tuition is in the policy manuals or the rate documents.",
     "Questions about allowability or interpretation go to the Office of Sponsored Programs, 208-885-6651, osp@uidaho.edu. Give no other contact.",
 ]
 
