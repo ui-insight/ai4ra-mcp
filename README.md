@@ -132,7 +132,7 @@ over ClickUp's REST API.
 | `/uidaho/mcp` | uidaho.edu policy pages and rate documents | none | `uidaho_guide`, `uidaho_guidance_index`, `uidaho_guidance_search`, `uidaho_guidance_get`, `uidaho_rates` | `uidaho-lookup`, `uidaho-rates`, `policy-check`, `feature-prd-interview` (with the `openera-feature-guide` guide; its writes go through the `clickup` server) |
 | `/classes/mcp` | the registrar's public class schedule and course catalog (Browse Classes and Browse Course Catalog in Banner) | none | `classes_index`, `classes_terms`, `classes_search`, `classes_section`, `classes_catalog`, `classes_course` | none yet |
 | `/directory/mcp` | the campus directory at directory.uidaho.edu, the employees the university publishes | none | `directory_index`, `directory_search`, `directory_person`, `directory_departments` | none yet |
-| `/events/mcp` | the campus calendar at uidaho.edu/events, through its public Trumba feed | none | `events_index`, `events_search`, `events_event`, `events_calendars` | none yet |
+| `/events/mcp` | the campus calendar at uidaho.edu/events, through its public Trumba feed | none | `events_index`, `events_search`, `events_closures`, `events_event`, `events_calendars` | none yet |
 | `/lakehouse/mcp` (one per configured client; the others at `/lakehouse-<id>/mcp`) | the University of Idaho data lakehouse, through Marina | **required** (the client's shared secret) | `lakehouse_guide`, `lakehouse_index`, `lakehouse_sql_catalog`, `lakehouse_sql`, `lakehouse_streams`, `lakehouse_schema`, `lakehouse_query`, `lakehouse_files`, `lakehouse_file` | `lakehouse-answer` |
 
 Tool names carry their upstream (`ecfr_`, `grants_gov_`, `uidaho_`) and
@@ -1794,6 +1794,15 @@ the `categoryCalendar` each event carries.
   repeats and series_id on a recurring one; contact and registration when
   the event carries them. `rows` 1-200, default 50, with a note when the
   window held more.
+- `events_closures(start, end, days)`: the days the university is closed in
+  a window, the next 120 days by default. A holiday question through the
+  pane first went by way of a guessed calendar name ("Campus Closed",
+  refused by the client's guard, then "University Closures" from the list;
+  2026-10-16), and a calendar's name is the owner's to change or misspell,
+  so this tool searches the feed for the words closed, closure and holiday
+  and keeps the events whose title or calendar says closed or closure, or
+  whose calendar is named for holidays or closures; a holiday concert or a
+  holiday trip is not one. One call, no name to know.
 - `events_event(id)`: one event in full: the whole description, when as the
   calendar words it, the timezone offset, campus_location, web_link, image.
 - `events_calendars(months)`: the calendars that feed the university's,
@@ -1805,7 +1814,7 @@ first `href` where a link is the value. A window is cached ten minutes, the
 calendar list an hour. The index tells the model that times are campus
 local, that a window with no filter is the whole campus, that the flags
 say nothing about who may attend, and to cite an event by title and date
-with its link. Offline tests run on six events captured in
+with its link. Offline tests run on nine events captured in
 `tests/fixtures/events/feed.json` with contacts anonymised; the live feed
 is the only test of the parameters themselves.
 

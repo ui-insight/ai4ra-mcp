@@ -1,4 +1,4 @@
-"""events, offline from six events captured from the campus calendar's Trumba feed on 2026-10-16 (contacts anonymised,
+"""events, offline from nine events captured from the campus calendar's Trumba feed on 2026-10-16 (contacts anonymised,
 descriptions cut): an event read to its fields with the HTML gone; the window parameters the feed is sent for each
 way of asking; the calendar filter applied here; one event by id; the calendar list counted; and bad input said."""
 
@@ -63,7 +63,7 @@ def test_text_and_href_and_dates():
 async def test_search_sends_the_window_the_way_it_was_asked(monkeypatch):
     calls = _feed(monkeypatch)
     out = await ev.events_search()
-    assert calls[-1][0] == trumba.FEED and calls[-1][1] == {"events": 500, "days": 30} and out["window"] == {"days": 30} and out["total"] == 6
+    assert calls[-1][0] == trumba.FEED and calls[-1][1] == {"events": 500, "days": 30} and out["window"] == {"days": 30} and out["total"] == 9
     assert [e["start"] for e in out["events"]] == sorted(e["start"] for e in out["events"])
     await ev.events_search(start="2026-11-01", end="2026-11-30", search="research seminar")
     assert calls[-1][1] == {"events": 500, "startdate": "20261101", "enddate": "20261130", "search": "research seminar"}
@@ -82,7 +82,7 @@ async def test_calendar_filter_rows_and_the_cap_note(monkeypatch):
     out = await ev.events_search(calendar="student affairs")
     assert out["total"] == 2 and all("Student Affairs" in e["calendar"] for e in out["events"]) and out["window"]["calendar"] == "student affairs"
     out = await ev.events_search(rows=2)
-    assert out["total"] == 6 and len(out["events"]) == 2 and "first 2" in out["note"]
+    assert out["total"] == 9 and len(out["events"]) == 2 and "first 2" in out["note"]
     assert (await ev.events_search(search="nothing"))["events"] == []
     ev._cache._d.clear()
     _feed(monkeypatch, answer=[BY_ID[198514850]] * 500)
@@ -99,9 +99,25 @@ async def test_one_event_by_id_in_full_and_none(monkeypatch):
 async def test_calendars_are_counted(monkeypatch):
     calls = _feed(monkeypatch)
     out = await ev.events_calendars()
-    assert calls[-1][1] == {"months": 3, "events": 500} and out["total"] == 6 and out["events_counted"] == 6
-    assert [c["calendar"] for c in out["calendars"]] == sorted(c["calendar"] for c in out["calendars"])  # equal counts, so by name
-    assert sum(c["events"] for c in out["calendars"]) == 6 and all(c["events"] == 1 for c in out["calendars"])
+    assert calls[-1][1] == {"months": 3, "events": 500} and out["total"] == 7 and out["events_counted"] == 9
+    assert out["calendars"][0] == {"calendar": "University Closures", "events": 3}  # most events first, then by name
+    assert sum(c["events"] for c in out["calendars"]) == 9
+
+
+async def test_closures_are_found_by_what_the_events_say(monkeypatch):
+    calls = _feed(monkeypatch)
+    out = await ev.events_closures()
+    assert [c[1]["search"] for c in calls] == ["closed", "closure", "holiday"] and all(c[1]["days"] == 120 for c in calls) and out["window"] == {"days": 120}
+    assert out["total"] == 3 and [c["start"][:10] for c in out["closures"]] == ["2026-11-26", "2026-11-27", "2026-12-24"] and all(c["all_day"] and c["calendar"] == "University Closures" for c in out["closures"])
+    assert set(out["closures"][0]) == {"id", "title", "start", "end", "all_day", "calendar", "description", "link"} and "concert" in out["note"]
+    assert ev.is_closure({"title": "Holiday Jazz Choirs Concert", "categoryCalendar": "Lionel Hampton School of Music"}) is False
+    assert ev.is_closure({"title": "Vandal Voyagers: Holiday Markets Cruise", "categoryCalendar": "Alumni Relations"}) is False
+    assert ev.is_closure({"title": "University Closed to the Public", "categoryCalendar": "University of Idaho Main"}) is True
+    assert ev.is_closure({"title": "Thanksgiving", "categoryCalendar": "Holidays and Closures"}) is True
+    assert ev.is_closure({"title": "Snow closure", "categoryCalendar": "Registrar"}) is True
+    none = await ev.events_closures(start="2026-11-01", end="2026-11-02")
+    assert none["window"] == {"startdate": "20261101", "enddate": "20261102"}  # the fixture answers every window alike; the live feed narrows
+    assert "error" in await ev.events_closures(start="soon")
 
 
 async def test_a_feed_that_is_not_a_list_is_reported(monkeypatch):

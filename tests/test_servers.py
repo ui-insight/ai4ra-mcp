@@ -23,7 +23,7 @@ EXPECTED_TOOLS = {
     "uidaho": {"uidaho_guide", "uidaho_guidance_index", "uidaho_guidance_search", "uidaho_guidance_get", "uidaho_rates"},
     "classes": {"classes_index", "classes_terms", "classes_search", "classes_section", "classes_catalog", "classes_course"},
     "directory": {"directory_index", "directory_search", "directory_person", "directory_departments"},
-    "events": {"events_index", "events_search", "events_event", "events_calendars"},
+    "events": {"events_index", "events_search", "events_closures", "events_event", "events_calendars"},
     "lakehouse": {"lakehouse_guide", "lakehouse_index", "lakehouse_streams", "lakehouse_schema", "lakehouse_query", "lakehouse_files", "lakehouse_file", "lakehouse_sql_catalog", "lakehouse_sql"},
     "general": {"general_guide", "fetch_document", "web_search"},
     "github": {"github_guide"},   # the two GitHub skills; their tools are GitHub's own server's

@@ -34,7 +34,7 @@ CAVEATS = [
 
 mcp = MCPServer(
     "events",
-    instructions="The University of Idaho campus calendar from uidaho.edu/events: events by date window, words or calendar (events_search), one event in full (events_event), the calendars that feed it (events_calendars). No key. Read events_index first.",
+    instructions="The University of Idaho campus calendar from uidaho.edu/events: events by date window, words or calendar (events_search), the days the university is closed (events_closures), one event in full (events_event), the calendars that feed it (events_calendars). No key. Read events_index first.",
 )
 
 
@@ -65,6 +65,7 @@ async def events_index() -> dict:
     return {
         "upstream": f"The University of Idaho campus calendar at {trumba.SITE}, read from its public Trumba feed {trumba.FEED}; no login, no key",
         "workflow": ["events_search for a date window (start and end, or start and days, or the next days from today), narrowed by words or by calendar: a short row per event (title, start and end, where, calendar, a line of description, link). A month of the whole campus is some three hundred events; ask for a week, a calendar or words.",
+                     "events_closures for the days the university is closed in a window (the next 120 days when none is given): a holiday or closure question is this one call, found by what the events say, never a calendar's name guessed",
                      "events_event for one event by id in full: the whole description, the calendar's wording of when, the web link, image, contact, registration",
                      "events_calendars for the calendars that feed the university's, with how many events each has in the coming months, the names a calendar argument is matched against"],
         "notes": ["Dates are YYYY-MM-DD; with no window the next 30 days are read. The feed searches words anywhere in an event's text; a phrase in quotes matches nothing, so give words.",
@@ -108,6 +109,53 @@ async def events_search(search: str = "", start: str = "", end: str = "", days: 
         out["note"] = f"{len(found)} events in the window; the first {rows} are here. Narrow the window, add words or a calendar, or raise rows (to {MAX_ROWS})."
     if len(found) >= trumba.MAX_EVENTS and not want:
         out["note"] = f"The feed returns at most {trumba.MAX_EVENTS} events a call and this window reached it; narrow the window."
+    return out
+
+
+CLOSURE_WORDS = ("closed", "closure", "holiday")
+CLOSURE_DAYS = 120
+
+
+def is_closure(e: dict) -> bool:
+    """A closure is said by the event itself, whichever calendar holds it: 'closed' or 'closure' in the title or the
+    calendar's name, or a calendar named for holidays or closures. 'Holiday' alone in a title is a concert or a cruise."""
+    title, cal = (trumba.text(e.get("title")) or "").lower(), (e.get("categoryCalendar") or "").lower()
+    return any(w in title or w in cal for w in ("closed", "closure")) or "holiday" in cal
+
+
+@mcp.tool(name="events_closures", annotations=_READ_ONLY)
+async def events_closures(start: str = "", end: str = "", days: int = CLOSURE_DAYS) -> dict:
+    """The University of Idaho's closures and holidays in a window, by date: the days the university is closed, found by what the events say rather than by a calendar's name.
+
+    With nothing given, the next 120 days. Use it for "when is the next campus holiday" or "is the university closed on
+    December 28"; a closure is any event whose title or calendar says closed or closure, from whichever calendar holds it.
+
+    Args:
+        start: First date of the window, YYYY-MM-DD. Default today.
+        end: Last date of the window, YYYY-MM-DD. Default start plus days.
+        days: Length of the window in days when end is not given, 1-366. Default 120.
+    """
+    days = max(1, min(int(days or CLOSURE_DAYS), MAX_DAYS))
+    found: dict[int, dict] = {}
+    window: dict = {}
+    try:
+        for word in CLOSURE_WORDS:
+            params, events = await _window(start, end, days, word)
+            window = {k: v for k, v in params.items() if k not in ("events", "search")}
+            for e in events:
+                if is_closure(e):
+                    found[e.get("eventID")] = e
+    except (ValueError, trumba.FeedError) as e:
+        return {"error": str(e), "upstream": trumba.FEED}
+    closures = sorted(found.values(), key=lambda e: (e.get("startDateTime") or "", e.get("eventID") or 0))
+    rows = []
+    for e in closures:
+        row = trumba.slim(e)
+        rows.append({k: row[k] for k in ("id", "title", "start", "end", "all_day", "calendar", "description", "link")})
+    out = {"window": window, "total": len(rows), "closures": rows, "link": trumba.SITE,
+           "note": "Found by the words closed, closure and holiday in the feed, kept where the title or the calendar says closed or closure; a holiday concert or a holiday trip is not one. The calendar names the office that posted the closure."}
+    if not rows:
+        out["note"] = "No event in the window says the university is closed. Closures are posted as events by the university's calendar owners; a holiday not yet posted is not here, and the official holiday schedule is Human Resources'."
     return out
 
 
