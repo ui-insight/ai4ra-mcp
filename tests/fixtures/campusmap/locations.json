@@ -1,0 +1,2208 @@
+[
+{
+"catId": 86540,
+"lat": 46.729736,
+"lng": -117.020164,
+"mapId": 2155,
+"id": 976856,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 735334,
+"name": "J.W. Martin Lab NW #1",
+"reference": "",
+"schedule": ""
+},
+{
+"catId": 86540,
+"lat": 46.729832,
+"lng": -117.016525,
+"mapId": 2155,
+"id": 976858,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 735335,
+"name": "Wallace S #10",
+"reference": "",
+"schedule": ""
+},
+{
+"catId": 86540,
+"lat": 46.728714,
+"lng": -117.006668,
+"mapId": 2155,
+"id": 976860,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 735336,
+"name": "VandalStore NW #100",
+"reference": "",
+"schedule": ""
+},
+{
+"catId": 86544,
+"lat": 46.730221,
+"lng": -117.016388,
+"mapId": 2155,
+"id": 977472,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 735674,
+"name": "The Eatery Dining Center",
+"reference": "",
+"schedule": ""
+},
+{
+"catId": 86544,
+"lat": 46.730026,
+"lng": -117.01313,
+"mapId": 2155,
+"id": 977473,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 735675,
+"name": "True Burger",
+"reference": "",
+"schedule": ""
+},
+{
+"catId": 86544,
+"lat": 46.727184,
+"lng": -117.012268,
+"mapId": 2155,
+"id": 977474,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 735676,
+"name": "Einstein Bros Bagels",
+"reference": "",
+"schedule": ""
+},
+{
+"catId": 86508,
+"lat": 46.724476,
+"lng": -117.011078,
+"mapId": 2155,
+"id": 977521,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 735722,
+"name": "WWI Memorial Tree # 57",
+"reference": "",
+"schedule": ""
+},
+{
+"catId": 86508,
+"lat": 46.724514,
+"lng": -117.011093,
+"mapId": 2155,
+"id": 977523,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 735723,
+"name": "WWI Memorial Tree # 58",
+"reference": "",
+"schedule": ""
+},
+{
+"catId": 86508,
+"lat": 46.724541,
+"lng": -117.011124,
+"mapId": 2155,
+"id": 977525,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 735724,
+"name": "WWI Memorial Tree # 60",
+"reference": "",
+"schedule": ""
+},
+{
+"catId": 86485,
+"lat": 46.723366,
+"lng": -117.016708,
+"mapId": 2155,
+"id": 1011167,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 735532,
+"name": "University of Idaho Golf Course",
+"reference": [
+"100"
+],
+"schedule": ""
+},
+{
+"catId": 86485,
+"lat": 46.727577,
+"lng": -117.018387,
+"mapId": 2155,
+"id": 1011169,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 735546,
+"name": "Idaho Arena (ICCU)",
+"reference": [
+"840"
+],
+"schedule": ""
+},
+{
+"catId": 86485,
+"lat": 46.726341,
+"lng": -117.01889,
+"mapId": 2155,
+"id": 1011170,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 735558,
+"name": "Kibbie West Ticket Booth",
+"reference": [
+"196"
+],
+"schedule": ""
+},
+{
+"catId": 86522,
+"lat": 46.726078,
+"lng": -117.004814,
+"mapId": 2155,
+"id": 1013632,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 750562,
+"name": "Blue 60",
+"reference": "",
+"schedule": ""
+},
+{
+"catId": 86522,
+"lat": 46.724262,
+"lng": -117.002129,
+"mapId": 2155,
+"id": 1013633,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 750563,
+"name": "Blue 104",
+"reference": "",
+"schedule": ""
+},
+{
+"catId": 86504,
+"lat": 46.725262,
+"lng": -117.01091,
+"mapId": 2155,
+"id": 1015094,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 762097,
+"name": "Administration Building S, east end",
+"reference": [
+"1"
+],
+"schedule": ""
+},
+{
+"catId": 86504,
+"lat": 46.725399,
+"lng": -117.011597,
+"mapId": 2155,
+"id": 1015100,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 762099,
+"name": "Administration Building West",
+"reference": [
+"1"
+],
+"schedule": ""
+},
+{
+"catId": 86504,
+"lat": 46.725407,
+"lng": -117.011604,
+"mapId": 2155,
+"id": 1015102,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 762100,
+"name": "Administration Building West",
+"reference": [
+"1"
+],
+"schedule": ""
+},
+{
+"catId": 86522,
+"lat": 46.728912,
+"lng": -117.015793,
+"mapId": 2155,
+"id": 1016239,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 750185,
+"name": "Gold 19",
+"reference": "",
+"schedule": ""
+},
+{
+"catId": 91645,
+"lat": 46.725624,
+"lng": -117.010979,
+"mapId": 2155,
+"id": 1021976,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 735476,
+"name": "Administration Building",
+"reference": [
+"1"
+],
+"schedule": ""
+},
+{
+"catId": 91645,
+"lat": 46.72897,
+"lng": -117.014481,
+"mapId": 2155,
+"id": 1021977,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 759447,
+"name": "Agricultural Science Building (Iddings)",
+"reference": [
+"25"
+],
+"schedule": ""
+},
+{
+"catId": 91645,
+"lat": 46.729404,
+"lng": -117.01403,
+"mapId": 2155,
+"id": 1021978,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 735478,
+"name": "Agricultural Biotechnology",
+"reference": [
+"422"
+],
+"schedule": ""
+},
+{
+"catId": 91645,
+"lat": 46.730049,
+"lng": -117.018822,
+"mapId": 2155,
+"id": 1021979,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 735479,
+"name": "Agricultural Education",
+"reference": [
+"147"
+],
+"schedule": ""
+},
+{
+"catId": 91645,
+"lat": 46.72562,
+"lng": -117.011719,
+"mapId": 2155,
+"id": 1021981,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 759452,
+"name": "Albertson (J.A.)",
+"reference": [
+"424"
+],
+"schedule": ""
+},
+{
+"catId": 91645,
+"lat": 46.72353,
+"lng": -117.011169,
+"mapId": 2155,
+"id": 1021982,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 735480,
+"name": "Alpha Gamma Delta",
+"reference": [
+"460"
+],
+"schedule": ""
+},
+{
+"catId": 91645,
+"lat": 46.722984,
+"lng": -117.012611,
+"mapId": 2155,
+"id": 1021983,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 735481,
+"name": "Alpha Gamma Rho",
+"reference": [
+"n/a"
+],
+"schedule": ""
+},
+{
+"catId": 91645,
+"lat": 46.723972,
+"lng": -117.01033,
+"mapId": 2155,
+"id": 1021984,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 735482,
+"name": "Alpha Kappa Lambda",
+"reference": [
+"441"
+],
+"schedule": ""
+},
+{
+"catId": 91645,
+"lat": 46.729652,
+"lng": -117.007912,
+"mapId": 2155,
+"id": 1021985,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 735483,
+"name": "Alpha Phi",
+"reference": [
+"461"
+],
+"schedule": ""
+},
+{
+"catId": 91645,
+"lat": 46.728588,
+"lng": -117.025146,
+"mapId": 2155,
+"id": 1021986,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 735484,
+"name": "Animal Pavilion",
+"reference": [
+"58"
+],
+"schedule": ""
+},
+{
+"catId": 91645,
+"lat": 46.714638,
+"lng": -117.01783,
+"mapId": 2155,
+"id": 1021987,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 735486,
+"name": "Arboretum Barn",
+"reference": [
+"85"
+],
+"schedule": ""
+},
+{
+"catId": 91645,
+"lat": 46.727413,
+"lng": -117.01133,
+"mapId": 2155,
+"id": 1021988,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 735488,
+"name": "Art & Architecture Main",
+"reference": [
+"16"
+],
+"schedule": ""
+},
+{
+"catId": 91646,
+"lat": 46.728142,
+"lng": -117.008804,
+"mapId": 2155,
+"id": 1021993,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 735495,
+"name": "Beta Theta Pi",
+"reference": [
+"443"
+],
+"schedule": ""
+},
+{
+"catId": 91646,
+"lat": 46.724674,
+"lng": -117.008064,
+"mapId": 2155,
+"id": 1021994,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 735496,
+"name": "Blake House",
+"reference": [
+"34"
+],
+"schedule": ""
+},
+{
+"catId": 91646,
+"lat": 46.728142,
+"lng": -117.012375,
+"mapId": 2155,
+"id": 1022000,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 759450,
+"name": "Brink Hall (Carol Ryrie)",
+"reference": [
+"21"
+],
+"schedule": ""
+},
+{
+"catId": 91646,
+"lat": 46.729458,
+"lng": -117.01088,
+"mapId": 2155,
+"id": 1022001,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 735498,
+"name": "Buchanan Engineering Lab",
+"reference": [
+"54"
+],
+"schedule": ""
+},
+{
+"catId": 91646,
+"lat": 46.728195,
+"lng": -117.026352,
+"mapId": 2155,
+"id": 1022002,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 735501,
+"name": "Chip Facility Scale House",
+"reference": [
+"761"
+],
+"schedule": ""
+},
+{
+"catId": 91646,
+"lat": 46.726917,
+"lng": -117.028458,
+"mapId": 2155,
+"id": 1022003,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 735502,
+"name": "Chip Storage/Drying Facility",
+"reference": [
+"758"
+],
+"schedule": ""
+},
+{
+"catId": 91646,
+"lat": 46.72599,
+"lng": -117.005951,
+"mapId": 2155,
+"id": 1022004,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 735504,
+"name": "CLASS Annex",
+"reference": [
+"44"
+],
+"schedule": ""
+},
+{
+"catId": 91646,
+"lat": 46.725906,
+"lng": -117.012405,
+"mapId": 2155,
+"id": 1022005,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 735505,
+"name": "College of Education Building",
+"reference": [
+"835"
+],
+"schedule": ""
+},
+{
+"catId": 91647,
+"lat": 46.725906,
+"lng": -117.012405,
+"mapId": 2155,
+"id": 1022006,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 735505,
+"name": "College of Education Building",
+"reference": [
+"835"
+],
+"schedule": ""
+},
+{
+"catId": 91646,
+"lat": 46.72937,
+"lng": -117.012779,
+"mapId": 2155,
+"id": 1022007,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 735506,
+"name": "College Of Natural Resources",
+"reference": [
+"55"
+],
+"schedule": ""
+},
+{
+"catId": 91650,
+"lat": 46.72937,
+"lng": -117.012779,
+"mapId": 2155,
+"id": 1022008,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 735506,
+"name": "College Of Natural Resources",
+"reference": [
+"55"
+],
+"schedule": ""
+},
+{
+"catId": 91646,
+"lat": 46.729626,
+"lng": -117.008774,
+"mapId": 2155,
+"id": 1022009,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 735508,
+"name": "Delta Delta Delta",
+"reference": [
+"462"
+],
+"schedule": ""
+},
+{
+"catId": 91646,
+"lat": 46.72805,
+"lng": -117.007927,
+"mapId": 2155,
+"id": 1022010,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 735509,
+"name": "Delta Gamma",
+"reference": [
+"463"
+],
+"schedule": ""
+},
+{
+"catId": 91646,
+"lat": 46.726746,
+"lng": -117.007324,
+"mapId": 2155,
+"id": 1022011,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 735510,
+"name": "Delta Sigma Phi",
+"reference": [
+"445"
+],
+"schedule": ""
+},
+{
+"catId": 91647,
+"lat": 46.725006,
+"lng": -117.004745,
+"mapId": 2155,
+"id": 1022014,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 735513,
+"name": "Early Childhood Lrng Center",
+"reference": [
+"94"
+],
+"schedule": ""
+},
+{
+"catId": 91647,
+"lat": 46.729115,
+"lng": -117.008606,
+"mapId": 2155,
+"id": 1022015,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 735514,
+"name": "Elmwood Apartments",
+"reference": [
+"569"
+],
+"schedule": ""
+},
+{
+"catId": 91647,
+"lat": 46.730045,
+"lng": -117.019547,
+"mapId": 2155,
+"id": 1022016,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 735515,
+"name": "Engineering Annex",
+"reference": [
+"49"
+],
+"schedule": ""
+},
+{
+"catId": 91647,
+"lat": 46.729263,
+"lng": -117.009956,
+"mapId": 2155,
+"id": 1022017,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 735516,
+"name": "Engineering/Physics Bldg",
+"reference": [
+"111"
+],
+"schedule": ""
+},
+{
+"catId": 91647,
+"lat": 46.73003,
+"lng": -117.01844,
+"mapId": 2155,
+"id": 1022018,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 735517,
+"name": "Environmental Health & Safety",
+"reference": [
+"61"
+],
+"schedule": ""
+},
+{
+"catId": 91647,
+"lat": 46.726334,
+"lng": -117.024002,
+"mapId": 2155,
+"id": 1022020,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 735519,
+"name": "Facilities Garage",
+"reference": [
+"404"
+],
+"schedule": ""
+},
+{
+"catId": 91647,
+"lat": 46.727882,
+"lng": -117.025314,
+"mapId": 2155,
+"id": 1022021,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 735520,
+"name": "Facilities Lathhouse/Grnhouse",
+"reference": [
+"690"
+],
+"schedule": ""
+},
+{
+"catId": 91647,
+"lat": 46.727245,
+"lng": -117.024582,
+"mapId": 2155,
+"id": 1022022,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 735521,
+"name": "Facilities Services",
+"reference": [
+"689"
+],
+"schedule": ""
+},
+{
+"catId": 91647,
+"lat": 46.723904,
+"lng": -117.008926,
+"mapId": 2155,
+"id": 1022024,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 735523,
+"name": "Farmhouse",
+"reference": [
+"447"
+],
+"schedule": ""
+},
+{
+"catId": 91647,
+"lat": 46.72802,
+"lng": -117.011551,
+"mapId": 2155,
+"id": 1022026,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 735525,
+"name": "Food Research Center",
+"reference": [
+"5"
+],
+"schedule": ""
+},
+{
+"catId": 91647,
+"lat": 46.724319,
+"lng": -117.008125,
+"mapId": 2155,
+"id": 1022027,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 759453,
+"name": "Forney Hall (Mary E.)",
+"reference": [
+"7"
+],
+"schedule": ""
+},
+{
+"catId": 91648,
+"lat": 46.725731,
+"lng": -117.007912,
+"mapId": 2155,
+"id": 1022049,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 735540,
+"name": "Hampton Music Building (Lionel)",
+"reference": [
+"26"
+],
+"schedule": ""
+},
+{
+"catId": 91648,
+"lat": 46.728756,
+"lng": -117.018127,
+"mapId": 2155,
+"id": 1022050,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 735541,
+"name": "Hartung Theatre",
+"reference": [
+"65"
+],
+"schedule": ""
+},
+{
+"catId": 91648,
+"lat": 46.723896,
+"lng": -117.007904,
+"mapId": 2155,
+"id": 1022051,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 759451,
+"name": "Hays Hall (Gertrude L.)",
+"reference": [
+"10"
+],
+"schedule": ""
+},
+{
+"catId": 91648,
+"lat": 46.724403,
+"lng": -117.002312,
+"mapId": 2155,
+"id": 1022052,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 735543,
+"name": "Huckabay Med Education Bldg",
+"reference": [
+"93"
+],
+"schedule": ""
+},
+{
+"catId": 91648,
+"lat": 46.729393,
+"lng": -117.005646,
+"mapId": 2155,
+"id": 1022053,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 735544,
+"name": "Human Resources",
+"reference": [
+"60"
+],
+"schedule": ""
+},
+{
+"catId": 91648,
+"lat": 46.727577,
+"lng": -117.018387,
+"mapId": 2155,
+"id": 1022054,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 735546,
+"name": "Idaho Arena (ICCU)",
+"reference": [
+"840"
+],
+"schedule": ""
+},
+{
+"catId": 91648,
+"lat": 46.727375,
+"lng": -117.012238,
+"mapId": 2155,
+"id": 1022059,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 735547,
+"name": "Idaho Student Union Building (ISUB)",
+"reference": [
+"97"
+],
+"schedule": ""
+},
+{
+"catId": 91648,
+"lat": 46.728912,
+"lng": -117.012688,
+"mapId": 2155,
+"id": 1022060,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 735549,
+"name": "Integrated Research & Innovation Center (IRIC)",
+"reference": [
+"770"
+],
+"schedule": ""
+},
+{
+"catId": 91648,
+"lat": 46.729527,
+"lng": -117.020691,
+"mapId": 2155,
+"id": 1022061,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 735552,
+"name": "J.W. Martin Lab",
+"reference": [
+"35"
+],
+"schedule": ""
+},
+{
+"catId": 91648,
+"lat": 46.728928,
+"lng": -117.011353,
+"mapId": 2155,
+"id": 1022062,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 735553,
+"name": "Janssen Engineering Bldg",
+"reference": [
+"28"
+],
+"schedule": ""
+},
+{
+"catId": 91648,
+"lat": 46.729042,
+"lng": -117.007965,
+"mapId": 2155,
+"id": 1022063,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 735554,
+"name": "Kappa Alpha Theta",
+"reference": [
+"557"
+],
+"schedule": ""
+},
+{
+"catId": 91648,
+"lat": 46.726269,
+"lng": -117.007492,
+"mapId": 2155,
+"id": 1022064,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 735555,
+"name": "Kappa Delta",
+"reference": [
+"95"
+],
+"schedule": ""
+},
+{
+"catId": 91650,
+"lat": 46.726315,
+"lng": -117.017784,
+"mapId": 2155,
+"id": 1022068,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 735592,
+"name": "Kibbie Dome (P1FCU)",
+"reference": [
+"114"
+],
+"schedule": ""
+},
+{
+"catId": 91649,
+"lat": 46.727848,
+"lng": -117.006577,
+"mapId": 2155,
+"id": 1022070,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 735559,
+"name": "Lambda Chi Alpha",
+"reference": [
+"449"
+],
+"schedule": ""
+},
+{
+"catId": 91649,
+"lat": 46.726357,
+"lng": -117.023773,
+"mapId": 2155,
+"id": 1022071,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 735560,
+"name": "LES Small Engine Shop",
+"reference": [
+"405"
+],
+"schedule": ""
+},
+{
+"catId": 91649,
+"lat": 46.727421,
+"lng": -117.014145,
+"mapId": 2155,
+"id": 1022072,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 735561,
+"name": "Library",
+"reference": [
+"32"
+],
+"schedule": ""
+},
+{
+"catId": 91649,
+"lat": 46.727161,
+"lng": -117.010361,
+"mapId": 2155,
+"id": 1022073,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 735562,
+"name": "Life Sciences South",
+"reference": [
+"19"
+],
+"schedule": ""
+},
+{
+"catId": 91649,
+"lat": 46.730957,
+"lng": -117.01239,
+"mapId": 2155,
+"id": 1022074,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 735563,
+"name": "LLC - CNR - Bldg 5",
+"reference": [
+"546"
+],
+"schedule": ""
+},
+{
+"catId": 91649,
+"lat": 46.730289,
+"lng": -117.012276,
+"mapId": 2155,
+"id": 1022075,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 735564,
+"name": "LLC - Engineering - Bldg 7",
+"reference": [
+"548"
+],
+"schedule": ""
+},
+{
+"catId": 91649,
+"lat": 46.73069,
+"lng": -117.012283,
+"mapId": 2155,
+"id": 1022076,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 735565,
+"name": "LLC - Gault - Bldg 6",
+"reference": [
+"547"
+],
+"schedule": ""
+},
+{
+"catId": 91649,
+"lat": 46.729984,
+"lng": -117.012924,
+"mapId": 2155,
+"id": 1022077,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 735566,
+"name": "LLC - Gem - Bldg 1",
+"reference": [
+"542"
+],
+"schedule": ""
+},
+{
+"catId": 91649,
+"lat": 46.73,
+"lng": -117.01239,
+"mapId": 2155,
+"id": 1022078,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 735567,
+"name": "LLC - Honors House - Bldg 8",
+"reference": [
+"549"
+],
+"schedule": ""
+},
+{
+"catId": 91649,
+"lat": 46.730679,
+"lng": -117.012947,
+"mapId": 2155,
+"id": 1022079,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 735568,
+"name": "LLC - Sage - Bldg 3",
+"reference": [
+"544"
+],
+"schedule": ""
+},
+{
+"catId": 91649,
+"lat": 46.730324,
+"lng": -117.012939,
+"mapId": 2155,
+"id": 1022080,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 735569,
+"name": "LLC - Syringa - Bldg 2",
+"reference": [
+"543"
+],
+"schedule": ""
+},
+{
+"catId": 91649,
+"lat": 46.73098,
+"lng": -117.012932,
+"mapId": 2155,
+"id": 1022081,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 735570,
+"name": "LLC - Upham - Bldg 4",
+"reference": [
+"545"
+],
+"schedule": ""
+},
+{
+"catId": 91650,
+"lat": 46.72855,
+"lng": -117.01162,
+"mapId": 2155,
+"id": 1022090,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 735587,
+"name": "NAMEC",
+"reference": [
+"104"
+],
+"schedule": ""
+},
+{
+"catId": 91650,
+"lat": 46.724766,
+"lng": -117.010147,
+"mapId": 2155,
+"id": 1022091,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 735588,
+"name": "Niccolls Building",
+"reference": [
+"30"
+],
+"schedule": ""
+},
+{
+"catId": 91650,
+"lat": 46.724342,
+"lng": -117.02581,
+"mapId": 2155,
+"id": 1022092,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 735590,
+"name": "Observatory",
+"reference": [
+"126"
+],
+"schedule": ""
+},
+{
+"catId": 91650,
+"lat": 46.727577,
+"lng": -117.007942,
+"mapId": 2155,
+"id": 1022093,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 735593,
+"name": "Phi Delta Theta",
+"reference": [
+"451"
+],
+"schedule": ""
+},
+{
+"catId": 91650,
+"lat": 46.727123,
+"lng": -117.00872,
+"mapId": 2155,
+"id": 1022094,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 735594,
+"name": "Phi Gamma Delta (Fiji)",
+"reference": [
+"452"
+],
+"schedule": ""
+},
+{
+"catId": 91650,
+"lat": 46.728043,
+"lng": -117.009216,
+"mapId": 2155,
+"id": 1022095,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 735595,
+"name": "Phi Kappa Tau",
+"reference": [
+"453"
+],
+"schedule": ""
+},
+{
+"catId": 91650,
+"lat": 46.72847,
+"lng": -117.012871,
+"mapId": 2155,
+"id": 1022096,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 735487,
+"name": "Phinney Hall (Archie)",
+"reference": [
+"4"
+],
+"schedule": ""
+},
+{
+"catId": 91650,
+"lat": 46.725544,
+"lng": -117.013847,
+"mapId": 2155,
+"id": 1022097,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 735597,
+"name": "Physical Education Bldg",
+"reference": [
+"56"
+],
+"schedule": ""
+},
+{
+"catId": 91650,
+"lat": 46.727531,
+"lng": -117.00737,
+"mapId": 2155,
+"id": 1022098,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 735598,
+"name": "Pi Beta Phi",
+"reference": [
+"466"
+],
+"schedule": ""
+},
+{
+"catId": 91650,
+"lat": 46.726734,
+"lng": -117.00798,
+"mapId": 2155,
+"id": 1022099,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 735599,
+"name": "Pi Kappa Alpha",
+"reference": [
+"444"
+],
+"schedule": ""
+},
+{
+"catId": 91651,
+"lat": 46.728615,
+"lng": -117.023506,
+"mapId": 2155,
+"id": 1022109,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 735609,
+"name": "Seed Potato Germplasm Lab",
+"reference": [
+"426"
+],
+"schedule": ""
+},
+{
+"catId": 91651,
+"lat": 46.730114,
+"lng": -117.015556,
+"mapId": 2155,
+"id": 1022110,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 735613,
+"name": "Shoup Hall",
+"reference": [
+"41"
+],
+"schedule": ""
+},
+{
+"catId": 91651,
+"lat": 46.726192,
+"lng": -117.006447,
+"mapId": 2155,
+"id": 1022111,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 735614,
+"name": "Sigma Alpha Epsilon",
+"reference": [
+"455"
+],
+"schedule": ""
+},
+{
+"catId": 91651,
+"lat": 46.723175,
+"lng": -117.011681,
+"mapId": 2155,
+"id": 1022112,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 735615,
+"name": "Sigma Chi",
+"reference": [
+"456"
+],
+"schedule": ""
+},
+{
+"catId": 91651,
+"lat": 46.728321,
+"lng": -117.00795,
+"mapId": 2155,
+"id": 1022113,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 735616,
+"name": "Sigma Nu",
+"reference": [
+"457"
+],
+"schedule": ""
+},
+{
+"catId": 91651,
+"lat": 46.724983,
+"lng": -117.018784,
+"mapId": 2155,
+"id": 1022114,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 735617,
+"name": "South Campus Chiller Plant",
+"reference": [
+"749"
+],
+"schedule": ""
+},
+{
+"catId": 91651,
+"lat": 46.722988,
+"lng": -117.005272,
+"mapId": 2155,
+"id": 1022115,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 735629,
+"name": "South Hill Terrace - 426 Terrace Lane",
+"reference": [
+"501"
+],
+"schedule": ""
+},
+{
+"catId": 91651,
+"lat": 46.723114,
+"lng": -117.004929,
+"mapId": 2155,
+"id": 1022116,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 735630,
+"name": "South Hill Terrace - 430 Terrace Lane",
+"reference": [
+"502"
+],
+"schedule": ""
+},
+{
+"catId": 91651,
+"lat": 46.723492,
+"lng": -117.005264,
+"mapId": 2155,
+"id": 1022117,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 735631,
+"name": "South Hill Terrace - 458 Terrace Lane",
+"reference": [
+"503"
+],
+"schedule": ""
+},
+{
+"catId": 91651,
+"lat": 46.723854,
+"lng": -117.005333,
+"mapId": 2155,
+"id": 1022118,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 735632,
+"name": "South Hill Terrace - 464 Terrace Lane",
+"reference": [
+"504"
+],
+"schedule": ""
+},
+{
+"catId": 91651,
+"lat": 46.724026,
+"lng": -117.003983,
+"mapId": 2155,
+"id": 1022119,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 735635,
+"name": "South Hill Vista - 301 Sweet",
+"reference": [
+"530"
+],
+"schedule": ""
+},
+{
+"catId": 91651,
+"lat": 46.723785,
+"lng": -117.006157,
+"mapId": 2155,
+"id": 1022120,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 735633,
+"name": "South Hill Terrace - 486 Terrace Lane",
+"reference": [
+"506"
+],
+"schedule": ""
+},
+{
+"catId": 91652,
+"lat": 46.722866,
+"lng": -117.008827,
+"mapId": 2155,
+"id": 1022146,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 735651,
+"name": "Targhee Hall",
+"reference": [
+"42"
+],
+"schedule": ""
+},
+{
+"catId": 91652,
+"lat": 46.727516,
+"lng": -117.012932,
+"mapId": 2155,
+"id": 1022147,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 735652,
+"name": "Teaching & Learning Center (TLC)",
+"reference": [
+"678"
+],
+"schedule": ""
+},
+{
+"catId": 91652,
+"lat": 46.727146,
+"lng": -117.007874,
+"mapId": 2155,
+"id": 1022148,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 761174,
+"name": "RHouse (formally The Center)",
+"reference": "",
+"schedule": ""
+},
+{
+"catId": 91652,
+"lat": 46.730824,
+"lng": -117.013985,
+"mapId": 2155,
+"id": 1022149,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 735653,
+"name": "Theophilus Tower",
+"reference": [
+"52"
+],
+"schedule": ""
+},
+{
+"catId": 91652,
+"lat": 46.72934,
+"lng": -117.007927,
+"mapId": 2155,
+"id": 1022150,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 735654,
+"name": "Theta Chi",
+"reference": [
+"459"
+],
+"schedule": ""
+},
+{
+"catId": 91652,
+"lat": 46.726299,
+"lng": -117.020233,
+"mapId": 2155,
+"id": 1022151,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 735584,
+"name": "Track & Field Office (Mike Ryan)",
+"reference": [
+"115"
+],
+"schedule": ""
+},
+{
+"catId": 91652,
+"lat": 46.724026,
+"lng": -117.009575,
+"mapId": 2155,
+"id": 1022152,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 735657,
+"name": "Nez Perce Drive House",
+"reference": [
+"48"
+],
+"schedule": ""
+},
+{
+"catId": 91652,
+"lat": 46.730045,
+"lng": -117.011719,
+"mapId": 2155,
+"id": 1022153,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 735658,
+"name": "University Energy Plant",
+"reference": [
+"11"
+],
+"schedule": ""
+},
+{
+"catId": 91652,
+"lat": 46.723728,
+"lng": -117.014206,
+"mapId": 2155,
+"id": 1022154,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 735659,
+"name": "University House",
+"reference": [
+"850"
+],
+"schedule": ""
+},
+{
+"catId": 91652,
+"lat": 46.723366,
+"lng": -117.016708,
+"mapId": 2155,
+"id": 1022155,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 735532,
+"name": "University of Idaho Golf Course",
+"reference": [
+"100"
+],
+"schedule": ""
+},
+{
+"catId": 91652,
+"lat": 46.726231,
+"lng": -117.023521,
+"mapId": 2155,
+"id": 1022156,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 735660,
+"name": "University Vehicle Storage",
+"reference": [
+"406"
+],
+"schedule": ""
+},
+{
+"catId": 91652,
+"lat": 46.72422,
+"lng": -117.017647,
+"mapId": 2155,
+"id": 1022157,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 735661,
+"name": "Vandal Golf Performance Center",
+"reference": [
+"841"
+],
+"schedule": ""
+},
+{
+"catId": 91739,
+"lat": 46.725723,
+"lng": -117.010979,
+"mapId": 2155,
+"id": 1023276,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 768375,
+"name": "General Studies Dept",
+"reference": [
+"1"
+],
+"schedule": ""
+},
+{
+"catId": 91739,
+"lat": 46.725773,
+"lng": -117.010979,
+"mapId": 2155,
+"id": 1023277,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 768376,
+"name": "Politics & Philosophy Dept",
+"reference": [
+"1"
+],
+"schedule": ""
+},
+{
+"catId": 91739,
+"lat": 46.725822,
+"lng": -117.010979,
+"mapId": 2155,
+"id": 1023278,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 768377,
+"name": "History Dept",
+"reference": [
+"1"
+],
+"schedule": ""
+},
+{
+"catId": 97394,
+"lat": 46.725624,
+"lng": -117.010979,
+"mapId": 2155,
+"id": 1057751,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 735476,
+"name": "Administration Building",
+"reference": [
+"1"
+],
+"schedule": ""
+},
+{
+"catId": 97394,
+"lat": 46.72897,
+"lng": -117.014481,
+"mapId": 2155,
+"id": 1057752,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 759447,
+"name": "Agricultural Science Building (Iddings)",
+"reference": [
+"25"
+],
+"schedule": ""
+},
+{
+"catId": 97394,
+"lat": 46.729404,
+"lng": -117.01403,
+"mapId": 2155,
+"id": 1057753,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 735478,
+"name": "Agricultural Biotechnology",
+"reference": [
+"422"
+],
+"schedule": ""
+},
+{
+"catId": 86482,
+"lat": 46.726505,
+"lng": -117.013954,
+"mapId": 2155,
+"id": 977303,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 735581,
+"name": "Memorial Gym",
+"reference": [
+"15"
+],
+"schedule": ""
+},
+{
+"catId": 86482,
+"lat": 46.728706,
+"lng": -117.00724,
+"mapId": 2155,
+"id": 1011163,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 759448,
+"name": "Pitman Center (Bruce M.)",
+"reference": [
+"20"
+],
+"schedule": ""
+},
+{
+"catId": 91543,
+"lat": 46.728149,
+"lng": -117.012672,
+"mapId": 2155,
+"id": 1021336,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 762220,
+"name": "Brink Hall (Carol Ryrie)",
+"reference": [
+"21"
+],
+"schedule": ""
+},
+{
+"catId": 91648,
+"lat": 46.726315,
+"lng": -117.017784,
+"mapId": 2155,
+"id": 1022067,
+"level": [
+0
+],
+"location_open": "",
+"locationType": "standard",
+"mrkId": 735592,
+"name": "Kibbie Dome (P1FCU)",
+"reference": [
+"114"
+],
+"schedule": ""
+}
+]

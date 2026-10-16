@@ -1,0 +1,7 @@
+{
+  "catalog_version": "1.0",
+  "repo": "ui-insight/ai4ra-mcp",
+  "server": "campusmap",
+  "note": "Skills that use the campusmap server's tools. None yet.",
+  "components": []
+}

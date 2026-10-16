@@ -35,6 +35,7 @@ from ai4ra_mcp.common.given import given_of
 from ai4ra_mcp.common.http import describe_auth, headers_log, log_headers, log_no_keys, request_key
 from ai4ra_mcp.servers.ai4ra.server import mcp as ai4ra
 from ai4ra_mcp.servers.bls.server import mcp as bls
+from ai4ra_mcp.servers.campusmap.server import mcp as campusmap
 from ai4ra_mcp.servers.classes.server import mcp as classes
 from ai4ra_mcp.servers.datacite.server import mcp as datacite
 from ai4ra_mcp.servers.directory.server import mcp as directory
@@ -62,6 +63,7 @@ from ai4ra_mcp.servers.oig.server import mcp as oig
 from ai4ra_mcp.servers.openpayments.server import mcp as openpayments
 from ai4ra_mcp.servers.openalex.server import mcp as openalex
 from ai4ra_mcp.servers.orcid.server import mcp as orcid
+from ai4ra_mcp.servers.osm.server import mcp as osm
 from ai4ra_mcp.servers.osti.server import mcp as osti
 from ai4ra_mcp.servers.perdiem.server import mcp as perdiem
 from ai4ra_mcp.servers.propublica.server import mcp as propublica
@@ -86,10 +88,10 @@ SERVERS: dict[str, MCPServer] = {
     "ecfr": ecfr, "fedreg": fedreg, "regulations": regulations, "idstat": idstat, "govinfo": govinfo, "congress": congress, "grants": grants, "s2s": s2s, "pappg": pappg, "nihgps": nihgps, "nihguide": nihguide,
     "nih": nih, "nsf": nsf, "usaspending": usaspending,
     "sam": sam, "fac": fac, "csl": csl, "oig": oig, "openpayments": openpayments, "propublica": propublica, "ror": ror, "scorecard": scorecard,
-    "perdiem": perdiem, "bls": bls, "treasury": treasury,
+    "perdiem": perdiem, "bls": bls, "treasury": treasury, "osm": osm,
     "openalex": openalex, "pubmed": pubmed, "icite": icite, "crossref": crossref, "datacite": datacite, "re3data": re3data, "orcid": orcid, "osti": osti, "clinicaltrials": clinicaltrials,
     "clickup": clickup, "github": github,
-    "uidaho": uidaho, "classes": classes, "directory": directory, "events": events, **lakehouse.SERVERS,
+    "uidaho": uidaho, "classes": classes, "directory": directory, "events": events, "campusmap": campusmap, **lakehouse.SERVERS,
 }
 SERVERS_DIR = Path(__file__).parent / "servers"
 WEB = "https://github.com/ui-insight/ai4ra-mcp/blob/main/ai4ra_mcp/servers/"
@@ -107,6 +109,7 @@ META: dict[str, dict] = {
     "pappg": {"label": "NSF PAPPG", "description": "The NSF Proposal & Award Policies & Procedures Guide (NSF 24-1) as NSF publishes it: the chapters, a chapter's outline, one section's text by label (II.D.2.b), anchor or heading words, and words across the guide. No key."},
     "nihgps": {"label": "NIH Grants Policy Statement", "description": "The NIH Grants Policy Statement, web edition, as NIH publishes it: the table of contents, one section's text and tables by number (7.9.1) or title, and words across a chapter's sections, with the revision each page carries. No key."},
     "nihguide": {"label": "NIH Guide", "description": "The NIH Guide for Grants and Contracts: notices and funding opportunities by words, institute, kind and date from the Guide's own search; one notice's text by number; the week's notices. No key."},
+    "campusmap": {"label": "Campus map", "institution": UIDAHO, "description": "The University of Idaho campus map (Concept3D): buildings and places by name or category with coordinates and building numbers, what is near a point (accessible entrances, restrooms, parking, bike racks, dining), one place with its entrances and parking, the categories. Read with the map page's own client key, no key of the person's; a route between two places is the osm server's."},
     "uidaho": {"label": "UI guidance", "institution": UIDAHO, "description": "University policy for sponsored projects (APM, FSH), found by what each policy covers or by number and title; a report-only check of a passage against it; and the F&A and fringe rates from the rate agreement and the fringe-rate page, reported in the Rates contract's order."},
     "classes": {"label": "Class schedule", "institution": UIDAHO, "description": "The University of Idaho class schedule and course catalog: who teaches what, when and where, by term, subject, course number or instructor; one section in full; courses by subject, number or title and one course's catalog record, from the registrar's public Browse Classes and Browse Course Catalog. No key."},
     "directory": {"label": "Campus directory", "institution": UIDAHO, "description": "The University of Idaho campus directory, the employees the university publishes at directory.uidaho.edu: a person by last name, first name, email or department, their university email, phone, title, department and office, and the department list. Employees only, read through the directory's own search form. No key."},
@@ -143,6 +146,7 @@ META: dict[str, dict] = {
     "bls": {"label": "BLS", "description": "Bureau of Labor Statistics CPI and ECI series for budget escalation rates; a key is optional.",
             "key": {"required": False, "hint": "Optional: paste your BLS registration key (free at data.bls.gov/registrationEngine) for 500 queries a day instead of the shared 25."}},
     "treasury": {"label": "Treasury exchange rates", "description": "The Treasury Reporting Rates of Exchange, the government's quarterly rates for converting foreign currency on a federal award: the currencies, a currency's rates by quarter, and a foreign amount in dollars at the rate in effect on the transaction's date. No key."},
+    "osm": {"label": "OpenStreetMap", "description": "OpenStreetMap's public services: a place by name with its coordinates (Nominatim) and a walking, cycling or driving route between two points with turn-by-turn steps (the FOSSGIS Valhalla server). No key; one call a second, fair use, attribution required."},
     "openalex": {"label": "OpenAlex", "description": "Publications by author, institution, funder or award number, counted by year, funder, institution or topic; one work by DOI with its abstract; what cites a work and what it cites; authors, institutions and funders by name. A key is optional.",
                  "key": {"required": False, "hint": "Optional: paste your OpenAlex API key (free at openalex.org/settings/api) to spend your own $1-a-day budget instead of the $0.10 everyone without a key shares."}},
     "pubmed": {"label": "PubMed", "description": "Papers by grant number, author or affiliation with PMID, DOI and PMCID for NIH public access compliance; one paper's abstract, MeSH terms and grant acknowledgments; PMID/PMCID/DOI conversion.",

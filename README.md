@@ -94,6 +94,7 @@ works without one and a key raises its quota.
 | Path | Upstream | Key | Tools | Skills |
 |---|---|---|---|---|
 | `/treasury/mcp` | Treasury Reporting Rates of Exchange (Fiscal Data) | none | `treasury_index`, `treasury_currencies`, `treasury_rates`, `treasury_convert` | none |
+| `/osm/mcp` | OpenStreetMap's Nominatim and the FOSSGIS Valhalla router | none (fair use, one call a second) | `osm_index`, `osm_geocode`, `osm_route` | none |
 | `/openalex/mcp` | OpenAlex | optional (OpenAlex key) | `openalex_index`, `openalex_works_search`, `openalex_works_group`, `openalex_work`, `openalex_citations`, `openalex_authors_search`, `openalex_institutions_search`, `openalex_funders_search` | none |
 | `/pubmed/mcp` | NCBI E-utilities and the PMC ID converter | optional (NCBI key) | `pubmed_index`, `pubmed_search`, `pubmed_summary`, `pubmed_article`, `pmc_id_convert` | none |
 | `/icite/mcp` | NIH iCite | none | `icite_index`, `icite_metrics`, `icite_links` | none |
@@ -133,6 +134,7 @@ over ClickUp's REST API.
 | `/classes/mcp` | the registrar's public class schedule and course catalog (Browse Classes and Browse Course Catalog in Banner) | none | `classes_index`, `classes_terms`, `classes_search`, `classes_section`, `classes_catalog`, `classes_course` | none yet |
 | `/directory/mcp` | the campus directory at directory.uidaho.edu, the employees the university publishes | none | `directory_index`, `directory_search`, `directory_person`, `directory_departments` | none yet |
 | `/events/mcp` | the campus calendar at uidaho.edu/events, through its public Trumba feed | none | `events_index`, `events_search`, `events_closures`, `events_event`, `events_calendars` | none yet |
+| `/campusmap/mcp` | the campus map, Concept3D map 2155, through its locations and categories API | none of the person's (the map page's own client key) | `campusmap_index`, `campusmap_categories`, `campusmap_search`, `campusmap_near`, `campusmap_place` | none yet |
 | `/lakehouse/mcp` (one per configured client; the others at `/lakehouse-<id>/mcp`) | the University of Idaho data lakehouse, through Marina | **required** (the client's shared secret) | `lakehouse_guide`, `lakehouse_index`, `lakehouse_sql_catalog`, `lakehouse_sql`, `lakehouse_streams`, `lakehouse_schema`, `lakehouse_query`, `lakehouse_files`, `lakehouse_file` | `lakehouse-answer` |
 
 Tool names carry their upstream (`ecfr_`, `grants_gov_`, `uidaho_`) and
@@ -210,7 +212,7 @@ server the day it is deployed; the Office add-in does this from one `indexes`
 entry in its sources file.
 
 `institution` is the source the server is about, when that source is one
-organisation's own: `"University of Idaho"` on `uidaho`, `classes`, `directory`, `events` and every
+organisation's own: `"University of Idaho"` on `uidaho`, `classes`, `directory`, `events`, `campusmap` and every
 lakehouse server, whose upstreams are Idaho's own and which need Idaho's own
 knowledge (the placement table's question); `"GitHub"` on `github`, whose
 skills run over GitHub's own MCP server, so a client that gives that server
@@ -1262,6 +1264,31 @@ differ, and to say which quarter's rate was used. Offline tests run on the
 2026-09-30 table and two currencies' series captured in
 `tests/fixtures/treasury/`.
 
+### osm
+
+OpenStreetMap's public services, no key: Nominatim,
+`https://nominatim.openstreetmap.org/search`, for a place by name, and the
+FOSSGIS Valhalla server, `https://valhalla1.openstreetmap.de/route`, for a
+route between two points on foot, by bicycle or by car with turn-by-turn
+steps that name campus walkways ("Bear right onto Hello Walk"). Both are the
+OSM community's servers under fair-use policies (one request a second, an
+identifying User-Agent, results cached, no autocomplete, no bulk or periodic
+work, attribution under the ODbL), so calls here are paced to one a second
+to each and cached (places a day, routes an hour), every answer carries the
+attribution line, and the index says a heavy or scheduled need means hosting
+Nominatim or Valhalla oneself. Tested on the University of Idaho campus on
+2026-10-16: Nominatim resolved six of ten campus buildings by name, in OSM's
+own spellings, so a campus place is taken from the campusmap server and only
+the route asked here; Valhalla walked Albertson to the Kibbie Dome in 0.42
+miles and eight minutes along the walkways, cycled and drove the same
+points, and reached the Pullman-Moscow airport. `osm_geocode(query,
+near_campus, rows)` biases results to a Moscow and Pullman viewbox unless
+told otherwise and returns name, kind, coordinates, address and OSM link;
+`osm_route(from_lat, from_lon, to_lat, to_lon, mode)` returns miles, minutes
+and steps with the streets OSM names, and a link that opens the same route
+on openstreetmap.org. Offline tests run on a geocode and a route captured
+in `tests/fixtures/osm/`.
+
 ### openalex
 
 OpenAlex, https://api.openalex.org/. Since February 2026 OpenAlex meters
@@ -1821,6 +1848,37 @@ say nothing about who may attend, and to cite an event by title and date
 with its link. Offline tests run on nine events captured in
 `tests/fixtures/events/feed.json` with contacts anonymised; the live feed
 is the only test of the parameters themselves.
+
+### campusmap
+
+The University of Idaho campus map: where a place is. The university's map
+is Concept3D map 2155 (`map.concept3d.com/?id=2155`, embedded at
+uidaho.edu), and Concept3D's JSON API,
+`api.concept3d.com/locations?map=2155` and `/categories?map=2155`, answers
+with the key the map page itself sends from its public script, a client key
+served to every visitor and good for reading the map's points. It is
+Concept3D's, not the person's, and is held here as the map page holds it;
+the decision to use it is recorded on #45 (2026-10-16), and when Concept3D
+rotates it the osm server's geocoding stands in, which the error says. The
+map has about 3,600 points in 130 categories: 323 buildings in the
+alphabetical categories (A, B - D ... T - Z) each with the university's
+building number, building addresses, departments and colleges, accessible
+entrances and automatic doors, restrooms, elevators and nursing rooms,
+parking by kind, bike racks, EV charging and transit stops, dining,
+athletics, health, study spots, memorials and trees; the editors' working
+categories (QC, drafts, labels, traces, edits) are hidden. The map has no
+routing of its own (its directions run on Mapbox under Concept3D's keys), so
+a route between two places is the osm server's `osm_route` with the points
+from here. `campusmap_search(query, category, rows)` matches words of a name
+and a category; `campusmap_near(lat, lng, category, radius_m, rows)` lists
+what is within a straight-line radius of a point, nearest first;
+`campusmap_place(id)` gives one place with its nearest accessible entrances,
+parking and restrooms; `campusmap_categories()` the categories with counts.
+The two lists are read once a day. The index says how the map names a
+building (surname first, the given name in parentheses: `Albertson (J.A.)`,
+`Pitman Center (Bruce M.)`), that distances here are straight-line, and to
+cite a place by its map name and link. Offline tests run on the categories
+and a cut of the locations captured in `tests/fixtures/campusmap/`.
 
 ### lakehouse
 
