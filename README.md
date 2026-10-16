@@ -67,6 +67,7 @@ works without one and a key raises its quota.
 | `/nihguide/mcp` | the NIH Guide for Grants and Contracts: its search service, notice pages and weekly index | none | `nihguide_index`, `nihguide_search`, `nihguide_notice`, `nihguide_weekly` | none |
 | `/nihdates/mcp` | grants.nih.gov's standard due dates and salary cap pages | none | `nihdates_index`, `nihdates_due`, `nihdates_cycles`, `nihdates_salary_cap` | none |
 | `/omb/mcp` | OMB's memoranda page on whitehouse.gov and the archived prior-administration page | none | `omb_index`, `omb_memoranda`, `omb_memorandum` | none |
+| `/ncura/mcp` | NCURA's public event listing (cvweb) behind its calendar page | none | `ncura_index`, `ncura_events`, `ncura_event` | none |
 | `/nih/mcp` | NIH RePORTER | none | `nih_guide`, `nih_index`, `nih_projects_search`, `nih_project`, `nih_publications` | `funding-history` |
 | `/nsf/mcp` | NSF Award Search | none | `nsf_index`, `nsf_awards_search`, `nsf_award`, `nsf_award_outcomes` | none |
 | `/usaspending/mcp` | USAspending | none | `usaspending_index`, `usaspending_recipients`, `usaspending_recipient`, `usaspending_awards_search`, `usaspending_subawards_search`, `usaspending_award` | none |
@@ -1038,6 +1039,29 @@ searches by year heading and title words newest first; `omb_memorandum(number)`
 takes 'M-24-11', 'M 24 11' or '24-11'. The PDF itself is read with the
 ai4ra server's fetch tools. Offline tests run on the current page and the
 2025 and 2024 sections of the archive captured in `tests/fixtures/omb/`.
+
+### ncura
+
+The National Council of University Research Administrators' calendar of
+meetings, conferences and workshops, from the public event listing behind
+`https://www.ncura.edu/Education/Calendar.aspx`: the calendar page is an
+iframe onto NCURA's association-management system (cvweb, `Eventsdll.dll`),
+whose `EventList` returns the events shown on the web from a start date as
+an HTML table and whose `EventInfo?sessionaltcd=<code>` returns one event.
+Neither needs a login; the member side (Collaborate, NCURA Magazine, the
+member directory, the Career Center) is behind one and is not read. Read with
+a browser-like User-Agent, the list cached an hour and an event a day, no key.
+`ncura_events(query, when, rows)` is the events soonest first with code,
+title, subtitle, dates, NCURA's type code (ANNUAL, FRA, PRA, FUND, DRA,
+REGSPRING), whether registration is open (the list's own flag), the check
+registration form and the event's page; `when` is 'upcoming' (from
+yesterday, as the site shows: nine events on 2026-10-16) or 'year' (the past
+400 days too: 46). `ncura_event(code)` is one event with its dates, early-bird
+and registration deadlines, the fee table as printed (member and non-member,
+early and regular), the description, the venue and address and the hotel
+link. The code is NCURA's handle and is read from `ncura_events`, never
+guessed. Offline tests run on the two lists and two events (a regional
+meeting and a virtual workshop) captured in `tests/fixtures/ncura/`.
 
 ### nih
 

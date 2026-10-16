@@ -30,6 +30,7 @@ EXPECTED_TOOLS = {
     "costs": {"costs_index", "costs_tuition", "costs_attendance", "costs_deadlines", "costs_insurance"},
     "nihdates": {"nihdates_index", "nihdates_due", "nihdates_cycles", "nihdates_salary_cap"},
     "omb": {"omb_index", "omb_memoranda", "omb_memorandum"},
+    "ncura": {"ncura_index", "ncura_events", "ncura_event"},
     "lakehouse": {"lakehouse_guide", "lakehouse_index", "lakehouse_streams", "lakehouse_schema", "lakehouse_query", "lakehouse_files", "lakehouse_file", "lakehouse_sql_catalog", "lakehouse_sql"},
     "general": {"general_guide", "fetch_document", "web_search"},
     "github": {"github_guide"},   # the two GitHub skills; their tools are GitHub's own server's
