@@ -1,0 +1,7 @@
+{
+  "catalog_version": "1.0",
+  "repo": "ui-insight/ai4ra-mcp",
+  "server": "events",
+  "note": "Skills that use the events server's tools. None yet.",
+  "components": []
+}

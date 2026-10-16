@@ -120,6 +120,7 @@ over ClickUp's REST API.
 | `/uidaho/mcp` | uidaho.edu policy pages and rate documents | none | `uidaho_guide`, `uidaho_guidance_index`, `uidaho_guidance_search`, `uidaho_guidance_get`, `uidaho_rates` | `uidaho-lookup`, `uidaho-rates`, `policy-check`, `feature-prd-interview` (with the `openera-feature-guide` guide; its writes go through the `clickup` server) |
 | `/classes/mcp` | the registrar's public class schedule and course catalog (Browse Classes and Browse Course Catalog in Banner) | none | `classes_index`, `classes_terms`, `classes_search`, `classes_section`, `classes_catalog`, `classes_course` | none yet |
 | `/directory/mcp` | the campus directory at directory.uidaho.edu, the employees the university publishes | none | `directory_index`, `directory_search`, `directory_person`, `directory_departments` | none yet |
+| `/events/mcp` | the campus calendar at uidaho.edu/events, through its public Trumba feed | none | `events_index`, `events_search`, `events_event`, `events_calendars` | none yet |
 | `/lakehouse/mcp` (one per configured client; the others at `/lakehouse-<id>/mcp`) | the University of Idaho data lakehouse, through Marina | **required** (the client's shared secret) | `lakehouse_guide`, `lakehouse_index`, `lakehouse_sql_catalog`, `lakehouse_sql`, `lakehouse_streams`, `lakehouse_schema`, `lakehouse_query`, `lakehouse_files`, `lakehouse_file` | `lakehouse-answer` |
 
 Tool names carry their upstream (`ecfr_`, `grants_gov_`, `uidaho_`) and
@@ -197,7 +198,7 @@ server the day it is deployed; the Office add-in does this from one `indexes`
 entry in its sources file.
 
 `institution` is the source the server is about, when that source is one
-organisation's own: `"University of Idaho"` on `uidaho`, `classes`, `directory` and every
+organisation's own: `"University of Idaho"` on `uidaho`, `classes`, `directory`, `events` and every
 lakehouse server, whose upstreams are Idaho's own and which need Idaho's own
 knowledge (the placement table's question); `"GitHub"` on `github`, whose
 skills run over GitHub's own MCP server, so a client that gives that server
@@ -1382,6 +1383,50 @@ server reads only what a visitor sees, which a fix would leave.
 Offline tests run on the pages captured in `tests/fixtures/directory/`,
 with the result rows anonymised; the live site is the only test of the
 routes themselves.
+
+### events
+
+The University of Idaho campus calendar: what is happening on campus and
+when. The upstream is the calendar at `uidaho.edu/events`, a Trumba
+calendar whose public JSON feed,
+`https://www.trumba.com/calendars/university-of-idaho.json`, carries every
+event the university's calendars publish (the main calendar, Registrar,
+College of Graduate Studies, Alumni Relations, the colleges, Student
+Affairs and the rest), each with its title, start and end in campus local
+time with the UTC offset, all-day flag, location type (In-Person, Online,
+Hybrid) and location, the campus room and online link as custom fields,
+the owning calendar, the description, the event's own link, registration
+flags and, for a repeating event, the rule and a series id. No login, no
+key. The feed's parameters, confirmed 2026-10-16: `startdate` and
+`enddate` as YYYYMMDD, or `days` or `months` from today; `search` for
+words anywhere in an event's text (a quoted phrase matches nothing);
+`eventid` for one event; `events` for the most to return, 200 when not
+given, so this server asks for 500 and says when a window reached it. The
+feed has no calendar parameter, so a calendar filter is applied here on
+the `categoryCalendar` each event carries.
+
+- `events_search(search, start, end, days, calendar, rows)`: the events in
+  a window, soonest first. With nothing given, the next 30 days; `start`
+  with `end`, or `start` with `days`, or `end` from today; dates are
+  YYYY-MM-DD. Each event: id, title, start, end, all_day, when (as the
+  calendar words it), timezone offset, canceled, location_type, location,
+  campus_location, online_link, calendar, a description cut at 400
+  characters, web_link and link; repeats and series_id on a recurring one;
+  contact and registration when the event carries them. `rows` 1-200,
+  default 50, with a note when the window held more.
+- `events_event(id)`: one event in full, the whole description and image.
+- `events_calendars(months)`: the calendars that feed the university's,
+  each with its event count over the coming months (default three), the
+  names a `calendar` argument is matched against.
+
+HTML in the feed (links, entities, italics) is read to plain text and the
+first `href` where a link is the value. A window is cached ten minutes, the
+calendar list an hour. The index tells the model that times are campus
+local, that a window with no filter is the whole campus, that the flags
+say nothing about who may attend, and to cite an event by title and date
+with its link. Offline tests run on six events captured in
+`tests/fixtures/events/feed.json` with contacts anonymised; the live feed
+is the only test of the parameters themselves.
 
 ### lakehouse
 

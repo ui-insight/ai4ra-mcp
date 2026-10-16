@@ -42,6 +42,7 @@ from ai4ra_mcp.servers.clinicaltrials.server import mcp as clinicaltrials
 from ai4ra_mcp.servers.crossref.server import mcp as crossref
 from ai4ra_mcp.servers.csl.server import mcp as csl
 from ai4ra_mcp.servers.ecfr.server import mcp as ecfr
+from ai4ra_mcp.servers.events.server import mcp as events
 from ai4ra_mcp.servers.fac.server import mcp as fac
 from ai4ra_mcp.servers.fedreg.server import mcp as fedreg
 from ai4ra_mcp.servers.general.server import mcp as general
@@ -76,7 +77,7 @@ SERVERS: dict[str, MCPServer] = {
     "perdiem": perdiem, "bls": bls,
     "openalex": openalex, "pubmed": pubmed, "crossref": crossref, "orcid": orcid, "osti": osti, "clinicaltrials": clinicaltrials,
     "clickup": clickup, "github": github,
-    "uidaho": uidaho, "classes": classes, "directory": directory, **lakehouse.SERVERS,
+    "uidaho": uidaho, "classes": classes, "directory": directory, "events": events, **lakehouse.SERVERS,
 }
 SERVERS_DIR = Path(__file__).parent / "servers"
 WEB = "https://github.com/ui-insight/ai4ra-mcp/blob/main/ai4ra_mcp/servers/"
@@ -94,6 +95,7 @@ META: dict[str, dict] = {
     "uidaho": {"label": "UI guidance", "institution": UIDAHO, "description": "University policy for sponsored projects (APM, FSH), found by what each policy covers or by number and title; a report-only check of a passage against it; and the F&A and fringe rates from the rate agreement and the fringe-rate page, reported in the Rates contract's order."},
     "classes": {"label": "Class schedule", "institution": UIDAHO, "description": "The University of Idaho class schedule and course catalog: who teaches what, when and where, by term, subject, course number or instructor; one section in full; courses by subject, number or title and one course's catalog record, from the registrar's public Browse Classes and Browse Course Catalog. No key."},
     "directory": {"label": "Campus directory", "institution": UIDAHO, "description": "The University of Idaho campus directory, the employees the university publishes at directory.uidaho.edu: a person by last name, first name, email or department, their university email, phone, title, department and office, and the department list. Employees only, read through the directory's own search form. No key."},
+    "events": {"label": "Campus calendar", "institution": UIDAHO, "description": "The University of Idaho campus calendar at uidaho.edu/events: events by date window, words or calendar, with when, where (campus room or online link), the owning calendar, description and links; one event in full; the calendars that feed it. Read from the calendar's public Trumba feed. No key."},
     "general": {"label": "General", "description": "Any office, any document: search the open web, read a page or PDF as text; the guide to AI writing tells."},
     "github": {"label": "GitHub skills", "institution": "GitHub", "description": "Two skills for a GitHub repository through GitHub's own MCP server, whose tools they name: a change as a pull request on an agent branch, and one look at the Actions runs. No tools of its own; no key, since the key is GitHub's server's."},
     "ai4ra": {"label": "AI4RA", "description": "Research-administration guides and prompts: an RFA record, a narrative, a work plan, a budget outline and the NSF budget form (each as a guide any client can follow), the compliance-concerns vocabulary for grouping statements, cost-allowability checks and budget justifications; one tool, ai4ra_guide, that serves them."},
