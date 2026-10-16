@@ -126,6 +126,10 @@ def parse_details(page: str) -> dict:
         if key:
             v = text(value)
             out[key] = None if not v or v.lower() == "not listed" else v
+    # The directory shows the first 30 characters of a title ("Director, Office of Sponsored", "Research Administration Data S");
+    # a title exactly that long is almost surely cut, and a reader must not finish it by guessing.
+    if out.get("title") and len(out["title"]) >= 30:
+        out["title_truncated"] = True
     return out
 
 

@@ -63,21 +63,27 @@ async def fetch(params: dict) -> list[dict]:
     return body
 
 
+LIST_DESCRIPTION = 160
+
+
 def slim(e: dict, full: bool = False) -> dict:
-    """One event read to what a person asks: when, where, what, whose calendar, how to join or sign up."""
+    """One event read to what a person asks: when, where, what, whose calendar, how to join or sign up. A list row is
+    kept short (a month on the whole campus is three hundred events); the full form carries the whole description."""
     fields = {f.get("label"): f.get("value") for f in e.get("customFields") or [] if f.get("label")}
     description = text(e.get("description"))
     out = {
         "id": e.get("eventID"), "title": text(e.get("title")),
-        "start": e.get("startDateTime"), "end": e.get("endDateTime"), "all_day": e.get("allDay"), "when": text(e.get("dateTimeFormatted")),
-        "timezone_offset": e.get("startTimeZoneOffset"),
+        "start": e.get("startDateTime"), "end": e.get("endDateTime"), "all_day": e.get("allDay"),
         "canceled": e.get("canceled"),
-        "location_type": e.get("locationType") or None, "location": text(e.get("location")), "campus_location": text(fields.get("University Location")),
+        "location_type": e.get("locationType") or None, "location": text(fields.get("University Location")) or text(e.get("location")),
         "online_link": href(fields.get("Participate Online")),
         "calendar": e.get("categoryCalendar") or None,
-        "description": description if full or not description or len(description) <= 400 else description[:400].rsplit(" ", 1)[0] + " …",
-        "web_link": href(e.get("webLink")), "link": e.get("permaLinkUrl"),
+        "description": description if full or not description or len(description) <= LIST_DESCRIPTION else description[:LIST_DESCRIPTION].rsplit(" ", 1)[0] + " …",
+        "link": e.get("permaLinkUrl"),
     }
+    if full:
+        out.update({"when": text(e.get("dateTimeFormatted")), "timezone_offset": e.get("startTimeZoneOffset"), "campus_location": text(fields.get("University Location")),
+                    "web_link": href(e.get("webLink"))})
     if e.get("repeats"):
         out["repeats"] = text(e.get("repeats"))
         out["series_id"] = e.get("seriesID")

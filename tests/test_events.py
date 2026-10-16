@@ -37,16 +37,18 @@ def _feed(monkeypatch, calls: list | None = None, answer=None):
 def test_an_event_is_read_to_its_fields_with_the_html_gone():
     e = trumba.slim(BY_ID[183225128])
     assert e["title"] == "Vandal Voyagers — Village Life Cotswolds" and e["all_day"] is True and e["start"] == "2026-10-11T00:00:00" and e["end"] == "2026-10-20T00:00:00"
-    assert e["location"] == "England" and e["calendar"] == "Alumni Relations" and e["web_link"].startswith("https://idaho.gohagantravel.com/") and e["link"].startswith("https://www.uidaho.edu/events?")
-    assert "<" not in json.dumps(e) and e["description"].endswith(" …") and len(e["description"]) <= 405
+    assert e["location"] == "England" and e["calendar"] == "Alumni Relations" and "web_link" not in e and "when" not in e and e["link"].startswith("https://www.uidaho.edu/events?")
+    assert "<" not in json.dumps(e) and e["description"].endswith(" …") and len(e["description"]) <= 165
     online = trumba.slim(BY_ID[206122718])
-    assert online["location_type"] == "Online" and online["online_link"].startswith("https://uidaho.zoom.us/") and online["timezone_offset"] in ("-0700", "-0600")
+    assert online["location_type"] == "Online" and online["online_link"].startswith("https://uidaho.zoom.us/")
     series = trumba.slim(BY_ID[206378665])
     assert series["repeats"] == "Monthly on the last Wednesday of the month through October 28, 2026" and series["series_id"]
     contact = trumba.slim(BY_ID[209597493])
     assert contact["contact"] == "Contact Example Person, events@example.edu"
     full = trumba.slim(BY_ID[206122718], full=True)
-    assert len(full["description"]) >= len(online["description"]) and not full["description"].endswith(" …")
+    assert len(full["description"]) >= len(online["description"]) and not full["description"].endswith(" …") and full["timezone_offset"] in ("-0700", "-0600") and full["when"] and "web_link" in full
+    room = trumba.slim(BY_ID[211332463])
+    assert room["location"].startswith("ALB 311") or room["location"]  # the campus room stands in for the location line in a list row
 
 
 def test_text_and_href_and_dates():

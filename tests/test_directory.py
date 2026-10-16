@@ -53,8 +53,11 @@ def test_a_results_table_is_read_to_its_visible_cells():
 def test_one_match_is_the_person_s_details_with_an_unlisted_phone_as_null():
     found = directory.parse_results(PAGES["search_one"])
     assert found["total"] == 1
-    assert found["people"][0] == {"name": "Layman, Nathan", "phone": None, "email": "nlayman@uidaho.edu", "title": "Research Administration Data S",
-                                  "department": "Office of Sponsored Programs", "office": "LSS 280", "campus_zip": "3051"}
+    assert found["people"][0] == {"name": "Layman, Nathan", "phone": None, "email": "nlayman@uidaho.edu", "title": "Research Administration Data S", "title_truncated": True,
+                                  "department": "Office of Sponsored Programs", "office": "LSS 280", "campus_zip": "3051"}  # the directory shows 30 characters of a title
+    short = directory.parse_details(PAGES["search_one"].replace("Research Administration Data S", "Data Scientist"))
+    assert short["people"][0]["title"] == "Data Scientist" if "people" in short else short["title"] == "Data Scientist"
+    assert "title_truncated" not in (short["people"][0] if "people" in short else short)
 
 
 def test_no_match_and_a_short_page_are_read():

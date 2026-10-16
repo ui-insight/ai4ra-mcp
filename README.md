@@ -1751,7 +1751,10 @@ server reads only what a visitor sees, which a fix would leave.
 - `directory_person`: one person by enough of a name, an email or a name
   with a department: name, university email, phone (null when unlisted),
   title, department, office and campus zip. Several matches come back as
-  the list to narrow from; none is said.
+  the list to narrow from; none is said. The directory shows only the
+  first 30 characters of a title ("Director, Office of Sponsored", seen
+  2026-10-16), so such a title comes with `title_truncated` true and the
+  index says to quote it as shown and never complete it.
 - `directory_departments`: every department the form lists, as it names
   them, with `total`.
 
@@ -1783,13 +1786,16 @@ the `categoryCalendar` each event carries.
 - `events_search(search, start, end, days, calendar, rows)`: the events in
   a window, soonest first. With nothing given, the next 30 days; `start`
   with `end`, or `start` with `days`, or `end` from today; dates are
-  YYYY-MM-DD. Each event: id, title, start, end, all_day, when (as the
-  calendar words it), timezone offset, canceled, location_type, location,
-  campus_location, online_link, calendar, a description cut at 400
-  characters, web_link and link; repeats and series_id on a recurring one;
-  contact and registration when the event carries them. `rows` 1-200,
-  default 50, with a note when the window held more.
-- `events_event(id)`: one event in full, the whole description and image.
+  YYYY-MM-DD. Each event is a short row (a month of the whole campus is
+  some three hundred events, seen in the first live test on 2026-10-16):
+  id, title, start, end, all_day, canceled, location_type, location (the
+  campus room when the calendar gave one, else the location line),
+  online_link, calendar, a description cut at 160 characters and link;
+  repeats and series_id on a recurring one; contact and registration when
+  the event carries them. `rows` 1-200, default 50, with a note when the
+  window held more.
+- `events_event(id)`: one event in full: the whole description, when as the
+  calendar words it, the timezone offset, campus_location, web_link, image.
 - `events_calendars(months)`: the calendars that feed the university's,
   each with its event count over the coming months (default three), the
   names a `calendar` argument is matched against.

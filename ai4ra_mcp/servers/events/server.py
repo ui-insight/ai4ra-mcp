@@ -26,7 +26,7 @@ _cache = TTLCache()
 CAVEATS = [
     "This is the calendar's public feed, which the university's calendar owners fill; an event is as current as its owner left it, and a calendar that posts nothing is not here. A change to the feed's shape is a change to this server; the only test is the live feed.",
     "Times are campus local (Moscow, Idaho; Mountain time) and carry the UTC offset; an all-day event has no time of day. A multi-day event appears from its start date through its end.",
-    "Events from every university calendar come through one feed; calendar names the owner ('Registrar', 'College of Graduate Studies', 'Alumni Relations'), and a window with no filter is the whole campus.",
+    "Events from every university calendar come through one feed; calendar names the owner ('Registrar', 'College of Graduate Studies', 'Alumni Relations'), and a window with no filter is the whole campus: a month of it is some three hundred events, more than any answer wants. Ask for a week, a calendar or words, and read one event in full with events_event.",
     "Registration, payment and waiting-list flags are the feed's own and say nothing about whether a particular person may attend; the event's link is where that is settled.",
     "The feed returns at most 500 events a call; a wide window on a busy month can reach it, so narrow the window or add words.",
     "Cite an event by title and date with its link.",
@@ -64,8 +64,8 @@ async def events_index() -> dict:
     """How to use the campus calendar tools. READ THIS FIRST: the date window, what a search matches, what an event carries."""
     return {
         "upstream": f"The University of Idaho campus calendar at {trumba.SITE}, read from its public Trumba feed {trumba.FEED}; no login, no key",
-        "workflow": ["events_search for a date window (start and end, or start and days, or the next days from today), optionally narrowed by words or by calendar: title, when, where (campus room or online link), calendar, a description cut at 400 characters, links",
-                     "events_event for one event by id in full: the whole description, image, contact, registration",
+        "workflow": ["events_search for a date window (start and end, or start and days, or the next days from today), narrowed by words or by calendar: a short row per event (title, start and end, where, calendar, a line of description, link). A month of the whole campus is some three hundred events; ask for a week, a calendar or words.",
+                     "events_event for one event by id in full: the whole description, the calendar's wording of when, the web link, image, contact, registration",
                      "events_calendars for the calendars that feed the university's, with how many events each has in the coming months, the names a calendar argument is matched against"],
         "notes": ["Dates are YYYY-MM-DD; with no window the next 30 days are read. The feed searches words anywhere in an event's text; a phrase in quotes matches nothing, so give words.",
                   "An event lists the campus room as the calendar owner wrote it ('ALB 311 - J. A. Albertson - Main Campus'), the online link when there is one, and location_type In-Person, Online or Hybrid.",
