@@ -2,6 +2,10 @@
 
 Versions follow semver: MAJOR for output-contract breaks, MINOR for backward-compatible additions, PATCH for wording or clarity.
 
+## [0.5.3] — 2026-10-16
+
+- Tuition, fees, the cost of attendance, payment deadlines and the insurance premium are named as the costs server's tools, not these documents; a tuition question through the pane had read policy and rate documents, found nothing, and been answered from memory.
+
 ## [0.3.1] — 2026-09-22
 
 - The answer is the reply: write nothing into the document. A workflow run had added a Rates sheet nobody asked for.

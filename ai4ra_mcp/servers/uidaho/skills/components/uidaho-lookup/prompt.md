@@ -1,6 +1,6 @@
 ---
 name: uidaho-lookup
-version: 0.5.2
+version: 0.5.3
 category: research
 domain: research-administration
 status: experimental
