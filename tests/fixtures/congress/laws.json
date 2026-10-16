@@ -1,0 +1,76 @@
+{
+    "bills": [
+        {
+            "congress": 119,
+            "latestAction": {
+                "actionDate": "2026-10-15",
+                "text": "Became Public Law No: 119-124."
+            },
+            "laws": [
+                {
+                    "number": "119-124",
+                    "type": "Public Law"
+                }
+            ],
+            "number": "2403",
+            "originChamber": "Senate",
+            "originChamberCode": "S",
+            "title": "Retire through Ownership Act",
+            "type": "S",
+            "updateDate": "2026-10-16",
+            "updateDateIncludingText": "2026-10-16",
+            "url": "https://api.congress.gov/v3/bill/119/s/2403?format=json"
+        },
+        {
+            "congress": 119,
+            "latestAction": {
+                "actionDate": "2026-10-15",
+                "text": "Became Public Law No: 119-123."
+            },
+            "laws": [
+                {
+                    "number": "119-123",
+                    "type": "Public Law"
+                }
+            ],
+            "number": "283",
+            "originChamber": "Senate",
+            "originChamberCode": "S",
+            "title": "Illegal Red Snapper and Tuna Enforcement Act",
+            "type": "S",
+            "updateDate": "2026-10-16",
+            "updateDateIncludingText": "2026-10-16",
+            "url": "https://api.congress.gov/v3/bill/119/s/283?format=json"
+        },
+        {
+            "congress": 119,
+            "latestAction": {
+                "actionDate": "2026-10-15",
+                "text": "Became Public Law No: 119-122."
+            },
+            "laws": [
+                {
+                    "number": "119-122",
+                    "type": "Public Law"
+                }
+            ],
+            "number": "240",
+            "originChamber": "Senate",
+            "originChamberCode": "S",
+            "title": "Crow Tribe Water Rights Settlement Amendments Act of 2025",
+            "type": "S",
+            "updateDate": "2026-10-16",
+            "updateDateIncludingText": "2026-10-16",
+            "url": "https://api.congress.gov/v3/bill/119/s/240?format=json"
+        }
+    ],
+    "pagination": {
+        "count": 126,
+        "next": "https://api.congress.gov/v3/law/119?offset=3&limit=3&format=json"
+    },
+    "request": {
+        "congress": "119",
+        "contentType": "application/json",
+        "format": "json"
+    }
+}

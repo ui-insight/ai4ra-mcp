@@ -1,0 +1,7 @@
+{
+  "catalog_version": "1.0",
+  "repo": "ui-insight/ai4ra-mcp",
+  "server": "congress",
+  "note": "Skills that use the congress server's tools. None yet.",
+  "components": []
+}

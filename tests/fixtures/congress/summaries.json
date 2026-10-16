@@ -1,0 +1,30 @@
+{
+ "pagination": {
+  "count": 5,
+  "next": "https://api.congress.gov/v3/bill/119/hr/1/summaries?offset=2&limit=2&format=json"
+ },
+ "request": {
+  "billNumber": "1",
+  "billType": "hr",
+  "billUrl": "https://api.congress.gov/v3/bill/119/hr/1?format=json",
+  "congress": "119",
+  "contentType": "application/json",
+  "format": "json"
+ },
+ "summaries": [
+  {
+   "actionDate": "2025-05-20",
+   "actionDesc": "Introduced in House",
+   "text": "<p><strong>One Big Beautiful Bill Act</strong></p><p>This bill reduces taxes, reduces or increases spending for various federal programs, increases the statutory debt limit, and otherwise addresses agencies and programs throughout the federal government. &nbsp;</p><p>It is known as a reconciliation bill and includes legislation submitted by 11 House committees pursuant to provisions in the FY2025 congressional budget resolution (H Con. Res. 14) that directed the committees to submit legislation to the House Budget Committee that will increase or decrease the deficit and increase the statutory ",
+   "updateDate": "2025-05-22T17:15:29Z",
+   "versionCode": "00"
+  },
+  {
+   "actionDate": "2025-05-20",
+   "actionDesc": "Reported to House",
+   "text": "<p><strong>One Big Beautiful Bill Act</strong></p><p>This bill reduces taxes, reduces or increases spending for various federal programs, increases the statutory debt limit, and otherwise addresses agencies and programs throughout the federal government. &nbsp;</p><p>It is known as a reconciliation bill and includes legislation submitted by 11 House committees pursuant to provisions in the FY2025 congressional budget resolution (H Con. Res. 14) that directed the committees to submit legislation to the House Budget Committee that will increase or decrease the deficit and increase the statutory ",
+   "updateDate": "2025-09-22T12:34:08Z",
+   "versionCode": "07"
+  }
+ ]
+}

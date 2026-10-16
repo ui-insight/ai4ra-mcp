@@ -1,0 +1,62 @@
+{
+    "bills": [
+        {
+            "congress": 119,
+            "introducedDate": "2025-04-10",
+            "latestAction": {
+                "actionDate": "2025-04-10",
+                "text": "Referred to the House Committee on Agriculture."
+            },
+            "number": "2811",
+            "originChamber": "House",
+            "originChamberCode": "H",
+            "title": "SNAP Staffing Flexibility Act of 2025",
+            "type": "HR",
+            "updateDate": "2026-10-16",
+            "updateDateIncludingText": "2026-10-16",
+            "url": "https://api.congress.gov/v3/bill/119/hr/2811?format=json"
+        },
+        {
+            "congress": 119,
+            "introducedDate": "2026-07-15",
+            "latestAction": {
+                "actionDate": "2026-07-15",
+                "text": "Referred to the Committee on the Judiciary, and in addition to the Committee on Oversight and Government Reform, for a period to be subsequently determined by the Speaker, in each case for consideration of such provisions as fall within the jurisdiction of the committee concerned."
+            },
+            "number": "9716",
+            "originChamber": "House",
+            "originChamberCode": "H",
+            "title": "PRIVACY Act",
+            "type": "HR",
+            "updateDate": "2026-10-16",
+            "updateDateIncludingText": "2026-10-16",
+            "url": "https://api.congress.gov/v3/bill/119/hr/9716?format=json"
+        },
+        {
+            "congress": 119,
+            "introducedDate": "2026-07-16",
+            "latestAction": {
+                "actionDate": "2026-07-22",
+                "text": "Ordered to be Reported (Amended) by the Yeas and Nays: 23 - 18."
+            },
+            "number": "9720",
+            "originChamber": "House",
+            "originChamberCode": "H",
+            "title": "D.C. Taxing Authority Review Act",
+            "type": "HR",
+            "updateDate": "2026-10-16",
+            "updateDateIncludingText": "2026-10-16",
+            "url": "https://api.congress.gov/v3/bill/119/hr/9720?format=json"
+        }
+    ],
+    "pagination": {
+        "count": 8595,
+        "next": "https://api.congress.gov/v3/bill/119/hr?fromDateTime=2026-01-01T00:00:00Z&sort=updateDate desc&offset=3&limit=3&format=json"
+    },
+    "request": {
+        "billType": "hr",
+        "congress": "119",
+        "contentType": "application/json",
+        "format": "json"
+    }
+}

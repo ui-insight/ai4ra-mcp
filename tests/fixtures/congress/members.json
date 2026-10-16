@@ -1,0 +1,98 @@
+{
+    "members": [
+        {
+            "bioguideId": "F000469",
+            "depiction": {
+                "attribution": "Image courtesy of the Member",
+                "imageUrl": "https://www.congress.gov/img/member/f000469_200.jpg"
+            },
+            "district": 1,
+            "name": "Fulcher, Russ",
+            "partyName": "Republican",
+            "state": "Idaho",
+            "terms": {
+                "item": [
+                    {
+                        "chamber": "House of Representatives",
+                        "startYear": 2019
+                    }
+                ]
+            },
+            "updateDate": "2026-10-16T07:40:22Z",
+            "url": "https://api.congress.gov/v3/member/F000469?format=json"
+        },
+        {
+            "bioguideId": "S001148",
+            "depiction": {
+                "attribution": "Image courtesy of the Member",
+                "imageUrl": "https://www.congress.gov/img/member/678152c81f9ad6ea6fb1eb7f_200.jpg"
+            },
+            "district": 2,
+            "name": "Simpson, Michael K.",
+            "partyName": "Republican",
+            "state": "Idaho",
+            "terms": {
+                "item": [
+                    {
+                        "chamber": "House of Representatives",
+                        "startYear": 1999
+                    }
+                ]
+            },
+            "updateDate": "2026-10-16T07:40:20Z",
+            "url": "https://api.congress.gov/v3/member/S001148?format=json"
+        },
+        {
+            "bioguideId": "R000584",
+            "depiction": {
+                "attribution": "<a href=\"http://www.senate.gov/artandhistory/history/common/generic/Photo_Collection_of_the_Senate_Historical_Office.htm\">Courtesy U.S. Senate Historical Office</a>",
+                "imageUrl": "https://www.congress.gov/img/member/r000584_200.jpg"
+            },
+            "name": "Risch, James E.",
+            "partyName": "Republican",
+            "state": "Idaho",
+            "terms": {
+                "item": [
+                    {
+                        "chamber": "Senate",
+                        "startYear": 2009
+                    }
+                ]
+            },
+            "updateDate": "2026-03-08T10:32:25Z",
+            "url": "https://api.congress.gov/v3/member/R000584?format=json"
+        },
+        {
+            "bioguideId": "C000880",
+            "depiction": {
+                "attribution": "<a href=\"http://www.senate.gov/artandhistory/history/common/generic/Photo_Collection_of_the_Senate_Historical_Office.htm\">Courtesy U.S. Senate Historical Office</a>",
+                "imageUrl": "https://www.congress.gov/img/member/c000880_200.jpg"
+            },
+            "name": "Crapo, Mike",
+            "partyName": "Republican",
+            "state": "Idaho",
+            "terms": {
+                "item": [
+                    {
+                        "chamber": "House of Representatives",
+                        "endYear": 1999,
+                        "startYear": 1993
+                    },
+                    {
+                        "chamber": "Senate",
+                        "startYear": 1999
+                    }
+                ]
+            },
+            "updateDate": "2026-03-08T10:31:00Z",
+            "url": "https://api.congress.gov/v3/member/C000880?format=json"
+        }
+    ],
+    "pagination": {
+        "count": 4
+    },
+    "request": {
+        "contentType": "application/json",
+        "format": "json"
+    }
+}

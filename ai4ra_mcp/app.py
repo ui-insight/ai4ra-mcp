@@ -40,6 +40,7 @@ from ai4ra_mcp.servers.datacite.server import mcp as datacite
 from ai4ra_mcp.servers.directory.server import mcp as directory
 from ai4ra_mcp.servers.clickup.server import mcp as clickup
 from ai4ra_mcp.servers.clinicaltrials.server import mcp as clinicaltrials
+from ai4ra_mcp.servers.congress.server import mcp as congress
 from ai4ra_mcp.servers.crossref.server import mcp as crossref
 from ai4ra_mcp.servers.csl.server import mcp as csl
 from ai4ra_mcp.servers.ecfr.server import mcp as ecfr
@@ -48,6 +49,7 @@ from ai4ra_mcp.servers.fac.server import mcp as fac
 from ai4ra_mcp.servers.fedreg.server import mcp as fedreg
 from ai4ra_mcp.servers.general.server import mcp as general
 from ai4ra_mcp.servers.github.server import mcp as github
+from ai4ra_mcp.servers.govinfo.server import mcp as govinfo
 from ai4ra_mcp.servers.grants.server import mcp as grants
 from ai4ra_mcp.servers.icite.server import mcp as icite
 from ai4ra_mcp.servers.idstat.server import mcp as idstat
@@ -70,6 +72,7 @@ from ai4ra_mcp.servers.ror.server import mcp as ror
 from ai4ra_mcp.servers.pappg.server import mcp as pappg
 from ai4ra_mcp.servers.s2s.server import mcp as s2s
 from ai4ra_mcp.servers.sam.server import mcp as sam
+from ai4ra_mcp.servers.scorecard.server import mcp as scorecard
 from ai4ra_mcp.servers.treasury.server import mcp as treasury
 from ai4ra_mcp.servers.udm.server import mcp as udm
 from ai4ra_mcp.servers.uidaho.server import mcp as uidaho
@@ -80,9 +83,9 @@ from ai4ra_mcp.servers.usaspending.server import mcp as usaspending
 # budget figures, the scholarly record, the project trackers), and last the one institution's own servers.
 SERVERS: dict[str, MCPServer] = {
     "general": general, "ai4ra": ai4ra, "udm": udm,
-    "ecfr": ecfr, "fedreg": fedreg, "regulations": regulations, "idstat": idstat, "grants": grants, "s2s": s2s, "pappg": pappg, "nihgps": nihgps, "nihguide": nihguide,
+    "ecfr": ecfr, "fedreg": fedreg, "regulations": regulations, "idstat": idstat, "govinfo": govinfo, "congress": congress, "grants": grants, "s2s": s2s, "pappg": pappg, "nihgps": nihgps, "nihguide": nihguide,
     "nih": nih, "nsf": nsf, "usaspending": usaspending,
-    "sam": sam, "fac": fac, "csl": csl, "oig": oig, "openpayments": openpayments, "propublica": propublica, "ror": ror,
+    "sam": sam, "fac": fac, "csl": csl, "oig": oig, "openpayments": openpayments, "propublica": propublica, "ror": ror, "scorecard": scorecard,
     "perdiem": perdiem, "bls": bls, "treasury": treasury,
     "openalex": openalex, "pubmed": pubmed, "icite": icite, "crossref": crossref, "datacite": datacite, "re3data": re3data, "orcid": orcid, "osti": osti, "clinicaltrials": clinicaltrials,
     "clickup": clickup, "github": github,
@@ -120,6 +123,10 @@ META: dict[str, dict] = {
     "fac": {"label": "Federal Audit Clearinghouse", "description": "Single audits, findings and federal awards for subrecipient risk assessment.",
             "key": {"required": True, "hint": "Paste your api.data.gov key for the FAC API (free, from the signup at fac.gov/api)."}},
     "fedreg": {"label": "Federal Register", "description": "Rules, proposed rules and notices in the Federal Register: search by words, agency, CFR part or date; one document with its dates and links; agency slugs."},
+    "govinfo": {"label": "GovInfo", "description": "Federal documents from the Government Publishing Office: public laws (the appropriations acts), bills, committee reports, the U.S. Code, CFR, Federal Register, hearings and GAO reports, by words, collection and dates; one document's record and its text in pieces.",
+                "key": {"required": True, "hint": "Paste your api.data.gov key, from https://api.data.gov/signup/ (the same key as perdiem, fac and regulations)."}},
+    "congress": {"label": "Congress.gov", "description": "A bill's record, status, summary, text versions and actions by Congress, type and number; bills and laws of a Congress by date; a state's members. No word search (use GovInfo).",
+                 "key": {"required": True, "hint": "Paste your api.data.gov key, from https://api.congress.gov/sign-up/ (the same key as perdiem, fac and regulations)."}},
     "idstat": {"label": "Idaho Statutes", "description": "The Idaho Code as the Legislature publishes it: the titles, a title's chapters, a chapter's sections, one section's text and history by citation, and the Legislature's full-text search of the code. Current law only, updated each July 1. No key."},
     "regulations": {"label": "Regulations.gov", "description": "Rulemaking dockets, documents and public comments on Regulations.gov: search, one document with its files, one docket, the comments on a document.",
                     "key": {"required": True, "hint": "Paste your api.data.gov key, from https://api.data.gov/signup/ (DEMO_KEY works for a few requests an hour)."}},
@@ -129,6 +136,8 @@ META: dict[str, dict] = {
     "openpayments": {"label": "Open Payments", "description": "CMS Open Payments: the payments drug and device companies reported to a physician or practitioner, found by name and state or NPI; the records for a program year (general, research as recipient or principal investigator, ownership) and totals by year, for conflict-of-interest review. No key."},
     "propublica": {"label": "Nonprofit Explorer", "description": "A tax-exempt organization by name or EIN, its IRS status and its Form 990 revenue, expenses, assets and liabilities by year, from ProPublica."},
     "ror": {"label": "Research Organization Registry", "description": "The ROR id, names, location, type, relationships and Crossref Funder, GRID, ISNI and Wikidata ids of a research organization, by name or affiliation string."},
+    "scorecard": {"label": "College Scorecard", "description": "The Department of Education's institution facts: institutions by name, state, city, control or degree level; one institution's control, Carnegie and locale codes, accreditor, minority-serving flags, enrollment, Pell rate, cost and outcomes.",
+                  "key": {"required": True, "hint": "Paste your api.data.gov key, from https://api.data.gov/signup/ (the same key as perdiem, fac and regulations)."}},
     "perdiem": {"label": "GSA per diem", "description": "Federal lodging and M&IE rates by city, state or zip for a fiscal year, and the M&IE meal breakdown.",
                 "key": {"required": True, "hint": "Paste your api.data.gov key, free from https://api.data.gov/signup/ (DEMO_KEY works for a few calls an hour)."}},
     "bls": {"label": "BLS", "description": "Bureau of Labor Statistics CPI and ECI series for budget escalation rates; a key is optional.",

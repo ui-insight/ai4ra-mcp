@@ -53,6 +53,8 @@ works without one and a key raises its quota.
 | `/fedreg/mcp` | Federal Register | none | `federal_register_index`, `federal_register_search`, `federal_register_document`, `federal_register_executive_order`, `federal_register_agencies` | none |
 | `/regulations/mcp` | Regulations.gov | **required** (api.data.gov) | `regulations_gov_index`, `regulations_gov_documents_search`, `regulations_gov_document`, `regulations_gov_docket`, `regulations_gov_comments_search` | none |
 | `/idstat/mcp` | the Idaho Statutes at legislature.idaho.gov and the Legislature's search of them | none | `idstat_index`, `idstat_titles`, `idstat_chapters`, `idstat_sections`, `idstat_section`, `idstat_search` | none |
+| `/govinfo/mcp` | GovInfo (Government Publishing Office) | **required** (api.data.gov) | `govinfo_index`, `govinfo_collections`, `govinfo_search`, `govinfo_package`, `govinfo_text` | none |
+| `/congress/mcp` | Congress.gov | **required** (api.data.gov) | `congress_index`, `congress_bill`, `congress_bill_actions`, `congress_bills`, `congress_laws`, `congress_members` | none |
 | `/grants/mcp` | grants.gov | none | `grants_gov_search`, `grants_gov_opportunity`, `grants_guide` | `funding-opportunity-finder` |
 | `/s2s/mcp` | the Grants.gov Applicant System-to-System (S2S) SOAP service, at any endpoint: training, production, or the deployment's default (a mock) | optional (the person's own S2S certificate and key as a bearer bundle; a deployment may hold a fallback that only the mock accepts) | `s2s_index`, `s2s_check`, `s2s_opportunity`, `s2s_validate_package`, `s2s_submissions`, `s2s_application_info`; with `AI4RA_MCP_S2S_WRITES=1` also `s2s_submit` (off by default) | none yet |
 
@@ -77,6 +79,7 @@ works without one and a key raises its quota.
 | `/openpayments/mcp` | CMS Open Payments (DKAN datastore) | none | `openpayments_index`, `openpayments_recipients`, `openpayments_payments`, `openpayments_summary` | none |
 | `/oig/mcp` | HHS OIG LEIE, from its daily CSV | none | `oig_leie_index`, `oig_leie_search`, `oig_leie_status` | none |
 | `/propublica/mcp` | ProPublica Nonprofit Explorer | none | `propublica_nonprofit_index`, `propublica_nonprofit_search`, `propublica_nonprofit_organization` | none |
+| `/scorecard/mcp` | College Scorecard (Department of Education) | **required** (api.data.gov) | `scorecard_index`, `scorecard_search`, `scorecard_school` | none |
 | `/ror/mcp` | Research Organization Registry | none | `ror_index`, `ror_search`, `ror_organization` | none |
 
 **Budget figures**
@@ -315,7 +318,7 @@ instead.
 
 ## Keys
 
-Nine servers talk to an upstream that wants a key, and one more wants a
+Twelve servers talk to an upstream that wants a key, and one more wants a
 shared secret. **The key is the person's own**, sent by their client as
 `Authorization: Bearer <key>` on each MCP request, and it is used for that
 request only: held in a request-scoped variable, never logged, never stored.
@@ -329,6 +332,9 @@ deployment holds no secrets at all.
 | `fac` | required | api.data.gov, through the FAC API signup at https://www.fac.gov/api/ (free; an email address is all it asks) | api.data.gov's default, 1,000 an hour | `X-Api-Key` header |
 | `regulations` | required | https://api.data.gov/signup/ (free); `DEMO_KEY` works for a handful of requests an hour and is shared by everyone | 1,000 requests an hour per key | `X-Api-Key` header |
 | `perdiem` | required | https://api.data.gov/signup/ (free); `DEMO_KEY` works for a few calls an hour | api.data.gov's default, 1,000 an hour | `api_key` query parameter |
+| `govinfo` | required | https://api.data.gov/signup/ (free), the same key | api.data.gov's default, 1,000 an hour | `X-Api-Key` header |
+| `congress` | required | https://api.congress.gov/sign-up/ (free, an api.data.gov key) | api.data.gov's default, 1,000 an hour (Congress.gov says 5,000 a day) | `X-Api-Key` header |
+| `scorecard` | required | https://api.data.gov/signup/ (free), the same key | api.data.gov's default, 1,000 an hour | `X-Api-Key` header |
 | `csl` | required | https://developer.trade.gov/ : sign up, subscribe to the Consolidated Screening List API, copy the subscription key | trade.gov's per-subscription limit | `subscription-key` header |
 | `bls` | optional | https://data.bls.gov/registrationEngine/ (free) | 25 queries a day per IP without one (v1, shared by everyone on the server), 500 with one (v2), plus longer spans and series titles | `registrationkey` in the POST body |
 | `pubmed` | optional | The settings page of an NCBI account, https://account.ncbi.nlm.nih.gov/settings/ (free) | 3 requests a second without one, shared; 10 with one | `api_key` query parameter |
@@ -336,8 +342,9 @@ deployment holds no secrets at all.
 | `clickup` | required | ClickUp: click your avatar, Settings, Apps, Generate API Token (starts with `pk_`). It acts as you in every workspace you belong to, so a task it creates is created by you | 100 requests a minute per token | Raw in the `Authorization` header, the way ClickUp wants it (the server takes the bearer the client sent and re-sends it that way) |
 | `lakehouse` | required | The shared secret issued with the lakehouse client id (today `mr-365`) by Research Computing and Data Services; or another client's id, a colon and its secret (`other-client:its-secret`) to run as that client. It is one client's secret, not a personal key, so its limits (100 requests a minute, 1,000 an hour) are shared by everyone who uses it | per client | Exchanged at Marina's `/auth/token` for an OAuth bearer, kept in memory until it expires |
 
-One api.data.gov key works for `fac`, `regulations` and `perdiem` alike; a
-person pastes the same key into each of those three servers.
+One api.data.gov key works for `fac`, `regulations`, `perdiem`, `govinfo`,
+`congress` and `scorecard` alike; a person pastes the same key into each of
+those six servers.
 
 ### How a person submits a key, by client
 
@@ -372,7 +379,8 @@ person pastes the same key into each of those three servers.
   Claude.ai without the request-headers beta): the deployment holds a
   fallback key in the server's environment variable (`AI4RA_MCP_SAM_KEY`,
   `AI4RA_MCP_FAC_KEY`, `AI4RA_MCP_REGULATIONS_KEY`, `AI4RA_MCP_PERDIEM_KEY`,
-  `AI4RA_MCP_CSL_KEY`, `AI4RA_MCP_BLS_KEY`, `AI4RA_MCP_PUBMED_KEY`,
+  `AI4RA_MCP_CSL_KEY`, `AI4RA_MCP_GOVINFO_KEY`, `AI4RA_MCP_CONGRESS_KEY`,
+  `AI4RA_MCP_SCORECARD_KEY`, `AI4RA_MCP_BLS_KEY`, `AI4RA_MCP_PUBMED_KEY`,
   `AI4RA_MCP_OPENALEX_KEY`, `AI4RA_MCP_LAKEHOUSE_SECRET`), used only for a request that sends no
   token. That is a deployment's choice, not the design: everyone through
   that deployment then shares one quota, and most deployments set none.
@@ -803,6 +811,51 @@ cached a day, searches an hour. Offline tests run on pages captured in
 only test of the routes and the engine themselves. The Idaho Administrative
 Code (IDAPA) is published only as PDFs and is not here.
 
+### govinfo
+
+GovInfo, https://api.govinfo.gov/, the Government Publishing Office's
+federal documents; a free api.data.gov key, the person's own as a bearer
+token and forwarded as `X-Api-Key`, `AI4RA_MCP_GOVINFO_KEY` a deployment's
+fallback. The search is a `POST /search` in GovInfo's syntax: the server
+builds `collection:(PLAW BILLS ...)`, the words as given (a quoted phrase, OR,
+`title:(...)`), `congress:119` and `publishdate:range(from,to)` from its
+arguments, newest first, 1-100 a page with an `offsetMark` cursor the answer
+returns. Each result is a package (a public law, one version of a bill, a
+committee report, a Code title) or a granule within one (a Code section),
+with its collection, date, formats and GovInfo link. `govinfo_package(id)`
+reads `/packages/<id>/summary`: titles, Congress, document type, pages,
+whether it is an appropriation, the laws and Code sections it references,
+formats. `govinfo_text(id, granule_id, offset, max_chars)` reads
+`/packages/<id>/htm` (or the granule's) as plain text in pieces of up to
+60,000 characters with a `next_offset`, since an appropriations act runs to
+hundreds of pages. `govinfo_collections()` lists the collections with counts.
+Searches are cached an hour, records and text a day. The index explains the
+collections that matter here (PLAW for the appropriations acts, CRPT for the
+report language, USCODE, CFR, FR, CHRG, GAOREPORTS, BUDGET, COMPS), the
+query syntax, and that the regulations themselves are the ecfr and fedreg
+servers' job. Offline tests run on answers captured in
+`tests/fixtures/govinfo/`.
+
+### congress
+
+Congress.gov, https://api.congress.gov/v3/, the Library of Congress's
+legislative record; a free api.data.gov key (sign-up at api.congress.gov),
+forwarded as `X-Api-Key`, `AI4RA_MCP_CONGRESS_KEY` the fallback. A bill is
+addressed by Congress, type (hr, s, hjres, sjres, hconres, sconres, hres,
+sres) and number. `congress_bill` assembles one bill from its record, its
+latest CRS summary and its text versions (three calls): title, sponsors,
+policy area, latest action, the laws it became, counts of actions,
+cosponsors, committees and reports, CBO estimates, committee report
+citations, the summary as text, and each text version's formats and URLs.
+`congress_bill_actions` pages the chronology; `congress_bills` lists a
+Congress's bills, or one type's, updated in a window, most recently updated
+first; `congress_laws` the bills that became law with their public law
+numbers; `congress_members` a state's current delegation. Lists are cached an
+hour, members a day. The API has no word search, which the index says: words
+are govinfo's (collections BILLS, BILLSTATUS, CRPT, PLAW), and this server
+answers what a bill is, where it stands and who carries it. Offline tests
+run on answers captured in `tests/fixtures/congress/`.
+
 ### grants
 
 grants.gov's public API, https://api.grants.gov/v1/api/, no key.
@@ -1121,6 +1174,30 @@ Searches are cached an hour, records a day. The index says departments and
 labs have no ROR id (the university does), that a subaward goes to the legal
 entity which may be the parent, and that an inactive record names its
 successor in its relationships.
+
+### scorecard
+
+The College Scorecard, https://api.data.gov/ed/collegescorecard/v1/schools,
+the Department of Education's institution data from IPEDS and federal aid
+records; a free api.data.gov key forwarded as `X-Api-Key`,
+`AI4RA_MCP_SCORECARD_KEY` the fallback. One record per institution (IPEDS
+unit id), filtered by name (contains), state, city, control and predominant
+degree, with the fields named on the call. `scorecard_search` lists
+institutions (id, name, place, control, degree levels, Carnegie basic code,
+enrollment); `scorecard_school(id)` one record: control, Carnegie and locale
+codes, accreditor, OPE ids, the minority-serving flags, enrollment and
+graduate students, race and ethnicity shares, Pell grant and federal loan
+rates, admission rate, tuition and net price, completion and retention,
+median earnings ten years after entry, with codes named where the meaning is
+fixed (control, degree level) and left numeric where the Carnegie and locale
+code lists are long (the data dictionary is linked). Cached a day. The index
+says which flags are reported (historically black, tribal) and that the
+Hispanic-serving and other flags are null for every institution in the
+current release, so an HSI or AANAPISI check needs the Department's
+eligibility matrix; that Pell rate is the low-income measure eligibility
+criteria often name; and that a research profile is the NSF, NIH and
+USAspending servers' job. Offline tests run on the University of Idaho's
+record and an Idaho search captured in `tests/fixtures/scorecard/`.
 
 ### perdiem
 
@@ -2036,7 +2113,7 @@ no keys.
 | `AI4RA_MCP_HOSTS` | Comma-separated public hostnames to allow, which turns the SDK's DNS-rebinding protection on. Off by default, since a reverse proxy in front sets the Host header to the public name | unset |
 | `AI4RA_MCP_SEARXNG_URL` | The SearXNG that answers `web_search` | `http://127.0.0.1:8080` |
 | `AI4RA_MCP_SEARCH_BLOCK` | More comma-separated words or domain fragments for the `web_search` blocklist | unset |
-| `AI4RA_MCP_SAM_KEY`, `AI4RA_MCP_FAC_KEY`, `AI4RA_MCP_REGULATIONS_KEY`, `AI4RA_MCP_PERDIEM_KEY`, `AI4RA_MCP_CSL_KEY` | Fallback keys for the required-key servers, used only for a request that sends no bearer token (see [Keys](#keys)) | unset |
+| `AI4RA_MCP_SAM_KEY`, `AI4RA_MCP_FAC_KEY`, `AI4RA_MCP_REGULATIONS_KEY`, `AI4RA_MCP_PERDIEM_KEY`, `AI4RA_MCP_CSL_KEY`, `AI4RA_MCP_GOVINFO_KEY`, `AI4RA_MCP_CONGRESS_KEY`, `AI4RA_MCP_SCORECARD_KEY` | Fallback keys for the required-key servers, used only for a request that sends no bearer token (see [Keys](#keys)) | unset |
 | `AI4RA_MCP_BLS_KEY`, `AI4RA_MCP_PUBMED_KEY`, `AI4RA_MCP_OPENALEX_KEY` | Fallback keys for the optional-key servers, likewise | unset |
 | `AI4RA_MCP_LAKEHOUSE_URL` | The Marina the lakehouse servers read | `http://nlayman.nkn.uidaho.edu:7010` |
 | `AI4RA_MCP_LAKEHOUSE_CLIENTS` | The lakehouse client ids to mount, comma separated; the first at `/lakehouse`, the rest at `/lakehouse-<id>` | `mr-365` |

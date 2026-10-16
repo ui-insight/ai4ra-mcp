@@ -1,0 +1,193 @@
+{
+ "dateIssued": "2026-02-03",
+ "references": [
+  {
+   "contents": [
+    {
+     "label": "U.S.C",
+     "title": "2",
+     "sections": [
+      "1105",
+      "661a",
+      "661",
+      "901a"
+     ]
+    },
+    {
+     "label": "U.S.C",
+     "title": "3",
+     "sections": [
+      "102",
+      "103",
+      "104",
+      "105",
+      "106",
+      "107",
+      "108",
+      "109",
+      "110",
+      "112-114"
+     ]
+    },
+    {
+     "label": "U.S.C",
+     "title": "5",
+     "sections": [
+      "3109",
+      "3161",
+      "3302",
+      "3392",
+      "3523",
+      "402",
+      "406",
+      "409",
+      "4101-4118",
+      "424",
+      "5303",
+      "5304",
+      "5315",
+      "5316",
+      "5318",
+      "5332",
+      "5342",
+      "5343",
+      "5344",
+      "5348",
+      "5376",
+      "5382",
+      "5383",
+      "5509",
+      "551",
+      "552a",
+      "552",
+      "5703",
+      "5901-5902",
+      "5901",
+      "5902",
+      "591",
+      "5921",
+      "5922-5924",
+      "5925",
+      "601",
+      "6301",
+      "7131",
+      "7905",
+      "8104",
+      "8147",
+      "81",
+      "8348",
+      "8501",
+      "8509",
+      "8958",
+      "8988",
+      "9004"
+     ]
+    },
+    {
+     "label": "U.S.C",
+     "title": "6",
+     "sections": [
+      "1510",
+      "1525",
+      "279",
+      "395",
+      "665g"
+     ]
+    },
+    {
+     "label": "U.S.C",
+     "title": "7",
+     "sections": [
+      "1471",
+      "1721",
+      "1",
+      "2009aa",
+      "79a",
+      "79",
+      "87j"
+     ]
+    }
+   ],
+   "collectionCode": "USCODE",
+   "collectionName": "U.S. Code"
+  },
+  {
+   "contents": [
+    {
+     "pages": [
+      "736"
+     ],
+     "label": "Stat.",
+     "title": "37"
+    },
+    {
+     "pages": [
+      "1219"
+     ],
+     "label": "Stat.",
+     "title": "59"
+    },
+    {
+     "pages": [
+      "11"
+     ],
+     "label": "Stat.",
+     "title": "62"
+    },
+    {
+     "pages": [
+      "479",
+      "667"
+     ],
+     "label": "Stat.",
+     "title": "73"
+    },
+    {
+     "pages": [
+      "849"
+     ],
+     "label": "Stat.",
+     "title": "74"
+    }
+   ],
+   "collectionCode": "STATUTE",
+   "collectionName": "Statutes at Large"
+  }
+ ],
+ "documentType": "PUBLIC",
+ "congress": "119",
+ "documentNumber": "75",
+ "packageId": "PLAW-119publ75",
+ "collectionCode": "PLAW",
+ "detailsLink": "https://www.govinfo.gov/app/details/PLAW-119publ75",
+ "shortTitle": [
+  {
+   "title": "Consolidated Appropriations Act, 2026"
+  }
+ ],
+ "title": "An act making further consolidated appropriations for the fiscal year ending September 30, 2026, and for other purposes.",
+ "branch": "legislative",
+ "isAppropriation": "true",
+ "collectionName": "Public and Private Laws",
+ "download": {
+  "premisLink": "https://api.govinfo.gov/packages/PLAW-119publ75/premis",
+  "txtLink": "https://api.govinfo.gov/packages/PLAW-119publ75/htm",
+  "zipLink": "https://api.govinfo.gov/packages/PLAW-119publ75/zip",
+  "modsLink": "https://api.govinfo.gov/packages/PLAW-119publ75/mods",
+  "pdfLink": "https://api.govinfo.gov/packages/PLAW-119publ75/pdf",
+  "uslmLink": "https://api.govinfo.gov/packages/PLAW-119publ75/uslm"
+ },
+ "pages": "567",
+ "governmentAuthor2": "Office of the Federal Register",
+ "relatedLink": "https://api.govinfo.gov/related/PLAW-119publ75",
+ "governmentAuthor1": "National Archives and Records Administration",
+ "publisher": "U.S. Government Publishing Office",
+ "suDocClassNumber": "AE 2.110:, AE 2.110/3:, AE 2.110:119-75",
+ "docClass": "PUBLIC",
+ "lastModified": "2026-06-24T12:46:45Z",
+ "category": "Bills and Statutes",
+ "otherIdentifier": {
+  "migrated-doc-id": "f:publ075.119",
+  "ils-system-id": "001471693"
+ }
+}
