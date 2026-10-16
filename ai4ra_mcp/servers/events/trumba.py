@@ -79,11 +79,10 @@ def slim(e: dict, full: bool = False) -> dict:
         "online_link": href(fields.get("Participate Online")),
         "calendar": e.get("categoryCalendar") or None,
         "description": description if full or not description or len(description) <= LIST_DESCRIPTION else description[:LIST_DESCRIPTION].rsplit(" ", 1)[0] + " …",
-        "link": e.get("permaLinkUrl"),
+        "web_link": href(e.get("webLink")), "link": e.get("permaLinkUrl"),
     }
     if full:
-        out.update({"when": text(e.get("dateTimeFormatted")), "timezone_offset": e.get("startTimeZoneOffset"), "campus_location": text(fields.get("University Location")),
-                    "web_link": href(e.get("webLink"))})
+        out.update({"when": text(e.get("dateTimeFormatted")), "timezone_offset": e.get("startTimeZoneOffset"), "campus_location": text(fields.get("University Location"))})
     if e.get("repeats"):
         out["repeats"] = text(e.get("repeats"))
         out["series_id"] = e.get("seriesID")

@@ -25,7 +25,7 @@ _cache = TTLCache()
 
 CAVEATS = [
     "This is the calendar's public feed, which the university's calendar owners fill; an event is as current as its owner left it, and a calendar that posts nothing is not here. A change to the feed's shape is a change to this server; the only test is the live feed.",
-    "Times are campus local (Moscow, Idaho; Mountain time) and carry the UTC offset; an all-day event has no time of day. A multi-day event appears from its start date through its end.",
+    "Times are campus local, Pacific time (Moscow, Idaho is in the Pacific zone; the feed's own labels read PDT and PST) and carry the UTC offset; an all-day event has no time of day, and a home game is often posted all-day with the time only on the athletics page its web_link opens. A multi-day event appears from its start date through its end.",
     "Events from every university calendar come through one feed; calendar names the owner ('Registrar', 'College of Graduate Studies', 'Alumni Relations'), and a window with no filter is the whole campus: a month of it is some three hundred events, more than any answer wants. Ask for a week, a calendar or words, and read one event in full with events_event.",
     "Registration, payment and waiting-list flags are the feed's own and say nothing about whether a particular person may attend; the event's link is where that is settled.",
     "The feed returns at most 500 events a call; a wide window on a busy month can reach it, so narrow the window or add words.",
@@ -34,7 +34,7 @@ CAVEATS = [
 
 mcp = MCPServer(
     "events",
-    instructions="The University of Idaho campus calendar from uidaho.edu/events: events by date window, words or calendar (events_search), the days the university is closed (events_closures), one event in full (events_event), the calendars that feed it (events_calendars). No key. Read events_index first.",
+    instructions="The University of Idaho campus calendar from uidaho.edu/events, every event the university's calendars publish (lectures and seminars, athletics games, Registrar deadlines, workshops, concerts, closures): events by date window, words or calendar (events_search), the days the university is closed (events_closures), one event in full (events_event), the calendars that feed it (events_calendars). No key. Read events_index first.",
 )
 
 
@@ -64,7 +64,7 @@ async def events_index() -> dict:
     """How to use the campus calendar tools. READ THIS FIRST: the date window, what a search matches, what an event carries."""
     return {
         "upstream": f"The University of Idaho campus calendar at {trumba.SITE}, read from its public Trumba feed {trumba.FEED}; no login, no key",
-        "workflow": ["events_search for a date window (start and end, or start and days, or the next days from today), narrowed by words or by calendar: a short row per event (title, start and end, where, calendar, a line of description, link). A month of the whole campus is some three hundred events; ask for a week, a calendar or words.",
+        "workflow": ["events_search for a date window (start and end, or start and days, or the next days from today), narrowed by words or by calendar: a short row per event (title, start and end, where, calendar, a line of description, the event's own web link and its calendar link). Athletics is here too: the sport's name as the words ('volleyball', 'football') lists the games, each linking its schedule page. A month of the whole campus is some three hundred events; ask for a week, a calendar or words.",
                      "events_closures for the days the university is closed in a window (the next 120 days when none is given): a holiday or closure question is this one call, found by what the events say, never a calendar's name guessed",
                      "events_event for one event by id in full: the whole description, the calendar's wording of when, the web link, image, contact, registration",
                      "events_calendars for the calendars that feed the university's, with how many events each has in the coming months, the names a calendar argument is matched against"],

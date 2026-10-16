@@ -1790,10 +1790,13 @@ the `categoryCalendar` each event carries.
   some three hundred events, seen in the first live test on 2026-10-16):
   id, title, start, end, all_day, canceled, location_type, location (the
   campus room when the calendar gave one, else the location line),
-  online_link, calendar, a description cut at 160 characters and link;
-  repeats and series_id on a recurring one; contact and registration when
-  the event carries them. `rows` 1-200, default 50, with a note when the
-  window held more.
+  online_link, calendar, a description cut at 160 characters, the event's
+  own web_link (for a game, its schedule and ticket page) and its calendar
+  link; repeats and series_id on a recurring one; contact and registration
+  when the event carries them. `rows` 1-200, default 50, with a note when
+  the window held more. Athletics is in the feed: the sport's name as the
+  words lists the games (a home game is often posted all-day, with the time
+  only on the athletics page).
 - `events_closures(start, end, days)`: the days the university is closed in
   a window, the next 120 days by default. A holiday question through the
   pane first went by way of a guessed calendar name ("Campus Closed",
@@ -1804,7 +1807,7 @@ the `categoryCalendar` each event carries.
   whose calendar is named for holidays or closures; a holiday concert or a
   holiday trip is not one. One call, no name to know.
 - `events_event(id)`: one event in full: the whole description, when as the
-  calendar words it, the timezone offset, campus_location, web_link, image.
+  calendar words it, the timezone offset, campus_location, image.
 - `events_calendars(months)`: the calendars that feed the university's,
   each with its event count over the coming months (default three), the
   names a `calendar` argument is matched against.
@@ -1812,7 +1815,8 @@ the `categoryCalendar` each event carries.
 HTML in the feed (links, entities, italics) is read to plain text and the
 first `href` where a link is the value. A window is cached ten minutes, the
 calendar list an hour. The index tells the model that times are campus
-local, that a window with no filter is the whole campus, that the flags
+local, Pacific (an earlier caveat said Mountain; the feed's own labels read
+PDT, corrected 2026-10-16), that a window with no filter is the whole campus, that the flags
 say nothing about who may attend, and to cite an event by title and date
 with its link. Offline tests run on nine events captured in
 `tests/fixtures/events/feed.json` with contacts anonymised; the live feed
