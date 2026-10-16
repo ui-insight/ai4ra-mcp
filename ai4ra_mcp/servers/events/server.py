@@ -82,7 +82,8 @@ async def events_search(search: str = "", start: str = "", end: str = "", days: 
     """Events on the University of Idaho campus calendar in a date window, optionally matching words or on one calendar, soonest first.
 
     With nothing given, the next 30 days. Use it for what is on this week, the research seminars this month, the Registrar's
-    deadlines this term, or whether anything is scheduled on a date.
+    deadlines this term, a sport's games, or whether anything is scheduled on a date. For the days the university is closed
+    (holidays, closures) use events_closures, not a word search here: 'closed' and 'closure' match talks and volunteer days too.
 
     Args:
         search: Words to match anywhere in an event's text, e.g. 'research seminar'. Words, not a quoted phrase.
