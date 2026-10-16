@@ -85,8 +85,8 @@ works without one and a key raises its quota.
 
 | Path | Upstream | Key | Tools | Skills |
 |---|---|---|---|---|
-| `/openalex/mcp` | OpenAlex | none | `openalex_index`, `openalex_works_search`, `openalex_work`, `openalex_authors_search`, `openalex_institutions_search`, `openalex_funders_search` | none |
-| `/pubmed/mcp` | NCBI E-utilities and the PMC ID converter | optional (NCBI key) | `pubmed_index`, `pubmed_search`, `pubmed_summary`, `pmc_id_convert` | none |
+| `/openalex/mcp` | OpenAlex | optional (OpenAlex key) | `openalex_index`, `openalex_works_search`, `openalex_works_group`, `openalex_work`, `openalex_citations`, `openalex_authors_search`, `openalex_institutions_search`, `openalex_funders_search` | none |
+| `/pubmed/mcp` | NCBI E-utilities and the PMC ID converter | optional (NCBI key) | `pubmed_index`, `pubmed_search`, `pubmed_summary`, `pubmed_article`, `pmc_id_convert` | none |
 | `/crossref/mcp` | Crossref | none | `crossref_index`, `crossref_works_search`, `crossref_work`, `crossref_funders_search` | none |
 | `/orcid/mcp` | ORCID public API | none | `orcid_index`, `orcid_search`, `orcid_record` | none |
 | `/osti/mcp` | OSTI.GOV | none | `osti_index`, `osti_search`, `osti_record` | none |
@@ -305,7 +305,7 @@ instead.
 
 ## Keys
 
-Eight servers talk to an upstream that wants a key, and one more wants a
+Nine servers talk to an upstream that wants a key, and one more wants a
 shared secret. **The key is the person's own**, sent by their client as
 `Authorization: Bearer <key>` on each MCP request, and it is used for that
 request only: held in a request-scoped variable, never logged, never stored.
@@ -322,6 +322,7 @@ deployment holds no secrets at all.
 | `csl` | required | https://developer.trade.gov/ : sign up, subscribe to the Consolidated Screening List API, copy the subscription key | trade.gov's per-subscription limit | `subscription-key` header |
 | `bls` | optional | https://data.bls.gov/registrationEngine/ (free) | 25 queries a day per IP without one (v1, shared by everyone on the server), 500 with one (v2), plus longer spans and series titles | `registrationkey` in the POST body |
 | `pubmed` | optional | The settings page of an NCBI account, https://account.ncbi.nlm.nih.gov/settings/ (free) | 3 requests a second without one, shared; 10 with one | `api_key` query parameter |
+| `openalex` | optional | https://openalex.org/settings/api (free) | OpenAlex meters by a daily budget rather than a rate (since February 2026): $0.10 a day shared by everyone on the server's network address without one, $1 a day of the person's own with one; a list call costs $0.0001, a text search $0.001, one record by id nothing | `api_key` query parameter |
 | `clickup` | required | ClickUp: click your avatar, Settings, Apps, Generate API Token (starts with `pk_`). It acts as you in every workspace you belong to, so a task it creates is created by you | 100 requests a minute per token | Raw in the `Authorization` header, the way ClickUp wants it (the server takes the bearer the client sent and re-sends it that way) |
 | `lakehouse` | required | The shared secret issued with the lakehouse client id (today `mr-365`) by Research Computing and Data Services; or another client's id, a colon and its secret (`other-client:its-secret`) to run as that client. It is one client's secret, not a personal key, so its limits (100 requests a minute, 1,000 an hour) are shared by everyone who uses it | per client | Exchanged at Marina's `/auth/token` for an OAuth bearer, kept in memory until it expires |
 
@@ -362,7 +363,7 @@ person pastes the same key into each of those three servers.
   fallback key in the server's environment variable (`AI4RA_MCP_SAM_KEY`,
   `AI4RA_MCP_FAC_KEY`, `AI4RA_MCP_REGULATIONS_KEY`, `AI4RA_MCP_PERDIEM_KEY`,
   `AI4RA_MCP_CSL_KEY`, `AI4RA_MCP_BLS_KEY`, `AI4RA_MCP_PUBMED_KEY`,
-  `AI4RA_MCP_LAKEHOUSE_SECRET`), used only for a request that sends no
+  `AI4RA_MCP_OPENALEX_KEY`, `AI4RA_MCP_LAKEHOUSE_SECRET`), used only for a request that sends no
   token. That is a deployment's choice, not the design: everyone through
   that deployment then shares one quota, and most deployments set none.
 
@@ -968,24 +969,40 @@ are already percent changes, and to say which series and periods it used.
 
 ### openalex
 
-OpenAlex, https://api.openalex.org/, no key; a `mailto` on every call puts
-the server in the polite pool, about one request a second. Works newest
+OpenAlex, https://api.openalex.org/. Since February 2026 OpenAlex meters
+its API by a daily budget rather than a rate: a call with no key shares
+$0.10 a day with everyone on the caller's network address, and a free key
+of the person's own (https://openalex.org/settings/api) has its own $1 a
+day, a few thousand searches. The key is optional here, the person's own as
+a bearer token or `AI4RA_MCP_OPENALEX_KEY`, sent as `api_key` and added
+after the cache key is made, so no key reaches the cache or a log; a
+`mailto` rides on every call as the contact OpenAlex asks for, and the index
+reports whether a key is on the request and what a call costs. Works newest
 first by author, institution (OpenAlex id or ROR), funder, award number,
 years, type or words, with the first ten authors, journal, open-access copy,
 the funders and award numbers the publisher deposited, and citation count;
-one work by DOI or OpenAlex id with its abstract put back together from the
-inverted index and its reference count; authors by name with ORCID, counts,
-last known institutions and top topics; institutions and funders by name,
-a funder with its Crossref Funder Registry id and 10.13039 DOI. Ids are URLs
-and the tools take either form. The index tells the model that the award
-filter takes the number as the funder writes it (NSF 1754803) and that a
-prefixed form is tried both ways, that missing grants mean none deposited,
-and to cite the DOI. Searches are cached for an hour, works for a day; 50
-a page at most.
+the same works counted by one dimension in one call (`openalex_works_group`:
+year, type, funder, award, institution, country, open-access status, topic,
+field or journal, up to 200 groups, so "how many University of Idaho papers
+acknowledged NSF each year" is one call rather than a paging loop, with the
+caveat that a work with two funders is counted under each); one work by DOI
+or OpenAlex id with its abstract put back together from the inverted index
+and its reference count; the works that cite a work, newest first, or the
+works it cites, paged (`openalex_citations`, through the `cites` filter and
+the work's `referenced_works` list fetched in pages of ids); authors by name
+with ORCID, counts, last known institutions and top topics; institutions
+and funders by name, a funder with its Crossref Funder Registry id and
+10.13039 DOI. Ids are URLs and the tools take either form. The index tells
+the model that the award filter takes the number as the funder writes it
+(NSF 1754803) and that a prefixed form is tried both ways, that missing
+grants mean none deposited and a count by funder counts only deposits, that
+a 429 is the day's budget spent, and to cite the DOI. Searches and counts
+are cached for an hour, works and reference lists for a day; 50 a page at
+most.
 
 ### pubmed
 
-NCBI's E-utilities for PubMed (`esearch`, `esummary` at
+NCBI's E-utilities for PubMed (`esearch`, `esummary`, `efetch` at
 https://eutils.ncbi.nlm.nih.gov/entrez/eutils/) and the PMC ID converter
 (https://pmc.ncbi.nlm.nih.gov/tools/idconv/api/v1/articles/). No key is
 needed: NCBI allows 3 requests a second to everyone without one, and an
@@ -996,12 +1013,21 @@ PubMed query with its fields (`AI135270[Grant Number]`,
 publication date range, and returns each paper's citation, PMID, DOI, PMCID
 and PubMed link, newest first, 1-50 a page. `pubmed_summary` gives the same
 for PMIDs already in hand (up to 50), such as the ids NIH RePORTER's
-`nih_publications` returns. `pmc_id_convert` takes up to 200 PMIDs, PMCIDs
+`nih_publications` returns. `pubmed_article` reads the full PubMed XML
+record for up to 20 PMIDs: the abstract with its section labels, authors
+with affiliation and ORCID, journal and date, MeSH headings with their
+qualifiers and major-topic flag, keywords, publication types, and the
+grants the paper acknowledges as the journal or NIH recorded them (grant id
+as the agency writes it, acronym, agency, country), which `esummary` does
+not carry and which is how a paper is tied to an award or found to
+acknowledge none (`grants_listed` false means the record has no grant list
+at all, not that the work was unfunded); PMIDs the response does not carry
+come back as `not_found`. `pmc_id_convert` takes up to 200 PMIDs, PMCIDs
 and DOIs in any mix, converts among them (one idconv call per id type, since
 the API takes one type a call) and says which have no PMCID. Every call
 carries `tool=ai4ra-mcp` and, when `AI4RA_MCP_CONTACT` is an email address,
 `email=` that address (idconv rejects a URL there). Searches are cached an
-hour, summaries and conversions a day. The index tells the model that NIH
+hour, summaries, records and conversions a day. The index tells the model that NIH
 public access (NOT-OD-25-047, effective July 1 2025) needs a PMCID for every
 peer-reviewed paper arising from NIH funding, so a paper with a PMID and no
 PMCID is the one to chase; that grant searches use the institute code and
@@ -1668,7 +1694,7 @@ no keys.
 | `AI4RA_MCP_SEARXNG_URL` | The SearXNG that answers `web_search` | `http://127.0.0.1:8080` |
 | `AI4RA_MCP_SEARCH_BLOCK` | More comma-separated words or domain fragments for the `web_search` blocklist | unset |
 | `AI4RA_MCP_SAM_KEY`, `AI4RA_MCP_FAC_KEY`, `AI4RA_MCP_REGULATIONS_KEY`, `AI4RA_MCP_PERDIEM_KEY`, `AI4RA_MCP_CSL_KEY` | Fallback keys for the required-key servers, used only for a request that sends no bearer token (see [Keys](#keys)) | unset |
-| `AI4RA_MCP_BLS_KEY`, `AI4RA_MCP_PUBMED_KEY` | Fallback keys for the optional-key servers, likewise | unset |
+| `AI4RA_MCP_BLS_KEY`, `AI4RA_MCP_PUBMED_KEY`, `AI4RA_MCP_OPENALEX_KEY` | Fallback keys for the optional-key servers, likewise | unset |
 | `AI4RA_MCP_LAKEHOUSE_URL` | The Marina the lakehouse servers read | `http://nlayman.nkn.uidaho.edu:7010` |
 | `AI4RA_MCP_LAKEHOUSE_CLIENTS` | The lakehouse client ids to mount, comma separated; the first at `/lakehouse`, the rest at `/lakehouse-<id>` | `mr-365` |
 | `AI4RA_MCP_LAKEHOUSE_SECRET`, `AI4RA_MCP_LAKEHOUSE_SECRET_<ID>` | Fallback shared secrets, the first client's and each other client's | unset |

@@ -1,4 +1,4 @@
-"""openalex: the API's shapes slimmed, the filter string each search builds, and the abstract put back together."""
+"""openalex: the API's shapes slimmed, the filter string each search builds, the group_by and cites calls, the optional key kept out of the cache, and the abstract put back together."""
 
 from ai4ra_mcp.servers.openalex import server as oa
 
@@ -115,5 +115,76 @@ async def test_authors_search_filters_by_institution(monkeypatch):
 
 
 async def test_lists_tools():
-    assert {t.name for t in await oa.mcp.list_tools()} == {"openalex_index", "openalex_works_search", "openalex_work", "openalex_authors_search",
-                                                            "openalex_institutions_search", "openalex_funders_search"}
+    assert {t.name for t in await oa.mcp.list_tools()} == {"openalex_index", "openalex_works_search", "openalex_works_group", "openalex_work", "openalex_citations",
+                                                            "openalex_authors_search", "openalex_institutions_search", "openalex_funders_search"}
+
+
+async def test_works_group_sends_group_by_and_counts(monkeypatch):
+    seen = {}
+
+    async def fake_get_json(url, params=None, headers=None):
+        seen["url"] = url
+        seen.update(params or {})
+        return {"meta": {"count": 120, "groups_count": 3},
+                "group_by": [{"key": "2023", "key_display_name": "2023", "count": 30}, {"key": "2025", "key_display_name": "2025", "count": 50}, {"key": "2024", "key_display_name": "2024", "count": 40}]}
+
+    monkeypatch.setattr(oa, "get_json", fake_get_json)
+    oa._cache._d.clear()
+    out = await oa.openalex_works_group("year", institution_id="https://ror.org/03hbp5t65", funder_id="F4320306076", from_year="2023")
+    assert seen["url"].endswith("/works") and seen["group_by"] == "publication_year" and seen["per_page"] == 200 and "sort" not in seen
+    assert seen["filter"] == "authorships.institutions.ror:https://ror.org/03hbp5t65,funders.id:F4320306076,from_publication_date:2023-01-01"
+    assert out["total"] == 120 and [g["key"] for g in out["groups"]] == ["2025", "2024", "2023"] and out["groups"][0]["count"] == 50
+    oa._cache._d.clear()
+    await oa.openalex_works_group("funder", search="wildfire")
+    assert seen["group_by"] == "funders.id" and seen["search"] == "wildfire"
+    assert "error" in await oa.openalex_works_group("colour", search="x")
+    assert "error" in await oa.openalex_works_group("year", from_year="2020")
+
+
+async def test_citations_cited_by_filters_on_cites_and_references_page_the_list(monkeypatch):
+    calls = []
+
+    async def fake_get_json(url, params=None, headers=None):
+        calls.append((url, dict(params or {})))
+        if url.endswith("/works/doi:10.1093/treephys/tpaf063"):
+            return {"id": "https://openalex.org/W4410975945", "referenced_works": [f"https://openalex.org/W{i}" for i in range(1, 8)]}
+        if url.endswith("/works/W4410975945"):
+            return {"id": "https://openalex.org/W4410975945", "referenced_works": [f"https://openalex.org/W{i}" for i in range(1, 8)]}
+        return {"meta": {"count": 9}, "results": [WORK] * 3}
+
+    monkeypatch.setattr(oa, "get_json", fake_get_json)
+    oa._cache._d.clear()
+    out = await oa.openalex_citations("https://doi.org/10.1093/treephys/tpaf063", per_page=3)
+    assert calls[0][1] == {"select": "id", "mailto": oa.CONTACT}
+    assert calls[1][1]["filter"] == "cites:W4410975945" and calls[1][1]["sort"] == "publication_date:desc" and calls[1][1]["per_page"] == 3
+    assert out["direction"] == "cited_by" and out["work"] == "https://openalex.org/W4410975945" and out["total"] == 9 and out["next_page"] == 2
+    calls.clear()
+    out = await oa.openalex_citations("W4410975945", direction="references", page=2, per_page=3)
+    assert calls[0][1]["select"] == "id,referenced_works"
+    assert calls[1][1]["filter"] == "openalex_id:W4|W5|W6" and calls[1][1]["per_page"] == 3
+    assert out["total"] == 7 and out["page"] == 2 and out["next_page"] == 3 and out["returned"] == 3
+    out = await oa.openalex_citations("W4410975945", direction="references", page=3, per_page=3)
+    assert calls[-1][1]["filter"] == "openalex_id:W7" and "next_page" not in out
+    assert "error" in await oa.openalex_citations("W4410975945", direction="sideways")
+    assert "error" in await oa.openalex_citations("nope")
+
+
+async def test_key_is_sent_when_set_and_kept_out_of_the_cache(monkeypatch):
+    seen = {}
+
+    async def fake_get_json(url, params=None, headers=None):
+        seen.update(params or {})
+        return {"meta": {"count": 0}, "results": []}
+
+    monkeypatch.setattr(oa, "get_json", fake_get_json)
+    monkeypatch.delenv(oa.KEY_ENV, raising=False)
+    oa._cache._d.clear()
+    await oa.openalex_funders_search("NSF")
+    assert "api_key" not in seen and seen["mailto"] == oa.CONTACT
+    monkeypatch.setenv(oa.KEY_ENV, "oa-secret-key")
+    oa._cache._d.clear()
+    await oa.openalex_funders_search("NSF")
+    assert seen["api_key"] == "oa-secret-key"
+    assert "oa-secret-key" not in repr(list(oa._cache._d.keys()))
+    index = await oa.openalex_index()
+    assert index["key"]["required"] is False and index["key"]["on_this_request"] is True

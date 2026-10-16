@@ -220,7 +220,15 @@ async def post_json(url: str, payload: dict, headers: dict | None = None) -> dic
     return _body(resp, url)
 
 
-def _body(resp: httpx.Response, url: str) -> dict | list:
+async def get_text(url: str, params: dict | None = None, headers: dict | None = None) -> str:
+    """GET a text body (XML, HTML) with the shared User-Agent and the same status handling as get_json."""
+    async with httpx.AsyncClient(timeout=TIMEOUT_S, headers={**HEADERS, **(headers or {})}, follow_redirects=True) as client:
+        resp = await client.get(url, params=params)
+    _check(resp, url)
+    return resp.text
+
+
+def _check(resp: httpx.Response, url: str) -> None:
     if resp.status_code == 429:
         raise ValueError(f"rate limit exceeded at {resp.request.url.host}; wait before retrying")
     if resp.status_code in (401, 403):
@@ -229,6 +237,10 @@ def _body(resp: httpx.Response, url: str) -> dict | list:
         raise ValueError(f"404 from {url}: nothing at that address")
     if resp.status_code >= 400:
         raise ValueError(f"{resp.status_code} from {resp.request.url.host}: {resp.text[:200]}")
+
+
+def _body(resp: httpx.Response, url: str) -> dict | list:
+    _check(resp, url)
     try:
         return resp.json()
     except ValueError:
