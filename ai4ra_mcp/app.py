@@ -53,6 +53,8 @@ from ai4ra_mcp.servers.icite.server import mcp as icite
 from ai4ra_mcp.servers.idstat.server import mcp as idstat
 from ai4ra_mcp.servers.lakehouse import server as lakehouse
 from ai4ra_mcp.servers.nih.server import mcp as nih
+from ai4ra_mcp.servers.nihgps.server import mcp as nihgps
+from ai4ra_mcp.servers.nihguide.server import mcp as nihguide
 from ai4ra_mcp.servers.nsf.server import mcp as nsf
 from ai4ra_mcp.servers.oig.server import mcp as oig
 from ai4ra_mcp.servers.openpayments.server import mcp as openpayments
@@ -65,6 +67,7 @@ from ai4ra_mcp.servers.pubmed.server import mcp as pubmed
 from ai4ra_mcp.servers.re3data.server import mcp as re3data
 from ai4ra_mcp.servers.regulations.server import mcp as regulations
 from ai4ra_mcp.servers.ror.server import mcp as ror
+from ai4ra_mcp.servers.pappg.server import mcp as pappg
 from ai4ra_mcp.servers.s2s.server import mcp as s2s
 from ai4ra_mcp.servers.sam.server import mcp as sam
 from ai4ra_mcp.servers.treasury.server import mcp as treasury
@@ -77,7 +80,7 @@ from ai4ra_mcp.servers.usaspending.server import mcp as usaspending
 # budget figures, the scholarly record, the project trackers), and last the one institution's own servers.
 SERVERS: dict[str, MCPServer] = {
     "general": general, "ai4ra": ai4ra, "udm": udm,
-    "ecfr": ecfr, "fedreg": fedreg, "regulations": regulations, "idstat": idstat, "grants": grants, "s2s": s2s,
+    "ecfr": ecfr, "fedreg": fedreg, "regulations": regulations, "idstat": idstat, "grants": grants, "s2s": s2s, "pappg": pappg, "nihgps": nihgps, "nihguide": nihguide,
     "nih": nih, "nsf": nsf, "usaspending": usaspending,
     "sam": sam, "fac": fac, "csl": csl, "oig": oig, "openpayments": openpayments, "propublica": propublica, "ror": ror,
     "perdiem": perdiem, "bls": bls, "treasury": treasury,
@@ -98,6 +101,9 @@ META: dict[str, dict] = {
     "grants": {"label": "grants.gov", "description": "Federal funding opportunities: search, then one opportunity's record with its attachments."},
     "s2s": {"label": "Grants.gov S2S", "description": "The Grants.gov Applicant System-to-System service with the person's own certificate: an opportunity's package, a GrantApplication checked against the schemas, its submission (where the deployment allows), and the status of what was submitted. The deployment's default endpoint is a mock unless configured otherwise.",
             "key": {"required": False, "hint": "Paste your S2S credential bundle: the base64url JSON of your client certificate and key, made with `python -m ai4ra_mcp.servers.s2s.credentials cert.pem key.pem`. Without one the deployment's fallback certificate is used, which only the mock accepts."}},
+    "pappg": {"label": "NSF PAPPG", "description": "The NSF Proposal & Award Policies & Procedures Guide (NSF 24-1) as NSF publishes it: the chapters, a chapter's outline, one section's text by label (II.D.2.b), anchor or heading words, and words across the guide. No key."},
+    "nihgps": {"label": "NIH Grants Policy Statement", "description": "The NIH Grants Policy Statement, web edition, as NIH publishes it: the table of contents, one section's text and tables by number (7.9.1) or title, and words across a chapter's sections, with the revision each page carries. No key."},
+    "nihguide": {"label": "NIH Guide", "description": "The NIH Guide for Grants and Contracts: notices and funding opportunities by words, institute, kind and date from the Guide's own search; one notice's text by number; the week's notices. No key."},
     "uidaho": {"label": "UI guidance", "institution": UIDAHO, "description": "University policy for sponsored projects (APM, FSH), found by what each policy covers or by number and title; a report-only check of a passage against it; and the F&A and fringe rates from the rate agreement and the fringe-rate page, reported in the Rates contract's order."},
     "classes": {"label": "Class schedule", "institution": UIDAHO, "description": "The University of Idaho class schedule and course catalog: who teaches what, when and where, by term, subject, course number or instructor; one section in full; courses by subject, number or title and one course's catalog record, from the registrar's public Browse Classes and Browse Course Catalog. No key."},
     "directory": {"label": "Campus directory", "institution": UIDAHO, "description": "The University of Idaho campus directory, the employees the university publishes at directory.uidaho.edu: a person by last name, first name, email or department, their university email, phone, title, department and office, and the department list. Employees only, read through the directory's own search form. No key."},

@@ -1,0 +1,134 @@
+{
+ "statusCode": 200,
+ "data": {
+  "took": 18,
+  "timed_out": false,
+  "_shards": {
+   "total": 1,
+   "successful": 1,
+   "skipped": 0,
+   "failed": 0
+  },
+  "hits": {
+   "total": 392,
+   "max_score": 24.977993,
+   "hits": [
+    {
+     "_index": "nih-guidedocs",
+     "_id": "43157",
+     "_score": 24.977993,
+     "_source": {
+      "rowid": "43157",
+      "type": "active",
+      "title": "NLM Institutional Grants for Research Training in Biomedical Informatics, Data Science, and AI (T15 Independent Clinical Trial Not Allowed)",
+      "docnum": "RFA-LM-28-001",
+      "organization": {
+       "parent": "NIH",
+       "primary": "NLM"
+      },
+      "parentIC": "NIH",
+      "primaryIC": "NLM",
+      "reldate": "2026-10-16T00:00:00.000Z",
+      "expdate": "2027-02-12T00:00:00.000Z",
+      "parentFOA": "No",
+      "doctype": "RFA",
+      "ac": [
+       "T15"
+      ],
+      "filename": null,
+      "clinicaltrials": "Not_Allowed",
+      "sponsors": [
+       "NEI",
+       "NIDA",
+       "NCI",
+       "NIAID",
+       "NIMH",
+       "ODSS",
+       "OBSSR",
+       "NIDCD",
+       "NIDCR",
+       "NINDS"
+      ],
+      "noticeSubject": null,
+      "urgetFoaMother": null,
+      "opendate": "2027-01-11T00:00:00.000Z",
+      "appreceiptdate": null,
+      "lard": null,
+      "intentdate": null,
+      "fadirectcosts": null,
+      "purpose": "<p>The National Library of Medicine (NLM) invites applications for innovative predoctoral and postdoctoral training programs that prepare the next generation of&nbsp;researchers&nbsp;in biomedical inf",
+      "ggid": "361318"
+     },
+     "highlight": {
+      "purpose": [
+       "<p>The National Library of Medicine (NLM) invites applications for innovative predoctoral and postdoctoral training programs that prepare the next generation of&nbsp;researchers&nbsp;in biomedical informatics, <em class='highlight'>data</em> <em class='highlight'>science</em>, and artificial intelligence/machine learning (AI/ML). NLM emphasizes&nbsp;cutting-edge, forward-looking training experiences that equip trainees to address complex health and biomedical challenges through advanced computational approaches. Applications may propose the creation of new training programs or the renewal of existing NLM-supported programs. These programs are designed to meet the growing demand for researchers with deep&nbsp;expertise&nbsp;in biomedical computing, <em class='highlight'>data</em> <em class='highlight'>science</em>, and AI/ML, with clear relevance to health and biomedical research. Recognizing the inherently interdisciplinary nature of these fields, NLM seeks programs that integrate methods&nbsp;and&nbsp;perspectives&nbsp;across disciplines to advance biomedical informatics, <em class='highlight'>data</em> <em class='highlight'>science</em>, and AI/ML.</p>"
+      ],
+      "doctext": [
+       "RFA-LM-28-001: NLM Institutional Grants for Research Training in Biomedical Informatics, <em class='highlight'>Data</em> <em class='highlight'>Science</em>",
+       "Office of Behavioral and Social Sciences Research OBSSR) Office of <em class='highlight'>Data</em> <em class='highlight'>Science</em> Strategy ODSS) Note:",
+       "This core must include instruction in: principles of informatics, <em class='highlight'>data</em> <em class='highlight'>science</em>, and AI; quantitative",
+       "DOC-focused research.National Institute of Mental Health NIMH)Training in informatics, <em class='highlight'>data</em> <em class='highlight'>science</em>,",
+       "Social Sciences Research OBSSR)Integration of behavioral and social <em class='highlight'>science</em> with <em class='highlight'>data</em> <em class='highlight'>science</em>/AI: Programs"
+      ],
+      "title": [
+       "NLM Institutional Grants for Research Training in Biomedical Informatics, <em class='highlight'>Data</em> <em class='highlight'>Science</em>, and AI (T15 Independent Clinical Trial Not Allowed)"
+      ]
+     }
+    },
+    {
+     "_index": "nih-guidedocs",
+     "_id": "42963",
+     "_score": 17.24044,
+     "_source": {
+      "rowid": "42963",
+      "type": "active",
+      "title": "Science Track Award for Research Transition (START) Program (R03, Clinical Trial Optional)",
+      "docnum": "PAS-27-028",
+      "organization": {
+       "parent": "NIH",
+       "primary": "NIDA"
+      },
+      "parentIC": "NIH",
+      "primaryIC": "NIDA",
+      "reldate": "2026-06-09T00:00:00.000Z",
+      "expdate": "2029-03-17T00:00:00.000Z",
+      "parentFOA": "No",
+      "doctype": "PAS",
+      "ac": [
+       "R03"
+      ],
+      "filename": null,
+      "clinicaltrials": "Optional",
+      "sponsors": [
+       "none"
+      ],
+      "noticeSubject": null,
+      "urgetFoaMother": null,
+      "opendate": "2026-09-16T00:00:00.000Z",
+      "appreceiptdate": null,
+      "lard": null,
+      "intentdate": null,
+      "fadirectcosts": null,
+      "purpose": "The purpose of this notice of funding opportunity (NOFO) is to facilitate the entry of investigators into multiple high-priority areas of substance use research, including comorbidity with HIV. The Sc",
+      "ggid": "360553"
+     },
+     "highlight": {
+      "purpose": [
+       "The purpose of this notice of funding opportunity (NOFO) is to facilitate the entry of investigators into multiple high-priority areas of substance use research, including comorbidity with HIV. The <em class='highlight'>Science</em> Track Award for Research Transition (START) Program aims to provide investigators with the opportunity to gather preliminary <em class='highlight'>data</em> that will assist them in securing future research grants and advancing their scientific careers."
+      ],
+      "doctext": [
+       "PAR-19-310), <em class='highlight'>data</em> <em class='highlight'>science</em> PAS-25-236), and HIV/AIDS research PAS-21-270) to accelerate innovative insights",
+       "Preliminary <em class='highlight'>data</em> are not required.",
+       "<em class='highlight'>Data</em> <em class='highlight'>Science</em> and Computational Modeling.",
+       "Examples include, but are not limited to:Development and application of cutting-edge <em class='highlight'>data</em> <em class='highlight'>science</em> techniques",
+       "<em class='highlight'>Data</em> Management and Sharing A <em class='highlight'>Data</em> Management and Sharing Plan DMS Plan) is required for any NIH-funded"
+      ],
+      "title": [
+       "<em class='highlight'>Science</em> Track Award for Research Transition (START) Program (R03, Clinical Trial Optional)"
+      ]
+     }
+    }
+   ]
+  }
+ }
+}

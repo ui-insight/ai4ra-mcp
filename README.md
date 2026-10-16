@@ -60,6 +60,9 @@ works without one and a key raises its quota.
 
 | Path | Upstream | Key | Tools | Skills |
 |---|---|---|---|---|
+| `/pappg/mcp` | the NSF PAPPG (NSF 24-1) at nsf.gov/policies/pappg | none | `pappg_index`, `pappg_chapters`, `pappg_outline`, `pappg_section`, `pappg_search` | none |
+| `/nihgps/mcp` | the NIH Grants Policy Statement, web edition at grants.nih.gov | none | `nihgps_index`, `nihgps_toc`, `nihgps_section`, `nihgps_search` | none |
+| `/nihguide/mcp` | the NIH Guide for Grants and Contracts: its search service, notice pages and weekly index | none | `nihguide_index`, `nihguide_search`, `nihguide_notice`, `nihguide_weekly` | none |
 | `/nih/mcp` | NIH RePORTER | none | `nih_guide`, `nih_index`, `nih_projects_search`, `nih_project`, `nih_publications` | `funding-history` |
 | `/nsf/mcp` | NSF Award Search | none | `nsf_index`, `nsf_awards_search`, `nsf_award`, `nsf_award_outcomes` | none |
 | `/usaspending/mcp` | USAspending | none | `usaspending_index`, `usaspending_recipients`, `usaspending_recipient`, `usaspending_awards_search`, `usaspending_subawards_search`, `usaspending_award` | none |
@@ -849,6 +852,93 @@ checked against the WSDL types before it leaves and every response as it
 arrives; the index tool lists the status values and the error classes.
 `tests/test_s2s_live.py` runs the whole sequence, including a submission,
 against any endpoint named in `S2S_LIVE_ENDPOINT`.
+
+### pappg
+
+The NSF Proposal & Award Policies & Procedures Guide as NSF publishes it,
+`https://www.nsf.gov/policies/pappg/24-1/`, one HTML page per chapter
+(`ch-1-pre-submission` to `ch-12-disputes-misconduct`), a table of contents
+whose links carry the anchor of every section, a summary of changes, a
+subject index and a PDF; no key. The version is pinned (NSF 24-1, effective
+for proposals due on or after 2024-05-20) and the landing page's version
+line is read each day so the index can say when NSF has moved on. A chapter
+page is Drupal: the text sits in `text__content` blocks under h2 (a lettered
+section, whose page id is a slug), h3 (a numbered subsection, id `ch2D2`)
+and h4 (a lettered paragraph, `ch2D2b`); the table of contents links a
+lettered section by its slug, so each section carries a canonical anchor
+(`ch2A`, made from the heading's letter, or its place among the chapter's
+lettered sections) beside the id the page uses, and links go to the page's
+id. `pappg_chapters()` lists the twelve chapters; `pappg_outline(chapter)` a
+chapter's sections with labels (`D.2.b`) and anchors; `pappg_section(chapter,
+section)` one section by label, anchor or heading words, with its paragraphs
+and the subsections under it and a citation (`PAPPG Chapter II.D.2.b`);
+`pappg_search(query, chapter, rows)` the sections across the guide, or in
+one chapter, whose heading or text carries every word, heading matches
+first, with a snippet. Chapters are cached a day. The index tells the model
+how to cite, that a solicitation may deviate from the guide, which chapters
+hold what, and that tables and footnotes come through as text. Offline tests
+run on the table of contents, two chapters and the landing page's version
+line captured in `tests/fixtures/pappg/`.
+
+### nihgps
+
+The NIH Grants Policy Statement, the terms and conditions of NIH awards, in
+the web edition NIH publishes at
+`https://grants.nih.gov/grants/policy/nihgps/HTML5/` (MadCap Flare), one
+page per section; no key. The edition's table of contents is its data file
+`Data/Tocs/TOC_Web.js`, which names chunk files mapping each page to its
+entries (a page can hold several: 7.9 and 7.9.1 share one, the second at an
+anchor), read once a day for the outline (about 280 sections) and to resolve
+a section number or title to its page. A section page is read from its
+heading: paragraphs, tables as rows (Exhibit 5 in 7.9.1, the selected items
+of cost, is a table of items and NIH's rule for each), subheadings, and the
+revision line every page carries (`REVISED MARCH 2026`, read live
+2026-10-16); glossary popups, which are inline definitions, are dropped so
+a sentence reads once; a chapter's own page is a placeholder and is answered
+from the table of contents. `nihgps_toc(query, chapter)` lists the table, the
+sections whose titles carry words, or one chapter's sections;
+`nihgps_section(section)` one section by number (`7.9`, `8.1.2.3`) or title
+with its subsections and a citation (`NIH GPS 7.9`); `nihgps_search(query,
+chapter, rows)` the sections of one chapter that carry every word, reading
+the chapter's pages (cached a day), title matches first, with a snippet. The
+index reports the revision, explains the parts and chapters, how to cite,
+that the GPS incorporates 2 CFR 200 (the ecfr server), and that a Guide
+notice newer than the revision governs (the nihguide server). Offline tests
+run on the table-of-contents files and three pages captured in
+`tests/fixtures/nihgps/`.
+
+### nihguide
+
+The NIH Guide for Grants and Contracts, NIH's publication of record for
+notices and funding opportunities, at `https://grants.nih.gov/grants/guide/`;
+no key. Its search page is an app that reads a JSON service, found in the
+app's bundle on 2026-10-16: `GET <service>/data?perpage=&from=&sort=&type=
+&query=&primaryic=&daterange=MMDDYYYY-MMDDYYYY&...`, an Elasticsearch result
+whose hits carry the document number, title, type, document type, release
+and expiration dates, issuing institute, notice subject, activity codes and
+a line of purpose. `type` is `notices` for the Guide's notices (NOT-; 16,800
+on 2026-10-16) and `active`, `activenosis`, `expired`, `expirednosis` for
+notices of funding opportunity (RFA, PA, PAR, PAS) and notices of special
+interest, the four together being every NOFO the Guide has carried. The
+service is the page's own and undocumented, which the index says; a change
+to it is a change to this server and the page is the fallback.
+`nihguide_search(query, kind, institute, from_date, to_date, rows, start)`
+maps kind (notices, opportunities, open, all) to type, the institute code to
+`primaryic`, dates to the service's form, sorts by relevance when words are
+given and by release date otherwise, 1-100 a page with `next_start`, and
+links each result to its Guide page (`notice-files`, `rfa-files`,
+`pa-files`). `nihguide_notice(number)` reads a notice's page for its number,
+title, release and expiration dates, related announcements, issuing
+organisations, purpose and inquiries (email addresses are hidden by the
+site's protection and are not read). `nihguide_weekly(week_ending)` reads
+the weekly index (`WeeklyIndexMobile.cfm`, `WeekEnding=MM-DD-YYYY` for an
+earlier week) to its groups of notices. Searches and the weekly index are
+cached an hour, notice pages a day. The index explains the numbering, that
+new NOFOs are posted on Grants.gov as of fiscal 2026 (the grants server has
+the packages) while the Guide still lists them, and that a notice newer than
+the Grants Policy Statement's revision governs. Offline tests run on the
+service's answers, a notice page and the weekly index captured in
+`tests/fixtures/nihguide/`.
 
 ### nih
 

@@ -1,0 +1,151 @@
+{
+ "statusCode": 200,
+ "data": {
+  "took": 5,
+  "timed_out": false,
+  "_shards": {
+   "total": 1,
+   "successful": 1,
+   "skipped": 0,
+   "failed": 0
+  },
+  "hits": {
+   "total": 1450,
+   "max_score": 46.255737,
+   "hits": [
+    {
+     "_index": "nih-guidedocs",
+     "_id": "31933",
+     "_score": 46.255737,
+     "_source": {
+      "rowid": "31933",
+      "type": "notices",
+      "title": "Report on Reducing Administrative Burden for Researchers: Animal Care and Use in Research",
+      "docnum": "NOT-OD-19-136",
+      "organization": {
+       "parent": "NIH",
+       "primary": "NIH"
+      },
+      "parentIC": "NIH",
+      "primaryIC": "NIH",
+      "reldate": "2019-08-28T10:41:21.000Z",
+      "expdate": null,
+      "parentFOA": null,
+      "doctype": "NOT",
+      "ac": null,
+      "filename": "NOT-OD-19-136.html",
+      "clinicaltrials": "",
+      "sponsors": [
+       "none"
+      ],
+      "noticeSubject": "Notice of Information",
+      "urgetFoaMother": null,
+      "opendate": null,
+      "appreceiptdate": null,
+      "lard": null,
+      "intentdate": null,
+      "fadirectcosts": null,
+      "purpose": " Report Reducing Administrative Burden Researchers: Animal Care Use Research Notice Number: NOT-OD-19-136 Key Dates Release Date: August 28, 2019 Related Announcements NOT-OD-19-057 NOT-OD-19-028 NOT-",
+      "ggid": ""
+     },
+     "highlight": {
+      "purpose": [
+       " Report Reducing <em class='highlight'>Administrative</em> <em class='highlight'>Burden</em> Researchers: Animal Care Use Research Notice Number: NOT-OD-19-136 Key Dates Release Date: August 28, 2019 Related Announcements NOT-OD-19-057 NOT-OD-19-028 NOT-OD-18-152 Issued Office The Director, National Institutes Health OD) Purpose notice to announce publication ofReducing <em class='highlight'>Administrative</em> <em class='highlight'>Burden</em> Researchers: Animal Care Use Research(PDF), report the National Institutes Health NIH), United States Department Agriculture USDA), the Food Drug Administration FDA). report describes recommendations the21st Century Cures Act, Section 2034(d), Working Group decisions the agencies. Background Title II, Section 2034(d) the 21st Century Cures Act P.L. 114-255) enacted December 13, 2016, requires NIH collaboration USDA FDA complete review applicable regulations policies the care use laboratory animals to revisions, appropriate, reduce <em class='highlight'>administrative</em> <em class='highlight'>burden</em> investigators while maintaining integrity credibility research findings protection research animals. Act instructs NIH to: 1) seek input experts, appropriate; 2) identify ways ensure applicable regulations policies not inconsistent, overlapping, unnecessarily duplicative; 3) take steps eliminate reduce identified inconsistencies, overlap, duplication among such regulations policies; 4) take actions, appropriate, improve coordination regulations policies respect research laboratory animals. NIH, USDA, FDA convened Working Group federal subject matter experts identify inconsistent, overlapping, unnecessarily duplicative regulations policies prepare report their recommendations directed the 21st Century Cures Act. report onReducing <em class='highlight'>Administrative</em> <em class='highlight'>Burden</em> Researchers: Animal Care Use Research(PDF) describes efforts the Working Group, recommendations, the decisions NIH, USDA, FDA the recommendations. Inquiries Please direct inquiries to: Office Laboratory Animal Welfare Telephone: 301-496-7163 Email:olaw@od.nih.gov "
+      ],
+      "title": [
+       "Report on Reducing <em class='highlight'>Administrative</em> <em class='highlight'>Burden</em> for Researchers: Animal Care and Use in Research"
+      ]
+     }
+    },
+    {
+     "_index": "nih-guidedocs",
+     "_id": "43128",
+     "_score": 45.426987,
+     "_source": {
+      "rowid": "43128",
+      "type": "notices",
+      "title": "Request for Information (RFI): Opportunities to Reduce Administrative Burden in NIH Extramural Research",
+      "docnum": "NOT-OD-26-118",
+      "organization": {
+       "parent": "NIH",
+       "primary": "OD"
+      },
+      "parentIC": "NIH",
+      "primaryIC": "OD",
+      "reldate": "2026-10-08T09:28:50.000Z",
+      "expdate": null,
+      "parentFOA": null,
+      "doctype": "NOT",
+      "ac": null,
+      "filename": "NOT-OD-26-118.html",
+      "clinicaltrials": null,
+      "sponsors": [
+       "none"
+      ],
+      "noticeSubject": "Request for Information",
+      "urgetFoaMother": null,
+      "opendate": null,
+      "appreceiptdate": null,
+      "lard": null,
+      "intentdate": null,
+      "fadirectcosts": null,
+      "purpose": "pThe National Institutes of Health (NIH) is seeking input from the biomedical research community and other interested parties on opportunities to further reduce administrative burden associated with o",
+      "ggid": ""
+     },
+     "highlight": {
+      "purpose": [
+       "pThe National Institutes of Health (NIH) is seeking input from the biomedical research community and other interested parties on opportunities to further reduce <em class='highlight'>administrative</em> <em class='highlight'>burden</em> associated with obtaining, maintaining, and reporting on NIH extramural research funding./p"
+      ],
+      "title": [
+       "Request for Information (RFI): Opportunities to Reduce <em class='highlight'>Administrative</em> <em class='highlight'>Burden</em> in NIH Extramural Research"
+      ]
+     }
+    },
+    {
+     "_index": "nih-guidedocs",
+     "_id": "43155",
+     "_score": 45.426987,
+     "_source": {
+      "rowid": "43155",
+      "type": "notices",
+      "title": "Request for Information (RFI): Opportunities to Reduce Administrative Burden in NIH Extramural Research",
+      "docnum": "NOT-OD-26-130",
+      "organization": {
+       "parent": "NIH",
+       "primary": "OD"
+      },
+      "parentIC": "NIH",
+      "primaryIC": "OD",
+      "reldate": "2026-10-15T15:25:34.000Z",
+      "expdate": null,
+      "parentFOA": null,
+      "doctype": "NOT",
+      "ac": null,
+      "filename": "NOT-OD-26-130.html",
+      "clinicaltrials": null,
+      "sponsors": [
+       "none"
+      ],
+      "noticeSubject": "Request for Information",
+      "urgetFoaMother": null,
+      "opendate": null,
+      "appreceiptdate": null,
+      "lard": null,
+      "intentdate": null,
+      "fadirectcosts": null,
+      "purpose": "pThe National Institutes of Health (NIH) is seeking input from the biomedical research community and other interested parties on opportunities to further reduce administrative burden associated with o",
+      "ggid": ""
+     },
+     "highlight": {
+      "purpose": [
+       "pThe National Institutes of Health (NIH) is seeking input from the biomedical research community and other interested parties on opportunities to further reduce <em class='highlight'>administrative</em> <em class='highlight'>burden</em> associated with obtaining, maintaining, and reporting on NIH extramural research funding./p"
+      ],
+      "title": [
+       "Request for Information (RFI): Opportunities to Reduce <em class='highlight'>Administrative</em> <em class='highlight'>Burden</em> in NIH Extramural Research"
+      ]
+     }
+    }
+   ]
+  }
+ }
+}
