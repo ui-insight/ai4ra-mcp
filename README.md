@@ -86,6 +86,7 @@ works without one and a key raises its quota.
 
 | Path | Upstream | Key | Tools | Skills |
 |---|---|---|---|---|
+| `/treasury/mcp` | Treasury Reporting Rates of Exchange (Fiscal Data) | none | `treasury_index`, `treasury_currencies`, `treasury_rates`, `treasury_convert` | none |
 | `/openalex/mcp` | OpenAlex | optional (OpenAlex key) | `openalex_index`, `openalex_works_search`, `openalex_works_group`, `openalex_work`, `openalex_citations`, `openalex_authors_search`, `openalex_institutions_search`, `openalex_funders_search` | none |
 | `/pubmed/mcp` | NCBI E-utilities and the PMC ID converter | optional (NCBI key) | `pubmed_index`, `pubmed_search`, `pubmed_summary`, `pubmed_article`, `pmc_id_convert` | none |
 | `/icite/mcp` | NIH iCite | none | `icite_index`, `icite_metrics`, `icite_links` | none |
@@ -1028,6 +1029,34 @@ for total compensation and wages, verified live on 2026-09-24. Answers are
 cached a day to spare the quota. The index tells the model the rate is
 100 * (new - old) / old from two points a year apart, that ECI 'A' series
 are already percent changes, and to say which series and periods it used.
+
+### treasury
+
+The Treasury Reporting Rates of Exchange from Fiscal Data,
+`https://api.fiscaldata.treasury.gov/services/api/fiscal_service/v1/accounting/od/rates_of_exchange`,
+a JSON API with `filter=field:op:value` (eq, lt, lte, gt, gte, in), `sort`,
+`fields` and `page[size]`, no key. The Bureau of the Fiscal Service
+publishes one rate per currency per calendar quarter, dated the quarter's
+last day (2026-09-30 the latest on 2026-10-16, about 170 currencies named
+`Country-Currency`: `Canada-Dollar`, `Euro Zone-Euro`), as foreign units per
+one U.S. dollar, with an amended rate inside a quarter when a currency moves
+10 percent or more; its rule is that a foreign-currency amount is converted
+at the rate in effect on the date of the transaction. It is the rate a
+federal award's foreign subaward invoice, purchase or travel is reported at,
+not a market rate. `treasury_currencies(search)` lists the latest quarter's
+table, matched by words in the country or unit, the names the other tools
+take; `treasury_rates(currency, record_date, from_date, to_date, rows)`
+gives one currency's rates by quarter, newest first, or every currency's for
+one quarter, a currency resolved against the table (exact, one partial, or
+the matches returned as `currencies_matched`); `treasury_convert(amount,
+currency, transaction_date)` divides the amount by the latest rate whose
+effective date is on or before the transaction date and shows the rate, its
+quarter and the arithmetic. The latest quarter is cached an hour, a quarter's
+table a day, other reads an hour. The index tells the model the rate's
+direction (dollars = amount / rate), Treasury's rule, that a bank's rate will
+differ, and to say which quarter's rate was used. Offline tests run on the
+2026-09-30 table and two currencies' series captured in
+`tests/fixtures/treasury/`.
 
 ### openalex
 

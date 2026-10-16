@@ -64,6 +64,7 @@ from ai4ra_mcp.servers.regulations.server import mcp as regulations
 from ai4ra_mcp.servers.ror.server import mcp as ror
 from ai4ra_mcp.servers.s2s.server import mcp as s2s
 from ai4ra_mcp.servers.sam.server import mcp as sam
+from ai4ra_mcp.servers.treasury.server import mcp as treasury
 from ai4ra_mcp.servers.udm.server import mcp as udm
 from ai4ra_mcp.servers.uidaho.server import mcp as uidaho
 from ai4ra_mcp.servers.usaspending.server import mcp as usaspending
@@ -76,7 +77,7 @@ SERVERS: dict[str, MCPServer] = {
     "ecfr": ecfr, "fedreg": fedreg, "regulations": regulations, "idstat": idstat, "grants": grants, "s2s": s2s,
     "nih": nih, "nsf": nsf, "usaspending": usaspending,
     "sam": sam, "fac": fac, "csl": csl, "oig": oig, "propublica": propublica, "ror": ror,
-    "perdiem": perdiem, "bls": bls,
+    "perdiem": perdiem, "bls": bls, "treasury": treasury,
     "openalex": openalex, "pubmed": pubmed, "icite": icite, "crossref": crossref, "orcid": orcid, "osti": osti, "clinicaltrials": clinicaltrials,
     "clickup": clickup, "github": github,
     "uidaho": uidaho, "classes": classes, "directory": directory, "events": events, **lakehouse.SERVERS,
@@ -122,6 +123,7 @@ META: dict[str, dict] = {
                 "key": {"required": True, "hint": "Paste your api.data.gov key, free from https://api.data.gov/signup/ (DEMO_KEY works for a few calls an hour)."}},
     "bls": {"label": "BLS", "description": "Bureau of Labor Statistics CPI and ECI series for budget escalation rates; a key is optional.",
             "key": {"required": False, "hint": "Optional: paste your BLS registration key (free at data.bls.gov/registrationEngine) for 500 queries a day instead of the shared 25."}},
+    "treasury": {"label": "Treasury exchange rates", "description": "The Treasury Reporting Rates of Exchange, the government's quarterly rates for converting foreign currency on a federal award: the currencies, a currency's rates by quarter, and a foreign amount in dollars at the rate in effect on the transaction's date. No key."},
     "openalex": {"label": "OpenAlex", "description": "Publications by author, institution, funder or award number, counted by year, funder, institution or topic; one work by DOI with its abstract; what cites a work and what it cites; authors, institutions and funders by name. A key is optional.",
                  "key": {"required": False, "hint": "Optional: paste your OpenAlex API key (free at openalex.org/settings/api) to spend your own $1-a-day budget instead of the $0.10 everyone without a key shares."}},
     "pubmed": {"label": "PubMed", "description": "Papers by grant number, author or affiliation with PMID, DOI and PMCID for NIH public access compliance; one paper's abstract, MeSH terms and grant acknowledgments; PMID/PMCID/DOI conversion.",
