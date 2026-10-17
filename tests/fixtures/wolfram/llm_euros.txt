@@ -1,0 +1,28 @@
+Query:
+"450 euros in US dollars"
+
+Input interpretation:
+convert €450 (euros) to US dollars
+
+Result:
+$506.39 (US dollars) (October 16, 2026)
+
+Exchange history for €450 (euros):
+
+1-year minimum | $502.96 (October 7, 2026 | 9 days ago)
+1-year maximum | $538.83 (January 28, 2026 | 9 months ago)
+1-year average | $521.83 (annualized volatility: 5.4%)
+
+Additional currency conversions for €450 (euros):
+JPY | ¥80019 (Japanese yen)
+GBP | £379.73 (British pounds)
+CNY | ￥3385.80 (Chinese yuan)
+CAD | C$717.08 (Canadian dollars)
+INR | ₹48088.80 (Indian rupees)
+RUB | 41790.59 ₽ (Russian rubles)
+CHF | CHF417.24 (Swiss francs)
+XAU | 0.12 oz (gold ounces)
+XAG | 8.88 oz (silver ounces)
+
+Wolfram|Alpha website result for "450 euros in US dollars":
+https://www.wolframalpha.com/input?i=450+euros+in+US+dollars

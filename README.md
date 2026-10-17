@@ -344,7 +344,7 @@ deployment holds no secrets at all.
 | `congress` | required | https://api.congress.gov/sign-up/ (free, an api.data.gov key) | api.data.gov's default, 1,000 an hour (Congress.gov says 5,000 a day) | `X-Api-Key` header |
 | `scorecard` | required | https://api.data.gov/signup/ (free), the same key | api.data.gov's default, 1,000 an hour | `X-Api-Key` header |
 | `csl` | required | https://developer.trade.gov/ : sign up, subscribe to the Consolidated Screening List API, copy the subscription key | trade.gov's per-subscription limit | `subscription-key` header |
-| `wolfram` | required | https://developer.wolframalpha.com/ : sign in with a Wolfram ID, Get an AppID, copy it. Free for non-commercial use; the terms are the person's to meet | 2,000 calls a month on a free AppID (every call to either tool is one); paid tiers above | `Authorization: Bearer <AppID>` header, the form the LLM API documents |
+| `wolfram` | required | https://developer.wolframalpha.com/ : sign in with a Wolfram ID, Get an AppID, choose the LLM API, copy it (the AppID is the whole credential). Free for non-commercial use; the terms are the person's to meet | 2,000 calls a month on a free AppID (every call to either tool is one); paid tiers above | `Authorization: Bearer <AppID>` header, the form the LLM API documents; Short Answers accepts it too, and the one AppID answers both |
 | `bls` | optional | https://data.bls.gov/registrationEngine/ (free) | 25 queries a day per IP without one (v1, shared by everyone on the server), 500 with one (v2), plus longer spans and series titles | `registrationkey` in the POST body |
 | `pubmed` | optional | The settings page of an NCBI account, https://account.ncbi.nlm.nih.gov/settings/ (free) | 3 requests a second without one, shared; 10 with one | `api_key` query parameter |
 | `openalex` | optional | https://openalex.org/settings/api (free) | OpenAlex meters by a daily budget rather than a rate (since February 2026): $0.10 a day shared by everyone on the server's network address without one, $1 a day of the person's own with one; a list call costs $0.0001, a text search $0.001, one record by id nothing | `api_key` query parameter |
@@ -1412,8 +1412,11 @@ index tells the model how Wolfram wants an input phrased (one line of English
 keywords, exponents as `6*10^14`, one property per call, an assumption before
 a rephrase), that each call counts against the month, and that Wolfram
 computes on figures the person or another tool supplied and reads none of the
-institution's own. Offline tests run on text in the shape the LLM API's
-documentation shows; the live check waits on an AppID.
+institution's own. The portal's Get an AppID form asks for one API; an AppID
+registered for the LLM API answered Short Answers too (verified 2026-10-16).
+Offline tests run on responses captured that day in `tests/fixtures/wolfram/`:
+a currency conversion and a duration from the LLM API, Short Answers' line,
+and each endpoint's 501 body.
 
 ### openalex
 

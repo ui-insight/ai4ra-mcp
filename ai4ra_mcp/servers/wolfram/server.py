@@ -7,9 +7,11 @@ query, the input interpretation, the result, images, property sections) and a li
 maxchars (6,800 by default), units and an assumption, and answers 501 with a plain-text body when it cannot interpret the
 input. Short Answers, GET https://api.wolframalpha.com/v1/result?i=..., is one line of text for the main result and 501 when
 no short result exists. Both answer 401 `Invalid appid` as plain text when the key is bad or missing (probed 2026-10-16;
-the documentation says 403). The AppID goes as `Authorization: Bearer <AppID>`, the form the LLM API documents, never in
-the URL, so it is in no log line; the cache key is the input and its options alone. Answers are cached an hour. Wolfram
-Cloud and Wolfram Language evaluation are a different product and are not here.
+the documentation says 403). The developer portal's Get an AppID form asks for one API; an AppID registered for the LLM
+API answered Short Answers too (verified 2026-10-16 with a currency conversion, $506.39 for 450 euros, and a 501 from
+each). The AppID goes as `Authorization: Bearer <AppID>`, the form the LLM API documents and Short Answers also accepts,
+never in the URL, so it is in no log line; the cache key is the input and its options alone. Answers are cached an hour.
+Wolfram Cloud and Wolfram Language evaluation are a different product and are not here.
 """
 
 from __future__ import annotations
@@ -25,7 +27,7 @@ from ai4ra_mcp.common.skills import register_prompts
 
 _READ_ONLY = {"readOnlyHint": True, "destructiveHint": False, "idempotentHint": True, "openWorldHint": True}
 KEY_ENV = "AI4RA_MCP_WOLFRAM_KEY"
-KEY_HOW = "An AppID comes from https://developer.wolframalpha.com/ : sign in with a Wolfram ID, Get an AppID, and copy it. Free for non-commercial use, 2,000 calls a month; paid tiers above that."
+KEY_HOW = "An AppID comes from https://developer.wolframalpha.com/ : sign in with a Wolfram ID, Get an AppID, choose the LLM API, and copy it (the AppID is the whole credential; there is no separate token). Free for non-commercial use, 2,000 calls a month; paid tiers above that."
 LLM = "https://www.wolframalpha.com/api/v1/llm-api"
 SHORT = "https://api.wolframalpha.com/v1/result"
 PORTAL = "https://developer.wolframalpha.com/"

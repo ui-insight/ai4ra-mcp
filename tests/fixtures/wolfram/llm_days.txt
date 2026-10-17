@@ -1,0 +1,29 @@
+Query:
+"days from 2026-10-01 to 2027-09-30"
+
+Assumption:
+Assuming "2026-10-01" is a date
+To use as a year set assumption=*MC.2026!-10!-01-_*PseudoTokenYear-
+
+Input interpretation:
+days from | Thursday, October 1, 2026 to Thursday, September 30, 2027
+
+Result:
+364 days
+
+Time span:
+11 months 29 days
+
+52 weeks
+
+260 weekdays
+
+1 year
+
+Time difference from today (October 16, 2026):
+15 days since October 1, 2026
+
+11 months 14 days until September 30, 2027
+
+Wolfram|Alpha website result for "days from 2026-10-01 to 2027-09-30":
+https://www.wolframalpha.com/input?i=days+from+2026-10-01+to+2027-09-30
