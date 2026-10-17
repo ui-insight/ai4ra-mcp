@@ -99,6 +99,7 @@ works without one and a key raises its quota.
 | `/treasury/mcp` | Treasury Reporting Rates of Exchange (Fiscal Data) | none | `treasury_index`, `treasury_currencies`, `treasury_rates`, `treasury_convert` | none |
 | `/osm/mcp` | OpenStreetMap's Nominatim and the FOSSGIS Valhalla router | none (fair use, one call a second) | `osm_index`, `osm_geocode`, `osm_route` | none |
 | `/weather/mcp` | The National Weather Service API | none | `weather_index`, `weather_forecast`, `weather_now`, `weather_alerts`, `weather_office` | none |
+| `/wolfram/mcp` | Wolfram\|Alpha's LLM API and Short Answers API | **required** (the person's Wolfram\|Alpha AppID) | `wolfram_index`, `wolfram_ask`, `wolfram_answer` | none |
 | `/openalex/mcp` | OpenAlex | optional (OpenAlex key) | `openalex_index`, `openalex_works_search`, `openalex_works_group`, `openalex_work`, `openalex_citations`, `openalex_authors_search`, `openalex_institutions_search`, `openalex_funders_search` | none |
 | `/pubmed/mcp` | NCBI E-utilities and the PMC ID converter | optional (NCBI key) | `pubmed_index`, `pubmed_search`, `pubmed_summary`, `pubmed_article`, `pmc_id_convert` | none |
 | `/icite/mcp` | NIH iCite | none | `icite_index`, `icite_metrics`, `icite_links` | none |
@@ -325,7 +326,7 @@ instead.
 
 ## Keys
 
-Twelve servers talk to an upstream that wants a key, and one more wants a
+Thirteen servers talk to an upstream that wants a key, and one more wants a
 shared secret. **The key is the person's own**, sent by their client as
 `Authorization: Bearer <key>` on each MCP request, and it is used for that
 request only: held in a request-scoped variable, never logged, never stored.
@@ -343,6 +344,7 @@ deployment holds no secrets at all.
 | `congress` | required | https://api.congress.gov/sign-up/ (free, an api.data.gov key) | api.data.gov's default, 1,000 an hour (Congress.gov says 5,000 a day) | `X-Api-Key` header |
 | `scorecard` | required | https://api.data.gov/signup/ (free), the same key | api.data.gov's default, 1,000 an hour | `X-Api-Key` header |
 | `csl` | required | https://developer.trade.gov/ : sign up, subscribe to the Consolidated Screening List API, copy the subscription key | trade.gov's per-subscription limit | `subscription-key` header |
+| `wolfram` | required | https://developer.wolframalpha.com/ : sign in with a Wolfram ID, Get an AppID, copy it. Free for non-commercial use; the terms are the person's to meet | 2,000 calls a month on a free AppID (every call to either tool is one); paid tiers above | `Authorization: Bearer <AppID>` header, the form the LLM API documents |
 | `bls` | optional | https://data.bls.gov/registrationEngine/ (free) | 25 queries a day per IP without one (v1, shared by everyone on the server), 500 with one (v2), plus longer spans and series titles | `registrationkey` in the POST body |
 | `pubmed` | optional | The settings page of an NCBI account, https://account.ncbi.nlm.nih.gov/settings/ (free) | 3 requests a second without one, shared; 10 with one | `api_key` query parameter |
 | `openalex` | optional | https://openalex.org/settings/api (free) | OpenAlex meters by a daily budget rather than a rate (since February 2026): $0.10 a day shared by everyone on the server's network address without one, $1 a day of the person's own with one; a list call costs $0.0001, a text search $0.001, one record by id nothing | `api_key` query parameter |
@@ -1383,6 +1385,35 @@ names one. Points are cached a day, forecasts half an hour, observations
 ten minutes, alerts five. Offline tests run on the campus point, its
 forecast, stations, an observation, the office, its county zones and an
 alert list captured in `tests/fixtures/weather/`.
+
+### wolfram
+
+Wolfram|Alpha, two of its APIs over one AppID: the LLM API,
+`https://www.wolframalpha.com/api/v1/llm-api`, and Short Answers,
+`https://api.wolframalpha.com/v1/result`. The AppID is the person's own, from
+https://developer.wolframalpha.com/ (a free non-commercial account allows
+2,000 calls a month, paid tiers above), sent by the client as a bearer token
+and forwarded as `Authorization: Bearer <AppID>`, the form the LLM API
+documents, never in the URL; `AI4RA_MCP_WOLFRAM_KEY` is a deployment's
+fallback. `wolfram_ask(input, maxchars, units, assumption)` is the LLM API's
+plain text whole, with the query, Wolfram's input interpretation, the result,
+the other sections under their own headings and the link to the website's
+result page lifted out, so a reply can say what Wolfram understood the
+question to be and quote its result; `maxchars` caps the text (6,800 by
+default), `units` is metric or imperial, and `assumption` resends the same
+input under an assumption an earlier answer offered. `wolfram_answer(input,
+units)` is Short Answers' one line for the main result, for a figure to carry
+on with. A 501 (the input not interpreted, or no short result) comes back
+with Wolfram's own words as `wolfram_said`, and the server never changes the
+question on its own; a refused AppID is said (Wolfram answers 401 `Invalid
+appid` in plain text, probed 2026-10-16, where its documentation says 403).
+Answers are cached an hour, keyed by the input and its options alone. The
+index tells the model how Wolfram wants an input phrased (one line of English
+keywords, exponents as `6*10^14`, one property per call, an assumption before
+a rephrase), that each call counts against the month, and that Wolfram
+computes on figures the person or another tool supplied and reads none of the
+institution's own. Offline tests run on text in the shape the LLM API's
+documentation shows; the live check waits on an AppID.
 
 ### openalex
 

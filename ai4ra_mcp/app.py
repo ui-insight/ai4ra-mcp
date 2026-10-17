@@ -84,6 +84,7 @@ from ai4ra_mcp.servers.udm.server import mcp as udm
 from ai4ra_mcp.servers.uidaho.server import mcp as uidaho
 from ai4ra_mcp.servers.usaspending.server import mcp as usaspending
 from ai4ra_mcp.servers.weather.server import mcp as weather
+from ai4ra_mcp.servers.wolfram.server import mcp as wolfram
 
 # Index order is picker order: the general fold first, then the research-administration skills, then the public
 # upstreams grouped by the job they serve (the rules and announcements, the awards held, the vetting lists, the
@@ -93,7 +94,7 @@ SERVERS: dict[str, MCPServer] = {
     "ecfr": ecfr, "fedreg": fedreg, "regulations": regulations, "idstat": idstat, "govinfo": govinfo, "congress": congress, "grants": grants, "s2s": s2s, "pappg": pappg, "nihgps": nihgps, "nihguide": nihguide, "nihdates": nihdates, "omb": omb, "ncura": ncura,
     "nih": nih, "nsf": nsf, "usaspending": usaspending,
     "sam": sam, "fac": fac, "csl": csl, "oig": oig, "openpayments": openpayments, "propublica": propublica, "ror": ror, "scorecard": scorecard,
-    "perdiem": perdiem, "bls": bls, "treasury": treasury, "osm": osm, "weather": weather,
+    "perdiem": perdiem, "bls": bls, "treasury": treasury, "osm": osm, "weather": weather, "wolfram": wolfram,
     "openalex": openalex, "pubmed": pubmed, "icite": icite, "crossref": crossref, "datacite": datacite, "re3data": re3data, "orcid": orcid, "osti": osti, "clinicaltrials": clinicaltrials,
     "clickup": clickup, "github": github,
     "uidaho": uidaho, "classes": classes, "directory": directory, "events": events, "campusmap": campusmap, "costs": costs, **lakehouse.SERVERS,
@@ -157,6 +158,8 @@ META: dict[str, dict] = {
     "treasury": {"label": "Treasury exchange rates", "description": "The Treasury Reporting Rates of Exchange, the government's quarterly rates for converting foreign currency on a federal award: the currencies, a currency's rates by quarter, and a foreign amount in dollars at the rate in effect on the transaction's date. No key."},
     "osm": {"label": "OpenStreetMap", "description": "OpenStreetMap's public services: a place by name with its coordinates (Nominatim) and a walking, cycling or driving route between two points with turn-by-turn steps (the FOSSGIS Valhalla server). No key; one call a second, fair use, attribution required."},
     "weather": {"label": "Weather", "description": "The National Weather Service for a point in the United States: the seven-day forecast by half-day or 48 hours by the hour, the latest observation at the nearest station, and the watches, warnings and advisories in force. No key; a campus point comes from the campusmap server."},
+    "wolfram": {"label": "Wolfram|Alpha", "description": "Wolfram|Alpha with the person's own AppID: a computed answer with Wolfram's interpretation of the question beside it, or one line for the main result, for arithmetic, unit and currency conversions, dates and durations, statistics, and scientific facts and formulas, so a number is checked by a tool rather than recalled.",
+                "key": {"required": True, "hint": "Paste your Wolfram|Alpha AppID, from https://developer.wolframalpha.com/ (free for non-commercial use, 2,000 calls a month)."}},
     "openalex": {"label": "OpenAlex", "description": "Publications by author, institution, funder or award number, counted by year, funder, institution or topic; one work by DOI with its abstract; what cites a work and what it cites; authors, institutions and funders by name. A key is optional.",
                  "key": {"required": False, "hint": "Optional: paste your OpenAlex API key (free at openalex.org/settings/api) to spend your own $1-a-day budget instead of the $0.10 everyone without a key shares."}},
     "pubmed": {"label": "PubMed", "description": "Papers by grant number, author or affiliation with PMID, DOI and PMCID for NIH public access compliance; one paper's abstract, MeSH terms and grant acknowledgments; PMID/PMCID/DOI conversion.",
