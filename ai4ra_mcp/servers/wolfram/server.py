@@ -133,7 +133,8 @@ async def wolfram_index() -> dict:
         "notes": ["A 501 means Wolfram could not interpret the input; its own words come back as wolfram_said, sometimes with inputs to try. The server never changes the question on its own.",
                   "Short Answers (wolfram_answer) fails with 501 when no sufficiently short result exists; wolfram_ask then has the full answer.",
                   f"wolfram_ask's text is capped at maxchars characters, {MAXCHARS} by default; raise it for a long table, lower it for a one-line fact with its interpretation.",
-                  "Answers are cached an hour, so repeating a call within the hour costs no quota.",
+                  "Answers are cached an hour, so repeating the same input within the hour costs no quota; a different input always costs one.",
+                  "A table of values is one call, for the formula, not one call per row: ask Wolfram for the derivative, the rate or the expression once, and compute the rows from it. Every call counts against the month.",
                   "Wolfram|Alpha computes; it does not read this institution's rates, policies or budgets. Rates come from their own servers, and Wolfram does the arithmetic on figures the person or a tool supplied."],
     }
 

@@ -1410,7 +1410,8 @@ appid` in plain text, probed 2026-10-16, where its documentation says 403).
 Answers are cached an hour, keyed by the input and its options alone. The
 index tells the model how Wolfram wants an input phrased (one line of English
 keywords, exponents as `6*10^14`, one property per call, an assumption before
-a rephrase), that each call counts against the month, and that Wolfram
+a rephrase), that each call counts against the month so a table of values
+is one call for the formula and not one per row, and that Wolfram
 computes on figures the person or another tool supplied and reads none of the
 institution's own. The portal's Get an AppID form asks for one API; an AppID
 registered for the LLM API answered Short Answers too (verified 2026-10-16).

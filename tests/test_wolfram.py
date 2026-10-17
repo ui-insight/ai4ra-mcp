@@ -95,7 +95,7 @@ async def test_without_a_key_both_tools_say_so(monkeypatch):
         assert "no API key" in out["error"] and "developer.wolframalpha.com" in out["error"] and out["do_not"].startswith("Do not answer")
     assert calls == []
     idx = await w.wolfram_index()
-    assert idx["key"]["on_this_request"] is False and "2,000 calls a month" in idx["key"]["terms"] and any("6*10^14" in p for p in idx["phrasing"])
+    assert idx["key"]["on_this_request"] is False and "2,000 calls a month" in idx["key"]["terms"] and any("6*10^14" in p for p in idx["phrasing"]) and any("not one call per row" in n for n in idx["notes"])
 
 
 async def test_statuses_are_said_in_wolframs_words(monkeypatch):
