@@ -71,6 +71,7 @@ from ai4ra_mcp.servers.orcid.server import mcp as orcid
 from ai4ra_mcp.servers.osm.server import mcp as osm
 from ai4ra_mcp.servers.osti.server import mcp as osti
 from ai4ra_mcp.servers.perdiem.server import mcp as perdiem
+from ai4ra_mcp.servers.perseus.server import mcp as perseus
 from ai4ra_mcp.servers.propublica.server import mcp as propublica
 from ai4ra_mcp.servers.pubmed.server import mcp as pubmed
 from ai4ra_mcp.servers.re3data.server import mcp as re3data
@@ -97,7 +98,7 @@ SERVERS: dict[str, MCPServer] = {
     "nih": nih, "nsf": nsf, "usaspending": usaspending,
     "sam": sam, "fac": fac, "csl": csl, "oig": oig, "openpayments": openpayments, "propublica": propublica, "ror": ror, "scorecard": scorecard,
     "perdiem": perdiem, "bls": bls, "treasury": treasury, "osm": osm, "weather": weather, "wolfram": wolfram,
-    "openalex": openalex, "pubmed": pubmed, "icite": icite, "crossref": crossref, "datacite": datacite, "re3data": re3data, "orcid": orcid, "osti": osti, "clinicaltrials": clinicaltrials, "wikidata": wikidata,
+    "openalex": openalex, "pubmed": pubmed, "icite": icite, "crossref": crossref, "datacite": datacite, "re3data": re3data, "orcid": orcid, "osti": osti, "clinicaltrials": clinicaltrials, "wikidata": wikidata, "perseus": perseus,
     "clickup": clickup, "github": github,
     "uidaho": uidaho, "classes": classes, "directory": directory, "events": events, "campusmap": campusmap, "costs": costs, "library": library, **lakehouse.SERVERS,
 }
@@ -175,6 +176,7 @@ META: dict[str, dict] = {
     "osti": {"label": "OSTI.GOV", "description": "What a DOE award reported: papers, technical reports, data and software in OSTI by contract number, author, institution or words."},
     "clinicaltrials": {"label": "ClinicalTrials.gov", "description": "Clinical studies by condition, intervention, sponsor or status, and one study's registration and results dates, grant ids and design."},
     "wikidata": {"label": "Wikidata", "description": "Wikidata, the structured knowledge base behind Wikipedia: an entity by name, its statements with properties and values resolved to labels (who influenced whom, a school's members, dates, works, positions, places, the identifiers that join to ORCID and ROR), and a read-only SPARQL query for list questions. No key; the query quota is shared."},
+    "perseus": {"label": "Perseus", "description": "The Perseus Digital Library's Greek and Latin texts through the Scaife Viewer: the library's authors and corpora, an author's works, a work's versions (the original and its translations) with their tables of contents, a passage by CTS URN as plain text and the same reference in another version, and a search of the library for a word. No key."},
     "clickup": {"label": "ClickUp", "description": "Your ClickUp, with your own token: who you are, your workspaces, spaces, folders and lists, and your tasks across the workspace, in a list or by id. Read only unless the deployment turns writes on.",
                 "key": {"required": True, "hint": "Paste your ClickUp personal API token (avatar, Settings, Apps, Generate API Token; it starts with pk_). It acts as you."}},
 }

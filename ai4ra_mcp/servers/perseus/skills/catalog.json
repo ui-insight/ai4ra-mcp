@@ -1,0 +1,7 @@
+{
+  "catalog_version": "1.0",
+  "repo": "ui-insight/ai4ra-mcp",
+  "server": "perseus",
+  "note": "Skills that use the perseus server's tools. None yet.",
+  "components": []
+}

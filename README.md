@@ -110,6 +110,7 @@ works without one and a key raises its quota.
 | `/osti/mcp` | OSTI.GOV | none | `osti_index`, `osti_search`, `osti_record` | none |
 | `/clinicaltrials/mcp` | ClinicalTrials.gov | none | `clinicaltrials_index`, `clinicaltrials_search`, `clinicaltrials_study` | none |
 | `/wikidata/mcp` | Wikidata's action API and the Wikidata Query Service | none (the query quota is shared) | `wikidata_index`, `wikidata_search`, `wikidata_entity`, `wikidata_sparql` | none |
+| `/perseus/mcp` | the Perseus Digital Library through the Scaife Viewer's JSON pages | none | `perseus_index`, `perseus_library`, `perseus_passage`, `perseus_search` | none |
 
 **Project trackers**
 
@@ -1686,6 +1687,40 @@ day, a search an hour, a query five minutes (the Service's own max-age).
 Data is CC0. Offline tests run on a search, a property search, Kant's item
 (336 properties), an unknown id, a label batch and a SPARQL result captured
 2026-10-19 in `tests/fixtures/wikidata/`.
+
+### perseus
+
+The Perseus Digital Library's Greek and Latin texts through the Scaife
+Viewer, https://scaife.perseus.org, every page of which has a JSON twin, no
+key. `perseus_library(urn, query)` is the catalog at any level: the 557
+authors and corpora with a word filter on their labels (no URN), an
+author's works with their labels read from each work's record (the listing
+carries URNs alone; up to 80 works, four at a time, cached a day), a work's
+versions (the Greek or Latin edition and its translations) each with
+language, kind, the editor or translator from its description, its first
+passage and its table of contents, or one version. `perseus_passage(urn,
+with_version)` is a passage as the Viewer's plain text with its reference
+in words (Book 1 Section 327), author, work and version, cut at 20,000
+characters when long, and the same reference in another version when one
+is named, so the Greek and the English come together; a reference the
+Viewer lacks is answered with another passage, and the server says so when
+the URN that came back is not the one asked for. `perseus_search(query,
+kind, page, rows)` is the Viewer's search of the library by word form or
+lemma, each hit with the passage URN, author, work, version and the
+snippets with the match marked. URNs come from the listing and search tools
+and are stated as given (`given`); the index explains the CTS URN (author,
+work, version, passage) and asks that a translation be cited by its
+version. The library and texts are cached a day, a search an hour; texts are
+CC BY-SA, and the server asks for four passages at a time at most, since
+the project's updates blame its outages on scraping. Perseus 6, the
+project's next site ("Perseus MVP" at beta.perseus.tufts.edu, announced
+2026-09-29), is static HTML without an API or search, and the project says
+the Scaife Viewer and Perseus 4 will retire some day, with no date and a URL
+converter promised first; the Viewer is the one Perseus with a JSON
+interface, so it is the upstream until that changes. Offline tests run on
+three groups of the root, Plato's works, the Republic and its two versions,
+Republic 1.327a in Greek and English, a missing reference and a search
+captured 2026-10-19 in `tests/fixtures/perseus/`.
 
 ### github
 
