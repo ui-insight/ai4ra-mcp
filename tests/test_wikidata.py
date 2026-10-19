@@ -27,7 +27,8 @@ def _wikidata(monkeypatch, calls=None, sparql_error=None):
         ids = params["ids"].split("|")
         if params["props"] == "labels":
             # Every id gets a label, the real one when the batch fixture has it, so a resolution is checkable.
-            return {"entities": {i: {"id": i, "labels": {"en": {"value": REAL_LABELS.get(i, f"label of {i}")}}} for i in ids}}
+            # Every id gets a label, the real one when the batch fixture has it; Q18960 (Porifera) only the all-languages one, as Wikidata has it.
+            return {"entities": {i: {"id": i, "labels": ({"mul": {"value": "Porifera"}} if i == "Q18960" else {"en": {"value": REAL_LABELS.get(i, f"label of {i}")}})} for i in ids}}
         return F["entity_kant"] if ids == ["Q9312"] else F["entity_bad"]
 
     monkeypatch.setattr(w, "get_json", get_json)
@@ -65,9 +66,11 @@ async def test_entity_resolves_labels_in_batches(monkeypatch):
     calls = _wikidata(monkeypatch)
     out = await w.wikidata_entity("Q9312")
     first = calls[0][1]
-    assert first["action"] == "wbgetentities" and first["ids"] == "Q9312" and first["props"] == "labels|descriptions|aliases|claims|sitelinks" and first["sitefilter"] == "enwiki"
+    assert first["action"] == "wbgetentities" and first["ids"] == "Q9312" and first["props"] == "labels|descriptions|aliases|claims|sitelinks" and first["sitefilter"] == "enwiki" and first["languages"] == "en|mul"
     label_calls = [c for c in calls[1:] if c[1]["props"] == "labels"]
-    assert label_calls and all(len(c[1]["ids"].split("|")) <= 50 for c in label_calls) and sum(len(c[1]["ids"].split("|")) for c in label_calls) <= w.MAX_IDS
+    assert label_calls and all(len(c[1]["ids"].split("|")) <= 50 and c[1]["languages"] == "en|mul" for c in label_calls) and sum(len(c[1]["ids"].split("|")) for c in label_calls) <= w.MAX_IDS
+    assert (await w.labels_for(["Q18960", "Q37160"], "en")) == {"Q18960": "Porifera", "Q37160": "David Hume"}
+    assert w.term({"labels": {"mul": {"value": "Porifera"}}}, "labels", "en") == "Porifera" and w.term({"labels": {}}, "labels", "en") is None
     assert out["label"] == "Immanuel Kant" and out["description"] == "German philosopher (1724-1804)" and out["wikipedia"] == {"title": "Immanuel Kant", "url": "https://en.wikipedia.org/wiki/Immanuel_Kant"}
     by = {s["property"]["id"]: s for s in out["statements"]}
     assert "P569" in by and by["P569"]["property"]["label"] == "date of birth" and by["P569"]["values"][0]["value"] == "1724-04-22" and by["P569"]["values"][0]["references"] == 9

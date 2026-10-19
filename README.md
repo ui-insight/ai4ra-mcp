@@ -1670,7 +1670,9 @@ query.wikidata.org (SPARQL, JSON results). `wikidata_search(query, type,
 language, rows)` is the matching items or properties with id, label,
 description and page. `wikidata_entity(id, properties, language,
 identifiers)` is one entity with its statements grouped by property, every
-property and item value resolved to a label in batches of fifty, dates at
+property and item value resolved to a label in batches of fifty (in the
+language asked for, else Wikidata's all-languages label, where a taxon name
+like Porifera lives), dates at
 their own precision (1724-04-22, 1740, a century marked, a Julian date
 said), quantities with their unit's label, qualifiers and the count of
 references, deprecated statements left out and external identifiers left

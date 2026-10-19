@@ -147,14 +147,23 @@ async def _api(params: dict, ttl: float) -> dict:
     return await _cache.remember(key, ttl, lambda: get_json(API, params))
 
 
+MUL = "mul"  # Wikidata's label for every language at once, where a taxon name or a proper name with one spelling lives
+
+
+def term(ent: dict, kind: str, language: str) -> str | None:
+    """An entity's label or description in the language, else its all-languages (mul) one, else None."""
+    terms = ent.get(kind) or {}
+    return (terms.get(language) or terms.get(MUL) or {}).get("value")
+
+
 async def labels_for(ids: list[str], language: str) -> dict[str, str]:
-    """Labels for up to MAX_IDS ids, fifty a call (the API's limit), each batch cached a day."""
+    """Labels for up to MAX_IDS ids, fifty a call (the API's limit), in the language or the all-languages one, each batch cached a day."""
     out: dict[str, str] = {}
     for i in range(0, len(ids), BATCH):
         batch = ids[i:i + BATCH]
-        body = await _api({"action": "wbgetentities", "ids": "|".join(batch), "props": "labels", "languages": language}, DAY)
+        body = await _api({"action": "wbgetentities", "ids": "|".join(batch), "props": "labels", "languages": f"{language}|{MUL}"}, DAY)
         for eid, ent in (body.get("entities") or {}).items():
-            lab = (ent.get("labels") or {}).get(language, {}).get("value")
+            lab = term(ent, "labels", language)
             if lab:
                 out[eid] = lab
     return out
@@ -192,7 +201,7 @@ async def wikidata_index() -> dict:
                    f"wikidata_entity resolves up to {MAX_IDS} ids to labels, fifty a call; wikidata_sparql returns up to {MAX_ROWS} rows and says when it cut.",
                    "An entity is cached a day, a search an hour, a query result five minutes."],
         "notes": ["Wikidata is crowd-maintained: a statement without references is a claim someone entered, and a date or relation worth relying on is checked on the item page or in a cited source.",
-                  "Labels and descriptions come in the language asked for (two-letter code, 'en' by default); an item without a label in that language shows its id alone."],
+                  "Labels and descriptions come in the language asked for (two-letter code, 'en' by default), else in Wikidata's all-languages label, which is where a taxon name (Porifera) or a name spelled the same everywhere lives; an item with neither shows its id alone."],
     }
 
 
@@ -247,7 +256,7 @@ async def wikidata_entity(id: str, properties: str = "", language: str = "en", i
     if any(not _ID.match(p) or not p.startswith("P") for p in keep):
         return {"error": "properties must be P-ids separated by commas, e.g. 'P737,P800'"}
     try:
-        body = await _api({"action": "wbgetentities", "ids": eid, "props": "labels|descriptions|aliases|claims|sitelinks", "languages": lang, "sitefilter": f"{lang}wiki"}, DAY)
+        body = await _api({"action": "wbgetentities", "ids": eid, "props": "labels|descriptions|aliases|claims|sitelinks", "languages": f"{lang}|{MUL}", "sitefilter": f"{lang}wiki"}, DAY)
     except ValueError as e:
         return {"error": str(e)}
     if body.get("error"):
@@ -264,9 +273,8 @@ async def wikidata_entity(id: str, properties: str = "", language: str = "en", i
     sts, skipped = statements(ent, labels, identifiers)
     sitelink = (ent.get("sitelinks") or {}).get(f"{lang}wiki")
     return {
-        "id": eid, "type": ent.get("type"), "label": (ent.get("labels") or {}).get(lang, {}).get("value"),
-        "description": (ent.get("descriptions") or {}).get(lang, {}).get("value"),
-        "aliases": [a["value"] for a in (ent.get("aliases") or {}).get(lang, [])],
+        "id": eid, "type": ent.get("type"), "label": term(ent, "labels", lang), "description": term(ent, "descriptions", lang),
+        "aliases": [a["value"] for a in (ent.get("aliases") or {}).get(lang) or (ent.get("aliases") or {}).get(MUL) or []],
         "wikipedia": {"title": sitelink["title"], "url": f"https://{lang}.wikipedia.org/wiki/{sitelink['title'].replace(' ', '_')}"} if sitelink else None,
         "datatype": ent.get("datatype"), "language": lang, "statements": sts, "statement_count": sum(len(s["values"]) for s in sts),
         "identifiers_left_out": skipped, "modified": ent.get("modified"), "link": entity_page(eid),
