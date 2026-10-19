@@ -75,11 +75,15 @@ async def test_search_builds_the_request_and_slims(monkeypatch):
     out = await lib.library_search("wheat breeding", available=True, rows=3)
     assert calls[-1][1]["qInclude"] == "facet_tlevel,exact,available_p" and out["available"] is True and all(h["availability"] == "available_in_library" for h in out["hits"]) and out["total_central"] == 0
     out = await lib.library_search("wheat breeding", field="title", type="articles", rows=3)
-    assert calls[-1][1]["q"] == "title,contains,wheat breeding" and calls[-1][1]["qInclude"] == "facet_rtype,exact,articles" and out["hits"][0]["doi"] == "10.1111/tpj.16190" and out["total_local"] == 0
+    assert calls[-1][1]["q"] == "title,exact,wheat breeding" and calls[-1][1]["qInclude"] == "facet_rtype,exact,articles" and "multiFacets" not in calls[-1][1] and out["hits"][0]["doi"] == "10.1111/tpj.16190" and out["total_local"] == 0
     assert all("openurl" not in h for h in out["hits"])
     await lib.library_search("9780393056006", field="isbn", type="books", available=True, scope="special", sort="date")
     p = calls[-1][1]
-    assert p["q"] == "isbn,exact,9780393056006" and p["qInclude"] == "facet_rtype,exact,books|,|facet_tlevel,exact,available_p" and p["tab"] == "SPECAW_Slot" and p["scope"] == "SPECAW" and p["sort"] == "date"
+    assert p["q"] == "isbn,exact,9780393056006" and p["multiFacets"] == "facet_rtype,include,books|,|facet_rtype,include,pbooks" and p["qInclude"] == "facet_tlevel,exact,available_p" and p["tab"] == "SPECAW_Slot" and p["scope"] == "SPECAW" and p["sort"] == "date"
+    await lib.library_search("x", type="pbooks")
+    assert calls[-1][1]["qInclude"] == "facet_rtype,exact,pbooks" and "multiFacets" not in calls[-1][1]
+    await lib.library_search("x", type="ebooks")
+    assert calls[-1][1]["qInclude"] == "facet_rtype,exact,books"
     out = await lib.library_search("zzqxv florp")
     assert out["returned"] == 0 and out["total"] == 0 and "One more search" in out["note"] and "ask the person" in out["note"] and "next_offset" not in out
 
@@ -105,7 +109,7 @@ async def test_arguments_and_down(monkeypatch):
     assert "field must be" in (await lib.library_search("x", field="publisher"))["error"]
     assert "scope must be" in (await lib.library_search("x", scope="all"))["error"]
     assert "sort must be" in (await lib.library_search("x", sort="newest"))["error"]
-    assert "type must be" in (await lib.library_search("x", type="ebooks"))["error"]
+    assert "type must be" in (await lib.library_search("x", type="comics"))["error"]
     _catalog(monkeypatch, down=True)
     out = await lib.library_search("wheat")
     assert out["error"].startswith("503 from") and out["link"] == lib.SEARCH_PAGE

@@ -32,9 +32,11 @@ HEADERS = {"User-Agent": "Mozilla/5.0 (compatible; ai4ra-mcp/0.1; +https://githu
 SCOPES = {"everything": ("Everything", "DN_and_CI"), "reserves": ("CourseReserves", "CourseReserves"), "special": ("SPECAW_Slot", "SPECAW")}
 FIELDS = {"any": "any", "title": "title", "creator": "creator", "author": "creator", "subject": "sub", "isbn": "isbn", "issn": "issn"}
 SORTS = ("rank", "date", "title", "author")
-# Primo's resource-type facet values. books and articles were probed; the rest are the facet's own vocabulary as the
-# discovery page shows it, passed through as given.
-TYPES = ("books", "articles", "journals", "dissertations", "book_chapters", "conference_proceedings", "reviews", "newspaper_articles",
+# Primo's resource-type facet values, the facet's own vocabulary as the discovery page shows it, passed through as given.
+# Print books are the value pbooks and e-books the value books, so 'books' here is both, OR-ed through multiFacets (a search
+# for Pratchett with the books value alone found two e-books and none of the novels on the shelf, 2026-10-19); 'pbooks' and
+# 'ebooks' pick one of them.
+TYPES = ("pbooks", "ebooks","books", "articles", "journals", "dissertations", "book_chapters", "conference_proceedings", "reviews", "newspaper_articles",
          "government_documents", "reference_entrys", "videos", "audios", "images", "maps", "scores", "databases", "archival_material_manuscripts", "other")
 # What Primo's availability codes meant on the records probed 2026-10-19, in the catalog's own terms.
 AVAILABILITY = {
@@ -129,7 +131,8 @@ async def library_index() -> dict:
         "scopes": {"everything": "the local catalog and the central index of articles and e-resources together (the catalog's Everything tab); the default", "reserves": "Course Reserves", "special": "Special Collections and Archives"},
         "fields": sorted(FIELDS), "types": list(TYPES), "sorts": list(SORTS),
         "availability": AVAILABILITY,
-        "notes": ["Totals come as total_local (the library's own catalog) and total_central (the central index), and the hits are Primo's ranking of both unless sort says otherwise.",
+        "notes": ["Totals come as total_local (the library's own catalog) and total_central (the central index), and the hits are the first rows of Primo's ranking of both unless sort says otherwise: a title not among the ten returned is not thereby absent when the total is larger; narrow with type or available, or page with offset, before concluding.",
+                  "field='title' matches the words as a phrase in the title ('small gods' finds Small Gods and not The God of Small Things); field='any' matches the words anywhere in any order. type='books' is print and e-books together; 'pbooks' print alone.",
                   "location is the best physical copy's library, location (floor or collection), call number and status; holdings in library_record list every copy. A Special Collections copy is for reading-room use only, as its location says.",
                   "Online items reach their full text from the record's catalog page (link), through the library's link resolver, which may ask for a university login; library_record carries the resolver URL (openurl). Whether the university licenses an article is what the availability code says, not whether it exists.",
                   "A hit carries up to eight subjects; library_record carries them all.",
@@ -152,8 +155,8 @@ async def library_search(query: str, field: str = "any", type: str = "", availab
 
     Args:
         query: Words, a title, a name, a subject, an ISBN or an ISSN, e.g. 'wheat breeding', 'Idaho a bicentennial history', '9780393056006'.
-        field: 'any' (default), 'title', 'author', 'subject', 'isbn' or 'issn'.
-        type: A resource type to keep, e.g. 'books' or 'articles'; empty for all. library_index lists them.
+        field: 'any' (default, the words anywhere), 'title' (matched as a phrase), 'author', 'subject', 'isbn' or 'issn'.
+        type: A resource type to keep: 'books' (print and e-books), 'pbooks' (print only), 'ebooks', 'articles' and the rest library_index lists; empty for all.
         available: True keeps physical copies on the shelf here. Default False.
         scope: 'everything' (default), 'reserves' (Course Reserves) or 'special' (Special Collections and Archives).
         sort: 'rank' (default), 'date', 'title' or 'author'.
@@ -174,14 +177,19 @@ async def library_search(query: str, field: str = "any", type: str = "", availab
     if t and t not in TYPES:
         return {"error": f"type must be one of {list(TYPES)} or empty"}
     tab, scope_id = SCOPES[scope]
-    operator = "exact" if f in ("isbn", "issn") else "contains"
+    # A title is matched as a phrase (Primo's exact operator), since contains ranks every record with the words somewhere
+    # and buried Pratchett's Small Gods below ten sermons (2026-10-19); isbn and issn are exact; the rest contain the words.
+    operator = "exact" if f in ("isbn", "issn", "title") else "contains"
     # Primo ignores case, so the query is lowered before it is sent and the cache sees one search for "Emperors" and "emperors".
     q = q.lower()
     params: dict = {"q": f"{f},{operator},{q}", "vid": VID, "tab": tab, "scope": scope_id, "inst": INST, "lang": "en",
                     "offset": max(0, int(offset or 0)), "limit": max(1, min(int(rows or 10), 50)), "pcAvailability": "false", "sort": sort}
-    include = ([f"facet_rtype,exact,{t}"] if t else []) + (["facet_tlevel,exact,available_p"] if available else [])
-    if include:
-        params["qInclude"] = "|,|".join(include)
+    if t == "books":
+        params["multiFacets"] = "facet_rtype,include,books|,|facet_rtype,include,pbooks"
+    elif t:
+        params["qInclude"] = f"facet_rtype,exact,{'books' if t == 'ebooks' else t}"
+    if available:
+        params["qInclude"] = "|,|".join(x for x in (params.get("qInclude"), "facet_tlevel,exact,available_p") if x)
     try:
         body = await _get("", params)
     except ValueError as e:

@@ -2130,10 +2130,12 @@ The University of Idaho Library's catalog: Primo VE on the Orbis Cascade
 Alliance's Ex Libris host, `alliance-uidaho.primo.exlibrisgroup.com`, read
 through the public REST endpoint the discovery page itself calls
 (`/primaws/rest/pub/pnxs`), no token or key. `library_search(query, field,
-type, available, scope, sort, offset, rows)` is the catalog's hits by words,
-title, author, subject, ISBN or ISSN, narrowed to a resource type (books,
-articles and the rest of Primo's facet) or to physical copies on the shelf
-here, in the Everything scope (the local catalog and the central index
+type, available, scope, sort, offset, rows)` is the catalog's hits by words
+anywhere, a title matched as a phrase, author, subject, ISBN or ISSN,
+narrowed to a resource type (books, which is Primo's print and e-book
+values OR-ed, since the e-book value alone hid every Pratchett novel on the
+shelf on 2026-10-19; print or e-books alone; articles and the rest of the
+facet) or to physical copies on the shelf here, in the Everything scope (the local catalog and the central index
 together), Course Reserves or Special Collections and Archives; each hit
 with id, title, creators, type, publisher, year, format, ISBN or ISSN, DOI,
 the journal citation for an article, up to eight subjects, Primo's
