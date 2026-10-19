@@ -15,7 +15,7 @@ import io
 import re
 import socket
 from html.parser import HTMLParser
-from urllib.parse import urlsplit
+from urllib.parse import urljoin, urlsplit
 
 import httpx
 
@@ -56,16 +56,19 @@ def _check_url(url: str) -> str | None:
 
 
 class _Text(HTMLParser):
-    """Visible text of an HTML document: scripts, styles and nav dropped, block boundaries kept."""
+    """Visible text of an HTML document: scripts, styles and nav dropped, block boundaries kept, and the address
+    of every frame the page embeds, since a frame's content is a page of its own and is not in this one."""
 
     _SKIP = {"script", "style", "noscript", "template", "svg"}   # head keeps only <title>, since meta and link carry no text
     _BLOCK = {"p", "div", "br", "li", "ul", "ol", "tr", "table", "section", "article", "header", "footer",
               "h1", "h2", "h3", "h4", "h5", "h6", "dt", "dd", "blockquote", "pre", "hr", "nav", "aside", "main"}
     _CELL = {"td", "th"}
 
-    def __init__(self) -> None:
+    def __init__(self, base: str = "") -> None:
         super().__init__(convert_charrefs=True)
         self.parts: list[str] = []
+        self.frames: list[str] = []
+        self._base = base
         self._skip = 0
         self.title = ""
         self._in_title = False
@@ -73,6 +76,11 @@ class _Text(HTMLParser):
     def handle_starttag(self, tag, attrs):
         if tag in self._SKIP:
             self._skip += 1
+        elif tag in ("iframe", "frame") and not self._skip:
+            src = urljoin(self._base, (dict(attrs).get("src") or "").strip())
+            if src.split(":")[0].lower() in ("http", "https") and src not in self.frames:
+                self.frames.append(src)
+                self.parts.append(f"\n[frame: {src}]\n")
         elif tag == "title" and not self._skip and not self.title:   # the document's title, not an SVG icon's
             self._in_title = True
         elif tag in self._BLOCK:
@@ -97,16 +105,22 @@ class _Text(HTMLParser):
             self.parts.append(data)
 
 
-def html_to_text(raw: str) -> tuple[str, str]:
-    """(title, text) for an HTML document."""
-    p = _Text()
+def html_page(raw: str, base: str = "") -> tuple[str, str, list[str]]:
+    """(title, text, frames) for an HTML document: the frames are the http(s) addresses of the iframes it embeds,
+    resolved against `base`, in page order, each also marked in the text as [frame: address] where it sits."""
+    p = _Text(base)
     p.feed(raw)
     p.close()
     text = "".join(p.parts)
     text = re.sub(r"[ \t\r\f\v]+", " ", text)
     text = re.sub(r" ?\n ?", "\n", text)
     text = re.sub(r"\n{3,}", "\n\n", text)
-    return html.unescape(p.title).strip(), text.strip()
+    return html.unescape(p.title).strip(), text.strip(), p.frames
+
+
+def html_to_text(raw: str) -> tuple[str, str]:
+    """(title, text) for an HTML document."""
+    return html_page(raw)[:2]
 
 
 def pdf_to_text(data: bytes) -> str:
@@ -270,7 +284,7 @@ async def fetch_document(url: str, offset: int = 0, max_chars: int = 12_000) -> 
 
     ctype = resp.headers.get("content-type", "").split(";")[0].strip().lower()
     is_pdf = ctype == "application/pdf" or body[:5] == b"%PDF-" or current.lower().split("?")[0].endswith(".pdf")
-    title = ""
+    title, frames = "", []
     if is_pdf:
         try:
             text = pdf_to_text(body)
@@ -278,7 +292,7 @@ async def fetch_document(url: str, offset: int = 0, max_chars: int = 12_000) -> 
             return {"error": f"the PDF could not be read: {e}", "url": current}
         kind = "pdf"
     elif ctype.startswith("text/html") or ctype in ("application/xhtml+xml", ""):
-        title, text = html_to_text(resp.text)
+        title, text, frames = html_page(resp.text, current)
         kind = "html"
     elif ctype.startswith("text/"):
         text = resp.text
@@ -290,14 +304,23 @@ async def fetch_document(url: str, offset: int = 0, max_chars: int = 12_000) -> 
         return {"error": "no readable text was found (an image-only PDF or a script-rendered page; for grants.gov, give the opportunity link, for NSF, the solicitation PDF)", "url": current, "kind": kind}
     # An application shell: a page whose HTML is nearly all scripts and holds only a few words (Esploro research
     # portals, many single-page apps). Say so rather than hand back the stub as if it were the page.
-    if kind == "html" and len(text) < 300 and resp.text.count("<script") >= 3:
+    if kind == "html" and len(text) < 300 and resp.text.count("<script") >= 3 and not frames:
         return {"error": "this page is rendered by scripts in the browser; the fetch returned only its shell (" + text[:120].replace("\n", " ") + "). "
                          "The content cannot be read this way. Ask the user for the information, a PDF or a plain-HTML page, or use it only as a link.",
                 "url": current, "kind": "html", "title": title, "script_rendered": True}
     out = _page(current, kind, title, text, offset, max_chars)
+    notes = []
+    if frames:
+        # A calendar, a schedule or a form is often another page shown inside this one; the browser shows it in
+        # place, the fetch does not, so the model is told where it is instead of reading only the fallback text.
+        out["frames"] = frames
+        notes.append(f"The page embeds {len(frames)} frame{'s' if len(frames) > 1 else ''} (marked [frame: address] in the text); a frame's content "
+                     "is not in this text. Read a frame with fetch_document on its address when the answer is in it.")
     if tls_unverified:
         out["tls_unverified"] = True
-        out["note"] = "The site's certificate could not be verified, so this text was read without TLS verification; treat it as unconfirmed."
+        notes.append("The site's certificate could not be verified, so this text was read without TLS verification; treat it as unconfirmed.")
+    if notes:
+        out["note"] = " ".join(notes)
     return out
 
 

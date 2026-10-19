@@ -489,8 +489,12 @@ bodies over 8 MB are refused, and only HTML, PDF and plain text are read. A
 grants.gov opportunity link is answered from the grants.gov API instead,
 since the page itself is rendered by script; any other script-rendered
 shell is reported as such rather than handed back as if it were the page. A
-site whose certificate chain does not verify is read anyway and the result
-says so (`tls_unverified`).
+page that embeds other pages (a calendar, a schedule or a form in an iframe,
+whose text the fetch cannot see) lists their addresses under `frames`, marks
+each `[frame: address]` where it sits in the text, and says in `note` that a
+frame is read with another call; `about:blank`, `javascript:` and frames
+inside `noscript` are not listed. A site whose certificate chain does not
+verify is read anyway and the result says so (`tls_unverified`).
 
 ### ai4ra
 
