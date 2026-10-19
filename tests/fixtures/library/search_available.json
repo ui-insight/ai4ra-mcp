@@ -1,0 +1,635 @@
+{"beaconO22":"349",
+  "info" : {
+    "totalResultsLocal" : 145,
+    "totalResultsPC" : 0,
+    "total" : 145,
+    "first" : 1,
+    "last" : 3
+  },
+  "highlights" : {
+    "termsUnion" : [ "Wheat", "Breeding", "wheat", "breeding" ],
+    "subject" : [ "Wheat", "Breeding", "wheat" ],
+    "toc" : [ "wheat", "breeding", "Wheat", "Breeding" ],
+    "title" : [ "Wheat", "breeding", "wheat" ]
+  },
+  "docs" : [ {
+    "context" : "L",
+    "adaptor" : "Local Search Engine",
+    "@id" : "https://na01.alma.exlibrisgroup.com/primaws/rest/pub/pnxs/L/9922378901851",
+    "pnx" : {
+      "display" : {
+        "source" : [ "Alma" ],
+        "type" : [ "pbooks" ],
+        "language" : [ "eng" ],
+        "title" : [ "Wheat breeding : theory and practice " ],
+        "format" : [ "285, [1] pages : illustrations ; 25 cm" ],
+        "identifier" : [ "$$CISBN$$V963051091X;$$CISBN$$V9789630510912" ],
+        "creationdate" : [ "1976" ],
+        "creator" : [ "Lelley, János.$$QLelley, János." ],
+        "publisher" : [ "Budapest : Akadémiai Kiadó" ],
+        "description" : [ "Includes bibliographical references (pages 224-286)." ],
+        "mms" : [ "9922378901851" ],
+        "place" : [ "Budapest :" ],
+        "version" : [ "0" ],
+        "lds45" : [ "$$Cform$$VOnline version: Lelley, János. Wheat breeding. Budapest : Akadémiai Kiadó, 1976$$QLelley, János. Wheat breeding.$$X(ocolc)686309635" ],
+        "lds88" : [ "J. Lelley ; [translated by E. Vizmathy]" ],
+        "lds90" : [ "Original language(s): $$Tlang.hun$$" ],
+        "lds100" : [ "03111991" ],
+        "subject" : [ "Wheat -- Breeding" ]
+      },
+      "control" : {
+        "sourcerecordid" : [ "9922378901851" ],
+        "recordid" : [ "alma9922378901851" ],
+        "sourceid" : "alma",
+        "originalsourceid" : [ "ocm03111991-01alliance_network" ],
+        "sourcesystem" : [ "OCLC" ],
+        "sourceformat" : [ "MARC21" ],
+        "score" : [ 108753.3 ],
+        "isDedup" : false
+      },
+      "addata" : {
+        "originatingSystemIDAuthor" : [ "n94038462" ],
+        "aulast" : [ "Lelley" ],
+        "aufirst" : [ "János." ],
+        "auinit" : [ "J" ],
+        "au" : [ "Lelley, János." ],
+        "creatorfull" : [ "$$NLelley, János.$$LLelley$$FJános.$$Rauthor" ],
+        "date" : [ "1976" ],
+        "isbn" : [ "963051091X", "9789630510912" ],
+        "notes" : [ "Includes bibliographical references (pages 224-286)." ],
+        "cop" : [ "Budapest" ],
+        "pub" : [ "Akadémiai Kiadó" ],
+        "oclcid" : [ "(ocolc)3111991" ],
+        "lccn" : [ "77151368" ],
+        "ristype" : [ "BOOK" ],
+        "btitle" : [ "Wheat breeding : theory and practice" ]
+      },
+      "sort" : {
+        "title" : [ "Wheat breeding : theory and practice /" ],
+        "author" : [ "Lelley, János." ],
+        "creationdate" : [ "1976" ]
+      },
+      "facets" : {
+        "frbrtype" : [ "6" ]
+      }
+    },
+    "delivery" : {
+      "bestlocation" : {
+        "isValidUser" : true,
+        "organization" : "01ALLIANCE_UID",
+        "libraryCode" : "main",
+        "availabilityStatus" : "available",
+        "subLocation" : "Main Stacks (3rd Floor)",
+        "subLocationCode" : "UIBOOK3",
+        "mainLocation" : "Main Library",
+        "callNumber" : "SB191.W5L5613 1976",
+        "callNumberType" : "0",
+        "holdingURL" : "OVP",
+        "adaptorid" : "ALMA_01",
+        "ilsApiId" : "9922378901851",
+        "holdId" : "22101912930001851",
+        "holKey" : "HoldingResultKey [mid=22101912930001851, libraryId=13656590001851, locationCode=UIBOOK3, callNumber=SB191.W5L5613 1976]",
+        "matchForHoldings" : [ {
+          "matchOn" : "MainLocation",
+          "holdingRecord" : "852##b"
+        } ],
+        "stackMapUrl" : "",
+        "relatedTitle" : null,
+        "translateRelatedTitle" : null,
+        "yearFilter" : null,
+        "volumeFilter" : null,
+        "singleUnavailableItemProcessType" : null,
+        "boundWith" : false,
+        "@id" : "_:0"
+      },
+      "holding" : [ {
+        "isValidUser" : true,
+        "organization" : "01ALLIANCE_UID",
+        "libraryCode" : "main",
+        "availabilityStatus" : "available",
+        "subLocation" : "Main Stacks (3rd Floor)",
+        "subLocationCode" : "UIBOOK3",
+        "mainLocation" : "Main Library",
+        "callNumber" : "SB191.W5L5613 1976",
+        "callNumberType" : "0",
+        "holdingURL" : "OVP",
+        "adaptorid" : "ALMA_01",
+        "ilsApiId" : "9922378901851",
+        "holdId" : "22101912930001851",
+        "holKey" : "HoldingResultKey [mid=22101912930001851, libraryId=13656590001851, locationCode=UIBOOK3, callNumber=SB191.W5L5613 1976]",
+        "matchForHoldings" : [ {
+          "matchOn" : "MainLocation",
+          "holdingRecord" : "852##b"
+        } ],
+        "stackMapUrl" : "",
+        "relatedTitle" : null,
+        "translateRelatedTitle" : null,
+        "yearFilter" : null,
+        "volumeFilter" : null,
+        "singleUnavailableItemProcessType" : null,
+        "boundWith" : false,
+        "@id" : "_:0"
+      } ],
+      "electronicServices" : null,
+      "additionalElectronicServices" : null,
+      "filteredByGroupServices" : null,
+      "quickAccessService" : null,
+      "deliveryCategory" : [ "Alma-P" ],
+      "serviceMode" : [ "ovp" ],
+      "availability" : [ "available_in_library" ],
+      "availabilityLinks" : [ "detailsgetit1" ],
+      "availabilityLinksUrl" : [ ],
+      "displayedAvailability" : null,
+      "displayLocation" : true,
+      "additionalLocations" : false,
+      "titleRequestableAtItemLevel" : false,
+      "physicalItemTextCodes" : null,
+      "feDisplayOtherLocations" : false,
+      "almaInstitutionsList" : [ {
+        "getitLink" : [ {
+          "displayText" : "Alma-P",
+          "linkRecordId" : "99118808330001451"
+        } ],
+        "instCode" : "01ALLIANCE_WSU",
+        "instName" : "Washington State University",
+        "instId" : "1842",
+        "availabilityStatus" : "available_in_institution",
+        "envURL" : ""
+      }, {
+        "getitLink" : [ {
+          "displayText" : "Alma-P",
+          "linkRecordId" : "99118808330001451"
+        } ],
+        "instCode" : "01ALLIANCE_OSU",
+        "instName" : "Oregon State University Libraries and Press",
+        "instId" : "1865",
+        "availabilityStatus" : "available_in_institution",
+        "envURL" : ""
+      } ],
+      "recordInstitutionCode" : null,
+      "recordOwner" : "01ALLIANCE_NETWORK",
+      "hasFilteredServices" : null,
+      "digitalAuxiliaryMode" : false,
+      "digitalAuxiliaryThumbnail" : false,
+      "hideResourceSharing" : false,
+      "sharedDigitalCandidates" : null,
+      "consolidatedCoverage" : null,
+      "electronicContextObjectId" : null,
+      "almaOpenurl" : null,
+      "GetIt1" : [ {
+        "category" : "Alma-P",
+        "links" : [ {
+          "isLinktoOnline" : false,
+          "getItTabText" : "service_getit",
+          "adaptorid" : "ALMA_01",
+          "ilsApiId" : "9922378901851",
+          "link" : "OVP",
+          "inst4opac" : "01ALLIANCE_UID",
+          "displayText" : null,
+          "@id" : "_:0"
+        } ]
+      } ],
+      "physicalServiceId" : null,
+      "link" : [ {
+        "@id" : ":_0",
+        "linkType" : "thumbnail",
+        "linkURL" : "https://proxy-na.hosted.exlibrisgroup.com/exl_rewrite/books.google.com/books?bibkeys=ISBN:9789630510912,OCLC:,LCCN:77151368&jscmd=viewapi&callback=updateGBSCover",
+        "displayLabel" : "thumbnail"
+      } ],
+      "hasD" : null
+    },
+    "enrichment" : {
+      "virtualBrowseObject" : {
+        "isVirtualBrowseEnabled" : true,
+        "callNumber" : "SB191.W5L5613 1976",
+        "callNumberBrowseField" : "0"
+      },
+      "bibVirtualBrowseObject" : {
+        "isVirtualBrowseEnabled" : true,
+        "callNumber" : "sb\"191 w5ǂl5613 1976",
+        "callNumberBrowseField" : "LOC_CL"
+      }
+    }
+  }, {
+    "context" : "L",
+    "adaptor" : "Local Search Engine",
+    "@id" : "https://na01.alma.exlibrisgroup.com/primaws/rest/pub/pnxs/L/99135081801851",
+    "pnx" : {
+      "display" : {
+        "source" : [ "Alma" ],
+        "type" : [ "pbooks" ],
+        "language" : [ "eng" ],
+        "title" : [ "Durum wheat breeding : current approaches and future strategies " ],
+        "format" : [ "2 volumes (xxviii, 1084 pages) : illustrations (some color) ; 23 cm." ],
+        "identifier" : [ "$$CISBN$$V1560223332 (set : hard : alk. paper);$$CISBN$$V9781560223337 (set : hard : alk. paper);$$CISBN$$V1560229667 (v. 1 : hard : alk. paper);$$CISBN$$V9781560229667 (v. 1 : hard : alk. paper);$$CISBN$$V1560229675 (v. 2 : hard : alk. paper);$$CISBN$$V9781560229674 (v. 2 : hard : alk. paper)" ],
+        "creationdate" : [ "©2005" ],
+        "publisher" : [ "Binghamton, NY : Food Products Press" ],
+        "description" : [ "<b>Series statement:</b> Crop science", "Includes bibliographical references and index." ],
+        "mms" : [ "99135081801851" ],
+        "contributor" : [ "Royo, C. (Conxita)$$QRoyo, C." ],
+        "contents" : [ "<p><b>Table of contents</b>: v. 1. pt. I: World distribution and the role of durum wheat breeding; pt. II: Genetics and molecular aspects; pt. III: Physiological bases of durum wheat improvement -- v. 2. pt. IV: Breeding strategy and methodology; pt. V: Applied and strategic research in durum breeding programs.</p>" ],
+        "place" : [ "Binghamton, NY :" ],
+        "version" : [ "0" ],
+        "lds43" : [ "Crop science.$$QCrop science." ],
+        "lds45" : [ "$$Cform$$VOnline version: Durum wheat breeding. Binghamton, NY : Food Products Press, ©2005$$QDurum wheat breeding.$$X(ocolc)690476359" ],
+        "lds70" : [ "Conxita Royo [and others], editors." ],
+        "lds88" : [ "Conxita Royo [and others], editors" ],
+        "lds100" : [ "56526710" ],
+        "subject" : [ "Durum wheat -- Breeding", "Durum wheat -- Genetic engineering" ]
+      },
+      "control" : {
+        "sourcerecordid" : [ "99135081801851" ],
+        "recordid" : [ "alma99135081801851" ],
+        "sourceid" : "alma",
+        "originalsourceid" : [ "ocm56526710-01alliance_network" ],
+        "sourcesystem" : [ "OCLC" ],
+        "sourceformat" : [ "MARC21" ],
+        "score" : [ 90236.68 ],
+        "isDedup" : false
+      },
+      "addata" : {
+        "originatingSystemIDContributor" : [ "no2001074712" ],
+        "aulast" : [ "Royo" ],
+        "aufirst" : [ "C." ],
+        "auinit" : [ "C" ],
+        "addau" : [ "Royo, C." ],
+        "contributorfull" : [ "$$NRoyo, C.$$LRoyo$$FC.$$Rcontributor" ],
+        "date" : [ "2005", "©2005" ],
+        "isbn" : [ "1560223332", "9781560223337", "1560229667", "9781560229667", "1560229675", "9781560229674" ],
+        "notes" : [ "Includes bibliographical references and index." ],
+        "cop" : [ "Binghamton, NY" ],
+        "pub" : [ "Food Products Press" ],
+        "oclcid" : [ "(ocolc)56526710" ],
+        "lccn" : [ "2004021600" ],
+        "seriestitle" : [ "Crop science" ],
+        "ristype" : [ "BOOK" ],
+        "btitle" : [ "Durum wheat breeding : current approaches and future strategies" ]
+      },
+      "sort" : {
+        "title" : [ "Durum wheat breeding : current approaches and future strategies /" ],
+        "author" : [ "Royo, C. (Conxita)" ],
+        "creationdate" : [ "2005" ]
+      },
+      "facets" : {
+        "frbrtype" : [ "6" ]
+      }
+    },
+    "delivery" : {
+      "bestlocation" : {
+        "isValidUser" : true,
+        "organization" : "01ALLIANCE_UID",
+        "libraryCode" : "main",
+        "availabilityStatus" : "available",
+        "subLocation" : "Main Stacks (3rd Floor)",
+        "subLocationCode" : "UIBOOK3",
+        "mainLocation" : "Main Library",
+        "callNumber" : "SB191.W5D932 2005",
+        "callNumberType" : "0",
+        "holdingURL" : "OVP",
+        "adaptorid" : "ALMA_01",
+        "ilsApiId" : "99135081801851",
+        "holdId" : "2273434970001851",
+        "holKey" : "HoldingResultKey [mid=2273434970001851, libraryId=13656590001851, locationCode=UIBOOK3, callNumber=SB191.W5D932 2005]",
+        "matchForHoldings" : [ {
+          "matchOn" : "MainLocation",
+          "holdingRecord" : "852##b"
+        } ],
+        "stackMapUrl" : "",
+        "relatedTitle" : null,
+        "translateRelatedTitle" : null,
+        "yearFilter" : null,
+        "volumeFilter" : null,
+        "singleUnavailableItemProcessType" : null,
+        "boundWith" : false,
+        "@id" : "_:0"
+      },
+      "holding" : [ {
+        "isValidUser" : true,
+        "organization" : "01ALLIANCE_UID",
+        "libraryCode" : "main",
+        "availabilityStatus" : "available",
+        "subLocation" : "Main Stacks (3rd Floor)",
+        "subLocationCode" : "UIBOOK3",
+        "mainLocation" : "Main Library",
+        "callNumber" : "SB191.W5D932 2005",
+        "callNumberType" : "0",
+        "holdingURL" : "OVP",
+        "adaptorid" : "ALMA_01",
+        "ilsApiId" : "99135081801851",
+        "holdId" : "2273434970001851",
+        "holKey" : "HoldingResultKey [mid=2273434970001851, libraryId=13656590001851, locationCode=UIBOOK3, callNumber=SB191.W5D932 2005]",
+        "matchForHoldings" : [ {
+          "matchOn" : "MainLocation",
+          "holdingRecord" : "852##b"
+        } ],
+        "stackMapUrl" : "",
+        "relatedTitle" : null,
+        "translateRelatedTitle" : null,
+        "yearFilter" : null,
+        "volumeFilter" : null,
+        "singleUnavailableItemProcessType" : null,
+        "boundWith" : false,
+        "@id" : "_:0"
+      } ],
+      "electronicServices" : null,
+      "additionalElectronicServices" : null,
+      "filteredByGroupServices" : null,
+      "quickAccessService" : null,
+      "deliveryCategory" : [ "Alma-P" ],
+      "serviceMode" : [ "ovp" ],
+      "availability" : [ "available_in_library" ],
+      "availabilityLinks" : [ "detailsgetit1" ],
+      "availabilityLinksUrl" : [ ],
+      "displayedAvailability" : null,
+      "displayLocation" : true,
+      "additionalLocations" : false,
+      "titleRequestableAtItemLevel" : false,
+      "physicalItemTextCodes" : null,
+      "feDisplayOtherLocations" : false,
+      "almaInstitutionsList" : [ {
+        "getitLink" : [ {
+          "displayText" : "Alma-P",
+          "linkRecordId" : "99117200150001451"
+        } ],
+        "instCode" : "01ALLIANCE_WSU",
+        "instName" : "Washington State University",
+        "instId" : "1842",
+        "availabilityStatus" : "available_in_institution",
+        "envURL" : ""
+      }, {
+        "getitLink" : [ {
+          "displayText" : "Alma-P",
+          "linkRecordId" : "99117200150001451"
+        } ],
+        "instCode" : "01ALLIANCE_OSU",
+        "instName" : "Oregon State University Libraries and Press",
+        "instId" : "1865",
+        "availabilityStatus" : "available_in_institution",
+        "envURL" : ""
+      } ],
+      "recordInstitutionCode" : null,
+      "recordOwner" : "01ALLIANCE_NETWORK",
+      "hasFilteredServices" : null,
+      "digitalAuxiliaryMode" : false,
+      "digitalAuxiliaryThumbnail" : false,
+      "hideResourceSharing" : false,
+      "sharedDigitalCandidates" : null,
+      "consolidatedCoverage" : null,
+      "electronicContextObjectId" : null,
+      "almaOpenurl" : null,
+      "GetIt1" : [ {
+        "category" : "Alma-P",
+        "links" : [ {
+          "isLinktoOnline" : false,
+          "getItTabText" : "service_getit",
+          "adaptorid" : "ALMA_01",
+          "ilsApiId" : "99135081801851",
+          "link" : "OVP",
+          "inst4opac" : "01ALLIANCE_UID",
+          "displayText" : null,
+          "@id" : "_:0"
+        } ]
+      } ],
+      "physicalServiceId" : null,
+      "link" : [ {
+        "@id" : ":_0",
+        "linkType" : "thumbnail",
+        "linkURL" : "https://proxy-na.hosted.exlibrisgroup.com/exl_rewrite/books.google.com/books?bibkeys=ISBN:9781560223337,OCLC:,LCCN:2004021600&jscmd=viewapi&callback=updateGBSCover",
+        "displayLabel" : "thumbnail"
+      } ],
+      "hasD" : null
+    },
+    "enrichment" : {
+      "virtualBrowseObject" : {
+        "isVirtualBrowseEnabled" : true,
+        "callNumber" : "SB191.W5D932 2005",
+        "callNumberBrowseField" : "0"
+      },
+      "bibVirtualBrowseObject" : {
+        "isVirtualBrowseEnabled" : true,
+        "callNumber" : "sb\"191 w5ǂd932 2005",
+        "callNumberBrowseField" : "LOC_CL"
+      }
+    }
+  }, {
+    "context" : "L",
+    "adaptor" : "Local Search Engine",
+    "@id" : "https://na01.alma.exlibrisgroup.com/primaws/rest/pub/pnxs/L/9961767301851",
+    "pnx" : {
+      "display" : {
+        "source" : [ "Alma" ],
+        "type" : [ "pbooks" ],
+        "language" : [ "eng" ],
+        "title" : [ "The world wheat book : a history of wheat breeding " ],
+        "format" : [ "1, 1131 pages, 32 unnumbered pages of plates : illustrations (some color), maps (some color), portraits (some color) ; 25 cm" ],
+        "identifier" : [ "$$CISBN$$V1898298726;$$CISBN$$V9781898298724;$$CISBN$$V2743004029 (FRANCE);$$CISBN$$V9782743004026 (FRANCE)" ],
+        "creationdate" : [ "2001" ],
+        "publisher" : [ "London : Intercept" ],
+        "description" : [ "Includes bibliographical references and index." ],
+        "mms" : [ "9961767301851" ],
+        "contributor" : [ "Bonjean, Alain P.$$QBonjean, Alain P.", "Angus, William J.$$QAngus, William J." ],
+        "contents" : [ "<p><b>Table of contents</b>: Ch. 1. Origin of Cultivated Wheat / Moshe Feldman -- Ch. 2. Genetic Basic of Worldwide Wheat Varietal Improvement / Tony Worland and John W. Snape -- Ch. 3. United Kingdom Wheat Pool / William J. Angus -- Ch. 4. French Wheat Pool / Alain P. Bonjean, Gerard Doussinault and Jayne Stragliati -- Ch. 5. German Wheat Pool / Wolfgang Porsche and Michael Taylor -- Ch. 6. Hungarian Wheat Pool / Zoltan Bedo, Lazlo Lang and Jozsef Suther / [et al.] -- Ch. 7. Polish Wheat Pool / Henryk J. Czembor, Jerzy H. Czembor and Izabella Menke-Milczarek / [et al.] -- Ch. 8. Danish Wheat Pool / Finn Borum -- Ch. 9. Wheat Pool of European Russia / Anatoly F. Merezhko -- Ch. 10. Italian Wheat Pool / Basillio Borghi -- Ch. 11. Mountain Wheat Pool / Dario Fossati and Marcel Ingold -- Ch. 12. Romanian Wheat Pool / Nicolae N. Saulescu -- Ch. 13. Ukrainian Wheat Pool / Mikola Litvinenko, Saveliy Lyfenko and Fedir Paperelya / [et al.] -- Ch. 14. Yugoslav Wheat Pool / Srbislav Dencic -- Ch. 15. U.S. Pacific Northwest Region / C. James Peterson, Robert E. Allan and Clarence J. Peterson -- Ch. 16. U.S. Hard Red Spring Wheat Pool / Robert H. Busch and Thomas Rauch -- Ch. 17. U.S. Hard Winter Wheat Pool / Brett F. Carver, Arthur R. Klatt and Eugene G. Krenzer -- Ch. 18. U.S. Soft Winter Wheat Pool / Robert K. Bacon -- Ch. 19. Canadian Wheat Pool / Ron DePauw and Tony Hunt -- Ch. 20. Argentina Wheat Pool / Jorge Enrique Nisi and Enrique F. Antonelli -- Ch. 21. Sao Paulo State, Brazil Wheat Pool / Carlos Eduardo de Oliveiro Camargo and Antonio Wilson Penteado Ferreira Filho -- Ch. 22. Mexico: 50 Years of International Wheat Breeding / Sanjaya Rajaram and Martin van Ginkel -- Ch. 23. Genetic Pool of Australian Wheats / Lindsay O'Brien, Matthew Morell and Colin Wrigley / [et al.] -- Ch. 24. New Zealand Wheat Pool / Bill Griffin, Peter Jamieson and Nigel Larsen / [et al.] -- Ch. 25. Chinese Wheat Pool / Sun Booqi, Zhang Aimin and Alain P. Bonjean -- Ch. 26. Japanese Wheat Pool / Tsuguhiro Hoshino, Kenji Kato and Kihachi Ueno -- Ch. 27. Korean Wheat Pool / Jung-Hyun Nam and Hong-Sik Kim -- Ch. 28. Siberian and North Kazakhstan Wheat Pool / Alexei Morgounov, Vladimir A. Zykin and Grigoriy A. Sereda / [et al.] -- Ch. 29. Indian Wheat Pool / Suryaprakasa Rao, Gyanendra Singh and Manash Chatterjee -- Ch. 30. Nepalese Wheat Pool / Brian Bland -- Ch. 31. Caucasian Wheat Pool / Jelal Aliev, Papin Gandilian and Petre Naskidashvili / [et al.] -- Ch. 32. Turkish Wheat Pool / Hans-Joachim Braun, Nusret Zencirci and Fahri Altay / [et al.] -- Ch. 33. Iranian Wheat Pool / Abbas Saidi, Azim Akbari and Jawad Mazzaffari / [et al.] -- Ch. 34. Eastern Africa Wheat Pool / Thomas S. Payne, Joseph K. Wanjama and Bedada Girma -- Ch. 35. Southern Africa Wheat Pool / Hugo van Niekerk -- Ch. 36. Induced Mutations in Wheat / Miroslaw Maluszynski, Iwona Szarejko and Jolanta Maluszynska -- Ch. 37. Wheat in vitro Breeding / Stephen Baenziger, Kyang Moon Kim and Kamil Haliloglu -- Ch. 38. Apomixis for Wheat Improvement / Pascal Flament, Daniel Grimanelli and Olivier Leblanc -- Ch. 39. Hybrid Wheat / Ian B. Edwards -- Ch. 40. Molecular Market Systems and Bread Wheat / Alain P. Bonjean and Pierre Lacaze -- Ch. 41. Contribution of Genomics to Wheat Improvement / Eric Huttner and Michel Debrand -- Ch. 42. Transformation of Wheat / Tina Barsby, J. Brian Power and Judy Freeman / [et al.] -- Ch. 43. Future World supply and Demand / Jean-Pierre Marathee and Helena Gomez-MacPherson -- Ch. 44. Meeting Future Demand for Wheat through Breeding / Alain P. Bonjean and William J. Angus.</p>" ],
+        "place" : [ "London :" ],
+        "version" : [ "0" ],
+        "lds70" : [ "edited by Alain P. Bonjean and William J. Angus ; preface by Pierre Pagesse." ],
+        "lds78" : [ "History$$QHistory" ],
+        "lds88" : [ "edited by Alain P. Bonjean and William J. Angus ; preface by Pierre Pagesse" ],
+        "lds100" : [ "59515318" ],
+        "subject" : [ "Wheat -- Breeding", "Wheat -- Breeding -- History", "Wheat -- Genetics" ]
+      },
+      "control" : {
+        "sourcerecordid" : [ "9961767301851" ],
+        "recordid" : [ "alma9961767301851" ],
+        "sourceid" : "alma",
+        "originalsourceid" : [ "ocm59515318-01alliance_network" ],
+        "sourcesystem" : [ "OCLC" ],
+        "sourceformat" : [ "MARC21" ],
+        "score" : [ 71907.86 ],
+        "isDedup" : false
+      },
+      "addata" : {
+        "originatingSystemIDContributor" : [ "nb2001029815", "nb2001029816" ],
+        "aulast" : [ "Bonjean", "Angus" ],
+        "aufirst" : [ "Alain P.", "William J." ],
+        "auinit" : [ "A", "W" ],
+        "addau" : [ "Bonjean, Alain P.", "Angus, William J." ],
+        "contributorfull" : [ "$$NBonjean, Alain P.$$LBonjean$$FAlain P.$$Rcontributor", "$$NAngus, William J.$$Rcontributor" ],
+        "date" : [ "2001 - 2001", "2001" ],
+        "isbn" : [ "1898298726", "9781898298724", "2743004029", "9782743004026" ],
+        "notes" : [ "Includes bibliographical references and index." ],
+        "cop" : [ "London" ],
+        "pub" : [ "Intercept" ],
+        "oclcid" : [ "(ocolc)59515318" ],
+        "ristype" : [ "BOOK" ],
+        "btitle" : [ "The world wheat book : a history of wheat breeding" ]
+      },
+      "sort" : {
+        "title" : [ "world wheat book : a history of wheat breeding /" ],
+        "author" : [ "Bonjean, Alain P." ],
+        "creationdate" : [ "2001" ]
+      },
+      "facets" : {
+        "frbrtype" : [ "6" ]
+      }
+    },
+    "delivery" : {
+      "bestlocation" : {
+        "isValidUser" : true,
+        "organization" : "01ALLIANCE_UID",
+        "libraryCode" : "main",
+        "availabilityStatus" : "available",
+        "subLocation" : "Main Stacks (3rd Floor)",
+        "subLocationCode" : "UIBOOK3",
+        "mainLocation" : "Main Library",
+        "callNumber" : "SB191.W5W67 2001",
+        "callNumberType" : "0",
+        "holdingURL" : "OVP",
+        "adaptorid" : "ALMA_01",
+        "ilsApiId" : "9961767301851",
+        "holdId" : "2267309790001851",
+        "holKey" : "HoldingResultKey [mid=2267309790001851, libraryId=13656590001851, locationCode=UIBOOK3, callNumber=SB191.W5W67 2001]",
+        "matchForHoldings" : [ {
+          "matchOn" : "MainLocation",
+          "holdingRecord" : "852##b"
+        } ],
+        "stackMapUrl" : "",
+        "relatedTitle" : null,
+        "translateRelatedTitle" : null,
+        "yearFilter" : null,
+        "volumeFilter" : null,
+        "singleUnavailableItemProcessType" : null,
+        "boundWith" : false,
+        "@id" : "_:0"
+      },
+      "holding" : [ {
+        "isValidUser" : true,
+        "organization" : "01ALLIANCE_UID",
+        "libraryCode" : "main",
+        "availabilityStatus" : "available",
+        "subLocation" : "Main Stacks (3rd Floor)",
+        "subLocationCode" : "UIBOOK3",
+        "mainLocation" : "Main Library",
+        "callNumber" : "SB191.W5W67 2001",
+        "callNumberType" : "0",
+        "holdingURL" : "OVP",
+        "adaptorid" : "ALMA_01",
+        "ilsApiId" : "9961767301851",
+        "holdId" : "2267309790001851",
+        "holKey" : "HoldingResultKey [mid=2267309790001851, libraryId=13656590001851, locationCode=UIBOOK3, callNumber=SB191.W5W67 2001]",
+        "matchForHoldings" : [ {
+          "matchOn" : "MainLocation",
+          "holdingRecord" : "852##b"
+        } ],
+        "stackMapUrl" : "",
+        "relatedTitle" : null,
+        "translateRelatedTitle" : null,
+        "yearFilter" : null,
+        "volumeFilter" : null,
+        "singleUnavailableItemProcessType" : null,
+        "boundWith" : false,
+        "@id" : "_:0"
+      } ],
+      "electronicServices" : null,
+      "additionalElectronicServices" : null,
+      "filteredByGroupServices" : null,
+      "quickAccessService" : null,
+      "deliveryCategory" : [ "Alma-P" ],
+      "serviceMode" : [ "ovp" ],
+      "availability" : [ "available_in_library" ],
+      "availabilityLinks" : [ "detailsgetit1" ],
+      "availabilityLinksUrl" : [ ],
+      "displayedAvailability" : null,
+      "displayLocation" : true,
+      "additionalLocations" : false,
+      "titleRequestableAtItemLevel" : false,
+      "physicalItemTextCodes" : null,
+      "feDisplayOtherLocations" : false,
+      "almaInstitutionsList" : [ {
+        "getitLink" : [ {
+          "displayText" : "Alma-P",
+          "linkRecordId" : "99158341580001451"
+        } ],
+        "instCode" : "01ALLIANCE_OSU",
+        "instName" : "Oregon State University Libraries and Press",
+        "instId" : "1865",
+        "availabilityStatus" : "available_in_institution",
+        "envURL" : ""
+      }, {
+        "getitLink" : [ {
+          "displayText" : "Alma-P",
+          "linkRecordId" : "99158341580001451"
+        } ],
+        "instCode" : "01ALLIANCE_WSU",
+        "instName" : "Washington State University",
+        "instId" : "1842",
+        "availabilityStatus" : "available_in_institution",
+        "envURL" : ""
+      } ],
+      "recordInstitutionCode" : null,
+      "recordOwner" : "01ALLIANCE_NETWORK",
+      "hasFilteredServices" : null,
+      "digitalAuxiliaryMode" : false,
+      "digitalAuxiliaryThumbnail" : false,
+      "hideResourceSharing" : false,
+      "sharedDigitalCandidates" : null,
+      "consolidatedCoverage" : null,
+      "electronicContextObjectId" : null,
+      "almaOpenurl" : null,
+      "GetIt1" : [ {
+        "category" : "Alma-P",
+        "links" : [ {
+          "isLinktoOnline" : false,
+          "getItTabText" : "service_getit",
+          "adaptorid" : "ALMA_01",
+          "ilsApiId" : "9961767301851",
+          "link" : "OVP",
+          "inst4opac" : "01ALLIANCE_UID",
+          "displayText" : null,
+          "@id" : "_:0"
+        } ]
+      } ],
+      "physicalServiceId" : null,
+      "link" : [ {
+        "@id" : ":_0",
+        "linkType" : "thumbnail",
+        "linkURL" : "https://proxy-na.hosted.exlibrisgroup.com/exl_rewrite/books.google.com/books?bibkeys=ISBN:9781898298724,OCLC:,LCCN:&jscmd=viewapi&callback=updateGBSCover",
+        "displayLabel" : "thumbnail"
+      } ],
+      "hasD" : null
+    },
+    "enrichment" : {
+      "virtualBrowseObject" : {
+        "isVirtualBrowseEnabled" : true,
+        "callNumber" : "SB191.W5W67 2001",
+        "callNumberBrowseField" : "0"
+      },
+      "bibVirtualBrowseObject" : {
+        "isVirtualBrowseEnabled" : true,
+        "callNumber" : "sb\"191 w5ǂw67 2001",
+        "callNumberBrowseField" : "LOC_CL"
+      }
+    }
+  } ],
+  "timelog" : {
+    "PC_SEARCH_CALL_TIME" : "6",
+    "PC_BUILD_JSON_AND_HIGLIGHTS" : "2",
+    "PC_SEARCH_TIME_TOTAL" : "8",
+    "BUILD_RESULTS_RETRIVE_FROM_DB" : "22",
+    "CALL_SOLR_GET_IDS_LIST" : "83",
+    "PRIMA_LOCAL_SEARCH_SET_AVALIABILITY" : "124",
+    "RETRIVE_COLLECTION_DISCOVERY_INFO" : "0",
+    "RETRIVE_FROM_DB_COURSE_INFO" : "2",
+    "RETRIVE_FROM_DB_RECORDS" : "8",
+    "RETRIVE_FROM_DB_RELATIONS" : "9",
+    "SET_AVAILABILTY_GET_LIBRARY_DETAILS" : "120",
+    "SET_AVAILABILTY_HOLDING_DEDUPS" : "4",
+    "PRIMA_LOCAL_INFO_FACETS_BUILD_DOCS_HIGHLIGHTS" : "70",
+    "PRIMA_LOCAL_SEARCH_TOTAL" : "303",
+    "BUILD_BLEND_AND_CACHE_RESULTS" : 1,
+    "BUILD_COMBINED_RESULTS_MAP" : 335,
+    "COMBINED_SEARCH_TIME" : 343,
+    "PROCESS_COMBINED_RESULTS" : 0,
+    "FEATURED_SEARCH_TIME" : 1
+  },
+  "facetsCacheKey" : 1554853839
+}

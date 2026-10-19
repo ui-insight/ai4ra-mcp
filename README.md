@@ -141,6 +141,7 @@ over ClickUp's REST API.
 | `/events/mcp` | the campus calendar at uidaho.edu/events, through its public Trumba feed | none | `events_index`, `events_search`, `events_closures`, `events_event`, `events_calendars` | none yet |
 | `/campusmap/mcp` | the campus map, Concept3D map 2155, through its locations and categories API | none of the person's (the map page's own client key) | `campusmap_index`, `campusmap_categories`, `campusmap_search`, `campusmap_near`, `campusmap_place` | none yet |
 | `/costs/mcp` | www.uidaho.edu's student billing, account payments, cost of attendance and SHIP pages | none | `costs_index`, `costs_tuition`, `costs_attendance`, `costs_deadlines`, `costs_insurance` | none |
+| `/library/mcp` | the University of Idaho Library's catalog, Primo VE on the Orbis Cascade Alliance host, through the public search endpoint its own page uses | none | `library_index`, `library_search`, `library_record` | none |
 | `/lakehouse/mcp` (one per configured client; the others at `/lakehouse-<id>/mcp`) | the University of Idaho data lakehouse, through Marina | **required** (the client's shared secret) | `lakehouse_guide`, `lakehouse_index`, `lakehouse_sql_catalog`, `lakehouse_sql`, `lakehouse_streams`, `lakehouse_schema`, `lakehouse_query`, `lakehouse_files`, `lakehouse_file` | `lakehouse-answer` |
 
 Tool names carry their upstream (`ecfr_`, `grants_gov_`, `uidaho_`) and
@@ -2055,6 +2056,32 @@ checked against the page when the university changes it; a page down or a
 heading gone is said with the link. Fringe and F&A rates for budgets are
 the uidaho server's. Offline tests run on the five pages' main content
 captured in `tests/fixtures/costs/`.
+
+### library
+
+The University of Idaho Library's catalog: Primo VE on the Orbis Cascade
+Alliance's Ex Libris host, `alliance-uidaho.primo.exlibrisgroup.com`, read
+through the public REST endpoint the discovery page itself calls
+(`/primaws/rest/pub/pnxs`), no token or key. `library_search(query, field,
+type, available, scope, sort, offset, rows)` is the catalog's hits by words,
+title, author, subject, ISBN or ISSN, narrowed to a resource type (books,
+articles and the rest of Primo's facet) or to physical copies on the shelf
+here, in the Everything scope (the local catalog and the central index
+together), Course Reserves or Special Collections and Archives; each hit
+with id, title, creators, type, publisher, year, format, ISBN or ISSN, DOI,
+the journal citation for an article, subjects, Primo's availability code
+with what it means in the catalog's own terms (on the shelf here at a
+library, location and call number; no copy held here; online through the
+link resolver), the best physical copy's location, the link resolver and
+the record's catalog page; totals for the local catalog and the central
+index separately. `library_record(id, context)` is one record in full with
+its summary, table of contents, subjects and every holding, by the id
+`library_search` gave (`alma…` local, `cdi_…` the central index), stated as
+given. Verso, interlibrary loan and a person's account are not here, which
+the index says. Searches and records are cached an hour, since availability
+changes. Offline tests run on searches (physical items with locations, a
+local-and-central mix, shelf-available, articles, no hits) and records
+captured 2026-10-19 in `tests/fixtures/library/`.
 
 ### lakehouse
 

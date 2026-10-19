@@ -1,0 +1,1169 @@
+{"beaconO22":"455",
+  "info" : {
+    "totalResultsLocal" : 24,
+    "totalResultsPC" : 1029,
+    "total" : 1053,
+    "first" : 1,
+    "last" : 5
+  },
+  "highlights" : {
+    "snippet" : [ "Idaho", "Bicentennial", "bicentennial" ],
+    "subject" : [ "HISTORY", "Idaho", "History", "history" ],
+    "title" : [ "Bicentennial History", "Idaho", "A Bicentennial History", "Idaho a bicentennial history", "history", "Bicentennial", "a bicentennial", "bicentennial", "Idaho's" ],
+    "termsUnion" : [ "Idaho", "Bicentennial", "bicentennial", "History", "HISTORY", "history", "Bicentennial History", "A Bicentennial History", "Idaho a bicentennial history", "a bicentennial", "Idaho's" ],
+    "general" : [ "Idaho", "Bicentennial", "History" ],
+    "creator" : [ "Idaho", "Bicentennial" ],
+    "contributor" : [ "Idaho", "Bicentennial" ],
+    "description" : [ "Bicentennial", "bicentennial", "Idaho", "History" ],
+    "toc" : [ "Idaho" ]
+  },
+  "docs" : [ {
+    "context" : "L",
+    "adaptor" : "Local Search Engine",
+    "@id" : "https://na01.alma.exlibrisgroup.com/primaws/rest/pub/pnxs/L/9921606601851",
+    "pnx" : {
+      "display" : {
+        "source" : [ "Alma" ],
+        "type" : [ "pbooks" ],
+        "language" : [ "eng" ],
+        "title" : [ "Idaho : a bicentennial history " ],
+        "format" : [ "xi, 203 pages, 8 unnumbered leaves of plates : illustrations ; 22 cm." ],
+        "identifier" : [ "$$CISBN$$V0393056007;$$CISBN$$V9780393056006" ],
+        "creationdate" : [ "©1976" ],
+        "creator" : [ "Peterson, F. Ross (Frank Ross), 1941- author.$$QPeterson, F. Ross" ],
+        "publisher" : [ "New York : Norton" ],
+        "description" : [ "<b>Series statement:</b> The States and the Nation series", "Includes bibliographical references (pages 193-195) and index." ],
+        "mms" : [ "9921606601851" ],
+        "contents" : [ "<p><b>Table of contents</b>: Invitation to the reader -- Idaho: nature's gift to man -- Discovery and exploration -- God + gold = territory -- The clash of red and white -- The creation of a state: railroads and mines -- Economic lifeblood: water and timber -- A chaotic twenty years: depression and new deal -- The politics of diversity -- Idaho: a beacon for the future</p>" ],
+        "place" : [ "New York :" ],
+        "version" : [ "0" ],
+        "lds43" : [ "States and the nation.$$QStates and the nation." ],
+        "lds78" : [ "History$$QHistory" ],
+        "lds88" : [ "F. Ross Peterson" ],
+        "lds99" : [ "A native historian examines the states heritage and way of life as well as its role in the nations development." ],
+        "lds100" : [ "02373390" ],
+        "subject" : [ "Idaho -- History" ]
+      },
+      "control" : {
+        "sourcerecordid" : [ "9921606601851" ],
+        "recordid" : [ "alma9921606601851" ],
+        "sourceid" : "alma",
+        "originalsourceid" : [ "ocm02373390-01alliance_network" ],
+        "sourcesystem" : [ "OCLC" ],
+        "sourceformat" : [ "MARC21" ],
+        "score" : [ 49113.84 ],
+        "isDedup" : false
+      },
+      "addata" : {
+        "originatingSystemIDAuthor" : [ "nr97033932" ],
+        "originatingSystemIDSubject" : [ "sh2008115392", "fst01211709" ],
+        "aulast" : [ "Peterson" ],
+        "aufirst" : [ "F. Ross" ],
+        "auinit" : [ "F" ],
+        "au" : [ "Peterson, F. Ross" ],
+        "creatorfull" : [ "$$NPeterson, F. Ross$$LPeterson$$FF. Ross$$Rauthor" ],
+        "date" : [ "1976", "©1976" ],
+        "isbn" : [ "0393056007", "9780393056006" ],
+        "notes" : [ "Includes bibliographical references (pages 193-195) and index." ],
+        "abstract" : [ "A native historian examines the states heritage and way of life as well as its role in the nations development." ],
+        "cop" : [ "New York" ],
+        "pub" : [ "Norton" ],
+        "oclcid" : [ "(ocolc)2373390" ],
+        "lccn" : [ "76026873" ],
+        "seriestitle" : [ "The States and the Nation series" ],
+        "ristype" : [ "BOOK" ],
+        "btitle" : [ "Idaho : a bicentennial history" ]
+      },
+      "sort" : {
+        "title" : [ "Idaho : a bicentennial history /" ],
+        "author" : [ "Peterson, F. Ross (Frank Ross), 1941- author." ],
+        "creationdate" : [ "1976" ]
+      },
+      "facets" : {
+        "frbrtype" : [ "6" ]
+      }
+    },
+    "delivery" : {
+      "bestlocation" : {
+        "isValidUser" : true,
+        "organization" : "01ALLIANCE_UID",
+        "libraryCode" : "main",
+        "availabilityStatus" : "available",
+        "subLocation" : "Main Stacks (4th Floor)",
+        "subLocationCode" : "UIBOOK4",
+        "mainLocation" : "Main Library",
+        "callNumber" : "F746.P47",
+        "callNumberType" : "0",
+        "holdingURL" : "OVP",
+        "adaptorid" : "ALMA_01",
+        "ilsApiId" : "9921606601851",
+        "holdId" : "2289745410001851",
+        "holKey" : "HoldingResultKey [mid=2289745410001851, libraryId=13656590001851, locationCode=UIBOOK4, callNumber=F746.P47]",
+        "matchForHoldings" : [ {
+          "matchOn" : "MainLocation",
+          "holdingRecord" : "852##b"
+        } ],
+        "stackMapUrl" : "",
+        "relatedTitle" : null,
+        "translateRelatedTitle" : null,
+        "yearFilter" : null,
+        "volumeFilter" : null,
+        "singleUnavailableItemProcessType" : null,
+        "boundWith" : false,
+        "@id" : "_:0"
+      },
+      "holding" : [ {
+        "isValidUser" : true,
+        "organization" : "01ALLIANCE_UID",
+        "libraryCode" : "main",
+        "availabilityStatus" : "available",
+        "subLocation" : "Main Stacks (4th Floor)",
+        "subLocationCode" : "UIBOOK4",
+        "mainLocation" : "Main Library",
+        "callNumber" : "F746.P47",
+        "callNumberType" : "0",
+        "holdingURL" : "OVP",
+        "adaptorid" : "ALMA_01",
+        "ilsApiId" : "9921606601851",
+        "holdId" : "2289745410001851",
+        "holKey" : "HoldingResultKey [mid=2289745410001851, libraryId=13656590001851, locationCode=UIBOOK4, callNumber=F746.P47]",
+        "matchForHoldings" : [ {
+          "matchOn" : "MainLocation",
+          "holdingRecord" : "852##b"
+        } ],
+        "stackMapUrl" : "",
+        "relatedTitle" : null,
+        "translateRelatedTitle" : null,
+        "yearFilter" : null,
+        "volumeFilter" : null,
+        "singleUnavailableItemProcessType" : null,
+        "boundWith" : false,
+        "@id" : "_:0"
+      }, {
+        "isValidUser" : true,
+        "organization" : "01ALLIANCE_UID",
+        "libraryCode" : "main",
+        "availabilityStatus" : "available",
+        "subLocation" : "UI Library Special Collections (AVAILABLE FOR READING ROOM USE ONLY)",
+        "subLocationCode" : "UISPEC",
+        "mainLocation" : "Main Library",
+        "callNumber" : "Day-NW F746.P47",
+        "callNumberType" : "0",
+        "holdingURL" : "OVP",
+        "adaptorid" : "ALMA_01",
+        "ilsApiId" : "9921606601851",
+        "holdId" : "2289745370001851",
+        "holKey" : "HoldingResultKey [mid=2289745370001851, libraryId=13656590001851, locationCode=UISPEC, callNumber=Day-NW F746.P47]",
+        "matchForHoldings" : [ {
+          "matchOn" : "MainLocation",
+          "holdingRecord" : "852##b"
+        } ],
+        "stackMapUrl" : "",
+        "relatedTitle" : null,
+        "translateRelatedTitle" : null,
+        "yearFilter" : null,
+        "volumeFilter" : null,
+        "singleUnavailableItemProcessType" : null,
+        "boundWith" : false,
+        "@id" : "_:1"
+      } ],
+      "electronicServices" : null,
+      "additionalElectronicServices" : null,
+      "filteredByGroupServices" : null,
+      "quickAccessService" : null,
+      "deliveryCategory" : [ "Alma-P" ],
+      "serviceMode" : [ "ovp" ],
+      "availability" : [ "available_in_library" ],
+      "availabilityLinks" : [ "detailsgetit1" ],
+      "availabilityLinksUrl" : [ ],
+      "displayedAvailability" : null,
+      "displayLocation" : true,
+      "additionalLocations" : true,
+      "titleRequestableAtItemLevel" : false,
+      "physicalItemTextCodes" : null,
+      "feDisplayOtherLocations" : true,
+      "almaInstitutionsList" : [ {
+        "getitLink" : [ {
+          "displayText" : "Alma-P",
+          "linkRecordId" : "99110358240001451"
+        } ],
+        "instCode" : "01ALLIANCE_LCC",
+        "instName" : "Lewis & Clark",
+        "instId" : "1844",
+        "availabilityStatus" : "available_in_institution",
+        "envURL" : ""
+      }, {
+        "getitLink" : [ {
+          "displayText" : "Alma-P",
+          "linkRecordId" : "99110358240001451"
+        } ],
+        "instCode" : "01ALLIANCE_SOU",
+        "instName" : "Southern Oregon University",
+        "instId" : "1855",
+        "availabilityStatus" : "available_in_institution",
+        "envURL" : ""
+      }, {
+        "getitLink" : [ {
+          "displayText" : "Alma-P",
+          "linkRecordId" : "99110358240001451"
+        } ],
+        "instCode" : "01ALLIANCE_CWU",
+        "instName" : "Central Washington University",
+        "instId" : "1866",
+        "availabilityStatus" : "available_in_institution",
+        "envURL" : ""
+      }, {
+        "getitLink" : [ {
+          "displayText" : "Alma-P",
+          "linkRecordId" : "99110358240001451"
+        } ],
+        "instCode" : "01ALLIANCE_WHITC",
+        "instName" : "Whitman College",
+        "instId" : "1867",
+        "availabilityStatus" : "available_in_institution",
+        "envURL" : ""
+      }, {
+        "getitLink" : [ {
+          "displayText" : "Alma-P",
+          "linkRecordId" : "99110358240001451"
+        } ],
+        "instCode" : "01ALLIANCE_WOU",
+        "instName" : "Western Oregon University",
+        "instId" : "1856",
+        "availabilityStatus" : "available_in_institution",
+        "envURL" : ""
+      }, {
+        "getitLink" : [ {
+          "displayText" : "Alma-P",
+          "linkRecordId" : "99110358240001451"
+        } ],
+        "instCode" : "01ALLIANCE_WSU",
+        "instName" : "Washington State University",
+        "instId" : "1842",
+        "availabilityStatus" : "available_in_institution",
+        "envURL" : ""
+      }, {
+        "getitLink" : [ {
+          "displayText" : "Alma-P",
+          "linkRecordId" : "99110358240001451"
+        } ],
+        "instCode" : "01ALLIANCE_OSU",
+        "instName" : "Oregon State University Libraries and Press",
+        "instId" : "1865",
+        "availabilityStatus" : "available_in_institution",
+        "envURL" : ""
+      }, {
+        "getitLink" : [ {
+          "displayText" : "Alma-P",
+          "linkRecordId" : "99110358240001451"
+        } ],
+        "instCode" : "01ALLIANCE_UPUGS",
+        "instName" : "University of Puget Sound",
+        "instId" : "1854",
+        "availabilityStatus" : "available_in_institution",
+        "envURL" : ""
+      }, {
+        "getitLink" : [ {
+          "displayText" : "Alma-P",
+          "linkRecordId" : "99110358240001451"
+        } ],
+        "instCode" : "01ALLIANCE_EWU",
+        "instName" : "Eastern Washington University",
+        "instId" : "1843",
+        "availabilityStatus" : "available_in_institution",
+        "envURL" : ""
+      }, {
+        "getitLink" : [ {
+          "displayText" : "Alma-P",
+          "linkRecordId" : "99110358240001451"
+        } ],
+        "instCode" : "01ALLIANCE_UPORT",
+        "instName" : "University of Portland",
+        "instId" : "1857",
+        "availabilityStatus" : "available_in_institution",
+        "envURL" : ""
+      }, {
+        "getitLink" : [ {
+          "displayText" : "Alma-P",
+          "linkRecordId" : "99110358240001451"
+        } ],
+        "instCode" : "01ALLIANCE_SPU",
+        "instName" : "Seattle Pacific University",
+        "instId" : "1847",
+        "availabilityStatus" : "available_in_institution",
+        "envURL" : ""
+      }, {
+        "getitLink" : [ {
+          "displayText" : "Alma-P",
+          "linkRecordId" : "99110358240001451"
+        } ],
+        "instCode" : "01ALLIANCE_GFOX",
+        "instName" : "George Fox University",
+        "instId" : "1869",
+        "availabilityStatus" : "available_in_institution",
+        "envURL" : ""
+      }, {
+        "getitLink" : [ {
+          "displayText" : "Alma-P",
+          "linkRecordId" : "99110358240001451"
+        } ],
+        "instCode" : "01ALLIANCE_UW",
+        "instName" : "University of Washington",
+        "instId" : "1452",
+        "availabilityStatus" : "available_in_institution",
+        "envURL" : ""
+      }, {
+        "getitLink" : [ {
+          "displayText" : "Alma-P",
+          "linkRecordId" : "99110358240001451"
+        } ],
+        "instCode" : "01ALLIANCE_WALLA",
+        "instName" : "Walla Walla University",
+        "instId" : "1870",
+        "availabilityStatus" : "available_in_institution",
+        "envURL" : ""
+      }, {
+        "getitLink" : [ {
+          "displayText" : "Alma-P",
+          "linkRecordId" : "99110358240001451"
+        } ],
+        "instCode" : "01ALLIANCE_COCC",
+        "instName" : "Central Oregon Community College",
+        "instId" : "1873",
+        "availabilityStatus" : "available_in_institution",
+        "envURL" : ""
+      }, {
+        "getitLink" : [ {
+          "displayText" : "Alma-P",
+          "linkRecordId" : "99110358240001451"
+        } ],
+        "instCode" : "01ALLIANCE_EOU",
+        "instName" : "Eastern Oregon University",
+        "instId" : "1874",
+        "availabilityStatus" : "available_in_institution",
+        "envURL" : ""
+      }, {
+        "getitLink" : [ {
+          "displayText" : "Alma-P",
+          "linkRecordId" : "99110358240001451"
+        } ],
+        "instCode" : "01ALLIANCE_LINF",
+        "instName" : "Linfield University",
+        "instId" : "1456",
+        "availabilityStatus" : "available_in_institution",
+        "envURL" : ""
+      }, {
+        "getitLink" : [ {
+          "displayText" : "Alma-P",
+          "linkRecordId" : "99110358240001451"
+        } ],
+        "instCode" : "01ALLIANCE_UO",
+        "instName" : "University of Oregon",
+        "instId" : "1852",
+        "availabilityStatus" : "available_in_institution",
+        "envURL" : ""
+      }, {
+        "getitLink" : [ {
+          "displayText" : "Alma-P",
+          "linkRecordId" : "99110358240001451"
+        } ],
+        "instCode" : "01ALLIANCE_WWU",
+        "instName" : "Western Washington University",
+        "instId" : "1453",
+        "availabilityStatus" : "available_in_institution",
+        "envURL" : ""
+      } ],
+      "recordInstitutionCode" : null,
+      "recordOwner" : "01ALLIANCE_NETWORK",
+      "hasFilteredServices" : null,
+      "digitalAuxiliaryMode" : false,
+      "digitalAuxiliaryThumbnail" : false,
+      "hideResourceSharing" : false,
+      "sharedDigitalCandidates" : null,
+      "consolidatedCoverage" : null,
+      "electronicContextObjectId" : null,
+      "almaOpenurl" : null,
+      "GetIt1" : [ {
+        "category" : "Alma-P",
+        "links" : [ {
+          "isLinktoOnline" : false,
+          "getItTabText" : "service_getit",
+          "adaptorid" : "ALMA_01",
+          "ilsApiId" : "9921606601851",
+          "link" : "OVP",
+          "inst4opac" : "01ALLIANCE_UID",
+          "displayText" : null,
+          "@id" : "_:0"
+        }, {
+          "isLinktoOnline" : false,
+          "getItTabText" : "service_getit",
+          "adaptorid" : "ALMA_01",
+          "ilsApiId" : "9921606601851",
+          "link" : "OVP",
+          "inst4opac" : "01ALLIANCE_UID",
+          "displayText" : null,
+          "@id" : "_:1"
+        } ]
+      } ],
+      "physicalServiceId" : null,
+      "link" : [ {
+        "@id" : ":_0",
+        "linkType" : "thumbnail",
+        "linkURL" : "https://proxy-na.hosted.exlibrisgroup.com/exl_rewrite/books.google.com/books?bibkeys=ISBN:9780393056006,OCLC:,LCCN:76026873&jscmd=viewapi&callback=updateGBSCover",
+        "displayLabel" : "thumbnail"
+      } ],
+      "hasD" : null
+    },
+    "enrichment" : {
+      "virtualBrowseObject" : {
+        "isVirtualBrowseEnabled" : true,
+        "callNumber" : "F746.P47",
+        "callNumberBrowseField" : "0"
+      },
+      "bibVirtualBrowseObject" : {
+        "isVirtualBrowseEnabled" : true,
+        "callNumber" : "f\"746ǂ p47 1976",
+        "callNumberBrowseField" : "LOC_CL"
+      }
+    }
+  }, {
+    "context" : "L",
+    "adaptor" : "Local Search Engine",
+    "@id" : "https://na01.alma.exlibrisgroup.com/primaws/rest/pub/pnxs/L/99161874801851",
+    "pnx" : {
+      "display" : {
+        "source" : [ "Alma" ],
+        "type" : [ "pbooks" ],
+        "language" : [ "eng" ],
+        "title" : [ "Lincoln never slept here : Idaho's Abraham Lincoln Bicentennial Tour " ],
+        "format" : [ "96 pages : illustrations (some color), maps ; 23 cm" ],
+        "identifier" : [ "$$CISBN$$V9780978886820;$$CISBN$$V0978886828" ],
+        "creationdate" : [ "©2009" ],
+        "creator" : [ "Shallat, Todd, 1954-$$QShallat, Todd" ],
+        "publisher" : [ "Boise, Idaho : Idaho Abraham Lincoln Bicentennial Commission and the Center for Idaho History and Politics at Boise State University" ],
+        "description" : [ "\"Published by the Idaho Abraham Lincoln Bicentennial Commission and the Center for Idaho History and Politics at Boise State University, with the generous support of David H. Leroy Law Office and United Heritage Financial Group, Dennis L. Johnson, President and C.E.O. February 12, 2009.\"", "Includes bibliographical references (page 91) and index." ],
+        "mms" : [ "99161874801851" ],
+        "contributor" : [ "Tuck, Kathleen Craven.$$QTuck, Kathleen Craven.", "Leroy, David Henry, 1947-$$QLeroy, David Henry", "Idaho Abraham Lincoln Bicentennial Commission.$$QIdaho Abraham Lincoln Bicentennial Commission.", "Boise State University. Center for Idaho History and Politics.$$QBoise State University. Center for Idaho History and Politics." ],
+        "place" : [ "Boise, Idaho] :" ],
+        "version" : [ "0" ],
+        "lds78" : [ "History$$QHistory" ],
+        "lds88" : [ "Todd Shallat, with Kathleen Craven Tuck ; foreword by David H. Leroy" ],
+        "lds100" : [ "318199997" ],
+        "subject" : [ "Idaho Territory -- History", "Idaho -- History -- 19th century", "Lincoln, Abraham, 1809-1865 -- Influence" ]
+      },
+      "control" : {
+        "sourcerecordid" : [ "99161874801851" ],
+        "recordid" : [ "alma99161874801851" ],
+        "sourceid" : "alma",
+        "originalsourceid" : [ "ocn318199997-01alliance_network" ],
+        "sourcesystem" : [ "OCLC" ],
+        "sourceformat" : [ "MARC21" ],
+        "score" : [ 1335.7615999999998 ],
+        "isDedup" : false
+      },
+      "addata" : {
+        "originatingSystemIDAuthor" : [ "n81121833" ],
+        "originatingSystemIDSubject" : [ "n79006779", "fst01211709", "n81014565", "fst00030184", "fst01930993", "sh2009003225" ],
+        "originatingSystemIDContributor" : [ "no90019607", "no2008145148" ],
+        "aulast" : [ "Shallat" ],
+        "aufirst" : [ "Todd" ],
+        "auinit" : [ "T" ],
+        "au" : [ "Shallat, Todd" ],
+        "addau" : [ "Idaho Abraham Lincoln Bicentennial Commission.", "Boise State University. Center for Idaho History and Politics.", "Tuck, Kathleen Craven.", "Leroy, David Henry" ],
+        "creatorfull" : [ "$$NShallat, Todd$$LShallat$$FTodd$$Rauthor" ],
+        "contributorfull" : [ "$$NTuck, Kathleen Craven.$$LTuck$$FKathleen Craven.$$Rcontributor", "$$NLeroy, David Henry$$Rcontributor" ],
+        "addtitle" : [ "Idaho's Abraham Lincoln Bicentennial Tour" ],
+        "date" : [ "2009", "©2009" ],
+        "isbn" : [ "9780978886820", "0978886828" ],
+        "notes" : [ "Includes bibliographical references (page 91) and index." ],
+        "cop" : [ "Boise, Idaho" ],
+        "pub" : [ "Idaho Abraham Lincoln Bicentennial Commission and the Center for Idaho History and Politics at Boise State University" ],
+        "oclcid" : [ "(ocolc)318199997" ],
+        "ristype" : [ "BOOK" ],
+        "btitle" : [ "Lincoln never slept here : Idaho's Abraham Lincoln Bicentennial Tour" ]
+      },
+      "sort" : {
+        "title" : [ "Lincoln never slept here : Idaho's Abraham Lincoln Bicentennial Tour /" ],
+        "author" : [ "Shallat, Todd, 1954-" ],
+        "creationdate" : [ "2009" ]
+      },
+      "facets" : {
+        "frbrtype" : [ "6" ]
+      }
+    },
+    "delivery" : {
+      "bestlocation" : {
+        "isValidUser" : true,
+        "organization" : "01ALLIANCE_UID",
+        "libraryCode" : "main",
+        "availabilityStatus" : "available",
+        "subLocation" : "UI Library Special Collections (AVAILABLE FOR READING ROOM USE ONLY)",
+        "subLocationCode" : "UISPEC",
+        "mainLocation" : "Main Library",
+        "callNumber" : "Idaho F746.L734 2009",
+        "callNumberType" : "0",
+        "holdingURL" : "OVP",
+        "adaptorid" : "ALMA_01",
+        "ilsApiId" : "99161874801851",
+        "holdId" : "2299091610001851",
+        "holKey" : "HoldingResultKey [mid=2299091610001851, libraryId=13656590001851, locationCode=UISPEC, callNumber=Idaho F746.L734 2009]",
+        "matchForHoldings" : [ {
+          "matchOn" : "MainLocation",
+          "holdingRecord" : "852##b"
+        } ],
+        "stackMapUrl" : "",
+        "relatedTitle" : null,
+        "translateRelatedTitle" : null,
+        "yearFilter" : null,
+        "volumeFilter" : null,
+        "singleUnavailableItemProcessType" : null,
+        "boundWith" : false,
+        "@id" : "_:0"
+      },
+      "holding" : [ {
+        "isValidUser" : true,
+        "organization" : "01ALLIANCE_UID",
+        "libraryCode" : "main",
+        "availabilityStatus" : "available",
+        "subLocation" : "UI Library Special Collections (AVAILABLE FOR READING ROOM USE ONLY)",
+        "subLocationCode" : "UISPEC",
+        "mainLocation" : "Main Library",
+        "callNumber" : "Idaho F746.L734 2009",
+        "callNumberType" : "0",
+        "holdingURL" : "OVP",
+        "adaptorid" : "ALMA_01",
+        "ilsApiId" : "99161874801851",
+        "holdId" : "2299091610001851",
+        "holKey" : "HoldingResultKey [mid=2299091610001851, libraryId=13656590001851, locationCode=UISPEC, callNumber=Idaho F746.L734 2009]",
+        "matchForHoldings" : [ {
+          "matchOn" : "MainLocation",
+          "holdingRecord" : "852##b"
+        } ],
+        "stackMapUrl" : "",
+        "relatedTitle" : null,
+        "translateRelatedTitle" : null,
+        "yearFilter" : null,
+        "volumeFilter" : null,
+        "singleUnavailableItemProcessType" : null,
+        "boundWith" : false,
+        "@id" : "_:0"
+      } ],
+      "electronicServices" : null,
+      "additionalElectronicServices" : null,
+      "filteredByGroupServices" : null,
+      "quickAccessService" : null,
+      "deliveryCategory" : [ "Alma-P" ],
+      "serviceMode" : [ "ovp" ],
+      "availability" : [ "available_in_library" ],
+      "availabilityLinks" : [ "detailsgetit1" ],
+      "availabilityLinksUrl" : [ ],
+      "displayedAvailability" : null,
+      "displayLocation" : true,
+      "additionalLocations" : false,
+      "titleRequestableAtItemLevel" : false,
+      "physicalItemTextCodes" : null,
+      "feDisplayOtherLocations" : false,
+      "almaInstitutionsList" : [ ],
+      "recordInstitutionCode" : null,
+      "recordOwner" : "01ALLIANCE_NETWORK",
+      "hasFilteredServices" : null,
+      "digitalAuxiliaryMode" : false,
+      "digitalAuxiliaryThumbnail" : false,
+      "hideResourceSharing" : false,
+      "sharedDigitalCandidates" : null,
+      "consolidatedCoverage" : null,
+      "electronicContextObjectId" : null,
+      "almaOpenurl" : null,
+      "GetIt1" : [ {
+        "category" : "Alma-P",
+        "links" : [ {
+          "isLinktoOnline" : false,
+          "getItTabText" : "service_getit",
+          "adaptorid" : "ALMA_01",
+          "ilsApiId" : "99161874801851",
+          "link" : "OVP",
+          "inst4opac" : "01ALLIANCE_UID",
+          "displayText" : null,
+          "@id" : "_:0"
+        } ]
+      } ],
+      "physicalServiceId" : null,
+      "link" : [ {
+        "@id" : ":_0",
+        "linkType" : "thumbnail",
+        "linkURL" : "https://proxy-na.hosted.exlibrisgroup.com/exl_rewrite/books.google.com/books?bibkeys=ISBN:0978886828,OCLC:,LCCN:&jscmd=viewapi&callback=updateGBSCover",
+        "displayLabel" : "thumbnail"
+      } ],
+      "hasD" : null
+    },
+    "enrichment" : {
+      "virtualBrowseObject" : {
+        "isVirtualBrowseEnabled" : true,
+        "callNumber" : "Idaho F746.L734 2009",
+        "callNumberBrowseField" : "0"
+      },
+      "bibVirtualBrowseObject" : {
+        "isVirtualBrowseEnabled" : true,
+        "callNumber" : "f\"746ǂ l734 2009",
+        "callNumberBrowseField" : "LOC_CL"
+      }
+    }
+  }, {
+    "context" : "L",
+    "adaptor" : "Local Search Engine",
+    "@id" : "https://na01.alma.exlibrisgroup.com/primaws/rest/pub/pnxs/L/996559441101851",
+    "pnx" : {
+      "display" : {
+        "source" : [ "Alma" ],
+        "type" : [ "pbooks" ],
+        "language" : [ "eng" ],
+        "title" : [ "Over a century of murder in Idaho County, 1861-1994 " ],
+        "format" : [ "xii, 417 pages : illustrations, map ; 23 cm" ],
+        "identifier" : [ "$$CISBN$$V9780979387005;$$CISBN$$V0979387000" ],
+        "creationdate" : [ "2007?" ],
+        "publisher" : [ "Grangeville, Idaho : Bicentennial Historical Museum" ],
+        "mms" : [ "996559441101851" ],
+        "contributor" : [ "Idaho County Historical Society.$$QIdaho County Historical Society.", "Bicentennial Historical Museum (Idaho County, Idaho)$$QBicentennial Historical Museum (Idaho County, Idaho)" ],
+        "place" : [ "Grangeville, Idaho :" ],
+        "version" : [ "0" ],
+        "lds70" : [ "compiled by the Idaho County Historical Society and the Bicentennial Historical Museum." ],
+        "lds78" : [ "collective biographies$$Qcollective biographies", "History$$QHistory", "Biographies$$QBiographies" ],
+        "lds88" : [ "compiled by the Idaho County Historical Society and the Bicentennial Historical Museum" ],
+        "lds100" : [ "223395127" ],
+        "subject" : [ "Murder -- Idaho -- Idaho County", "Idaho County (Idaho) -- History", "Idaho County (Idaho) -- Biography" ]
+      },
+      "control" : {
+        "sourcerecordid" : [ "996559441101851" ],
+        "recordid" : [ "alma996559441101851" ],
+        "sourceid" : "alma",
+        "originalsourceid" : [ "996559441101851" ],
+        "sourcesystem" : [ "01ALLIANCE_NETWORK" ],
+        "sourceformat" : [ "MARC21" ],
+        "score" : [ 595.59425 ],
+        "isDedup" : false
+      },
+      "addata" : {
+        "originatingSystemIDSubject" : [ "fst01217581", "n82006811" ],
+        "originatingSystemIDContributor" : [ "n2004074103" ],
+        "addau" : [ "Idaho County Historical Society.", "Bicentennial Historical Museum (Idaho County, Idaho)" ],
+        "addtitle" : [ "Murder in Idaho County" ],
+        "date" : [ "2007", "2007?" ],
+        "isbn" : [ "9780979387005", "0979387000" ],
+        "cop" : [ "Grangeville, Idaho" ],
+        "pub" : [ "Bicentennial Historical Museum" ],
+        "oclcid" : [ "(ocolc)223395127" ],
+        "ristype" : [ "BOOK" ],
+        "btitle" : [ "Over a century of murder in Idaho County, 1861-1994" ]
+      },
+      "sort" : {
+        "title" : [ "Over a century of murder in Idaho County, 1861-1994 /" ],
+        "author" : [ "Idaho County Historical Society." ],
+        "creationdate" : [ "2007" ]
+      },
+      "facets" : {
+        "frbrtype" : [ "6" ]
+      }
+    },
+    "delivery" : {
+      "bestlocation" : {
+        "isValidUser" : true,
+        "organization" : "01ALLIANCE_UID",
+        "libraryCode" : "main",
+        "availabilityStatus" : "available",
+        "subLocation" : "UI Library Special Collections (AVAILABLE FOR READING ROOM USE ONLY)",
+        "subLocationCode" : "UISPEC",
+        "mainLocation" : "Main Library",
+        "callNumber" : "Day-NW F752.I2 O84 2007",
+        "callNumberType" : "0",
+        "holdingURL" : "OVP",
+        "adaptorid" : "ALMA_01",
+        "ilsApiId" : "996559441101851",
+        "holdId" : "22290984070001851",
+        "holKey" : "HoldingResultKey [mid=22290984070001851, libraryId=13656590001851, locationCode=UISPEC, callNumber=Day-NW F752.I2 O84 2007]",
+        "matchForHoldings" : [ {
+          "matchOn" : "MainLocation",
+          "holdingRecord" : "852##b"
+        } ],
+        "stackMapUrl" : "",
+        "relatedTitle" : null,
+        "translateRelatedTitle" : null,
+        "yearFilter" : null,
+        "volumeFilter" : null,
+        "singleUnavailableItemProcessType" : null,
+        "boundWith" : false,
+        "@id" : "_:0"
+      },
+      "holding" : [ {
+        "isValidUser" : true,
+        "organization" : "01ALLIANCE_UID",
+        "libraryCode" : "main",
+        "availabilityStatus" : "available",
+        "subLocation" : "UI Library Special Collections (AVAILABLE FOR READING ROOM USE ONLY)",
+        "subLocationCode" : "UISPEC",
+        "mainLocation" : "Main Library",
+        "callNumber" : "Day-NW F752.I2 O84 2007",
+        "callNumberType" : "0",
+        "holdingURL" : "OVP",
+        "adaptorid" : "ALMA_01",
+        "ilsApiId" : "996559441101851",
+        "holdId" : "22290984070001851",
+        "holKey" : "HoldingResultKey [mid=22290984070001851, libraryId=13656590001851, locationCode=UISPEC, callNumber=Day-NW F752.I2 O84 2007]",
+        "matchForHoldings" : [ {
+          "matchOn" : "MainLocation",
+          "holdingRecord" : "852##b"
+        } ],
+        "stackMapUrl" : "",
+        "relatedTitle" : null,
+        "translateRelatedTitle" : null,
+        "yearFilter" : null,
+        "volumeFilter" : null,
+        "singleUnavailableItemProcessType" : null,
+        "boundWith" : false,
+        "@id" : "_:0"
+      } ],
+      "electronicServices" : null,
+      "additionalElectronicServices" : null,
+      "filteredByGroupServices" : null,
+      "quickAccessService" : null,
+      "deliveryCategory" : [ "Alma-P" ],
+      "serviceMode" : [ "ovp" ],
+      "availability" : [ "available_in_library" ],
+      "availabilityLinks" : [ "detailsgetit1" ],
+      "availabilityLinksUrl" : [ ],
+      "displayedAvailability" : null,
+      "displayLocation" : true,
+      "additionalLocations" : false,
+      "titleRequestableAtItemLevel" : false,
+      "physicalItemTextCodes" : null,
+      "feDisplayOtherLocations" : false,
+      "almaInstitutionsList" : [ ],
+      "recordInstitutionCode" : null,
+      "recordOwner" : "01ALLIANCE_NETWORK",
+      "hasFilteredServices" : null,
+      "digitalAuxiliaryMode" : false,
+      "digitalAuxiliaryThumbnail" : false,
+      "hideResourceSharing" : false,
+      "sharedDigitalCandidates" : null,
+      "consolidatedCoverage" : null,
+      "electronicContextObjectId" : null,
+      "almaOpenurl" : null,
+      "GetIt1" : [ {
+        "category" : "Alma-P",
+        "links" : [ {
+          "isLinktoOnline" : false,
+          "getItTabText" : "service_getit",
+          "adaptorid" : "ALMA_01",
+          "ilsApiId" : "996559441101851",
+          "link" : "OVP",
+          "inst4opac" : "01ALLIANCE_UID",
+          "displayText" : null,
+          "@id" : "_:0"
+        } ]
+      } ],
+      "physicalServiceId" : null,
+      "link" : [ {
+        "@id" : ":_0",
+        "linkType" : "thumbnail",
+        "linkURL" : "https://proxy-na.hosted.exlibrisgroup.com/exl_rewrite/books.google.com/books?bibkeys=ISBN:0979387000,OCLC:,LCCN:&jscmd=viewapi&callback=updateGBSCover",
+        "displayLabel" : "thumbnail"
+      } ],
+      "hasD" : null
+    },
+    "enrichment" : {
+      "virtualBrowseObject" : {
+        "isVirtualBrowseEnabled" : true,
+        "callNumber" : "Day-NW F752.I2 O84 2007",
+        "callNumberBrowseField" : "0"
+      },
+      "bibVirtualBrowseObject" : {
+        "isVirtualBrowseEnabled" : true,
+        "callNumber" : "f\"752 i2ǂo84 2007",
+        "callNumberBrowseField" : "LOC_CL"
+      }
+    }
+  }, {
+    "context" : "L",
+    "adaptor" : "Local Search Engine",
+    "@id" : "https://na01.alma.exlibrisgroup.com/primaws/rest/pub/pnxs/L/9924918001851",
+    "pnx" : {
+      "display" : {
+        "source" : [ "Alma" ],
+        "type" : [ "pbooks" ],
+        "language" : [ "eng" ],
+        "title" : [ "The hub of eastern Idaho : a history of Rigby, Idaho, 1885-1976 " ],
+        "format" : [ "216 pages : illustrations, maps ; 24 cm" ],
+        "creationdate" : [ "©1976" ],
+        "creator" : [ "Scott, Patricia Lyn.$$QScott, Patricia Lyn." ],
+        "publisher" : [ "Rigby, Idaho : City of Rigby" ],
+        "description" : [ "\"An official bicentennial project approved by the Idaho Bicentennial Commission and sponsored by the City of Rigby.\"", "Includes bibliographical references (pages 200-204) and index." ],
+        "mms" : [ "9924918001851" ],
+        "place" : [ "Rigby, Idaho] :" ],
+        "version" : [ "0" ],
+        "lds78" : [ "History$$QHistory" ],
+        "lds88" : [ "by Patricia Lyn Scott" ],
+        "lds100" : [ "18754074" ],
+        "subject" : [ "Rigby (Idaho) -- History" ]
+      },
+      "control" : {
+        "sourcerecordid" : [ "9924918001851" ],
+        "recordid" : [ "alma9924918001851" ],
+        "sourceid" : "alma",
+        "originalsourceid" : [ "ocm18754074-01alliance_network" ],
+        "sourcesystem" : [ "OCLC" ],
+        "sourceformat" : [ "MARC21" ],
+        "score" : [ 521.46523 ],
+        "isDedup" : false
+      },
+      "addata" : {
+        "originatingSystemIDAuthor" : [ "no2003033932" ],
+        "originatingSystemIDSubject" : [ "fst01303389", "n2004072005" ],
+        "aulast" : [ "Scott" ],
+        "aufirst" : [ "Patricia Lyn." ],
+        "auinit" : [ "P" ],
+        "au" : [ "Scott, Patricia Lyn." ],
+        "creatorfull" : [ "$$NScott, Patricia Lyn.$$LScott$$FPatricia Lyn.$$Rauthor" ],
+        "date" : [ "1976", "©1976" ],
+        "notes" : [ "Includes bibliographical references (pages 200-204) and index." ],
+        "cop" : [ "Rigby, Idaho" ],
+        "pub" : [ "City of Rigby" ],
+        "oclcid" : [ "(ocolc)18754074" ],
+        "ristype" : [ "BOOK" ],
+        "btitle" : [ "The hub of eastern Idaho : a history of Rigby, Idaho, 1885-1976" ]
+      },
+      "sort" : {
+        "title" : [ "hub of eastern Idaho : a history of Rigby, Idaho, 1885-1976 /" ],
+        "author" : [ "Scott, Patricia Lyn." ],
+        "creationdate" : [ "1976" ]
+      },
+      "facets" : {
+        "frbrtype" : [ "6" ]
+      }
+    },
+    "delivery" : {
+      "bestlocation" : {
+        "isValidUser" : true,
+        "organization" : "01ALLIANCE_UID",
+        "libraryCode" : "main",
+        "availabilityStatus" : "available",
+        "subLocation" : "UI Library Special Collections (AVAILABLE FOR READING ROOM USE ONLY)",
+        "subLocationCode" : "UISPEC",
+        "mainLocation" : "Main Library",
+        "callNumber" : "Day-NW F754.R52 S36",
+        "callNumberType" : "0",
+        "holdingURL" : "OVP",
+        "adaptorid" : "ALMA_01",
+        "ilsApiId" : "9924918001851",
+        "holdId" : "2275620360001851",
+        "holKey" : "HoldingResultKey [mid=2275620360001851, libraryId=13656590001851, locationCode=UISPEC, callNumber=Day-NW F754.R52 S36]",
+        "matchForHoldings" : [ {
+          "matchOn" : "MainLocation",
+          "holdingRecord" : "852##b"
+        } ],
+        "stackMapUrl" : "",
+        "relatedTitle" : null,
+        "translateRelatedTitle" : null,
+        "yearFilter" : null,
+        "volumeFilter" : null,
+        "singleUnavailableItemProcessType" : null,
+        "boundWith" : false,
+        "@id" : "_:0"
+      },
+      "holding" : [ {
+        "isValidUser" : true,
+        "organization" : "01ALLIANCE_UID",
+        "libraryCode" : "main",
+        "availabilityStatus" : "available",
+        "subLocation" : "UI Library Special Collections (AVAILABLE FOR READING ROOM USE ONLY)",
+        "subLocationCode" : "UISPEC",
+        "mainLocation" : "Main Library",
+        "callNumber" : "Day-NW F754.R52 S36",
+        "callNumberType" : "0",
+        "holdingURL" : "OVP",
+        "adaptorid" : "ALMA_01",
+        "ilsApiId" : "9924918001851",
+        "holdId" : "2275620360001851",
+        "holKey" : "HoldingResultKey [mid=2275620360001851, libraryId=13656590001851, locationCode=UISPEC, callNumber=Day-NW F754.R52 S36]",
+        "matchForHoldings" : [ {
+          "matchOn" : "MainLocation",
+          "holdingRecord" : "852##b"
+        } ],
+        "stackMapUrl" : "",
+        "relatedTitle" : null,
+        "translateRelatedTitle" : null,
+        "yearFilter" : null,
+        "volumeFilter" : null,
+        "singleUnavailableItemProcessType" : null,
+        "boundWith" : false,
+        "@id" : "_:0"
+      } ],
+      "electronicServices" : null,
+      "additionalElectronicServices" : null,
+      "filteredByGroupServices" : null,
+      "quickAccessService" : null,
+      "deliveryCategory" : [ "Alma-P" ],
+      "serviceMode" : [ "ovp" ],
+      "availability" : [ "available_in_library" ],
+      "availabilityLinks" : [ "detailsgetit1" ],
+      "availabilityLinksUrl" : [ ],
+      "displayedAvailability" : null,
+      "displayLocation" : true,
+      "additionalLocations" : false,
+      "titleRequestableAtItemLevel" : false,
+      "physicalItemTextCodes" : null,
+      "feDisplayOtherLocations" : false,
+      "almaInstitutionsList" : [ {
+        "getitLink" : [ {
+          "displayText" : "Alma-P",
+          "linkRecordId" : "99172394260001451"
+        } ],
+        "instCode" : "01ALLIANCE_WHITC",
+        "instName" : "Whitman College",
+        "instId" : "1867",
+        "availabilityStatus" : "available_in_institution",
+        "envURL" : ""
+      } ],
+      "recordInstitutionCode" : null,
+      "recordOwner" : "01ALLIANCE_NETWORK",
+      "hasFilteredServices" : null,
+      "digitalAuxiliaryMode" : false,
+      "digitalAuxiliaryThumbnail" : false,
+      "hideResourceSharing" : false,
+      "sharedDigitalCandidates" : null,
+      "consolidatedCoverage" : null,
+      "electronicContextObjectId" : null,
+      "almaOpenurl" : null,
+      "GetIt1" : [ {
+        "category" : "Alma-P",
+        "links" : [ {
+          "isLinktoOnline" : false,
+          "getItTabText" : "service_getit",
+          "adaptorid" : "ALMA_01",
+          "ilsApiId" : "9924918001851",
+          "link" : "OVP",
+          "inst4opac" : "01ALLIANCE_UID",
+          "displayText" : null,
+          "@id" : "_:0"
+        } ]
+      } ],
+      "physicalServiceId" : null,
+      "link" : [ {
+        "@id" : ":_0",
+        "linkType" : "thumbnail",
+        "linkURL" : "https://proxy-na.hosted.exlibrisgroup.com/exl_rewrite/books.google.com/books?bibkeys=ISBN:,OCLC:18754074,LCCN:&jscmd=viewapi&callback=updateGBSCover",
+        "displayLabel" : "thumbnail"
+      } ],
+      "hasD" : null
+    },
+    "enrichment" : {
+      "virtualBrowseObject" : {
+        "isVirtualBrowseEnabled" : true,
+        "callNumber" : "Day-NW F754.R52 S36",
+        "callNumberBrowseField" : "0"
+      },
+      "bibVirtualBrowseObject" : {
+        "isVirtualBrowseEnabled" : true,
+        "callNumber" : "f\"754 r53ǂs36x 1976",
+        "callNumberBrowseField" : "LOC_CL"
+      }
+    }
+  }, {
+    "context" : "L",
+    "adaptor" : "Local Search Engine",
+    "@id" : "https://na01.alma.exlibrisgroup.com/primaws/rest/pub/pnxs/L/9929090301851",
+    "pnx" : {
+      "display" : {
+        "source" : [ "Alma" ],
+        "type" : [ "pbooks" ],
+        "language" : [ "eng" ],
+        "title" : [ "This side of the mountains : stories of Eastern Idaho " ],
+        "format" : [ "102 pages : illustrations ; 28 cm" ],
+        "creationdate" : [ "1975" ],
+        "creator" : [ "Thomas, Janet.$$QThomas, Janet." ],
+        "publisher" : [ "Idaho Falls : Harris Pub." ],
+        "description" : [ "\"A Bicentennial Project of KID Broadcasting Corporation\"", "Includes bibliographical references (pages 101-102)." ],
+        "mms" : [ "9929090301851" ],
+        "contributor" : [ "KID (Radio station : Idaho Falls, Idaho)$$QKID (Radio station : Idaho Falls, Idaho)" ],
+        "place" : [ "Idaho Falls :" ],
+        "version" : [ "0" ],
+        "lds78" : [ "History$$QHistory", "Anecdotes$$QAnecdotes" ],
+        "lds88" : [ "by Janet Thomas, narrated on radio by Ken Lomax" ],
+        "lds100" : [ "03194714" ],
+        "subject" : [ "Idaho -- History", "Idaho -- Anecdotes" ]
+      },
+      "control" : {
+        "sourcerecordid" : [ "9929090301851" ],
+        "recordid" : [ "alma9929090301851" ],
+        "sourceid" : "alma",
+        "originalsourceid" : [ "ocm03194714-01alliance_network" ],
+        "sourcesystem" : [ "OCLC" ],
+        "sourceformat" : [ "MARC21" ],
+        "score" : [ 439.1109 ],
+        "isDedup" : false
+      },
+      "addata" : {
+        "originatingSystemIDAuthor" : [ "n86082990" ],
+        "originatingSystemIDSubject" : [ "fst01211709", "sh2008115392", "n81014565" ],
+        "aulast" : [ "Thomas" ],
+        "aufirst" : [ "Janet." ],
+        "auinit" : [ "J" ],
+        "au" : [ "Thomas, Janet." ],
+        "addau" : [ "KID (Radio station : Idaho Falls, Idaho)" ],
+        "creatorfull" : [ "$$NThomas, Janet.$$LThomas$$FJanet.$$Rauthor" ],
+        "date" : [ "1975" ],
+        "notes" : [ "Includes bibliographical references (pages 101-102)." ],
+        "cop" : [ "Idaho Falls" ],
+        "pub" : [ "Harris Pub." ],
+        "oclcid" : [ "(ocolc)3194714" ],
+        "ristype" : [ "BOOK" ],
+        "btitle" : [ "This side of the mountains : stories of Eastern Idaho" ]
+      },
+      "sort" : {
+        "title" : [ "This side of the mountains : stories of Eastern Idaho /" ],
+        "author" : [ "Thomas, Janet." ],
+        "creationdate" : [ "1975" ]
+      },
+      "facets" : {
+        "frbrtype" : [ "6" ]
+      }
+    },
+    "delivery" : {
+      "bestlocation" : {
+        "isValidUser" : true,
+        "organization" : "01ALLIANCE_UID",
+        "libraryCode" : "main",
+        "availabilityStatus" : "available",
+        "subLocation" : "UI Library Special Collections (AVAILABLE FOR READING ROOM USE ONLY)",
+        "subLocationCode" : "UISPEC",
+        "mainLocation" : "Main Library",
+        "callNumber" : "Day-NW F746.T56",
+        "callNumberType" : "0",
+        "holdingURL" : "OVP",
+        "adaptorid" : "ALMA_01",
+        "ilsApiId" : "9929090301851",
+        "holdId" : "2284668870001851",
+        "holKey" : "HoldingResultKey [mid=2284668870001851, libraryId=13656590001851, locationCode=UISPEC, callNumber=Day-NW F746.T56]",
+        "matchForHoldings" : [ {
+          "matchOn" : "MainLocation",
+          "holdingRecord" : "852##b"
+        } ],
+        "stackMapUrl" : "",
+        "relatedTitle" : null,
+        "translateRelatedTitle" : null,
+        "yearFilter" : null,
+        "volumeFilter" : null,
+        "singleUnavailableItemProcessType" : null,
+        "boundWith" : false,
+        "@id" : "_:0"
+      },
+      "holding" : [ {
+        "isValidUser" : true,
+        "organization" : "01ALLIANCE_UID",
+        "libraryCode" : "main",
+        "availabilityStatus" : "available",
+        "subLocation" : "UI Library Special Collections (AVAILABLE FOR READING ROOM USE ONLY)",
+        "subLocationCode" : "UISPEC",
+        "mainLocation" : "Main Library",
+        "callNumber" : "Day-NW F746.T56",
+        "callNumberType" : "0",
+        "holdingURL" : "OVP",
+        "adaptorid" : "ALMA_01",
+        "ilsApiId" : "9929090301851",
+        "holdId" : "2284668870001851",
+        "holKey" : "HoldingResultKey [mid=2284668870001851, libraryId=13656590001851, locationCode=UISPEC, callNumber=Day-NW F746.T56]",
+        "matchForHoldings" : [ {
+          "matchOn" : "MainLocation",
+          "holdingRecord" : "852##b"
+        } ],
+        "stackMapUrl" : "",
+        "relatedTitle" : null,
+        "translateRelatedTitle" : null,
+        "yearFilter" : null,
+        "volumeFilter" : null,
+        "singleUnavailableItemProcessType" : null,
+        "boundWith" : false,
+        "@id" : "_:0"
+      } ],
+      "electronicServices" : null,
+      "additionalElectronicServices" : null,
+      "filteredByGroupServices" : null,
+      "quickAccessService" : null,
+      "deliveryCategory" : [ "Alma-P" ],
+      "serviceMode" : [ "ovp" ],
+      "availability" : [ "available_in_library" ],
+      "availabilityLinks" : [ "detailsgetit1" ],
+      "availabilityLinksUrl" : [ ],
+      "displayedAvailability" : null,
+      "displayLocation" : true,
+      "additionalLocations" : false,
+      "titleRequestableAtItemLevel" : false,
+      "physicalItemTextCodes" : null,
+      "feDisplayOtherLocations" : false,
+      "almaInstitutionsList" : [ ],
+      "recordInstitutionCode" : null,
+      "recordOwner" : "01ALLIANCE_NETWORK",
+      "hasFilteredServices" : null,
+      "digitalAuxiliaryMode" : false,
+      "digitalAuxiliaryThumbnail" : false,
+      "hideResourceSharing" : false,
+      "sharedDigitalCandidates" : null,
+      "consolidatedCoverage" : null,
+      "electronicContextObjectId" : null,
+      "almaOpenurl" : null,
+      "GetIt1" : [ {
+        "category" : "Alma-P",
+        "links" : [ {
+          "isLinktoOnline" : false,
+          "getItTabText" : "service_getit",
+          "adaptorid" : "ALMA_01",
+          "ilsApiId" : "9929090301851",
+          "link" : "OVP",
+          "inst4opac" : "01ALLIANCE_UID",
+          "displayText" : null,
+          "@id" : "_:0"
+        } ]
+      } ],
+      "physicalServiceId" : null,
+      "link" : [ {
+        "@id" : ":_0",
+        "linkType" : "thumbnail",
+        "linkURL" : "https://proxy-na.hosted.exlibrisgroup.com/exl_rewrite/books.google.com/books?bibkeys=ISBN:,OCLC:03194714,LCCN:&jscmd=viewapi&callback=updateGBSCover",
+        "displayLabel" : "thumbnail"
+      } ],
+      "hasD" : null
+    },
+    "enrichment" : {
+      "virtualBrowseObject" : {
+        "isVirtualBrowseEnabled" : true,
+        "callNumber" : "Day-NW F746.T56",
+        "callNumberBrowseField" : "0"
+      },
+      "bibVirtualBrowseObject" : {
+        "isVirtualBrowseEnabled" : true,
+        "callNumber" : "f\"746.5ǂ t48 1975",
+        "callNumberBrowseField" : "LOC_CL"
+      }
+    }
+  } ],
+  "timelog" : {
+    "PC_SEARCH_CALL_TIME" : "23",
+    "PC_BUILD_JSON_AND_HIGLIGHTS" : "24",
+    "PC_SEARCH_TIME_TOTAL" : "47",
+    "BUILD_RESULTS_RETRIVE_FROM_DB" : "24",
+    "CALL_SOLR_GET_IDS_LIST" : "150",
+    "PRIMA_LOCAL_SEARCH_SET_AVALIABILITY" : "89",
+    "RETRIVE_COLLECTION_DISCOVERY_INFO" : "1",
+    "RETRIVE_FROM_DB_COURSE_INFO" : "1",
+    "RETRIVE_FROM_DB_RECORDS" : "11",
+    "RETRIVE_FROM_DB_RELATIONS" : "9",
+    "SET_AVAILABILTY_GET_LIBRARY_DETAILS" : "84",
+    "SET_AVAILABILTY_HOLDING_DEDUPS" : "5",
+    "PRIMA_LOCAL_INFO_FACETS_BUILD_DOCS_HIGHLIGHTS" : "124",
+    "PRIMA_LOCAL_SEARCH_TOTAL" : "391",
+    "BUILD_BLEND_AND_CACHE_RESULTS" : 0,
+    "BUILD_COMBINED_RESULTS_MAP" : 443,
+    "COMBINED_SEARCH_TIME" : 450,
+    "PROCESS_COMBINED_RESULTS" : 0,
+    "FEATURED_SEARCH_TIME" : 0
+  },
+  "facetsCacheKey" : -402474651
+}

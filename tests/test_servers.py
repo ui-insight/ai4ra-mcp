@@ -29,6 +29,7 @@ EXPECTED_TOOLS = {
     "weather": {"weather_index", "weather_forecast", "weather_now", "weather_alerts", "weather_office"},
     "wolfram": {"wolfram_index", "wolfram_ask", "wolfram_answer"},
     "costs": {"costs_index", "costs_tuition", "costs_attendance", "costs_deadlines", "costs_insurance"},
+    "library": {"library_index", "library_search", "library_record"},
     "nihdates": {"nihdates_index", "nihdates_due", "nihdates_cycles", "nihdates_salary_cap"},
     "omb": {"omb_index", "omb_memoranda", "omb_memorandum"},
     "ncura": {"ncura_index", "ncura_events", "ncura_event"},
@@ -161,9 +162,9 @@ def test_app_mounts_every_server_and_its_skills():
         assert by["nih"]["skills_base"] == "nih/skills/" and by["nih"]["mcp"] == "nih/mcp" and by["nih"]["web"].endswith("/nih/skills/")
         assert by["classes"]["given"]["classes_section"] == {"term": "classes_terms", "crn": "classes_search"}
         # institution (#38): the three Idaho servers name Idaho, the GitHub skills server names GitHub, every other server carries null.
-        assert {s["name"] for s in index["servers"] if s["institution"] == "University of Idaho"} == {"uidaho", "classes", "directory", "events", "campusmap", "costs", *lakehouse.SERVERS}
+        assert {s["name"] for s in index["servers"] if s["institution"] == "University of Idaho"} == {"uidaho", "classes", "directory", "events", "campusmap", "costs", "library", *lakehouse.SERVERS}
         assert by["github"]["institution"] == "GitHub" and by["uidaho"]["label"] == "UI guidance"
-        assert all(s["institution"] is None for s in index["servers"] if s["name"] not in ("uidaho", "classes", "directory", "events", "campusmap", "costs", "github", *lakehouse.SERVERS))
+        assert all(s["institution"] is None for s in index["servers"] if s["name"] not in ("uidaho", "classes", "directory", "events", "campusmap", "costs", "library", "github", *lakehouse.SERVERS))
         assert all(s["given"] == given_of(SERVERS[s["name"]]) for s in index["servers"])
         for s in index["servers"]:
             assert client.get("/" + s["skills"]).status_code == 200

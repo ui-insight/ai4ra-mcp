@@ -1,0 +1,1127 @@
+{"beaconO22":"732",
+  "info" : {
+    "controlledVocabulary" : {
+      "errorMessages" : [ "pure reason", "speculative reason" ]
+    },
+    "totalResultsLocal" : 809,
+    "totalResultsPC" : 224624,
+    "total" : 225433,
+    "first" : 1,
+    "last" : 5
+  },
+  "highlights" : {
+    "snippet" : [ "Critique of Pure Reason", "reason", "Critique", "Pure Reason" ],
+    "subject" : [ "Reason" ],
+    "title" : [ "Critique of Pure Reason", "Critique of Pure Reason'", "critique of pure reason", "Critique", "reason", "of pure", "pure" ],
+    "termsUnion" : [ "Critique of Pure Reason", "reason", "Critique", "Pure Reason", "Reason", "of critique", "critique", "pure", "of Critique", "Critique of Pure Reason'", "critique of pure reason", "of pure" ],
+    "toc" : [ "of critique", "critique", "pure", "reason", "of Critique", "Critique" ],
+    "addtitle" : [ "Critique", "reason" ]
+  },
+  "docs" : [ {
+    "context" : "L",
+    "adaptor" : "Local Search Engine",
+    "@id" : "https://na01.alma.exlibrisgroup.com/primaws/rest/pub/pnxs/L/99343549494201451",
+    "pnx" : {
+      "display" : {
+        "source" : [ "Alma" ],
+        "type" : [ "pbooks" ],
+        "title" : [ "Critique of pure reason " ],
+        "format" : [ "xv, 747 pages ; 24 cm" ],
+        "identifier" : [ "$$CISBN$$V9781009600064 (hardback);$$CISBN$$V1009600060 (hardback);$$CISBN$$V9781009600057 (paperback);$$CISBN$$V1009600052 (paperback);$$CISBN$$V9781009600040 (Additional Format)" ],
+        "creationdate" : [ "2025" ],
+        "creator" : [ "Kant, Immanuel, 1724-1804, author.$$QKant, Immanuel" ],
+        "publisher" : [ "Cambridge : Cambridge University Press" ],
+        "description" : [ "<b>Series statement:</b> The Cambridge edition of the works of Immanuel Kant", "Includes bibliographical references and index." ],
+        "mms" : [ "99343549494201451" ],
+        "contributor" : [ "Guyer, Paul, 1948- editor, translator.$$QGuyer, Paul", "Wood, Allen W., editor, translator.$$QWood, Allen W.", "Cambridge University Press, publisher.$$QCambridge University Press" ],
+        "edition" : [ "Second edition.", "Revised edition, 2025." ],
+        "unititle" : [ "Kritik der reinen Vernunft. English" ],
+        "place" : [ "Cambridge :" ],
+        "version" : [ "0" ],
+        "lds43" : [ "Kant, Immanuel, 1724-1804. Works. English. 1992.$$QKant, Immanuel, 1724-1804. Works. English. 1992." ],
+        "lds45" : [ "$$Cedition$$VKant, Immanuel, 1724-1804. Kritik der reinen Vernunft. English. Critique of pure reason. New York : Cambridge University Press, 1998$$QKant, Immanuel, 1724-1804. Critique of pure reason.$$X(dlc) 97002959$$X(ocolc)36438781$$X0521354021", "$$Cform$$VOnline version: Kant, Immanuel, 1724-1804. Critique of pure reason. Second edition. Cambridge, United Kingdom ; New York, NY : Cambridge University Press, 2025$$QKant, Immanuel, 1724-1804. Critique of pure reason.$$X(ocolc)1524213281$$X9781009600040" ],
+        "lds80" : [ "Kant, Immanuel, 1724-1804, Kritik der reinen Vernunft. English$$QKant, Immanuel, 1724-1804, Kritik der reinen Vernunft. English" ],
+        "lds88" : [ "translated and edited by Paul Guyer, University of Pennsylvania and Brown University, emeritus ; Allen W. Wood, Indiana University and Stanford University, emeritus" ],
+        "lds90" : [ "In English, translated from the German.", "Original language(s): $$Tlang.ger$$" ],
+        "lds99" : [ "\"Kant's Critique of Pure Reason (1781/1787) examines the limits and scope of human knowledge. He distinguishes between phenomena (what we experience) and noumena (things-in-themselves), arguing that reason shapes experience through categories of understanding. The work revolutionized philosophy, blending rationalism and empiricism, and laid foundations for modern epistemology and metaphysics\"-- Provided by publisher." ],
+        "lds100" : [ "1542850066" ],
+        "subject" : [ "Knowledge, Theory of", "Causation", "Reason" ]
+      },
+      "control" : {
+        "sourcerecordid" : [ "99343549494201451" ],
+        "recordid" : [ "alma99343549494201451" ],
+        "sourceid" : "alma",
+        "originalsourceid" : [ "on1542850066" ],
+        "sourcesystem" : [ "OCLC" ],
+        "sourceformat" : [ "MARC21" ],
+        "score" : [ 180856.56 ],
+        "isDedup" : false
+      },
+      "addata" : {
+        "originatingSystemIDAuthor" : [ "n79021614" ],
+        "originatingSystemIDContributor" : [ "n78034997", "n81103607", "n50059133" ],
+        "aulast" : [ "Kant" ],
+        "aufirst" : [ "Immanuel" ],
+        "auinit" : [ "I" ],
+        "au" : [ "Kant, Immanuel" ],
+        "addau" : [ "Cambridge University Press, publisher.", "Guyer, Paul", "Wood, Allen W." ],
+        "seriesau" : [ "Kant, Immanuel, 1724-1804" ],
+        "creatorfull" : [ "$$NKant, Immanuel$$LKant$$FImmanuel$$Rauthor" ],
+        "contributorfull" : [ "$$NGuyer, Paul$$LGuyer$$FPaul$$Rcontributor", "$$NWood, Allen W.$$Rcontributor" ],
+        "date" : [ "2025 - 2025", "2025" ],
+        "isbn" : [ "9781009600064", "1009600060", "9781009600057", "1009600052", "9781009600040" ],
+        "notes" : [ "Includes bibliographical references and index." ],
+        "abstract" : [ "\"Kant's Critique of Pure Reason (1781/1787) examines the limits and scope of human knowledge. He distinguishes between phenomena (what we experience) and noumena (things-in-themselves), arguing that reason shapes experience through categories of understanding. The work revolutionized philosophy, blending rationalism and empiricism, and laid foundations for modern epistemology and metaphysics\"-- Provided by publisher." ],
+        "cop" : [ "Cambridge" ],
+        "pub" : [ "Cambridge University Press" ],
+        "oclcid" : [ "(ocolc)1542850066", "(ocolc)on1542850066" ],
+        "lccn" : [ "2025039618" ],
+        "edition" : [ "Second edition." ],
+        "seriestitle" : [ "The Cambridge edition of the works of Immanuel Kant" ],
+        "ristype" : [ "BOOK" ],
+        "btitle" : [ "Critique of pure reason" ]
+      },
+      "sort" : {
+        "title" : [ "Critique of pure reason /" ],
+        "author" : [ "Kant, Immanuel, 1724-1804, author." ],
+        "creationdate" : [ "2025" ]
+      },
+      "facets" : {
+        "frbrtype" : [ "6" ]
+      }
+    },
+    "delivery" : {
+      "bestlocation" : null,
+      "holding" : null,
+      "electronicServices" : null,
+      "additionalElectronicServices" : null,
+      "filteredByGroupServices" : null,
+      "quickAccessService" : null,
+      "deliveryCategory" : [ "Alma-P" ],
+      "serviceMode" : [ "howovp" ],
+      "availability" : [ "no_inventory" ],
+      "availabilityLinks" : [ "detailsgetit1" ],
+      "availabilityLinksUrl" : [ "detailsgetit1" ],
+      "displayedAvailability" : "no_inventory",
+      "displayLocation" : null,
+      "additionalLocations" : null,
+      "titleRequestableAtItemLevel" : null,
+      "physicalItemTextCodes" : null,
+      "feDisplayOtherLocations" : null,
+      "almaInstitutionsList" : [ {
+        "getitLink" : [ {
+          "displayText" : "Alma-P",
+          "linkRecordId" : "99343549494201451"
+        } ],
+        "instCode" : "01ALLIANCE_UPORT",
+        "instName" : "University of Portland",
+        "instId" : "1857",
+        "availabilityStatus" : "available_in_institution",
+        "envURL" : ""
+      } ],
+      "recordInstitutionCode" : null,
+      "recordOwner" : "01ALLIANCE_NETWORK",
+      "hasFilteredServices" : null,
+      "digitalAuxiliaryMode" : false,
+      "digitalAuxiliaryThumbnail" : false,
+      "hideResourceSharing" : false,
+      "sharedDigitalCandidates" : null,
+      "consolidatedCoverage" : null,
+      "electronicContextObjectId" : null,
+      "almaOpenurl" : null,
+      "GetIt1" : [ {
+        "category" : "Alma-P",
+        "links" : [ {
+          "isLinktoOnline" : false,
+          "getItTabText" : "service_howtogetit",
+          "adaptorid" : "ALMA_01",
+          "ilsApiId" : "",
+          "link" : "HowToGetIt",
+          "inst4opac" : "",
+          "displayText" : null,
+          "@id" : "_:0"
+        } ]
+      } ],
+      "physicalServiceId" : null,
+      "link" : [ {
+        "@id" : ":_0",
+        "linkType" : "thumbnail",
+        "linkURL" : "https://proxy-na.hosted.exlibrisgroup.com/exl_rewrite/books.google.com/books?bibkeys=ISBN:1009600060,OCLC:,LCCN:2025039618&jscmd=viewapi&callback=updateGBSCover",
+        "displayLabel" : "thumbnail"
+      } ],
+      "hasD" : null
+    },
+    "enrichment" : {
+      "virtualBrowseObject" : {
+        "isVirtualBrowseEnabled" : false,
+        "callNumber" : "",
+        "callNumberBrowseField" : ""
+      }
+    }
+  }, {
+    "context" : "L",
+    "adaptor" : "Local Search Engine",
+    "@id" : "https://na01.alma.exlibrisgroup.com/primaws/rest/pub/pnxs/L/99108105820001451",
+    "pnx" : {
+      "display" : {
+        "source" : [ "Alma" ],
+        "type" : [ "pbooks" ],
+        "language" : [ "eng" ],
+        "title" : [ "Kant's Critique of pure reason : critical essays " ],
+        "format" : [ "xx, 300 pages : illustrations ; 24 cm" ],
+        "identifier" : [ "$$CISBN$$V0847689166 (alk. paper);$$CISBN$$V9780847689163 (alk. paper);$$CISBN$$V0847689174 (pbk. : alk. paper);$$CISBN$$V9780847689170 (pbk. : alk. paper)" ],
+        "creationdate" : [ "©1998" ],
+        "publisher" : [ "Lanham : Rowman & Littlefield" ],
+        "description" : [ "<b>Series statement:</b> Critical essays on the classics", "Includes bibliographical references (pages 283-289) and index." ],
+        "mms" : [ "99108105820001451" ],
+        "contributor" : [ "Kitcher, Patricia.$$QKitcher, Patricia." ],
+        "contents" : [ "<p><b>Table of contents</b>: Kant's a priori framework / Philip Kitcher -- Was Kant a nativist? / Lorne Falkenstein -- Infinity and Kant's conception of the \"possibility of experience\" / Charles Parsons -- Kant's cognitive self / Patricia Kitcher -- Kant's transcendental deduction as a regressive argument / Karl Ameriks -- Did the sage of Königsberg have no dreams? / Lewis White Beck -- Kant's second analogy : objects, events and casual laws / Paul Guyer -- Metaphysics of transcendental idealism [partial], from The bounds of sense / P.F. Strawson -- Introduction to the problem, and transcendental realism and transcendental idealism, from Kant's Transcendental idealism / Henry Allison -- Projecting the order of nature / Philip Kitcher -- Kant's compatibilism / Allen W. Wood -- Kant's critique of the three theistic proofs [partial], from Kant's Rational theology / Allen W. Wood.</p>" ],
+        "place" : [ "Lanham :" ],
+        "version" : [ "0" ],
+        "lds43" : [ "Critical essays on the classics.$$QCritical essays on the classics." ],
+        "lds45" : [ "$$Cform$$VOnline version: Kant's Critique of pure reason. Lanham : Rowman & Littlefield, ©1998$$QKant's Critique of pure reason.$$X(ocolc)607134470" ],
+        "lds70" : [ "edited by Patricia Kitcher." ],
+        "lds78" : [ "Aufsatzsammlung$$QAufsatzsammlung" ],
+        "lds88" : [ "edited by Patricia Kitcher" ],
+        "lds99" : [ "The central project of the Critique of Pure Reason is to answer two sets of questions: what can we know and how can we know it? What can't we know and why can't we know it? The essays in this collection are intended to help students read the Critique of Pure Reason with a greater understanding of its central themes and arguments, and with some awareness of important lines of criticism of those themes and arguments. Publisher's note." ],
+        "lds100" : [ "39235635" ],
+        "subject" : [ "Kant, Immanuel, 1724-1804 Kritik der reinen Vernunft" ]
+      },
+      "control" : {
+        "sourcerecordid" : [ "99108105820001451" ],
+        "recordid" : [ "alma99108105820001451" ],
+        "sourceid" : "alma",
+        "originalsourceid" : [ "ocm39235635-01alliance_network" ],
+        "sourcesystem" : [ "OCLC" ],
+        "sourceformat" : [ "MARC21" ],
+        "score" : [ 97012.82999999999 ],
+        "isDedup" : false
+      },
+      "addata" : {
+        "originatingSystemIDSubject" : [ "no2002033195", "04099256X" ],
+        "originatingSystemIDContributor" : [ "n84002754" ],
+        "aulast" : [ "Kitcher" ],
+        "aufirst" : [ "Patricia." ],
+        "auinit" : [ "P" ],
+        "addau" : [ "Kitcher, Patricia." ],
+        "contributorfull" : [ "$$NKitcher, Patricia.$$LKitcher$$FPatricia.$$Rcontributor" ],
+        "date" : [ "1998", "©1998" ],
+        "isbn" : [ "0847689166", "9780847689163", "0847689174", "9780847689170" ],
+        "notes" : [ "Includes bibliographical references (pages 283-289) and index." ],
+        "abstract" : [ "The central project of the Critique of Pure Reason is to answer two sets of questions: what can we know and how can we know it? What can't we know and why can't we know it? The essays in this collection are intended to help students read the Critique of Pure Reason with a greater understanding of its central themes and arguments, and with some awareness of important lines of criticism of those themes and arguments. Publisher's note." ],
+        "cop" : [ "Lanham" ],
+        "pub" : [ "Rowman & Littlefield" ],
+        "oclcid" : [ "(ocolc)39235635" ],
+        "lccn" : [ "98024541" ],
+        "seriestitle" : [ "Critical essays on the classics" ],
+        "ristype" : [ "BOOK" ],
+        "btitle" : [ "Kant's Critique of pure reason : critical essays" ]
+      },
+      "sort" : {
+        "title" : [ "Kant's Critique of pure reason : critical essays /" ],
+        "author" : [ "Kitcher, Patricia." ],
+        "creationdate" : [ "1998" ]
+      },
+      "facets" : {
+        "frbrtype" : [ "6" ]
+      }
+    },
+    "delivery" : {
+      "bestlocation" : null,
+      "holding" : null,
+      "electronicServices" : null,
+      "additionalElectronicServices" : null,
+      "filteredByGroupServices" : null,
+      "quickAccessService" : null,
+      "deliveryCategory" : [ "Alma-P" ],
+      "serviceMode" : [ "howovp" ],
+      "availability" : [ "no_inventory" ],
+      "availabilityLinks" : [ "detailsgetit1" ],
+      "availabilityLinksUrl" : [ "detailsgetit1" ],
+      "displayedAvailability" : "no_inventory",
+      "displayLocation" : null,
+      "additionalLocations" : null,
+      "titleRequestableAtItemLevel" : null,
+      "physicalItemTextCodes" : null,
+      "feDisplayOtherLocations" : null,
+      "almaInstitutionsList" : [ {
+        "getitLink" : [ {
+          "displayText" : "Alma-P",
+          "linkRecordId" : "99108105820001451"
+        } ],
+        "instCode" : "01ALLIANCE_UPUGS",
+        "instName" : "University of Puget Sound",
+        "instId" : "1854",
+        "availabilityStatus" : "available_in_institution",
+        "envURL" : ""
+      }, {
+        "getitLink" : [ {
+          "displayText" : "Alma-P",
+          "linkRecordId" : "99108105820001451"
+        } ],
+        "instCode" : "01ALLIANCE_EWU",
+        "instName" : "Eastern Washington University",
+        "instId" : "1843",
+        "availabilityStatus" : "available_in_institution",
+        "envURL" : ""
+      }, {
+        "getitLink" : [ {
+          "displayText" : "Alma-P",
+          "linkRecordId" : "99108105820001451"
+        } ],
+        "instCode" : "01ALLIANCE_LCC",
+        "instName" : "Lewis & Clark",
+        "instId" : "1844",
+        "availabilityStatus" : "available_in_institution",
+        "envURL" : ""
+      }, {
+        "getitLink" : [ {
+          "displayText" : "Alma-P",
+          "linkRecordId" : "99108105820001451"
+        } ],
+        "instCode" : "01ALLIANCE_WHITC",
+        "instName" : "Whitman College",
+        "instId" : "1867",
+        "availabilityStatus" : "available_in_institution",
+        "envURL" : ""
+      }, {
+        "getitLink" : [ {
+          "displayText" : "Alma-P",
+          "linkRecordId" : "99108105820001451"
+        } ],
+        "instCode" : "01ALLIANCE_UPORT",
+        "instName" : "University of Portland",
+        "instId" : "1857",
+        "availabilityStatus" : "available_in_institution",
+        "envURL" : ""
+      }, {
+        "getitLink" : [ {
+          "displayText" : "Alma-P",
+          "linkRecordId" : "99108105820001451"
+        } ],
+        "instCode" : "01ALLIANCE_WU",
+        "instName" : "Willamette University",
+        "instId" : "1454",
+        "availabilityStatus" : "available_in_institution",
+        "envURL" : ""
+      }, {
+        "getitLink" : [ {
+          "displayText" : "Alma-P",
+          "linkRecordId" : "99108105820001451"
+        } ],
+        "instCode" : "01ALLIANCE_REED",
+        "instName" : "Reed College",
+        "instId" : "1841",
+        "availabilityStatus" : "available_in_institution",
+        "envURL" : ""
+      }, {
+        "getitLink" : [ {
+          "displayText" : "Alma-P",
+          "linkRecordId" : "99108105820001451"
+        } ],
+        "instCode" : "01ALLIANCE_WSU",
+        "instName" : "Washington State University",
+        "instId" : "1842",
+        "availabilityStatus" : "available_in_institution",
+        "envURL" : ""
+      }, {
+        "getitLink" : [ {
+          "displayText" : "Alma-P",
+          "linkRecordId" : "99108105820001451"
+        } ],
+        "instCode" : "01ALLIANCE_PSU",
+        "instName" : "Portland State University",
+        "instId" : "1853",
+        "availabilityStatus" : "available_in_institution",
+        "envURL" : ""
+      } ],
+      "recordInstitutionCode" : null,
+      "recordOwner" : "01ALLIANCE_NETWORK",
+      "hasFilteredServices" : null,
+      "digitalAuxiliaryMode" : false,
+      "digitalAuxiliaryThumbnail" : false,
+      "hideResourceSharing" : false,
+      "sharedDigitalCandidates" : null,
+      "consolidatedCoverage" : null,
+      "electronicContextObjectId" : null,
+      "almaOpenurl" : null,
+      "GetIt1" : [ {
+        "category" : "Alma-P",
+        "links" : [ {
+          "isLinktoOnline" : false,
+          "getItTabText" : "service_howtogetit",
+          "adaptorid" : "ALMA_01",
+          "ilsApiId" : "",
+          "link" : "HowToGetIt",
+          "inst4opac" : "",
+          "displayText" : null,
+          "@id" : "_:0"
+        } ]
+      } ],
+      "physicalServiceId" : null,
+      "link" : [ {
+        "@id" : ":_0",
+        "linkType" : "thumbnail",
+        "linkURL" : "https://proxy-na.hosted.exlibrisgroup.com/exl_rewrite/books.google.com/books?bibkeys=ISBN:9780847689163,OCLC:,LCCN:98024541&jscmd=viewapi&callback=updateGBSCover",
+        "displayLabel" : "thumbnail"
+      } ],
+      "hasD" : null
+    },
+    "enrichment" : {
+      "virtualBrowseObject" : {
+        "isVirtualBrowseEnabled" : false,
+        "callNumber" : "",
+        "callNumberBrowseField" : ""
+      }
+    }
+  }, {
+    "context" : "L",
+    "adaptor" : "Local Search Engine",
+    "@id" : "https://na01.alma.exlibrisgroup.com/primaws/rest/pub/pnxs/L/99116312640001451",
+    "pnx" : {
+      "display" : {
+        "source" : [ "Alma" ],
+        "type" : [ "pbooks" ],
+        "language" : [ "eng" ],
+        "title" : [ "Critique of pure reason " ],
+        "format" : [ "xlii, 517 pages ; 19 cm." ],
+        "creationdate" : [ "1855" ],
+        "creator" : [ "Kant, Immanuel, 1724-1804, author.$$QKant, Immanuel" ],
+        "publisher" : [ "London : Henry G. Bohn" ],
+        "description" : [ "<b>Series statement:</b> Bohn's philosophical library" ],
+        "mms" : [ "99116312640001451" ],
+        "contributor" : [ "Meiklejohn, J. M. D. (John Miller Dow), 1836-1902, translator.$$QMeiklejohn, J. M. D.", "Henry G. Bohn (Firm), publisher.$$QHenry G. Bohn (Firm)" ],
+        "place" : [ "London :" ],
+        "version" : [ "0" ],
+        "lds43" : [ "Bohn's philosophical library.$$QBohn's philosophical library." ],
+        "lds45" : [ "$$Cform$$VOnline version: Kant, Immanuel, 1724-1804. Critique of pure reason. London, Henry G. Bohn, 1855$$QKant, Immanuel, 1724-1804. Critique of pure reason.$$X(ocolc)793613643" ],
+        "lds78" : [ "Translations$$QTranslations" ],
+        "lds79" : [ "Container of: Kant, Immanuel, 1724-1804. Kritik der reinen Vernunft. English (Meiklejohn)$$QKant, Immanuel, 1724-1804. Kritik der reinen Vernunft. English (Meiklejohn)" ],
+        "lds88" : [ "translated from the German of Immanuel Kant by J.M.D. Meiklejohn" ],
+        "lds90" : [ "Original language(s): $$Tlang.ger$$" ],
+        "lds100" : [ "01450431" ],
+        "subject" : [ "Knowledge, Theory of", "Causation", "Reason" ]
+      },
+      "control" : {
+        "sourcerecordid" : [ "99116312640001451" ],
+        "recordid" : [ "alma99116312640001451" ],
+        "sourceid" : "alma",
+        "originalsourceid" : [ "ocm01450431-01alliance_network" ],
+        "sourcesystem" : [ "OCLC" ],
+        "sourceformat" : [ "MARC21" ],
+        "score" : [ 90878.87000000001 ],
+        "isDedup" : false
+      },
+      "addata" : {
+        "originatingSystemIDAuthor" : [ "n79021614" ],
+        "originatingSystemIDContributor" : [ "n87140320", "no2023125834", "no2018169307" ],
+        "aulast" : [ "Kant" ],
+        "aufirst" : [ "Immanuel" ],
+        "auinit" : [ "I" ],
+        "au" : [ "Kant, Immanuel" ],
+        "addau" : [ "Henry G. Bohn (Firm), publisher.", "Meiklejohn, J. M. D." ],
+        "creatorfull" : [ "$$NKant, Immanuel$$LKant$$FImmanuel$$Rauthor" ],
+        "contributorfull" : [ "$$NMeiklejohn, J. M. D.$$LMeiklejohn$$FJ. M. D.$$Rtranslator" ],
+        "date" : [ "1855" ],
+        "cop" : [ "London" ],
+        "pub" : [ "Henry G. Bohn" ],
+        "oclcid" : [ "(ocolc)1450431" ],
+        "seriestitle" : [ "Bohn's philosophical library" ],
+        "ristype" : [ "BOOK" ],
+        "btitle" : [ "Critique of pure reason" ]
+      },
+      "sort" : {
+        "title" : [ "Critique of pure reason /" ],
+        "author" : [ "Kant, Immanuel, 1724-1804, author." ],
+        "creationdate" : [ "1855" ]
+      },
+      "facets" : {
+        "frbrtype" : [ "6" ]
+      }
+    },
+    "delivery" : {
+      "bestlocation" : null,
+      "holding" : null,
+      "electronicServices" : null,
+      "additionalElectronicServices" : null,
+      "filteredByGroupServices" : null,
+      "quickAccessService" : null,
+      "deliveryCategory" : [ "Alma-P" ],
+      "serviceMode" : [ "howovp" ],
+      "availability" : [ "no_inventory" ],
+      "availabilityLinks" : [ "detailsgetit1" ],
+      "availabilityLinksUrl" : [ "detailsgetit1" ],
+      "displayedAvailability" : "no_inventory",
+      "displayLocation" : null,
+      "additionalLocations" : null,
+      "titleRequestableAtItemLevel" : null,
+      "physicalItemTextCodes" : null,
+      "feDisplayOtherLocations" : null,
+      "almaInstitutionsList" : [ {
+        "getitLink" : [ {
+          "displayText" : "Alma-P",
+          "linkRecordId" : "99116312640001451"
+        } ],
+        "instCode" : "01ALLIANCE_WWU",
+        "instName" : "Western Washington University",
+        "instId" : "1453",
+        "availabilityStatus" : "available_in_institution",
+        "envURL" : ""
+      } ],
+      "recordInstitutionCode" : null,
+      "recordOwner" : "01ALLIANCE_NETWORK",
+      "hasFilteredServices" : null,
+      "digitalAuxiliaryMode" : false,
+      "digitalAuxiliaryThumbnail" : false,
+      "hideResourceSharing" : false,
+      "sharedDigitalCandidates" : null,
+      "consolidatedCoverage" : null,
+      "electronicContextObjectId" : null,
+      "almaOpenurl" : null,
+      "GetIt1" : [ {
+        "category" : "Alma-P",
+        "links" : [ {
+          "isLinktoOnline" : false,
+          "getItTabText" : "service_howtogetit",
+          "adaptorid" : "ALMA_01",
+          "ilsApiId" : "",
+          "link" : "HowToGetIt",
+          "inst4opac" : "",
+          "displayText" : null,
+          "@id" : "_:0"
+        } ]
+      } ],
+      "physicalServiceId" : null,
+      "link" : [ {
+        "@id" : ":_0",
+        "linkType" : "thumbnail",
+        "linkURL" : "https://proxy-na.hosted.exlibrisgroup.com/exl_rewrite/books.google.com/books?bibkeys=ISBN:,OCLC:01450431,LCCN:&jscmd=viewapi&callback=updateGBSCover",
+        "displayLabel" : "thumbnail"
+      } ],
+      "hasD" : null
+    },
+    "enrichment" : {
+      "virtualBrowseObject" : {
+        "isVirtualBrowseEnabled" : false,
+        "callNumber" : "",
+        "callNumberBrowseField" : ""
+      }
+    }
+  }, {
+    "context" : "L",
+    "adaptor" : "Local Search Engine",
+    "@id" : "https://na01.alma.exlibrisgroup.com/primaws/rest/pub/pnxs/L/993756701851",
+    "pnx" : {
+      "display" : {
+        "source" : [ "Alma" ],
+        "type" : [ "pbooks" ],
+        "language" : [ "eng" ],
+        "title" : [ "The critique of pure reason : the critique of practical reason, and other ethical treatises : the critique of judgement " ],
+        "format" : [ "xi, 613 pages ; 25 cm." ],
+        "creationdate" : [ "1955" ],
+        "creator" : [ "Kant, Immanuel, 1724-1804, author.$$QKant, Immanuel" ],
+        "publisher" : [ "Chicago : Encyclopædia Britannica" ],
+        "description" : [ "<b>Series statement:</b> Great books of the Western world ; v. 42" ],
+        "mms" : [ "993756701851" ],
+        "contributor" : [ "Meiklejohn, J. M. D. (John Miller Dow), 1836-1902, translator.$$QMeiklejohn, J. M. D.", "Abbott, Thomas Kingsmill, 1829-1913, translator.$$QAbbott, Thomas Kingsmill", "Meredith, James Creed, translator.$$QMeredith, James Creed" ],
+        "addtitle" : [ "Critique of practical reason.", "Critique of judgement." ],
+        "contents" : [ "<p><b>Table of contents</b>: The critique of pure reason / translated by J.M.D. Meiklejohn -- Fundamental principles of the metaphysic of morals / translated by Thomas Kingsmill Abbott -- The critique of practical reason / translated by Thomas Kingsmill Abbott -- Preface and introduction to the metaphysical elements of ethics, with a note on conscience / translated by Thomas Kingsmill Abbott -- General introduction to the metaphysic of morals / translated by W. Hastie -- The science of right / translated by W. Hastie -- The critique of judgement / translated by James Creed Meredith.</p>" ],
+        "unititle" : [ "Works. Selections. English. 1955" ],
+        "place" : [ "Chicago :" ],
+        "version" : [ "0" ],
+        "lds43" : [ "Great books of the Western world ; v. 42.$$QGreat books of the Western world " ],
+        "lds45" : [ "$$Cform$$VOnline version: Kant, Immanuel, 1724-1804. Works. Selections. English. 1955. Critique of pure reason. Chicago, Encyclopædia Britannica [1955, ©1952]$$QKant, Immanuel, 1724-1804. Critique of pure reason.$$X(ocolc)1038785085" ],
+        "lds80" : [ "Kant, Immanuel, 1724-1804, Works. Selections. English. 1955$$QKant, Immanuel, 1724-1804, Works. Selections. English.", "Kant, Immanuel, 1724-1804. Kritik der reinen Vernunft. English.$$QKant, Immanuel, 1724-1804. Kritik der reinen Vernunft. English.", "Kant, Immanuel, 1724-1804. Kritik der praktischen Vernunft. English.$$QKant, Immanuel, 1724-1804. Kritik der praktischen Vernunft. English.", "Kant, Immanuel, 1724-1804. Kritik der Urteilskraft. English.$$QKant, Immanuel, 1724-1804. Kritik der Urteilskraft. English." ],
+        "lds88" : [ "by Immanuel Kant ; translated by J.M.D. Meiklejohnran, Thomas Kingsmill Abbott, James Creed Meredith" ],
+        "lds90" : [ "Translated from the German by J.M.D. Meiklejohn, Thomas Kingsmill Abbott, James Creed Meredith.", "Original language(s): $$Tlang.ger$$" ],
+        "lds99" : [ "Why this critique is called simply Critique of Practical Reason and not Critique of Pure Practical Reason, though the parallelism between it and the critique of speculative reason seems to demand the latter title, will be sufficiently shown in the treatise itself. Its task is merely to show that there is a pure practical reason, and, in order to do this, it critically examines reason's entire practical faculty. If it succeeds in this task, there is no need to examine the pure faculty itself to see whether it, like speculative reason, presumptuously overreaches itself. For if pure reason is actually practical, it will show its reality and that of its concepts in actions, and all disputations which aim to prove its impossibility will be in vain." ],
+        "lds100" : [ "00916902" ],
+        "subject" : [ "Philosophy", "Causation" ],
+        "mesh" : [ "Philosophy", "Causality" ]
+      },
+      "control" : {
+        "sourcerecordid" : [ "993756701851" ],
+        "recordid" : [ "alma993756701851" ],
+        "sourceid" : "alma",
+        "originalsourceid" : [ "ocm00916902-01alliance_network" ],
+        "sourcesystem" : [ "OCLC" ],
+        "sourceformat" : [ "MARC21" ],
+        "score" : [ 88602.8 ],
+        "isDedup" : false
+      },
+      "addata" : {
+        "originatingSystemIDAuthor" : [ "n79021614" ],
+        "originatingSystemIDContributor" : [ "n87140320", "n86841733", "n81132653", "n92047891", "n86104322", "n84136897" ],
+        "aulast" : [ "Kant" ],
+        "aufirst" : [ "Immanuel" ],
+        "auinit" : [ "I" ],
+        "au" : [ "Kant, Immanuel" ],
+        "addau" : [ "Meiklejohn, J. M. D.", "Abbott, Thomas Kingsmill", "Meredith, James Creed" ],
+        "creatorfull" : [ "$$NKant, Immanuel$$LKant$$FImmanuel$$Rauthor" ],
+        "contributorfull" : [ "$$NMeiklejohn, J. M. D.$$LMeiklejohn$$FJ. M. D.$$Rtranslator", "$$NAbbott, Thomas Kingsmill$$Rtranslator", "$$NMeredith, James Creed$$Rtranslator" ],
+        "addtitle" : [ "Critique of practical reason, and other ethical treatises", "Critique of judgement" ],
+        "date" : [ "1955 - 1952", "1955" ],
+        "abstract" : [ "Why this critique is called simply Critique of Practical Reason and not Critique of Pure Practical Reason, though the parallelism between it and the critique of speculative reason seems to demand the latter title, will be sufficiently shown in the treatise itself. Its task is merely to show that there is a pure practical reason, and, in order to do this, it critically examines reason's entire practical faculty. If it succeeds in this task, there is no need to examine the pure faculty itself to see whether it, like speculative reason, presumptuously overreaches itself. For if pure reason is actually practical, it will show its reality and that of its concepts in actions, and all disputations which aim to prove its impossibility will be in vain." ],
+        "cop" : [ "Chicago" ],
+        "pub" : [ "Encyclopædia Britannica" ],
+        "oclcid" : [ "(ocolc)916902" ],
+        "lccn" : [ "55010348" ],
+        "seriestitle" : [ "Great books of the Western world ; v. 42" ],
+        "ristype" : [ "BOOK" ],
+        "btitle" : [ "The critique of pure reason : the critique of practical reason, and other ethical treatises : the critique of judgement" ]
+      },
+      "sort" : {
+        "title" : [ "critique of pure reason : the critique of practical reason, and other ethical treatises : the critique of judgement /" ],
+        "author" : [ "Kant, Immanuel, 1724-1804, author." ],
+        "creationdate" : [ "1955" ]
+      },
+      "facets" : {
+        "frbrtype" : [ "6" ]
+      }
+    },
+    "delivery" : {
+      "bestlocation" : {
+        "isValidUser" : true,
+        "organization" : "01ALLIANCE_UID",
+        "libraryCode" : "main",
+        "availabilityStatus" : "available",
+        "subLocation" : "Main Stacks (4th Floor)",
+        "subLocationCode" : "UIBOOK4",
+        "mainLocation" : "Main Library",
+        "callNumber" : "AC1 .G72 v. 42",
+        "callNumberType" : "0",
+        "holdingURL" : "OVP",
+        "adaptorid" : "ALMA_01",
+        "ilsApiId" : "993756701851",
+        "holdId" : "2297120830001851",
+        "holKey" : "HoldingResultKey [mid=2297120830001851, libraryId=13656590001851, locationCode=UIBOOK4, callNumber=AC1 .G72 v. 42]",
+        "matchForHoldings" : [ {
+          "matchOn" : "MainLocation",
+          "holdingRecord" : "852##b"
+        } ],
+        "stackMapUrl" : "",
+        "relatedTitle" : null,
+        "translateRelatedTitle" : null,
+        "yearFilter" : null,
+        "volumeFilter" : null,
+        "singleUnavailableItemProcessType" : null,
+        "boundWith" : false,
+        "@id" : "_:0"
+      },
+      "holding" : [ {
+        "isValidUser" : true,
+        "organization" : "01ALLIANCE_UID",
+        "libraryCode" : "main",
+        "availabilityStatus" : "available",
+        "subLocation" : "Main Stacks (4th Floor)",
+        "subLocationCode" : "UIBOOK4",
+        "mainLocation" : "Main Library",
+        "callNumber" : "AC1 .G72 v. 42",
+        "callNumberType" : "0",
+        "holdingURL" : "OVP",
+        "adaptorid" : "ALMA_01",
+        "ilsApiId" : "993756701851",
+        "holdId" : "2297120830001851",
+        "holKey" : "HoldingResultKey [mid=2297120830001851, libraryId=13656590001851, locationCode=UIBOOK4, callNumber=AC1 .G72 v. 42]",
+        "matchForHoldings" : [ {
+          "matchOn" : "MainLocation",
+          "holdingRecord" : "852##b"
+        } ],
+        "stackMapUrl" : "",
+        "relatedTitle" : null,
+        "translateRelatedTitle" : null,
+        "yearFilter" : null,
+        "volumeFilter" : null,
+        "singleUnavailableItemProcessType" : null,
+        "boundWith" : false,
+        "@id" : "_:0"
+      }, {
+        "isValidUser" : true,
+        "organization" : "01ALLIANCE_UID",
+        "libraryCode" : "law",
+        "availabilityStatus" : "available",
+        "subLocation" : "UI Law Library Special Collections (Clagett)",
+        "subLocationCode" : "LAWCLAGETT",
+        "mainLocation" : "UI Law Library",
+        "callNumber" : "Clagett AC1.G72 v. 42",
+        "callNumberType" : "8",
+        "holdingURL" : "OVP",
+        "adaptorid" : "ALMA_01",
+        "ilsApiId" : "993756701851",
+        "holdId" : "2297120850001851",
+        "holKey" : "HoldingResultKey [mid=2297120850001851, libraryId=13655090001851, locationCode=LAWCLAGETT, callNumber=Clagett AC1.G72 v. 42]",
+        "matchForHoldings" : [ {
+          "matchOn" : "MainLocation",
+          "holdingRecord" : "852##b"
+        } ],
+        "stackMapUrl" : "",
+        "relatedTitle" : null,
+        "translateRelatedTitle" : null,
+        "yearFilter" : null,
+        "volumeFilter" : null,
+        "singleUnavailableItemProcessType" : null,
+        "boundWith" : false,
+        "@id" : "_:1"
+      } ],
+      "electronicServices" : null,
+      "additionalElectronicServices" : null,
+      "filteredByGroupServices" : null,
+      "quickAccessService" : null,
+      "deliveryCategory" : [ "Alma-P" ],
+      "serviceMode" : [ "ovp" ],
+      "availability" : [ "available_in_library" ],
+      "availabilityLinks" : [ "detailsgetit1" ],
+      "availabilityLinksUrl" : [ ],
+      "displayedAvailability" : null,
+      "displayLocation" : true,
+      "additionalLocations" : true,
+      "titleRequestableAtItemLevel" : false,
+      "physicalItemTextCodes" : null,
+      "feDisplayOtherLocations" : true,
+      "almaInstitutionsList" : [ {
+        "getitLink" : [ {
+          "displayText" : "Alma-P",
+          "linkRecordId" : "99134099310001451"
+        } ],
+        "instCode" : "01ALLIANCE_SPU",
+        "instName" : "Seattle Pacific University",
+        "instId" : "1847",
+        "availabilityStatus" : "available_in_institution",
+        "envURL" : ""
+      }, {
+        "getitLink" : [ {
+          "displayText" : "Alma-P",
+          "linkRecordId" : "99134099310001451"
+        } ],
+        "instCode" : "01ALLIANCE_WU",
+        "instName" : "Willamette University",
+        "instId" : "1454",
+        "availabilityStatus" : "available_in_institution",
+        "envURL" : ""
+      }, {
+        "getitLink" : [ {
+          "displayText" : "Alma-P",
+          "linkRecordId" : "99134099310001451"
+        } ],
+        "instCode" : "01ALLIANCE_MHCC",
+        "instName" : "Mt Hood Community College",
+        "instId" : "1860",
+        "availabilityStatus" : "available_in_institution",
+        "envURL" : ""
+      }, {
+        "getitLink" : [ {
+          "displayText" : "Alma-P",
+          "linkRecordId" : "99134099310001451"
+        } ],
+        "instCode" : "01ALLIANCE_EWU",
+        "instName" : "Eastern Washington University",
+        "instId" : "1843",
+        "availabilityStatus" : "available_in_institution",
+        "envURL" : ""
+      }, {
+        "getitLink" : [ {
+          "displayText" : "Alma-P",
+          "linkRecordId" : "99134099310001451"
+        } ],
+        "instCode" : "01ALLIANCE_CWU",
+        "instName" : "Central Washington University",
+        "instId" : "1866",
+        "availabilityStatus" : "available_in_institution",
+        "envURL" : ""
+      } ],
+      "recordInstitutionCode" : null,
+      "recordOwner" : "01ALLIANCE_NETWORK",
+      "hasFilteredServices" : null,
+      "digitalAuxiliaryMode" : false,
+      "digitalAuxiliaryThumbnail" : false,
+      "hideResourceSharing" : false,
+      "sharedDigitalCandidates" : null,
+      "consolidatedCoverage" : null,
+      "electronicContextObjectId" : null,
+      "almaOpenurl" : null,
+      "GetIt1" : [ {
+        "category" : "Alma-P",
+        "links" : [ {
+          "isLinktoOnline" : false,
+          "getItTabText" : "service_getit",
+          "adaptorid" : "ALMA_01",
+          "ilsApiId" : "993756701851",
+          "link" : "OVP",
+          "inst4opac" : "01ALLIANCE_UID",
+          "displayText" : null,
+          "@id" : "_:0"
+        }, {
+          "isLinktoOnline" : false,
+          "getItTabText" : "service_getit",
+          "adaptorid" : "ALMA_01",
+          "ilsApiId" : "993756701851",
+          "link" : "OVP",
+          "inst4opac" : "01ALLIANCE_UID",
+          "displayText" : null,
+          "@id" : "_:1"
+        } ]
+      } ],
+      "physicalServiceId" : null,
+      "link" : [ {
+        "@id" : ":_0",
+        "linkType" : "thumbnail",
+        "linkURL" : "https://proxy-na.hosted.exlibrisgroup.com/exl_rewrite/books.google.com/books?bibkeys=ISBN:,OCLC:,LCCN:55010348&jscmd=viewapi&callback=updateGBSCover",
+        "displayLabel" : "thumbnail"
+      } ],
+      "hasD" : null
+    },
+    "enrichment" : {
+      "virtualBrowseObject" : {
+        "isVirtualBrowseEnabled" : true,
+        "callNumber" : "Clagett AC1.G72 v. 42",
+        "callNumberBrowseField" : "8"
+      },
+      "bibVirtualBrowseObject" : {
+        "isVirtualBrowseEnabled" : true,
+        "callNumber" : "ac 1ǂ g72 vol 42",
+        "callNumberBrowseField" : "LOC_CL"
+      }
+    }
+  }, {
+    "context" : "L",
+    "adaptor" : "Local Search Engine",
+    "@id" : "https://na01.alma.exlibrisgroup.com/primaws/rest/pub/pnxs/L/99106055210001451",
+    "pnx" : {
+      "display" : {
+        "source" : [ "Alma" ],
+        "type" : [ "pbooks" ],
+        "title" : [ "The Cambridge companion to Kant's Critique of pure reason " ],
+        "format" : [ "xiv, 461 pages ; 24 cm" ],
+        "identifier" : [ "$$CISBN$$V9780521883863 (Hardback);$$CISBN$$V0521883865 (Hardback);$$CISBN$$V9780521710114 (Paperback);$$CISBN$$V0521710111 (Paperback)" ],
+        "creationdate" : [ "2010" ],
+        "publisher" : [ "Cambridge England ; New York : Cambridge University Press" ],
+        "description" : [ "<b>Series statement:</b> Cambridge companions to philosophy", "Includes bibliographical references and index." ],
+        "mms" : [ "99106055210001451" ],
+        "contributor" : [ "Guyer, Paul, 1948-$$QGuyer, Paul" ],
+        "contents" : [ "<p><b>Table of contents</b>: Introduction / Paul Guyer -- The background to the Critique: Kant's Copernican turn and the rationalist tradition / Desmond Hogan. Kant, the empiricists, and the enterprise of deduction / Kenneth P. Winkler -- The arguments of the Critique: The introduction to the Critique : framing the question / R. Lanier Anderson. The transcendental aesthetic / Lisa Shabel. The deduction of the categories : the metaphysical and transcendental deductions / Paul Guyer. The system of principles / Eric Watkins. The refutation of idealism and the distinction between phenomena and noumena / Dina Emundts. The ideas of pure reason / Michael Rohlf. The paralogisms of pure reason / Julian Wuerth. The antimonies of pure reason / Allen W. Wood. The ideal of pure reason / Michelle Grier. The appendix to the dialectic and the canon of pure reason : the positive role of reason / Frederick Rauscher. The transcendental doctrine of method / A.W. Moore -- The impact of the Critique: The reception of the Critique of pure reason in German idealism / Rolf-Peter Horstmann. The \"transcendental method\" : on the reception of the Critique of pure reason in neo-Kantianism / Konstantin Pollok. The Critique of pure reason and continental philosophy : Heidegger's interpretation of transcendental imagination / Daniel Dahlstrom. Kant's Critique of pure reason and analytic philosophy / Kenneth R. Westphal.</p>" ],
+        "place" : [ "Cambridge England] ; New York :" ],
+        "version" : [ "0" ],
+        "lds43" : [ "Cambridge companions to philosophy.$$QCambridge companions to philosophy." ],
+        "lds45" : [ "$$Cform$$VOnline version: Cambridge companion to Kant's Critique of pure reason. Cambridge ; New York : Cambridge University Press, 2010$$QCambridge companion to Kant's Critique of pure reason.$$X(ocolc)761411244" ],
+        "lds70" : [ "edited by Paul Guyer." ],
+        "lds78" : [ "Aufsatzsammlung$$QAufsatzsammlung" ],
+        "lds88" : [ "edited by Paul Guyer" ],
+        "lds90" : [ "English." ],
+        "lds99" : [ "\"Immanuel Kant's Critique of pure reason, first published in 1781, is one of the landmarks of Western philosophy, a radical departure from everything that went before and an inescapable influence on all philosophy since its publication. In this massive work, Kant has three aims. First, he constructs a new theory of knowledge that delivers certainty about the fundamental principles of human experience at the cost of knowledge of how things are in themselves. Second, he delivers a devastating critique of traditional \"speculative\" metaphysics on the basis of his new theory of knowledge. Third, he suggests how the core beliefs of the Western metaphysical tradition that cannot be justified as theoretical knowledge can, nevertheless, be justified as objects of \"moral faith\" because they are the necessary conditions of the possibility of moral agency. Kant started this third project in the Critique of Pure Reason but would go on to complete it in two other works, Critique of Practical Reason and Critique of the Power of Judgment. The Cambridge Companion to Kant's Critique of pure reason is the first collective commentary on this work in English. The seventeen chapters have been written by an international team of scholars, including some of the best-known figures in the field as well as emerging younger talents. The first two chapters situate Kant's project against the background of Continental rationalism and British empiricism, the dominant schools of early modern philosophy. Eleven chapters then expound and assess all the main arguments of the Critique. Finally, four chapters recount the enormous influence of the Critique on subsequent philosophical movements, including German idealism and neo-Kantianism, twentieth-century Continental philosophy, and twentieth century Anglo-American analytic philosophy. The book concludes with an extensive bibliography\"--Provided by publisher.", "\"The Cambridge Companion to Kant's Critique of pure reason is the first collective commentary on this work in English. The seventeen chapters have been written by an international team of scholars, including some of the best-known figures in the field as well as emerging younger talents. The first two chapters situate Kant's project against the background of Continental rationalism and British empiricism, the dominant schools of early modern philosophy. Eleven chapters then expound and assess all the main arguments of the Critique. Finally, four chapters recount the enormous influence of the Critique on subsequent philosophical movements, including German Idealism and Neo-Kantianism, twentieth-century Continental philosophy, and twentieth century Anglo-American analytic philosophy. The book concludes with an extensive bibliography.\"--Provided by publisher." ],
+        "lds100" : [ "565478230" ],
+        "subject" : [ "Knowledge, Theory of", "Causation", "Reason", "Philosophy", "Kant, Immanuel, 1724-1804 Kritik der reinen Vernunft" ],
+        "mesh" : [ "Philosophy" ]
+      },
+      "control" : {
+        "sourcerecordid" : [ "99106055210001451" ],
+        "recordid" : [ "alma99106055210001451" ],
+        "sourceid" : "alma",
+        "originalsourceid" : [ "ocn565478230-01alliance_network" ],
+        "sourcesystem" : [ "OCLC" ],
+        "sourceformat" : [ "MARC21" ],
+        "score" : [ 78263.857 ],
+        "isDedup" : false
+      },
+      "addata" : {
+        "originatingSystemIDSubject" : [ "no2002033195", "04099256X" ],
+        "originatingSystemIDContributor" : [ "n78034997" ],
+        "aulast" : [ "Guyer" ],
+        "aufirst" : [ "Paul" ],
+        "auinit" : [ "P" ],
+        "addau" : [ "Guyer, Paul" ],
+        "contributorfull" : [ "$$NGuyer, Paul$$LGuyer$$FPaul$$Rcontributor" ],
+        "addtitle" : [ "Companion to Kant's Critique of pure reason", "Kant's Critique of pure reason" ],
+        "date" : [ "2010" ],
+        "isbn" : [ "9780521883863", "0521883865", "9780521710114", "0521710111" ],
+        "notes" : [ "Includes bibliographical references and index." ],
+        "abstract" : [ "\"Immanuel Kant's Critique of pure reason, first published in 1781, is one of the landmarks of Western philosophy, a radical departure from everything that went before and an inescapable influence on all philosophy since its publication. In this massive work, Kant has three aims. First, he constructs a new theory of knowledge that delivers certainty about the fundamental principles of human experience at the cost of knowledge of how things are in themselves. Second, he delivers a devastating critique of traditional \"speculative\" metaphysics on the basis of his new theory of knowledge. Third, he suggests how the core beliefs of the Western metaphysical tradition that cannot be justified as theoretical knowledge can, nevertheless, be justified as objects of \"moral faith\" because they are the necessary conditions of the possibility of moral agency. Kant started this third project in the Critique of Pure Reason but would go on to complete it in two other works, Critique of Practical Reason and Critique of the Power of Judgment. The Cambridge Companion to Kant's Critique of pure reason is the first collective commentary on this work in English. The seventeen chapters have been written by an international team of scholars, including some of the best-known figures in the field as well as emerging younger talents. The first two chapters situate Kant's project against the background of Continental rationalism and British empiricism, the dominant schools of early modern philosophy. Eleven chapters then expound and assess all the main arguments of the Critique. Finally, four chapters recount the enormous influence of the Critique on subsequent philosophical movements, including German idealism and neo-Kantianism, twentieth-century Continental philosophy, and twentieth century Anglo-American analytic philosophy. The book concludes with an extensive bibliography\"-- Provided by publisher.", "\"The Cambridge Companion to Kant's Critique of pure reason is the first collective commentary on this work in English. The seventeen chapters have been written by an international team of scholars, including some of the best-known figures in the field as well as emerging younger talents. The first two chapters situate Kant's project against the background of Continental rationalism and British empiricism, the dominant schools of early modern philosophy. Eleven chapters then expound and assess all the main arguments of the Critique. Finally, four chapters recount the enormous influence of the Critique on subsequent philosophical movements, including German Idealism and Neo-Kantianism, twentieth-century Continental philosophy, and twentieth century Anglo-American analytic philosophy. The book concludes with an extensive bibliography.\"-- Provided by publisher." ],
+        "cop" : [ "Cambridge [England" ],
+        "pub" : [ "Cambridge University Press" ],
+        "oclcid" : [ "(ocolc)565478230" ],
+        "lccn" : [ "2010017677" ],
+        "seriestitle" : [ "Cambridge companions to philosophy" ],
+        "ristype" : [ "BOOK" ],
+        "btitle" : [ "The Cambridge companion to Kant's Critique of pure reason" ],
+        "url" : [ "http://catdir.loc.gov/catdir/enhancements/fy1101/2010017677-t.html" ]
+      },
+      "sort" : {
+        "title" : [ "Cambridge companion to Kant's Critique of pure reason /" ],
+        "author" : [ "Guyer, Paul, 1948-" ],
+        "creationdate" : [ "2010" ]
+      },
+      "facets" : {
+        "frbrtype" : [ "6" ]
+      }
+    },
+    "delivery" : {
+      "bestlocation" : null,
+      "holding" : null,
+      "electronicServices" : null,
+      "additionalElectronicServices" : null,
+      "filteredByGroupServices" : null,
+      "quickAccessService" : null,
+      "deliveryCategory" : [ "Alma-P" ],
+      "serviceMode" : [ "howovp" ],
+      "availability" : [ "no_inventory" ],
+      "availabilityLinks" : [ "detailsgetit1" ],
+      "availabilityLinksUrl" : [ "detailsgetit1" ],
+      "displayedAvailability" : "no_inventory",
+      "displayLocation" : null,
+      "additionalLocations" : null,
+      "titleRequestableAtItemLevel" : null,
+      "physicalItemTextCodes" : null,
+      "feDisplayOtherLocations" : null,
+      "almaInstitutionsList" : [ {
+        "getitLink" : [ {
+          "displayText" : "Alma-P",
+          "linkRecordId" : "99106055210001451"
+        } ],
+        "instCode" : "01ALLIANCE_UW",
+        "instName" : "University of Washington",
+        "instId" : "1452",
+        "availabilityStatus" : "available_in_institution",
+        "envURL" : ""
+      }, {
+        "getitLink" : [ {
+          "displayText" : "Alma-P",
+          "linkRecordId" : "99106055210001451"
+        } ],
+        "instCode" : "01ALLIANCE_LINF",
+        "instName" : "Linfield University",
+        "instId" : "1456",
+        "availabilityStatus" : "available_in_institution",
+        "envURL" : ""
+      }, {
+        "getitLink" : [ {
+          "displayText" : "Alma-P",
+          "linkRecordId" : "99106055210001451"
+        } ],
+        "instCode" : "01ALLIANCE_UO",
+        "instName" : "University of Oregon",
+        "instId" : "1852",
+        "availabilityStatus" : "available_in_institution",
+        "envURL" : ""
+      }, {
+        "getitLink" : [ {
+          "displayText" : "Alma-P",
+          "linkRecordId" : "99106055210001451"
+        } ],
+        "instCode" : "01ALLIANCE_REED",
+        "instName" : "Reed College",
+        "instId" : "1841",
+        "availabilityStatus" : "available_in_institution",
+        "envURL" : ""
+      }, {
+        "getitLink" : [ {
+          "displayText" : "Alma-P",
+          "linkRecordId" : "99106055210001451"
+        } ],
+        "instCode" : "01ALLIANCE_LCC",
+        "instName" : "Lewis & Clark",
+        "instId" : "1844",
+        "availabilityStatus" : "available_in_institution",
+        "envURL" : ""
+      }, {
+        "getitLink" : [ {
+          "displayText" : "Alma-P",
+          "linkRecordId" : "99106055210001451"
+        } ],
+        "instCode" : "01ALLIANCE_CWU",
+        "instName" : "Central Washington University",
+        "instId" : "1866",
+        "availabilityStatus" : "available_in_institution",
+        "envURL" : ""
+      }, {
+        "getitLink" : [ {
+          "displayText" : "Alma-P",
+          "linkRecordId" : "99106055210001451"
+        } ],
+        "instCode" : "01ALLIANCE_WHITC",
+        "instName" : "Whitman College",
+        "instId" : "1867",
+        "availabilityStatus" : "available_in_institution",
+        "envURL" : ""
+      }, {
+        "getitLink" : [ {
+          "displayText" : "Alma-P",
+          "linkRecordId" : "99106055210001451"
+        } ],
+        "instCode" : "01ALLIANCE_WSU",
+        "instName" : "Washington State University",
+        "instId" : "1842",
+        "availabilityStatus" : "available_in_institution",
+        "envURL" : ""
+      }, {
+        "getitLink" : [ {
+          "displayText" : "Alma-P",
+          "linkRecordId" : "99106055210001451"
+        } ],
+        "instCode" : "01WIN_GONZAGA",
+        "instName" : "Gonzaga University",
+        "instId" : "2723",
+        "availabilityStatus" : "available_in_institution",
+        "envURL" : ""
+      }, {
+        "getitLink" : [ {
+          "displayText" : "Alma-P",
+          "linkRecordId" : "99106055210001451"
+        } ],
+        "instCode" : "01ALLIANCE_OSU",
+        "instName" : "Oregon State University Libraries and Press",
+        "instId" : "1865",
+        "availabilityStatus" : "available_in_institution",
+        "envURL" : ""
+      }, {
+        "getitLink" : [ {
+          "displayText" : "Alma-P",
+          "linkRecordId" : "99106055210001451"
+        } ],
+        "instCode" : "01ALLIANCE_UPUGS",
+        "instName" : "University of Puget Sound",
+        "instId" : "1854",
+        "availabilityStatus" : "available_in_institution",
+        "envURL" : ""
+      }, {
+        "getitLink" : [ {
+          "displayText" : "Alma-P",
+          "linkRecordId" : "99106055210001451"
+        } ],
+        "instCode" : "01ALLIANCE_EWU",
+        "instName" : "Eastern Washington University",
+        "instId" : "1843",
+        "availabilityStatus" : "available_in_institution",
+        "envURL" : ""
+      }, {
+        "getitLink" : [ {
+          "displayText" : "Alma-P",
+          "linkRecordId" : "99106055210001451"
+        } ],
+        "instCode" : "01ALLIANCE_UPORT",
+        "instName" : "University of Portland",
+        "instId" : "1857",
+        "availabilityStatus" : "available_in_institution",
+        "envURL" : ""
+      }, {
+        "getitLink" : [ {
+          "displayText" : "Alma-P",
+          "linkRecordId" : "99106055210001451"
+        } ],
+        "instCode" : "01ALLIANCE_SEAU",
+        "instName" : "Seattle University",
+        "instId" : "1868",
+        "availabilityStatus" : "available_in_institution",
+        "envURL" : ""
+      }, {
+        "getitLink" : [ {
+          "displayText" : "Alma-P",
+          "linkRecordId" : "99106055210001451"
+        } ],
+        "instCode" : "01ALLIANCE_SPU",
+        "instName" : "Seattle Pacific University",
+        "instId" : "1847",
+        "availabilityStatus" : "available_in_institution",
+        "envURL" : ""
+      }, {
+        "getitLink" : [ {
+          "displayText" : "Alma-P",
+          "linkRecordId" : "99106055210001451"
+        } ],
+        "instCode" : "01ALLIANCE_GFOX",
+        "instName" : "George Fox University",
+        "instId" : "1869",
+        "availabilityStatus" : "available_in_institution",
+        "envURL" : ""
+      } ],
+      "recordInstitutionCode" : null,
+      "recordOwner" : "01ALLIANCE_NETWORK",
+      "hasFilteredServices" : null,
+      "digitalAuxiliaryMode" : false,
+      "digitalAuxiliaryThumbnail" : false,
+      "hideResourceSharing" : false,
+      "sharedDigitalCandidates" : null,
+      "consolidatedCoverage" : null,
+      "electronicContextObjectId" : null,
+      "almaOpenurl" : null,
+      "GetIt1" : [ {
+        "category" : "Alma-P",
+        "links" : [ {
+          "isLinktoOnline" : false,
+          "getItTabText" : "service_howtogetit",
+          "adaptorid" : "ALMA_01",
+          "ilsApiId" : "",
+          "link" : "HowToGetIt",
+          "inst4opac" : "",
+          "displayText" : null,
+          "@id" : "_:0"
+        } ]
+      } ],
+      "physicalServiceId" : null,
+      "link" : [ {
+        "@id" : ":_0",
+        "linkType" : "thumbnail",
+        "linkURL" : "https://proxy-na.hosted.exlibrisgroup.com/exl_rewrite/books.google.com/books?bibkeys=ISBN:0521883865,OCLC:,LCCN:2010017677&jscmd=viewapi&callback=updateGBSCover",
+        "displayLabel" : "thumbnail"
+      }, {
+        "@id" : ":_1",
+        "linkType" : "linktorsrc",
+        "linkURL" : "http://catdir.loc.gov/catdir/enhancements/fy1101/2010017677-t.html",
+        "displayLabel" : "Table of contents"
+      }, {
+        "@id" : ":_2",
+        "linkType" : "linktorsrc",
+        "linkURL" : "http://bvbr.bib-bvb.de:8991/F?func=service&doc_library=BVB01&doc_number=018991115&line_number=0001&func_code=DB_RECORDS&service_type=MEDIA",
+        "displayLabel" : "Table of contents"
+      }, {
+        "@id" : ":_3",
+        "linkType" : "linktorsrc",
+        "linkURL" : "http://bvbr.bib-bvb.de:8991/F?func=service&doc_library=BVB01&local_base=BVB01&doc_number=018991115&line_number=0001&func_code=DB_RECORDS&service_type=MEDIA",
+        "displayLabel" : "Table of contents"
+      }, {
+        "@id" : ":_4",
+        "linkType" : "addlink",
+        "linkURL" : "http://catdir.loc.gov/catdir/enhancements/fy1101/2010017677-b.html",
+        "displayLabel" : "Contributor biographical information"
+      }, {
+        "@id" : ":_5",
+        "linkType" : "addlink",
+        "linkURL" : "http://assets.cambridge.org/97805217/10114/cover/9780521710114.jpg",
+        "displayLabel" : "Cover image"
+      }, {
+        "@id" : ":_6",
+        "linkType" : "addlink",
+        "linkURL" : "http://catdir.loc.gov/catdir/enhancements/fy1101/2010017677-d.html",
+        "displayLabel" : "Publisher description"
+      } ],
+      "hasD" : null
+    },
+    "enrichment" : {
+      "virtualBrowseObject" : {
+        "isVirtualBrowseEnabled" : false,
+        "callNumber" : "",
+        "callNumberBrowseField" : ""
+      }
+    }
+  } ],
+  "timelog" : {
+    "PC_SEARCH_CALL_TIME" : "676",
+    "PC_BUILD_JSON_AND_HIGLIGHTS" : "40",
+    "PC_SEARCH_TIME_TOTAL" : "716",
+    "BUILD_RESULTS_RETRIVE_FROM_DB" : "63",
+    "CALL_SOLR_GET_IDS_LIST" : "254",
+    "PRIMA_LOCAL_SEARCH_SET_AVALIABILITY" : "72",
+    "RETRIVE_COLLECTION_DISCOVERY_INFO" : "2",
+    "RETRIVE_FROM_DB_COURSE_INFO" : "1",
+    "RETRIVE_FROM_DB_RECORDS" : "43",
+    "RETRIVE_FROM_DB_RELATIONS" : "11",
+    "SET_AVAILABILTY_GET_LIBRARY_DETAILS" : "67",
+    "SET_AVAILABILTY_HOLDING_DEDUPS" : "5",
+    "PRIMA_LOCAL_INFO_FACETS_BUILD_DOCS_HIGHLIGHTS" : "113",
+    "PRIMA_LOCAL_SEARCH_TOTAL" : "506",
+    "BUILD_BLEND_AND_CACHE_RESULTS" : 0,
+    "BUILD_COMBINED_RESULTS_MAP" : 717,
+    "COMBINED_SEARCH_TIME" : 727,
+    "PROCESS_COMBINED_RESULTS" : 0,
+    "FEATURED_SEARCH_TIME" : 1
+  },
+  "facetsCacheKey" : 369538584
+}

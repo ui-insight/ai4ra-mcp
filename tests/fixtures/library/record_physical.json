@@ -1,0 +1,410 @@
+{"beaconO22":"115",
+  "context" : "L",
+  "@id" : "https://na01.alma.exlibrisgroup.com/primaws/rest/pub/pnxs/L/9921606601851",
+  "adaptor" : "Local Search Engine",
+  "pnx" : {
+    "display" : {
+      "source" : [ "Alma" ],
+      "type" : [ "pbooks" ],
+      "language" : [ "eng" ],
+      "title" : [ "Idaho : a bicentennial history " ],
+      "format" : [ "xi, 203 pages, 8 unnumbered leaves of plates : illustrations ; 22 cm." ],
+      "identifier" : [ "$$CISBN$$V0393056007;$$CISBN$$V9780393056006" ],
+      "creationdate" : [ "©1976" ],
+      "creator" : [ "Peterson, F. Ross (Frank Ross), 1941- author.$$QPeterson, F. Ross" ],
+      "publisher" : [ "New York : Norton" ],
+      "description" : [ "<b>Series statement:</b> The States and the Nation series", "Includes bibliographical references (pages 193-195) and index." ],
+      "mms" : [ "9921606601851" ],
+      "contents" : [ "<p><b>Table of contents</b>: Invitation to the reader -- Idaho: nature's gift to man -- Discovery and exploration -- God + gold = territory -- The clash of red and white -- The creation of a state: railroads and mines -- Economic lifeblood: water and timber -- A chaotic twenty years: depression and new deal -- The politics of diversity -- Idaho: a beacon for the future</p>" ],
+      "place" : [ "New York :" ],
+      "version" : [ "0" ],
+      "lds43" : [ "States and the nation.$$QStates and the nation." ],
+      "lds78" : [ "History$$QHistory" ],
+      "lds88" : [ "F. Ross Peterson" ],
+      "lds99" : [ "A native historian examines the states heritage and way of life as well as its role in the nations development." ],
+      "lds100" : [ "02373390" ],
+      "subject" : [ "Idaho -- History" ]
+    },
+    "control" : {
+      "sourcerecordid" : [ "9921606601851" ],
+      "recordid" : [ "alma9921606601851" ],
+      "sourceid" : "alma",
+      "originalsourceid" : [ "ocm02373390-01alliance_network" ],
+      "sourcesystem" : [ "OCLC" ],
+      "sourceformat" : [ "MARC21" ],
+      "score" : [ "2121.3203" ],
+      "isDedup" : false
+    },
+    "addata" : {
+      "originatingSystemIDAuthor" : [ "nr97033932" ],
+      "originatingSystemIDSubject" : [ "sh2008115392", "fst01211709" ],
+      "aulast" : [ "Peterson" ],
+      "aufirst" : [ "F. Ross" ],
+      "auinit" : [ "F" ],
+      "au" : [ "Peterson, F. Ross" ],
+      "creatorfull" : [ "$$NPeterson, F. Ross$$LPeterson$$FF. Ross$$Rauthor" ],
+      "date" : [ "1976", "©1976" ],
+      "isbn" : [ "0393056007", "9780393056006" ],
+      "notes" : [ "Includes bibliographical references (pages 193-195) and index." ],
+      "abstract" : [ "A native historian examines the states heritage and way of life as well as its role in the nations development." ],
+      "cop" : [ "New York" ],
+      "pub" : [ "Norton" ],
+      "oclcid" : [ "(ocolc)2373390" ],
+      "lccn" : [ "76026873" ],
+      "seriestitle" : [ "The States and the Nation series" ],
+      "ristype" : [ "BOOK" ],
+      "btitle" : [ "Idaho : a bicentennial history" ]
+    },
+    "sort" : {
+      "title" : [ "Idaho : a bicentennial history /" ],
+      "author" : [ "Peterson, F. Ross (Frank Ross), 1941- author." ],
+      "creationdate" : [ "1976" ]
+    },
+    "facets" : {
+      "frbrtype" : [ "6" ]
+    }
+  },
+  "delivery" : {
+    "bestlocation" : {
+      "isValidUser" : true,
+      "organization" : "01ALLIANCE_UID",
+      "libraryCode" : "main",
+      "availabilityStatus" : "available",
+      "subLocation" : "Main Stacks (4th Floor)",
+      "subLocationCode" : "UIBOOK4",
+      "mainLocation" : "Main Library",
+      "callNumber" : "F746.P47",
+      "callNumberType" : "0",
+      "holdingURL" : "OVP",
+      "adaptorid" : "ALMA_01",
+      "ilsApiId" : "9921606601851",
+      "holdId" : "2289745410001851",
+      "holKey" : "HoldingResultKey [mid=2289745410001851, libraryId=13656590001851, locationCode=UIBOOK4, callNumber=F746.P47]",
+      "matchForHoldings" : [ {
+        "matchOn" : "MainLocation",
+        "holdingRecord" : "852##b"
+      } ],
+      "stackMapUrl" : "",
+      "relatedTitle" : null,
+      "translateRelatedTitle" : null,
+      "yearFilter" : null,
+      "volumeFilter" : null,
+      "singleUnavailableItemProcessType" : null,
+      "boundWith" : false,
+      "@id" : "_:0"
+    },
+    "holding" : [ {
+      "isValidUser" : true,
+      "organization" : "01ALLIANCE_UID",
+      "libraryCode" : "main",
+      "availabilityStatus" : "available",
+      "subLocation" : "Main Stacks (4th Floor)",
+      "subLocationCode" : "UIBOOK4",
+      "mainLocation" : "Main Library",
+      "callNumber" : "F746.P47",
+      "callNumberType" : "0",
+      "holdingURL" : "OVP",
+      "adaptorid" : "ALMA_01",
+      "ilsApiId" : "9921606601851",
+      "holdId" : "2289745410001851",
+      "holKey" : "HoldingResultKey [mid=2289745410001851, libraryId=13656590001851, locationCode=UIBOOK4, callNumber=F746.P47]",
+      "matchForHoldings" : [ {
+        "matchOn" : "MainLocation",
+        "holdingRecord" : "852##b"
+      } ],
+      "stackMapUrl" : "",
+      "relatedTitle" : null,
+      "translateRelatedTitle" : null,
+      "yearFilter" : null,
+      "volumeFilter" : null,
+      "singleUnavailableItemProcessType" : null,
+      "boundWith" : false,
+      "@id" : "_:0"
+    }, {
+      "isValidUser" : true,
+      "organization" : "01ALLIANCE_UID",
+      "libraryCode" : "main",
+      "availabilityStatus" : "available",
+      "subLocation" : "UI Library Special Collections (AVAILABLE FOR READING ROOM USE ONLY)",
+      "subLocationCode" : "UISPEC",
+      "mainLocation" : "Main Library",
+      "callNumber" : "Day-NW F746.P47",
+      "callNumberType" : "0",
+      "holdingURL" : "OVP",
+      "adaptorid" : "ALMA_01",
+      "ilsApiId" : "9921606601851",
+      "holdId" : "2289745370001851",
+      "holKey" : "HoldingResultKey [mid=2289745370001851, libraryId=13656590001851, locationCode=UISPEC, callNumber=Day-NW F746.P47]",
+      "matchForHoldings" : [ {
+        "matchOn" : "MainLocation",
+        "holdingRecord" : "852##b"
+      } ],
+      "stackMapUrl" : "",
+      "relatedTitle" : null,
+      "translateRelatedTitle" : null,
+      "yearFilter" : null,
+      "volumeFilter" : null,
+      "singleUnavailableItemProcessType" : null,
+      "boundWith" : false,
+      "@id" : "_:1"
+    } ],
+    "electronicServices" : null,
+    "additionalElectronicServices" : null,
+    "filteredByGroupServices" : null,
+    "quickAccessService" : null,
+    "deliveryCategory" : [ "Alma-P" ],
+    "serviceMode" : [ "ovp" ],
+    "availability" : [ "available_in_library" ],
+    "availabilityLinks" : [ "detailsgetit1" ],
+    "availabilityLinksUrl" : [ ],
+    "displayedAvailability" : null,
+    "displayLocation" : true,
+    "additionalLocations" : true,
+    "titleRequestableAtItemLevel" : false,
+    "physicalItemTextCodes" : null,
+    "feDisplayOtherLocations" : true,
+    "almaInstitutionsList" : [ {
+      "getitLink" : [ {
+        "displayText" : "Alma-P",
+        "linkRecordId" : "99110358240001451"
+      } ],
+      "instCode" : "01ALLIANCE_LCC",
+      "instName" : "Lewis & Clark",
+      "instId" : "1844",
+      "availabilityStatus" : "available_in_institution",
+      "envURL" : ""
+    }, {
+      "getitLink" : [ {
+        "displayText" : "Alma-P",
+        "linkRecordId" : "99110358240001451"
+      } ],
+      "instCode" : "01ALLIANCE_SOU",
+      "instName" : "Southern Oregon University",
+      "instId" : "1855",
+      "availabilityStatus" : "available_in_institution",
+      "envURL" : ""
+    }, {
+      "getitLink" : [ {
+        "displayText" : "Alma-P",
+        "linkRecordId" : "99110358240001451"
+      } ],
+      "instCode" : "01ALLIANCE_CWU",
+      "instName" : "Central Washington University",
+      "instId" : "1866",
+      "availabilityStatus" : "available_in_institution",
+      "envURL" : ""
+    }, {
+      "getitLink" : [ {
+        "displayText" : "Alma-P",
+        "linkRecordId" : "99110358240001451"
+      } ],
+      "instCode" : "01ALLIANCE_WHITC",
+      "instName" : "Whitman College",
+      "instId" : "1867",
+      "availabilityStatus" : "available_in_institution",
+      "envURL" : ""
+    }, {
+      "getitLink" : [ {
+        "displayText" : "Alma-P",
+        "linkRecordId" : "99110358240001451"
+      } ],
+      "instCode" : "01ALLIANCE_WOU",
+      "instName" : "Western Oregon University",
+      "instId" : "1856",
+      "availabilityStatus" : "available_in_institution",
+      "envURL" : ""
+    }, {
+      "getitLink" : [ {
+        "displayText" : "Alma-P",
+        "linkRecordId" : "99110358240001451"
+      } ],
+      "instCode" : "01ALLIANCE_WSU",
+      "instName" : "Washington State University",
+      "instId" : "1842",
+      "availabilityStatus" : "available_in_institution",
+      "envURL" : ""
+    }, {
+      "getitLink" : [ {
+        "displayText" : "Alma-P",
+        "linkRecordId" : "99110358240001451"
+      } ],
+      "instCode" : "01ALLIANCE_OSU",
+      "instName" : "Oregon State University Libraries and Press",
+      "instId" : "1865",
+      "availabilityStatus" : "available_in_institution",
+      "envURL" : ""
+    }, {
+      "getitLink" : [ {
+        "displayText" : "Alma-P",
+        "linkRecordId" : "99110358240001451"
+      } ],
+      "instCode" : "01ALLIANCE_UPUGS",
+      "instName" : "University of Puget Sound",
+      "instId" : "1854",
+      "availabilityStatus" : "available_in_institution",
+      "envURL" : ""
+    }, {
+      "getitLink" : [ {
+        "displayText" : "Alma-P",
+        "linkRecordId" : "99110358240001451"
+      } ],
+      "instCode" : "01ALLIANCE_EWU",
+      "instName" : "Eastern Washington University",
+      "instId" : "1843",
+      "availabilityStatus" : "available_in_institution",
+      "envURL" : ""
+    }, {
+      "getitLink" : [ {
+        "displayText" : "Alma-P",
+        "linkRecordId" : "99110358240001451"
+      } ],
+      "instCode" : "01ALLIANCE_UPORT",
+      "instName" : "University of Portland",
+      "instId" : "1857",
+      "availabilityStatus" : "available_in_institution",
+      "envURL" : ""
+    }, {
+      "getitLink" : [ {
+        "displayText" : "Alma-P",
+        "linkRecordId" : "99110358240001451"
+      } ],
+      "instCode" : "01ALLIANCE_SPU",
+      "instName" : "Seattle Pacific University",
+      "instId" : "1847",
+      "availabilityStatus" : "available_in_institution",
+      "envURL" : ""
+    }, {
+      "getitLink" : [ {
+        "displayText" : "Alma-P",
+        "linkRecordId" : "99110358240001451"
+      } ],
+      "instCode" : "01ALLIANCE_GFOX",
+      "instName" : "George Fox University",
+      "instId" : "1869",
+      "availabilityStatus" : "available_in_institution",
+      "envURL" : ""
+    }, {
+      "getitLink" : [ {
+        "displayText" : "Alma-P",
+        "linkRecordId" : "99110358240001451"
+      } ],
+      "instCode" : "01ALLIANCE_UW",
+      "instName" : "University of Washington",
+      "instId" : "1452",
+      "availabilityStatus" : "available_in_institution",
+      "envURL" : ""
+    }, {
+      "getitLink" : [ {
+        "displayText" : "Alma-P",
+        "linkRecordId" : "99110358240001451"
+      } ],
+      "instCode" : "01ALLIANCE_WALLA",
+      "instName" : "Walla Walla University",
+      "instId" : "1870",
+      "availabilityStatus" : "available_in_institution",
+      "envURL" : ""
+    }, {
+      "getitLink" : [ {
+        "displayText" : "Alma-P",
+        "linkRecordId" : "99110358240001451"
+      } ],
+      "instCode" : "01ALLIANCE_COCC",
+      "instName" : "Central Oregon Community College",
+      "instId" : "1873",
+      "availabilityStatus" : "available_in_institution",
+      "envURL" : ""
+    }, {
+      "getitLink" : [ {
+        "displayText" : "Alma-P",
+        "linkRecordId" : "99110358240001451"
+      } ],
+      "instCode" : "01ALLIANCE_EOU",
+      "instName" : "Eastern Oregon University",
+      "instId" : "1874",
+      "availabilityStatus" : "available_in_institution",
+      "envURL" : ""
+    }, {
+      "getitLink" : [ {
+        "displayText" : "Alma-P",
+        "linkRecordId" : "99110358240001451"
+      } ],
+      "instCode" : "01ALLIANCE_LINF",
+      "instName" : "Linfield University",
+      "instId" : "1456",
+      "availabilityStatus" : "available_in_institution",
+      "envURL" : ""
+    }, {
+      "getitLink" : [ {
+        "displayText" : "Alma-P",
+        "linkRecordId" : "99110358240001451"
+      } ],
+      "instCode" : "01ALLIANCE_UO",
+      "instName" : "University of Oregon",
+      "instId" : "1852",
+      "availabilityStatus" : "available_in_institution",
+      "envURL" : ""
+    }, {
+      "getitLink" : [ {
+        "displayText" : "Alma-P",
+        "linkRecordId" : "99110358240001451"
+      } ],
+      "instCode" : "01ALLIANCE_WWU",
+      "instName" : "Western Washington University",
+      "instId" : "1453",
+      "availabilityStatus" : "available_in_institution",
+      "envURL" : ""
+    } ],
+    "recordInstitutionCode" : null,
+    "recordOwner" : "01ALLIANCE_NETWORK",
+    "hasFilteredServices" : null,
+    "digitalAuxiliaryMode" : false,
+    "digitalAuxiliaryThumbnail" : false,
+    "hideResourceSharing" : false,
+    "sharedDigitalCandidates" : null,
+    "consolidatedCoverage" : null,
+    "electronicContextObjectId" : null,
+    "almaOpenurl" : null,
+    "GetIt1" : [ {
+      "category" : "Alma-P",
+      "links" : [ {
+        "isLinktoOnline" : false,
+        "getItTabText" : "service_getit",
+        "adaptorid" : "ALMA_01",
+        "ilsApiId" : "9921606601851",
+        "link" : "OVP",
+        "inst4opac" : "01ALLIANCE_UID",
+        "displayText" : null,
+        "@id" : "_:0"
+      }, {
+        "isLinktoOnline" : false,
+        "getItTabText" : "service_getit",
+        "adaptorid" : "ALMA_01",
+        "ilsApiId" : "9921606601851",
+        "link" : "OVP",
+        "inst4opac" : "01ALLIANCE_UID",
+        "displayText" : null,
+        "@id" : "_:1"
+      } ]
+    } ],
+    "physicalServiceId" : null,
+    "link" : [ {
+      "@id" : ":_0",
+      "linkType" : "thumbnail",
+      "linkURL" : "https://proxy-na.hosted.exlibrisgroup.com/exl_rewrite/books.google.com/books?bibkeys=ISBN:9780393056006,OCLC:,LCCN:76026873&jscmd=viewapi&callback=updateGBSCover",
+      "displayLabel" : "thumbnail"
+    } ],
+    "hasD" : null
+  },
+  "enrichment" : {
+    "virtualBrowseObject" : {
+      "isVirtualBrowseEnabled" : true,
+      "callNumber" : "F746.P47",
+      "callNumberBrowseField" : "0"
+    },
+    "bibVirtualBrowseObject" : {
+      "isVirtualBrowseEnabled" : true,
+      "callNumber" : "f\"746ǂ p47 1976",
+      "callNumberBrowseField" : "LOC_CL"
+    }
+  }
+}

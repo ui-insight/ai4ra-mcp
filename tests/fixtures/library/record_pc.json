@@ -1,0 +1,127 @@
+{"beaconO22":"188",
+  "context" : "PC",
+  "@id" : "https://na01.alma.exlibrisgroup.com/primaws/rest/pub/pnxs/PC/cdi_gutenberg_primary_43572",
+  "adaptor" : "Primo Central",
+  "pnx" : {
+    "links" : {
+      "linktorsrc" : [ "$$Uhttp://www.gutenberg.org/ebooks/43572$$EView_record_in_Project_Gutenberg$$FView_record_in_$$GProject_Gutenberg$$Hfree_for_read$$Pomit_proxy_true" ],
+      "thumbnail" : [ "$$Uhttps://media.springernature.com/w306/springer-static/cover-hires/book/978-0-230-59596-5" ],
+      "openurl" : [ "$$Topenurl_article" ],
+      "openurlfulltext" : [ "$$Topenurlfull_article" ],
+      "backlink" : [ "$$Uhttps://cir.nii.ac.jp/crid/1971149384821245322$$DView record in CiNii$$Hfree_for_read$$Pomit_proxy_true" ]
+    },
+    "search" : {
+      "isbn" : [ "9781403915047", "1403915040", "1349512052", "9781349512058", "9780230595965", "0230595960" ],
+      "description" : [ "Of all the major philosophical works, Kant's Critique of Pure Reason is one of the most rewarding, yet one of the most difficult. Norman Kemp Smith's Commentary elucidates not only textural questions and minor issues, but also the central problems which arise, he contends, from the conflicting tendencies of Kant's own thinking. Kemp Smith's Commentary continues to be in demand with Kant Scholars, and it is being reissued here with a new introduction by Sebastian Gardner to set it in its contemporary context." ],
+      "creator" : [ "Smith, Norman Kemp" ],
+      "fulltext" : [ "true" ],
+      "general" : [ "Palgrave Macmillan", "Palgrave Macmillan UK", "Palgrave Macmillan Limited", "Project Gutenberg" ],
+      "title" : [ "A commentary to Kant's 'Critique of pure reason'" ],
+      "subject" : [ "1724-1804", "History of Philosophy", "Kant, Immanuel", "Kant, Immanuel, 1724-1804. Kritik der reinen Vernunft", "Kritik der reinen Vernunft", "Logic", "Modern Philosophy", "Palgrave Religion & Philosophy Collection", "Philosophy", "Philosophy (General)", "Philosophy, modern" ],
+      "startdate" : [ "2003" ],
+      "enddate" : [ "2003" ],
+      "recordtype" : [ "book" ],
+      "sourceid" : [ "GUT" ],
+      "recordid" : [ "eNqFkctLAzEQxiOi-OrRq-xBLCLVTCbPoxZfWPAiXkN2m62r7W5Ntor_vWnXi6iYw4Qhv_n48g0h-0BPgQp1ZpSmDKkwwkixRnrf-vVVD5yiAUG52iA7jNL0ConaJDsAGo3QIPkW6cX4TNMRDISm24SeZ0Uzm_m6deEja5vsztVtP2b9Yaja6nXhs6bM5ovgs-BdbOr-Htko3TT63te9Sx6vLh-GN4PR_fXt8Hw0cIxKyQZjlys59szpAhFzQ3meI3fem-TZ4Jh7x7QqSyOVL7Xj6ZvGAWUSWV4C5LhLDjrhyaL1de7DxM5DNUs2LUehWAKOO8DFF_8en5ppG-3b1OdN8xLtt4QSe9KxMWnUEx9sRwG1y3x_0OwX2oXiqXrzfw8ddUPz0KTcYmtXTooUbXBTe3kxVCjTFhLY_weUTAvEpeRhR9ZVZYtqWcEoAG5Qc82AcYGM4ScO-5fA" ],
+      "scope" : [ "RYH", "GUT" ],
+      "creationdate" : [ "2003" ],
+      "creatorcontrib" : [ "Smith, Norman Kemp", "SpringerLink (Online service)" ],
+      "rsrctype" : [ "book" ]
+    },
+    "delivery" : {
+      "delcategory" : [ "Remote Search Resource" ],
+      "fulltext" : [ "fulltext_linktorsrc" ]
+    },
+    "display" : {
+      "format" : [ "714" ],
+      "description" : [ "Of all the major philosophical works, Kant's Critique of Pure Reason is one of the most rewarding, yet one of the most difficult. Norman Kemp Smith's Commentary elucidates not only textural questions and minor issues, but also the central problems which arise, he contends, from the conflicting tendencies of Kant's own thinking. Kemp Smith's Commentary continues to be in demand with Kant Scholars, and it is being reissued here with a new introduction by Sebastian Gardner to set it in its contemporary context." ],
+      "oa" : [ "free_for_read" ],
+      "creator" : [ "Smith, Norman Kemp" ],
+      "title" : [ "A commentary to Kant's 'Critique of pure reason'" ],
+      "language" : [ "eng" ],
+      "creationdate" : [ "2003" ],
+      "type" : [ "book" ],
+      "source" : [ "Project Gutenberg Online Catalog" ],
+      "edition" : [ "Third Edition." ],
+      "publisher" : [ "London: Palgrave Macmillan" ],
+      "identifier" : [ "ISBN: 9781403915047", "ISBN: 1403915040", "ISBN: 1349512052", "ISBN: 9781349512058", "EISBN: 9780230595965", "EISBN: 0230595960", "DOI: 10.1057/9780230595965", "OCLC: 1183958164", "OCLC: 681925065", "LCCN: 2003051780" ],
+      "rights" : [ "Palgrave Macmillan, a division of Macmillan Publishers Limited 2003", "Public domain in the USA." ],
+      "subject" : [ "1724-1804 ;  History of Philosophy ;  Kant, Immanuel ;  Kant, Immanuel, 1724-1804. Kritik der reinen Vernunft ;  Kritik der reinen Vernunft ;  Logic ;  Modern Philosophy ;  Palgrave Religion & Philosophy Collection ;  Philosophy ;  Philosophy (General) ;  Philosophy, modern" ]
+    },
+    "addata" : {
+      "isbn" : [ "9781403915047", "1403915040", "1349512052", "9781349512058" ],
+      "format" : [ "book" ],
+      "oa" : [ "free_for_read" ],
+      "tpages" : [ "714" ],
+      "abstract" : [ "Of all the major philosophical works, Kant's Critique of Pure Reason is one of the most rewarding, yet one of the most difficult. Norman Kemp Smith's Commentary elucidates not only textural questions and minor issues, but also the central problems which arise, he contends, from the conflicting tendencies of Kant's own thinking. Kemp Smith's Commentary continues to be in demand with Kant Scholars, and it is being reissued here with a new introduction by Sebastian Gardner to set it in its contemporary context." ],
+      "genre" : [ "book" ],
+      "aucorp" : [ "SpringerLink (Online service)" ],
+      "btitle" : [ "A commentary to Kant's 'Critique of pure reason'" ],
+      "date" : [ "2003" ],
+      "risdate" : [ "2003" ],
+      "eisbn" : [ "9780230595965", "0230595960" ],
+      "ristype" : [ "BOOK" ],
+      "cop" : [ "London" ],
+      "pub" : [ "Palgrave Macmillan" ],
+      "oclcid" : [ "1183958164", "681925065" ],
+      "doi" : [ "10.1057/9780230595965" ],
+      "edition" : [ "Third Edition." ],
+      "au" : [ "Smith, Norman Kemp" ]
+    },
+    "facets" : {
+      "language" : [ "eng" ],
+      "creationdate" : [ "2003" ],
+      "creatorcontrib" : [ "Smith, Norman Kemp", "SpringerLink (Online service)" ],
+      "topic" : [ "1724-1804", "History of Philosophy", "Kant, Immanuel", "Kant, Immanuel, 1724-1804. Kritik der reinen Vernunft", "Kritik der reinen Vernunft", "Logic", "Modern Philosophy", "Palgrave Religion & Philosophy Collection", "Philosophy", "Philosophy (General)", "Philosophy, modern" ],
+      "prefilter" : [ "books" ],
+      "rsrctype" : [ "books" ],
+      "collection" : [ "CiNii Complete", "Project Gutenberg Online Catalog" ],
+      "toplevel" : [ "online_resources" ],
+      "frbrgroupid" : [ "cdi_FETCH-LOGICAL-a20662-dab76de2a8c333b904bb34aee995993d4ea287ff967ef8a41059a102632bf11b3" ],
+      "frbrtype" : [ "5" ]
+    },
+    "sort" : {
+      "author" : [ "Smith, Norman Kemp" ],
+      "title" : [ "A commentary to Kant's 'Critique of pure reason'" ],
+      "creationdate" : [ "2003" ]
+    },
+    "control" : {
+      "sourcerecordid" : [ "EBC736581" ],
+      "originalsourceid" : [ "FETCH-LOGICAL-a20662-dab76de2a8c333b904bb34aee995993d4ea287ff967ef8a41059a102632bf11b3" ],
+      "sourcetype" : [ "Open Access Repository" ],
+      "sourceformat" : [ "XML" ],
+      "sourcesystem" : [ "Other" ],
+      "pqid" : [ "EBC6285335" ],
+      "recordtype" : [ "book" ],
+      "sourceid" : [ "proquest_GUT" ],
+      "recordid" : [ "cdi_gutenberg_primary_43572" ],
+      "addsrcrecordid" : [ "eNqFkctLAzEQxiOi-OrRq-xBLCLVTCbPoxZfWPAiXkN2m62r7W5Ntor_vWnXi6iYw4Qhv_n48g0h-0BPgQp1ZpSmDKkwwkixRnrf-vVVD5yiAUG52iA7jNL0ConaJDsAGo3QIPkW6cX4TNMRDISm24SeZ0Uzm_m6deEja5vsztVtP2b9Yaja6nXhs6bM5ovgs-BdbOr-Htko3TT63te9Sx6vLh-GN4PR_fXt8Hw0cIxKyQZjlys59szpAhFzQ3meI3fem-TZ4Jh7x7QqSyOVL7Xj6ZvGAWUSWV4C5LhLDjrhyaL1de7DxM5DNUs2LUehWAKOO8DFF_8en5ppG-3b1OdN8xLtt4QSe9KxMWnUEx9sRwG1y3x_0OwX2oXiqXrzfw8ddUPz0KTcYmtXTooUbXBTe3kxVCjTFhLY_weUTAvEpeRhR9ZVZYtqWcEoAG5Qc82AcYGM4ScO-5fA" ],
+      "iscdi" : [ "true" ],
+      "score" : [ "0.002397611" ]
+    }
+  },
+  "delivery" : {
+    "link" : [ {
+      "@id" : "_:0",
+      "linkType" : "http://purl.org/pnx/linkType/thumbnail",
+      "linkURL" : "https://media.springernature.com/w306/springer-static/cover-hires/book/978-0-230-59596-5",
+      "displayLabel" : "thumbnail"
+    } ],
+    "deliveryCategory" : [ "Remote Search Resource" ],
+    "availability" : [ "fulltext_linktorsrc" ],
+    "displayLocation" : false,
+    "additionalLocations" : false,
+    "physicalItemTextCodes" : "",
+    "feDisplayOtherLocations" : false,
+    "displayedAvailability" : "true",
+    "holding" : [ ],
+    "almaOpenurl" : "https://na01.alma.exlibrisgroup.com/view/uresolver/01ALLIANCE_UID/openurl?ctx_enc=info:ofi/enc:UTF-8&ctx_id=10_1&ctx_tim=2026-10-19 09:38:56&ctx_ver=Z39.88-2004&url_ctx_fmt=info:ofi/fmt:kev:mtx:ctx&url_ver=Z39.88-2004&rfr_id=info:sid/primo.exlibrisgroup.com-proquest_GUT&rft_val_fmt=info:ofi/fmt:kev:mtx:book&rft.genre=book&rft.btitle=A+commentary+to+Kant%27s+%27Critique+of+pure+reason%27&rft.au=Smith%2C+Norman+Kemp&rft.aucorp=SpringerLink+%28Online+service%29&rft.date=2003&rft.isbn=9781403915047&rft_id=info:doi/10.1057%2F9780230595965&rft.eisbn=9780230595965&rft.edition=Third+Edition.&rft.pub=Palgrave+Macmillan&rft.place=London&rft_id=info:oclcnum/1183958164&rft_dat=<proquest_GUT>EBC736581</proquest_GUT>&svc_dat=viewit&rft_pqid=EBC6285335"
+  },
+  "extras" : {
+    "citationTrails" : {
+      "citing" : [ ],
+      "citedby" : [ ]
+    },
+    "timesCited" : { }
+  }
+}

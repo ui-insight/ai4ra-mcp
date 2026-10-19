@@ -1,0 +1,429 @@
+{"beaconO22":"320",
+  "info" : {
+    "totalResultsLocal" : 0,
+    "totalResultsPC" : 5895,
+    "total" : 5895,
+    "first" : 1,
+    "last" : 3
+  },
+  "highlights" : {
+    "ispartof" : [ "breeding" ],
+    "title" : [ "wheat", "wheat breeding", "(TitleAll:(wheat breeding))", "Breeding wheat", "breeding" ],
+    "termsUnion" : [ "breeding", "wheat", "wheat breeding", "(TitleAll:(wheat breeding))", "Breeding wheat" ]
+  },
+  "docs" : [ {
+    "pnx" : {
+      "links" : {
+        "openurlfulltext" : [ "$$Topenurlfull_article" ],
+        "openurl" : [ "$$Topenurl_article" ],
+        "backlink" : [ "$$Uhttps://www.ncbi.nlm.nih.gov/pubmed/36919201$$D View this record in MEDLINE/PubMed$$Hfree_for_read$$Pomit_proxy_false" ],
+        "thumbnail" : [ "$$Tsyndetics_thumb_exl" ],
+        "linktopdf" : [ "$$Uhttps://onlinelibrary.wiley.com/doi/epdf/10.1111%2Ftpj.16190$$EPDF$$Gwiley$$H$$Pomit_proxy_false" ],
+        "linktohtml" : [ "$$Uhttps://onlinelibrary.wiley.com/doi/full/10.1111%2Ftpj.16190$$EHTML$$Gwiley$$H$$Pomit_proxy_false" ]
+      },
+      "search" : {
+        "title" : [ "Systemic development of wheat–Thinopyrum elongatum translocation lines and their deployment in wheat breeding for Fusarium head blight resistance", "The Plant journal : for cell and molecular biology" ],
+        "subject" : [ "backcrossing", "Blight", "Chromatin", "chromosome", "Chromosome 7", "Chromosomes", "Cultivars", "Disease resistance", "Disease Resistance - genetics", "Elongation", "Flowering", "Fusarium", "Fusarium graminearum", "Fusarium head blight", "Genetic Markers", "grain quality", "Karyotypes", "karyotyping", "phenotype", "Phenotypes", "Plant Breeding", "Plant Diseases - genetics", "Poaceae - genetics", "Pollen", "resistance genes", "Thinopyrum elongatum", "Translocation", "translocation line", "Triticum - genetics", "Triticum aestivum", "Wheat", "wheat breeding" ],
+        "sourceid" : [ "7S9" ],
+        "recordid" : [ "eNqFkcFKHDEYgENp0VV76AtIoJd6WE0mM8nMsUitFqFCV-htyEz-2c2SSaZJRplb38E39EmMu9aDoM0lgf_LBz8fQp8oOabpnMRhfUw5rcg7NKOMF3NG2e_3aEYqTuYip9ku2gthTQgVjOc7aJfxilYZoTN092sKEXrdYgU3YNzQg43Ydfh2BTLe_71brLR1w-THHqexXcqYXtFLG4xrZdTOYqMtBCytwnEF2ifTYNy0EWm7FeHGAyhtl7hzHp-NQXqdPGmkcGP0chWxh6BDlLaFA_ShkybAx6d7H12ffVucns8vf36_OP16OW9ZmRZjTVfQQkqZk4Z3uZKUMSZLwUXFKlCCcMaVoh1AmQvGVF5VgmRUFionLRSK7aMvW-_g3Z8RQqx7HVowRlpwY6izkuWZIGVJ_o-KUmQ0I4Im9PMLdO1Gb9MiSZhxQh7JRB0-UWPTg6oHr3vpp_pfmQQcbYHWuxA8dM8IJfVj9TpVrzfVE3vygm113LRJobR568etNjC9rq4XVz-2Px4AT7m_BA" ],
+        "creator" : [ "Guo, Xianrui", "Shi, Qinghua", "Liu, Yang", "Su, Handong", "Zhang, Jing", "Wang, Mian", "Wang, Chunhui", "Wang, Jing", "Zhang, Kaibiao", "Fu, Shulan", "Hu, Xiaojun", "Jing, Donglin", "Wang, Zhen", "Li, Jinbang", "Zhang, Pingzhi", "Liu, Cheng", "Han, Fangpu" ],
+        "creationdate" : [ "2023" ],
+        "recordtype" : [ "article" ],
+        "general" : [ "Blackwell Publishing Ltd" ],
+        "rsrctype" : [ "article" ],
+        "startdate" : [ "202306" ],
+        "enddate" : [ "202306" ],
+        "scope" : [ "AAYXX", "CITATION", "CGR", "CUY", "CVF", "ECM", "EIF", "NPM", "7QO", "7QP", "7QR", "7TM", "8FD", "FR3", "M7N", "P64", "RC3", "7X8", "7S9", "L.6" ],
+        "orcidid" : [ "https://orcid.org/0000-0001-8393-3575", "https://orcid.org/0000-0001-8621-2941" ],
+        "creatorcontrib" : [ "Guo, Xianrui", "Shi, Qinghua", "Liu, Yang", "Su, Handong", "Zhang, Jing", "Wang, Mian", "Wang, Chunhui", "Wang, Jing", "Zhang, Kaibiao", "Fu, Shulan", "Hu, Xiaojun", "Jing, Donglin", "Wang, Zhen", "Li, Jinbang", "Zhang, Pingzhi", "Liu, Cheng", "Han, Fangpu" ],
+        "issn" : [ "0960-7412", "1365-313X", "1365-313X" ],
+        "fulltext" : [ "true" ],
+        "addtitle" : [ "Plant J" ],
+        "description" : [ "SUMMARY Fusarium head blight (FHB), mainly caused by Fusarium graminearum, is one of the most destructive diseases of wheat (Triticum aestivum) around the world. FHB causes significant yield losses and reduces grain quality. The lack of resistance resources is a major bottleneck for wheat FHB resistance breeding. As a wheat relative, Thinopyrum elongatum contains many genes that can be used for wheat improvement. Although the novel gene Fhb‐7EL was mapped on chromosome 7EL of Th. elongatum, successful transfer of the FHB resistance gene into commercial wheat varieties has not been reported. In this study, we developed 836 wheat–Th. elongatum translocation lines of various types by irradiating the pollen of the wheat–Th. elongatum addition line CS‐7EL at the flowering stage, among which 81 were identified as resistant to FHB. By backcrossing the FHB‐resistant lines with the main cultivar Jimai 22, three wheat–Th. elongatum translocation lines, Zhongke 1878, Zhongke 166, and Zhongke 545, were successfully applied in wheat breeding without yield penalty. Combining karyotype and phenotype analyses, we mapped the Fhb‐7EL gene to the distal end of chromosome 7EL. Five molecular markers linked with the FHB resistance interval were developed, which facilitates molecular marker‐assisted breeding. Altogether, we successfully applied alien chromatin with FHB resistance from Th. elongatum in wheat breeding without yield penalty. These newly developed FHB‐resistant wheat–Th. elongatum translocation lines, Zhongke 1878, Zhongke 166, and Zhongke 545, can be used as novel resistance resources for wheat breeding. Significance Statement Fusarium head blight (FHB) seriously threatens wheat (Triticum aestivum) production around the world. Deploying wheat cultivars with FHB resistance is considered as the most effective and environment‐friendly measure. Eighty‐one wheat–Th. elongatum translocation lines with FHB resistance were systemically developed in this study. Among them, three Zhongke lines were successfully applied in wheat breeding without yield penalty. These lines can be used as novel resistance sources for wheat FHB resistance breeding." ]
+      },
+      "delivery" : {
+        "fulltext" : [ "fulltext" ],
+        "delcategory" : [ "Remote Search Resource" ]
+      },
+      "display" : {
+        "title" : [ "Systemic development of wheat–Thinopyrum elongatum translocation lines and their deployment in wheat breeding for Fusarium head blight resistance" ],
+        "type" : [ "article" ],
+        "source" : [ "Wiley Online Library All Journals", "AGRICOLA" ],
+        "creator" : [ "Guo, Xianrui ; Shi, Qinghua ; Liu, Yang ; Su, Handong ; Zhang, Jing ; Wang, Mian ; Wang, Chunhui ; Wang, Jing ; Zhang, Kaibiao ; Fu, Shulan ; Hu, Xiaojun ; Jing, Donglin ; Wang, Zhen ; Li, Jinbang ; Zhang, Pingzhi ; Liu, Cheng ; Han, Fangpu" ],
+        "publisher" : [ "England: Blackwell Publishing Ltd" ],
+        "ispartof" : [ "The Plant journal : for cell and molecular biology, 2023-06, Vol.114 (6), p.1475-1489" ],
+        "identifier" : [ "ISSN: 0960-7412", "ISSN: 1365-313X", "EISSN: 1365-313X", "DOI: 10.1111/tpj.16190", "PMID: 36919201" ],
+        "language" : [ "eng" ],
+        "rights" : [ "2023 Society for Experimental Biology and John Wiley & Sons Ltd.", "Copyright © 2023 Society for Experimental Biology and John Wiley & Sons Ltd" ],
+        "lds50" : [ "peer_reviewed" ],
+        "description" : [ "SUMMARY Fusarium head blight (FHB), mainly caused by Fusarium graminearum, is one of the most destructive diseases of wheat (Triticum aestivum) around the world. FHB causes significant yield losses and reduces grain quality. The lack of resistance resources is a major bottleneck for wheat FHB resistance breeding. As a wheat relative, Thinopyrum elongatum contains many genes that can be used for wheat improvement. Although the novel gene Fhb‐7EL was mapped on chromosome 7EL of Th. elongatum, successful transfer of the FHB resistance gene into commercial wheat varieties has not been reported. In this study, we developed 836 wheat–Th. elongatum translocation lines of various types by irradiating the pollen of the wheat–Th. elongatum addition line CS‐7EL at the flowering stage, among which 81 were identified as resistant to FHB. By backcrossing the FHB‐resistant lines with the main cultivar Jimai 22, three wheat–Th. elongatum translocation lines, Zhongke 1878, Zhongke 166, and Zhongke 545, were successfully applied in wheat breeding without yield penalty. Combining karyotype and phenotype analyses, we mapped the Fhb‐7EL gene to the distal end of chromosome 7EL. Five molecular markers linked with the FHB resistance interval were developed, which facilitates molecular marker‐assisted breeding. Altogether, we successfully applied alien chromatin with FHB resistance from Th. elongatum in wheat breeding without yield penalty. These newly developed FHB‐resistant wheat–Th. elongatum translocation lines, Zhongke 1878, Zhongke 166, and Zhongke 545, can be used as novel resistance resources for wheat breeding. Significance Statement Fusarium head blight (FHB) seriously threatens wheat (Triticum aestivum) production around the world. Deploying wheat cultivars with FHB resistance is considered as the most effective and environment‐friendly measure. Eighty‐one wheat–Th. elongatum translocation lines with FHB resistance were systemically developed in this study. Among them, three Zhongke lines were successfully applied in wheat breeding without yield penalty. These lines can be used as novel resistance sources for wheat FHB resistance breeding." ],
+        "subject" : [ "backcrossing ;  Blight ;  Chromatin ;  chromosome ;  Chromosome 7 ;  Chromosomes ;  Cultivars ;  Disease resistance ;  Disease Resistance - genetics ;  Elongation ;  Flowering ;  Fusarium ;  Fusarium graminearum ;  Fusarium head blight ;  Genetic Markers ;  grain quality ;  Karyotypes ;  karyotyping ;  phenotype ;  Phenotypes ;  Plant Breeding ;  Plant Diseases - genetics ;  Poaceae - genetics ;  Pollen ;  resistance genes ;  Thinopyrum elongatum ;  Translocation ;  translocation line ;  Triticum - genetics ;  Triticum aestivum ;  Wheat ;  wheat breeding" ]
+      },
+      "addata" : {
+        "abstract" : [ "SUMMARY Fusarium head blight (FHB), mainly caused by Fusarium graminearum, is one of the most destructive diseases of wheat (Triticum aestivum) around the world. FHB causes significant yield losses and reduces grain quality. The lack of resistance resources is a major bottleneck for wheat FHB resistance breeding. As a wheat relative, Thinopyrum elongatum contains many genes that can be used for wheat improvement. Although the novel gene Fhb‐7EL was mapped on chromosome 7EL of Th. elongatum, successful transfer of the FHB resistance gene into commercial wheat varieties has not been reported. In this study, we developed 836 wheat–Th. elongatum translocation lines of various types by irradiating the pollen of the wheat–Th. elongatum addition line CS‐7EL at the flowering stage, among which 81 were identified as resistant to FHB. By backcrossing the FHB‐resistant lines with the main cultivar Jimai 22, three wheat–Th. elongatum translocation lines, Zhongke 1878, Zhongke 166, and Zhongke 545, were successfully applied in wheat breeding without yield penalty. Combining karyotype and phenotype analyses, we mapped the Fhb‐7EL gene to the distal end of chromosome 7EL. Five molecular markers linked with the FHB resistance interval were developed, which facilitates molecular marker‐assisted breeding. Altogether, we successfully applied alien chromatin with FHB resistance from Th. elongatum in wheat breeding without yield penalty. These newly developed FHB‐resistant wheat–Th. elongatum translocation lines, Zhongke 1878, Zhongke 166, and Zhongke 545, can be used as novel resistance resources for wheat breeding. Significance Statement Fusarium head blight (FHB) seriously threatens wheat (Triticum aestivum) production around the world. Deploying wheat cultivars with FHB resistance is considered as the most effective and environment‐friendly measure. Eighty‐one wheat–Th. elongatum translocation lines with FHB resistance were systemically developed in this study. Among them, three Zhongke lines were successfully applied in wheat breeding without yield penalty. These lines can be used as novel resistance sources for wheat FHB resistance breeding." ],
+        "orcidid" : [ "https://orcid.org/0000-0001-8393-3575", "https://orcid.org/0000-0001-8621-2941" ],
+        "issn" : [ "0960-7412", "1365-313X" ],
+        "addtitle" : [ "Plant J" ],
+        "jtitle" : [ "The Plant journal : for cell and molecular biology" ],
+        "genre" : [ "article" ],
+        "au" : [ "Guo, Xianrui", "Shi, Qinghua", "Liu, Yang", "Su, Handong", "Zhang, Jing", "Wang, Mian", "Wang, Chunhui", "Wang, Jing", "Zhang, Kaibiao", "Fu, Shulan", "Hu, Xiaojun", "Jing, Donglin", "Wang, Zhen", "Li, Jinbang", "Zhang, Pingzhi", "Liu, Cheng", "Han, Fangpu" ],
+        "atitle" : [ "Systemic development of wheat–Thinopyrum elongatum translocation lines and their deployment in wheat breeding for Fusarium head blight resistance" ],
+        "date" : [ "2023-06" ],
+        "risdate" : [ "2023" ],
+        "volume" : [ "114" ],
+        "issue" : [ "6" ],
+        "spage" : [ "1475" ],
+        "epage" : [ "1489" ],
+        "pages" : [ "1475-1489" ],
+        "eissn" : [ "1365-313X" ],
+        "ristype" : [ "JOUR" ],
+        "cop" : [ "England" ],
+        "pub" : [ "Blackwell Publishing Ltd" ],
+        "doi" : [ "10.1111/tpj.16190" ],
+        "pmid" : [ "36919201" ],
+        "tpages" : [ "1489" ],
+        "format" : [ "journal" ]
+      },
+      "facets" : {
+        "creationdate" : [ "2023" ],
+        "language" : [ "eng" ],
+        "rsrctype" : [ "articles" ],
+        "creatorcontrib" : [ "Guo, Xianrui", "Shi, Qinghua", "Liu, Yang", "Su, Handong", "Zhang, Jing", "Wang, Mian", "Wang, Chunhui", "Wang, Jing", "Zhang, Kaibiao", "Fu, Shulan", "Hu, Xiaojun", "Jing, Donglin", "Wang, Zhen", "Li, Jinbang", "Zhang, Pingzhi", "Liu, Cheng", "Han, Fangpu" ],
+        "topic" : [ "backcrossing", "Blight", "Chromatin", "chromosome", "Chromosome 7", "Chromosomes", "Cultivars", "Disease resistance", "Disease Resistance - genetics", "Elongation", "Flowering", "Fusarium", "Fusarium graminearum", "Fusarium head blight", "Genetic Markers", "grain quality", "Karyotypes", "karyotyping", "phenotype", "Phenotypes", "Plant Breeding", "Plant Diseases - genetics", "Poaceae - genetics", "Pollen", "resistance genes", "Thinopyrum elongatum", "Translocation", "translocation line", "Triticum - genetics", "Triticum aestivum", "Wheat", "wheat breeding" ],
+        "prefilter" : [ "articles" ],
+        "collection" : [ "CrossRef", "Medline", "MEDLINE", "MEDLINE (Ovid)", "MEDLINE", "MEDLINE", "PubMed", "Biotechnology Research Abstracts", "Calcium & Calcified Tissue Abstracts", "Chemoreception Abstracts", "Nucleic Acids Abstracts", "Technology Research Database", "Engineering Research Database", "Algology Mycology and Protozoology Abstracts (Microbiology C)", "Biotechnology and BioEngineering Abstracts", "Genetics Abstracts", "MEDLINE - Academic", "AGRICOLA", "AGRICOLA - Academic" ],
+        "toplevel" : [ "peer_reviewed", "online_resources" ],
+        "frbrgroupid" : [ "cdi_FETCH-LOGICAL-c3860-3bf515aaa40b6f4da1333a8767939ed70636dd1fee84733d4997021a5d40ce5d3" ],
+        "frbrtype" : [ "5" ],
+        "jtitle" : [ "The Plant journal : for cell and molecular biology" ]
+      },
+      "sort" : {
+        "author" : [ "Guo, Xianrui ; Shi, Qinghua ; Liu, Yang ; Su, Handong ; Zhang, Jing ; Wang, Mian ; Wang, Chunhui ; Wang, Jing ; Zhang, Kaibiao ; Fu, Shulan ; Hu, Xiaojun ; Jing, Donglin ; Wang, Zhen ; Li, Jinbang ; Zhang, Pingzhi ; Liu, Cheng ; Han, Fangpu" ],
+        "title" : [ "Systemic development of wheat–Thinopyrum elongatum translocation lines and their deployment in wheat breeding for Fusarium head blight resistance" ],
+        "creationdate" : [ "202306" ]
+      },
+      "control" : {
+        "sourceid" : [ "proquest_cross" ],
+        "recordid" : [ "cdi_proquest_miscellaneous_2834270880" ],
+        "sourcerecordid" : [ "2826008721" ],
+        "originalsourceid" : [ "FETCH-LOGICAL-c3860-3bf515aaa40b6f4da1333a8767939ed70636dd1fee84733d4997021a5d40ce5d3" ],
+        "recordtype" : [ "article" ],
+        "addsrcrecordid" : [ "eNqFkcFKHDEYgENp0VV76AtIoJd6WE0mM8nMsUitFqFCV-htyEz-2c2SSaZJRplb38E39EmMu9aDoM0lgf_LBz8fQp8oOabpnMRhfUw5rcg7NKOMF3NG2e_3aEYqTuYip9ku2gthTQgVjOc7aJfxilYZoTN092sKEXrdYgU3YNzQg43Ydfh2BTLe_71brLR1w-THHqexXcqYXtFLG4xrZdTOYqMtBCytwnEF2ifTYNy0EWm7FeHGAyhtl7hzHp-NQXqdPGmkcGP0chWxh6BDlLaFA_ShkybAx6d7H12ffVucns8vf36_OP16OW9ZmRZjTVfQQkqZk4Z3uZKUMSZLwUXFKlCCcMaVoh1AmQvGVF5VgmRUFionLRSK7aMvW-_g3Z8RQqx7HVowRlpwY6izkuWZIGVJ_o-KUmQ0I4Im9PMLdO1Gb9MiSZhxQh7JRB0-UWPTg6oHr3vpp_pfmQQcbYHWuxA8dM8IJfVj9TpVrzfVE3vygm113LRJobR568etNjC9rq4XVz-2Px4AT7m_BA" ],
+        "sourcetype" : [ "Aggregation Database" ],
+        "sourceformat" : [ "XML" ],
+        "sourcesystem" : [ "Other" ],
+        "pqid" : [ "2826008721" ],
+        "iscdi" : [ "true" ],
+        "score" : [ 0.3488717 ]
+      }
+    },
+    "delivery" : {
+      "link" : [ ],
+      "deliveryCategory" : [ "Remote Search Resource" ],
+      "availability" : [ "fulltext" ],
+      "displayLocation" : false,
+      "additionalLocations" : false,
+      "physicalItemTextCodes" : "",
+      "feDisplayOtherLocations" : false,
+      "displayedAvailability" : "true",
+      "holding" : [ ],
+      "almaOpenurl" : "https://na01.alma.exlibrisgroup.com/view/uresolver/01ALLIANCE_UID/openurl?ctx_enc=info:ofi/enc:UTF-8&ctx_id=10_1&ctx_tim=2026-10-19 09:38:54&ctx_ver=Z39.88-2004&url_ctx_fmt=info:ofi/fmt:kev:mtx:ctx&url_ver=Z39.88-2004&rfr_id=info:sid/primo.exlibrisgroup.com-proquest_cross&rft_val_fmt=info:ofi/fmt:kev:mtx:journal&rft.genre=article&rft.atitle=Systemic+development+of+wheat%E2%80%93Thinopyrum+elongatum+translocation+lines+and+their+deployment+in+wheat+breeding+for+Fusarium+head+blight+resistance&rft.jtitle=The+Plant+journal+%3A+for+cell+and+molecular+biology&rft.au=Guo%2C+Xianrui&rft.date=2023-06&rft.volume=114&rft.issue=6&rft.spage=1475&rft.epage=1489&rft.pages=1475-1489&rft.issn=0960-7412&rft.eissn=1365-313X&rft_id=info:doi/10.1111%2Ftpj.16190&rft.pub=Blackwell+Publishing+Ltd&rft.place=England&rft_id=info:pmid/36919201&rft_dat=<proquest_cross>2826008721</proquest_cross>&svc_dat=viewit&rft_pqid=2826008721"
+    },
+    "context" : "PC",
+    "adaptor" : "Primo Central",
+    "extras" : {
+      "citationTrails" : {
+        "citing" : [ "FETCH-LOGICAL-c3860-3bf515aaa40b6f4da1333a8767939ed70636dd1fee84733d4997021a5d40ce5d3" ],
+        "citedby" : [ "FETCH-LOGICAL-c3860-3bf515aaa40b6f4da1333a8767939ed70636dd1fee84733d4997021a5d40ce5d3" ]
+      },
+      "timesCited" : { }
+    },
+    "@id" : "https://na01.alma.exlibrisgroup.com/primaws/rest/pub/pnxs/PC/cdi_proquest_miscellaneous_2834270880"
+  }, {
+    "pnx" : {
+      "links" : {
+        "openurlfulltext" : [ "$$Topenurlfull_article" ],
+        "openurl" : [ "$$Topenurl_article" ],
+        "thumbnail" : [ "$$Uhttp://image.cqvip.com/vip1000/qk/86610A/86610A.jpg" ],
+        "linkunpaywall" : [ "$$Uhttps://www.sciencedirect.com/science/article/pii/S2095311915611029/pdf$$GUnpaywall$$Hfree_for_read" ],
+        "linktorsrcadditional" : [ "$$Uhttps://doaj.org/article/21ee6fa4283e41c6aac6515ccf30ae60$$EView_record_in_Directory_of_Open_Access_Journals$$FView_record_in_$$GDirectory_of_Open_Access_Journals$$Hfree_for_read$$Pomit_proxy_true", "$$Uhttps://agris.fao.org/search/en/records/67598671c7a957febdfaa532$$EView_record_in_FAO_Food_and_Agriculture_Organization_of_the_United_Nations$$FView_record_in_$$GFAO_Food_and_Agriculture_Organization_of_the_United_Nations$$Hfree_for_read$$Pomit_proxy_true" ],
+        "openurladditional" : [ "$$Topenurlfull_article" ]
+      },
+      "search" : {
+        "title" : [ "Breeding wheat for drought tolerance： Progress and technologies", "Journal of Integrative Agriculture" ],
+        "subject" : [ "arid lands", "climate change", "drought", "drought tolerance", "gene transfer", "genes", "genetic variation", "genomic selection", "genomics", "genotyping", "marker-assisted selection", "phenotype", "phenotyping", "Triticum aestivum", "wheat", "反复干旱", "圆锥小麦", "基因组学", "基因组技术", "多基因控制", "小麦生产", "抗旱育种", "知识系统" ],
+        "sourceid" : [ "FBQ", "7S9", "DOA" ],
+        "recordid" : [ "eNqFUs1u1DAYjBBIVKWPUCni1B4C_uzYicWprPipVAEScLa-dT5ns6R2a2dVyqPwLLwTr4CzaanEhZMte2Y834yL4hjYC2CgXn7mTMtKAOgTkKcKgPFKPyoOuJC8EjWXj_P-HvK0OEppyxgDKRlT7UFx9joSdYPvy5sN4VS6EMsuhl2_mcopjBTRW_r962f5KYY-Ukol-q6cyG58GEM_UHpWPHE4Jjq6Ww-Lr2_ffFm9ry4-vjtfnV1UVoKaKkuys8yRkmshBPGGs4YrxzQ44TqumzXVbc1rEAqcFSS5VZI6h41ASxbEYXG-6HYBt-YqDpcYb03AwewPQuwNxmmwIxkORMphzVtBNViFmLVAWusEQ1Isa50uWjfoHfrebMMu-uze_Oj97bfvhnjOluWM5ndPFuxVDNc7SpO5HJKlcURPYZcMn-NUjZY6Q18tUBtDSpGcscOE0xD8FHEYDTAzd2b2nZm5EAPS7DszM1v-w74f8n-844XnMBjs45DM6sPsXzDgjX4Y9uFeNVK3qgHboJaNo3XOGaXgGfv8zsMm-P46_4u_JpRqtaq5asUfJpC7bQ" ],
+        "creator" : [ "Mwadzingeni, Learnmore", "Shimelis, Hussein", "Dube, Ernest", "Laing, Mark D", "Tsilo, Toi J" ],
+        "creationdate" : [ "2016" ],
+        "recordtype" : [ "article" ],
+        "general" : [ "KeAi Communications Co., Ltd", "Colege of Agriculture, Engineering and Science, University of KwaZulu-Natal/African Centre for Crop Improvement, Scottsvile 3209, South Africa%Agricultural Research Council-Smal Grain Institute ARC-SGI, Bethlehem 9700, South Africa" ],
+        "rsrctype" : [ "article" ],
+        "startdate" : [ "20160501" ],
+        "enddate" : [ "20160501" ],
+        "scope" : [ "2RA", "92L", "CQIGP", "W95", "~WA", "FBQ", "AAYXX", "CITATION", "7S9", "L.6", "2B.", "4A8", "92I", "93N", "PSX", "TCJ", "DOA" ],
+        "orcidid" : [ "https://orcid.org/0000-0002-2927-8220", "https://orcid.org/0000-0002-1190-801X", "https://orcid.org/0000-0001-6987-8573" ],
+        "creatorcontrib" : [ "Mwadzingeni, Learnmore", "Shimelis, Hussein", "Dube, Ernest", "Laing, Mark D", "Tsilo, Toi J", "Learnmore Mwadzingeni" ],
+        "issn" : [ "2095-3119", "2352-3425" ],
+        "fulltext" : [ "true" ],
+        "addtitle" : [ "Agricultural Sciences in China" ],
+        "description" : [ "Recurrent drought associated with climate change is among the principal constraints to global productivity of wheat (Triticum aestivum (L.) and T. turgidum (L.)). Numerous efforts to mitigate drought through breeding resilient varieties are underway across the world. Progress is, however, hampered because drought tolerance is a complex trait that is controlled by many genes and its full expression is affected by the environment. Furthermore, wheat has a structurally intricate and large genome. Consequently, breeding for drought tolerance requires the integration of various knowledge systems and methodologies from multiple disciplines in plant sciences. This review summarizes the progress made in dry land wheat improvement, advances in knowledge, complementary methodologies, and perspectives towards breeding for drought tolerance in the crop to create a coherent overview. Phenotypic, biochemical and genomics-assisted selection methodologies are discussed as leading research components used to exploit genetic variation. Advances in phenomic and genomic technologies are highlighted as options to circumvent existing bottlenecks in phenotypic and genomic selection, and gene transfer. The prospects of further integration of these technologies with other omics technologies are also provided." ],
+        "attribute" : [ "review_article" ]
+      },
+      "delivery" : {
+        "fulltext" : [ "fulltext_multiple" ],
+        "delcategory" : [ "Remote Search Resource" ]
+      },
+      "display" : {
+        "title" : [ "Breeding wheat for drought tolerance： Progress and technologies" ],
+        "type" : [ "article" ],
+        "source" : [ "AGRIS", "AGRICOLA", "Elsevier ScienceDirect Journals Complete", "DOAJ Directory of Open Access Journals" ],
+        "creator" : [ "Mwadzingeni, Learnmore ; Shimelis, Hussein ; Dube, Ernest ; Laing, Mark D ; Tsilo, Toi J" ],
+        "publisher" : [ "KeAi Communications Co., Ltd" ],
+        "ispartof" : [ "Journal of Integrative Agriculture, 2016-05, Vol.15 (5), p.935-943" ],
+        "identifier" : [ "ISSN: 2095-3119", "EISSN: 2352-3425", "DOI: 10.1016/S2095-3119(15)61102-9" ],
+        "language" : [ "eng" ],
+        "rights" : [ "Copyright © Wanfang Data Co. Ltd. All Rights Reserved." ],
+        "lds50" : [ "peer_reviewed" ],
+        "oa" : [ "free_for_read" ],
+        "description" : [ "Recurrent drought associated with climate change is among the principal constraints to global productivity of wheat (Triticum aestivum (L.) and T. turgidum (L.)). Numerous efforts to mitigate drought through breeding resilient varieties are underway across the world. Progress is, however, hampered because drought tolerance is a complex trait that is controlled by many genes and its full expression is affected by the environment. Furthermore, wheat has a structurally intricate and large genome. Consequently, breeding for drought tolerance requires the integration of various knowledge systems and methodologies from multiple disciplines in plant sciences. This review summarizes the progress made in dry land wheat improvement, advances in knowledge, complementary methodologies, and perspectives towards breeding for drought tolerance in the crop to create a coherent overview. Phenotypic, biochemical and genomics-assisted selection methodologies are discussed as leading research components used to exploit genetic variation. Advances in phenomic and genomic technologies are highlighted as options to circumvent existing bottlenecks in phenotypic and genomic selection, and gene transfer. The prospects of further integration of these technologies with other omics technologies are also provided." ],
+        "attribute" : [ "review_article" ],
+        "subject" : [ "arid lands ;  climate change ;  drought ;  drought tolerance ;  gene transfer ;  genes ;  genetic variation ;  genomic selection ;  genomics ;  genotyping ;  marker-assisted selection ;  phenotype ;  phenotyping ;  Triticum aestivum ;  wheat ;  反复干旱 ;  圆锥小麦 ;  基因组学 ;  基因组技术 ;  多基因控制 ;  小麦生产 ;  抗旱育种 ;  知识系统" ]
+      },
+      "addata" : {
+        "abstract" : [ "Recurrent drought associated with climate change is among the principal constraints to global productivity of wheat (Triticum aestivum (L.) and T. turgidum (L.)). Numerous efforts to mitigate drought through breeding resilient varieties are underway across the world. Progress is, however, hampered because drought tolerance is a complex trait that is controlled by many genes and its full expression is affected by the environment. Furthermore, wheat has a structurally intricate and large genome. Consequently, breeding for drought tolerance requires the integration of various knowledge systems and methodologies from multiple disciplines in plant sciences. This review summarizes the progress made in dry land wheat improvement, advances in knowledge, complementary methodologies, and perspectives towards breeding for drought tolerance in the crop to create a coherent overview. Phenotypic, biochemical and genomics-assisted selection methodologies are discussed as leading research components used to exploit genetic variation. Advances in phenomic and genomic technologies are highlighted as options to circumvent existing bottlenecks in phenotypic and genomic selection, and gene transfer. The prospects of further integration of these technologies with other omics technologies are also provided." ],
+        "orcidid" : [ "https://orcid.org/0000-0002-2927-8220", "https://orcid.org/0000-0002-1190-801X", "https://orcid.org/0000-0001-6987-8573" ],
+        "issn" : [ "2095-3119" ],
+        "addtitle" : [ "Agricultural Sciences in China" ],
+        "oa" : [ "free_for_read" ],
+        "jtitle" : [ "Journal of Integrative Agriculture" ],
+        "genre" : [ "article" ],
+        "au" : [ "Mwadzingeni, Learnmore", "Shimelis, Hussein", "Dube, Ernest", "Laing, Mark D", "Tsilo, Toi J" ],
+        "aucorp" : [ "Learnmore Mwadzingeni" ],
+        "atitle" : [ "Breeding wheat for drought tolerance： Progress and technologies" ],
+        "date" : [ "2016-05-01" ],
+        "risdate" : [ "2016" ],
+        "volume" : [ "15" ],
+        "issue" : [ "5" ],
+        "spage" : [ "935" ],
+        "epage" : [ "943" ],
+        "pages" : [ "935-943" ],
+        "eissn" : [ "2352-3425" ],
+        "ristype" : [ "JOUR" ],
+        "pub" : [ "KeAi Communications Co., Ltd" ],
+        "doi" : [ "10.1016/S2095-3119(15)61102-9" ],
+        "tpages" : [ "9" ],
+        "format" : [ "journal" ]
+      },
+      "facets" : {
+        "creationdate" : [ "2016" ],
+        "language" : [ "eng" ],
+        "rsrctype" : [ "articles", "review_article" ],
+        "creatorcontrib" : [ "Mwadzingeni, Learnmore", "Shimelis, Hussein", "Dube, Ernest", "Laing, Mark D", "Tsilo, Toi J", "Learnmore Mwadzingeni" ],
+        "topic" : [ "arid lands", "climate change", "drought", "drought tolerance", "gene transfer", "genes", "genetic variation", "genomic selection", "genomics", "genotyping", "marker-assisted selection", "phenotype", "phenotyping", "Triticum aestivum", "wheat", "反复干旱", "圆锥小麦", "基因组学", "基因组技术", "多基因控制", "小麦生产", "抗旱育种", "知识系统" ],
+        "prefilter" : [ "articles" ],
+        "collection" : [ "维普_期刊", "中文科技期刊数据库-CALIS站点", "维普中文期刊数据库", "中文科技期刊数据库-农业科学", "中文科技期刊数据库- 镜像站点", "AGRIS", "CrossRef", "AGRICOLA", "AGRICOLA - Academic", "Wanfang Data Journals - Hong Kong", "WANFANG Data Centre", "Wanfang Data Journals", "万方数据期刊 - 香港版", "China Online Journals (COJ)", "China Online Journals (COJ)", "DOAJ Directory of Open Access Journals" ],
+        "toplevel" : [ "peer_reviewed", "online_resources" ],
+        "frbrgroupid" : [ "cdi_FETCH-LOGICAL-c516t-ce5dc0fe65b333e2720726f091f3fd297be484241361fc3e52c65edfa73acec13" ],
+        "frbrtype" : [ "5" ],
+        "jtitle" : [ "Journal of Integrative Agriculture" ]
+      },
+      "sort" : {
+        "author" : [ "Mwadzingeni, Learnmore ; Shimelis, Hussein ; Dube, Ernest ; Laing, Mark D ; Tsilo, Toi J" ],
+        "title" : [ "Breeding wheat for drought tolerance： Progress and technologies" ],
+        "creationdate" : [ "20160501" ]
+      },
+      "control" : {
+        "sourceid" : [ "wanfang_jour_proqu" ],
+        "recordid" : [ "cdi_wanfang_journals_zgnykx_e201605001" ],
+        "sourcerecordid" : [ "zgnykx_e201605001" ],
+        "originalsourceid" : [ "FETCH-LOGICAL-c516t-ce5dc0fe65b333e2720726f091f3fd297be484241361fc3e52c65edfa73acec13" ],
+        "recordtype" : [ "article" ],
+        "addsrcrecordid" : [ "eNqFUs1u1DAYjBBIVKWPUCni1B4C_uzYicWprPipVAEScLa-dT5ns6R2a2dVyqPwLLwTr4CzaanEhZMte2Y834yL4hjYC2CgXn7mTMtKAOgTkKcKgPFKPyoOuJC8EjWXj_P-HvK0OEppyxgDKRlT7UFx9joSdYPvy5sN4VS6EMsuhl2_mcopjBTRW_r962f5KYY-Ukol-q6cyG58GEM_UHpWPHE4Jjq6Ww-Lr2_ffFm9ry4-vjtfnV1UVoKaKkuys8yRkmshBPGGs4YrxzQ44TqumzXVbc1rEAqcFSS5VZI6h41ASxbEYXG-6HYBt-YqDpcYb03AwewPQuwNxmmwIxkORMphzVtBNViFmLVAWusEQ1Isa50uWjfoHfrebMMu-uze_Oj97bfvhnjOluWM5ndPFuxVDNc7SpO5HJKlcURPYZcMn-NUjZY6Q18tUBtDSpGcscOE0xD8FHEYDTAzd2b2nZm5EAPS7DszM1v-w74f8n-844XnMBjs45DM6sPsXzDgjX4Y9uFeNVK3qgHboJaNo3XOGaXgGfv8zsMm-P46_4u_JpRqtaq5asUfJpC7bQ" ],
+        "sourcetype" : [ "Open Website" ],
+        "sourceformat" : [ "XML" ],
+        "sourcesystem" : [ "Other" ],
+        "pqid" : [ "2000167959" ],
+        "cqvipid" : [ "668964268" ],
+        "wanfjid" : [ "zgnykx_e201605001" ],
+        "iscdi" : [ "true" ],
+        "doajid" : [ "oai_doaj_org_article_21ee6fa4283e41c6aac6515ccf30ae60" ],
+        "attribute" : [ "review_article" ],
+        "score" : [ 0.34194138009999997 ],
+        "save_score" : [ 0.34194137999999996 ]
+      }
+    },
+    "delivery" : {
+      "link" : [ {
+        "@id" : "_:0",
+        "linkType" : "http://purl.org/pnx/linkType/thumbnail",
+        "linkURL" : "http://image.cqvip.com/vip1000/qk/86610A/86610A.jpg",
+        "displayLabel" : "thumbnail"
+      } ],
+      "deliveryCategory" : [ "Remote Search Resource" ],
+      "availability" : [ "fulltext_multiple" ],
+      "displayLocation" : false,
+      "additionalLocations" : false,
+      "physicalItemTextCodes" : "",
+      "feDisplayOtherLocations" : false,
+      "displayedAvailability" : "true",
+      "holding" : [ ],
+      "almaOpenurl" : "https://na01.alma.exlibrisgroup.com/view/uresolver/01ALLIANCE_UID/openurl?ctx_enc=info:ofi/enc:UTF-8&ctx_id=10_1&ctx_tim=2026-10-19 09:38:54&ctx_ver=Z39.88-2004&url_ctx_fmt=info:ofi/fmt:kev:mtx:ctx&url_ver=Z39.88-2004&rfr_id=info:sid/primo.exlibrisgroup.com-wanfang_jour_proqu&rft_val_fmt=info:ofi/fmt:kev:mtx:journal&rft.genre=article&rft.atitle=Breeding+wheat+for+drought+tolerance%EF%BC%9A+Progress+and+technologies&rft.jtitle=Journal+of+Integrative+Agriculture&rft.au=Mwadzingeni%2C+Learnmore&rft.aucorp=Learnmore+Mwadzingeni&rft.date=2016-05-01&rft.volume=15&rft.issue=5&rft.spage=935&rft.epage=943&rft.pages=935-943&rft.issn=2095-3119&rft.eissn=2352-3425&rft_id=info:doi/10.1016%2FS2095-3119%2815%2961102-9&rft.pub=KeAi+Communications+Co.%2C+Ltd&rft_dat=<wanfang_jour_proqu>zgnykx_e201605001</wanfang_jour_proqu>&svc_dat=viewit&rft_pqid=2000167959&rft_cqvip_id=668964268&rft_wanfj_id=zgnykx_e201605001&rft_doaj_id=oai_doaj_org_article_21ee6fa4283e41c6aac6515ccf30ae60"
+    },
+    "context" : "PC",
+    "adaptor" : "Primo Central",
+    "extras" : {
+      "citationTrails" : {
+        "citing" : [ "FETCH-LOGICAL-c516t-ce5dc0fe65b333e2720726f091f3fd297be484241361fc3e52c65edfa73acec13" ],
+        "citedby" : [ "FETCH-LOGICAL-c516t-ce5dc0fe65b333e2720726f091f3fd297be484241361fc3e52c65edfa73acec13" ]
+      },
+      "timesCited" : { }
+    },
+    "@id" : "https://na01.alma.exlibrisgroup.com/primaws/rest/pub/pnxs/PC/cdi_wanfang_journals_zgnykx_e201605001"
+  }, {
+    "pnx" : {
+      "links" : {
+        "openurlfulltext" : [ "$$Topenurlfull_article" ],
+        "openurl" : [ "$$Topenurl_article" ],
+        "thumbnail" : [ "$$Tsyndetics_thumb_exl" ],
+        "linktopdf" : [ "$$Uhttps://onlinelibrary.wiley.com/doi/epdf/10.1111%2Fpbr.13094$$EPDF$$Gwiley$$H$$Pomit_proxy_false" ],
+        "linktohtml" : [ "$$Uhttps://onlinelibrary.wiley.com/doi/full/10.1111%2Fpbr.13094$$EHTML$$Gwiley$$H$$Pomit_proxy_false" ],
+        "linkunpaywall" : [ "$$Uhttps://onlinelibrary.wiley.com/doi/pdfdirect/10.1111/pbr.13094$$GUnpaywall$$Hfree_for_read" ]
+      },
+      "search" : {
+        "title" : [ "Genomics‐assisted breeding: The next‐generation wheat breeding era", "Plant breeding" ],
+        "subject" : [ "common wheat", "Cultivars", "Diet", "Dietary intake", "energy intake", "Gene sequencing", "genes", "Genetic diversity", "genetic improvement", "genetic variation", "Genomes", "genomic selection", "Genomics", "genomics‐assisted breeding", "humans", "Information processing", "marker-assisted selection", "multiomics", "Nucleotide sequence", "Nutritive value", "phenotype", "Phenotyping", "Plant breeding", "Single-nucleotide polymorphism", "traditional breeding", "Wheat", "whole‐genome sequencing" ],
+        "sourceid" : [ "7S9" ],
+        "recordid" : [ "eNp9kMFKw0AQhhdRsFYPvkHAix7S7mQ2TdabFluFgiL1HLabSbslTepuivbmI_iMPonbVjwUdC7DzHzz8_Mzdg68A766y4ntAHIpDlgLBMqQxxEeshaHRIYyFnDMTpyb882MSYsNhlTVC6Pd18encs64hvJgYolyU02vg_GMgoreG3-dUkVWNaaugrcZqeaXCvz6lB0VqnR09tPb7GVwN-7fh6PH4UP_ZhRq7MUiLEAowLTo5eBtaYmYJnEkIUeKEPIcFSbAFWitKEWShIInPUBIeKJICmyzy53u0tavK3JNtjBOU1mqiuqVy6IURdSTIk09erGHzuuVrbw7T0URxKmIN4JXO0rb2jlLRba0ZqHsOgOebRLNfKLZNlHPdvdYbZptIo1Vpvzv482UtP5bOnu6fd59fAOC4Yed" ],
+        "creator" : [ "Sun, Congwei", "Hu, Huiting", "Cheng, Yongzhen", "Yang, Xi", "Qiao, Qi", "Wang, Canguan", "Zhang, Leilei", "Chen, Daiying", "Zhao, Simin", "Dong, Zhongdong", "Chen, Feng" ],
+        "creationdate" : [ "2023" ],
+        "recordtype" : [ "article" ],
+        "general" : [ "Wiley Subscription Services, Inc" ],
+        "rsrctype" : [ "article" ],
+        "startdate" : [ "202306" ],
+        "enddate" : [ "202306" ],
+        "scope" : [ "AAYXX", "CITATION", "7QO", "7T7", "8FD", "C1K", "FR3", "P64", "RC3", "7S9", "L.6" ],
+        "orcidid" : [ "https://orcid.org/0000-0002-7327-2969" ],
+        "creatorcontrib" : [ "Sun, Congwei", "Hu, Huiting", "Cheng, Yongzhen", "Yang, Xi", "Qiao, Qi", "Wang, Canguan", "Zhang, Leilei", "Chen, Daiying", "Zhao, Simin", "Dong, Zhongdong", "Chen, Feng" ],
+        "issn" : [ "0179-9541", "1439-0523" ],
+        "fulltext" : [ "true" ],
+        "description" : [ "Common wheat provides approximately 20% of the total dietary calorie intake of human beings. Recent technological advances in whole‐genome sequencing and their application in wheat and its progenitor species provide new opportunities to uncover the genetic variation of wheat traits and to accelerate the traditional breeding (TB) strategies in the context of genomics‐assisted breeding (GAB). Integration of TB, marker‐assisted selection (MAS) and genomic selection (GS) with high‐density SNP markers is expected to accelerate the breeding process and to further enhance genetic gain. With the assistance of the next‐ or third‐generation sequencing technologies and high‐throughput phenotyping platforms, GAB can now realistically be considered in the following area: (i) genome sequencing and high‐quality assembly to uncover new variations, (ii) whole‐genome sequence‐based association studies, (iii) gene function (or functional gene) identification and (iv) integration of whole genomic breeding information, utilizing multi‐omics data and different breeding strategies. We argue that GAB is becoming the preferred strategy in pursuit of new wheat cultivars with superior traits on high yielding, high nutritional quality, climate‐resilience and so on." ],
+        "attribute" : [ "review_article" ]
+      },
+      "delivery" : {
+        "fulltext" : [ "fulltext" ],
+        "delcategory" : [ "Remote Search Resource" ]
+      },
+      "display" : {
+        "title" : [ "Genomics‐assisted breeding: The next‐generation wheat breeding era" ],
+        "type" : [ "article" ],
+        "source" : [ "Wiley Online Library All Journals", "AGRICOLA", "EBSCOhost Academic Search Premier" ],
+        "creator" : [ "Sun, Congwei ; Hu, Huiting ; Cheng, Yongzhen ; Yang, Xi ; Qiao, Qi ; Wang, Canguan ; Zhang, Leilei ; Chen, Daiying ; Zhao, Simin ; Dong, Zhongdong ; Chen, Feng" ],
+        "publisher" : [ "Berlin: Wiley Subscription Services, Inc" ],
+        "ispartof" : [ "Plant breeding, 2023-06, Vol.142 (3), p.259-268" ],
+        "identifier" : [ "ISSN: 0179-9541", "EISSN: 1439-0523", "DOI: 10.1111/pbr.13094" ],
+        "language" : [ "eng" ],
+        "rights" : [ "2023 Wiley‐VCH GmbH. Published by John Wiley & Sons Ltd", "2023 John Wiley & Sons, Ltd." ],
+        "lds50" : [ "peer_reviewed" ],
+        "oa" : [ "free_for_read" ],
+        "description" : [ "Common wheat provides approximately 20% of the total dietary calorie intake of human beings. Recent technological advances in whole‐genome sequencing and their application in wheat and its progenitor species provide new opportunities to uncover the genetic variation of wheat traits and to accelerate the traditional breeding (TB) strategies in the context of genomics‐assisted breeding (GAB). Integration of TB, marker‐assisted selection (MAS) and genomic selection (GS) with high‐density SNP markers is expected to accelerate the breeding process and to further enhance genetic gain. With the assistance of the next‐ or third‐generation sequencing technologies and high‐throughput phenotyping platforms, GAB can now realistically be considered in the following area: (i) genome sequencing and high‐quality assembly to uncover new variations, (ii) whole‐genome sequence‐based association studies, (iii) gene function (or functional gene) identification and (iv) integration of whole genomic breeding information, utilizing multi‐omics data and different breeding strategies. We argue that GAB is becoming the preferred strategy in pursuit of new wheat cultivars with superior traits on high yielding, high nutritional quality, climate‐resilience and so on." ],
+        "attribute" : [ "review_article" ],
+        "subject" : [ "common wheat ;  Cultivars ;  Diet ;  Dietary intake ;  energy intake ;  Gene sequencing ;  genes ;  Genetic diversity ;  genetic improvement ;  genetic variation ;  Genomes ;  genomic selection ;  Genomics ;  genomics‐assisted breeding ;  humans ;  Information processing ;  marker-assisted selection ;  multiomics ;  Nucleotide sequence ;  Nutritive value ;  phenotype ;  Phenotyping ;  Plant breeding ;  Single-nucleotide polymorphism ;  traditional breeding ;  Wheat ;  whole‐genome sequencing" ]
+      },
+      "addata" : {
+        "abstract" : [ "Common wheat provides approximately 20% of the total dietary calorie intake of human beings. Recent technological advances in whole‐genome sequencing and their application in wheat and its progenitor species provide new opportunities to uncover the genetic variation of wheat traits and to accelerate the traditional breeding (TB) strategies in the context of genomics‐assisted breeding (GAB). Integration of TB, marker‐assisted selection (MAS) and genomic selection (GS) with high‐density SNP markers is expected to accelerate the breeding process and to further enhance genetic gain. With the assistance of the next‐ or third‐generation sequencing technologies and high‐throughput phenotyping platforms, GAB can now realistically be considered in the following area: (i) genome sequencing and high‐quality assembly to uncover new variations, (ii) whole‐genome sequence‐based association studies, (iii) gene function (or functional gene) identification and (iv) integration of whole genomic breeding information, utilizing multi‐omics data and different breeding strategies. We argue that GAB is becoming the preferred strategy in pursuit of new wheat cultivars with superior traits on high yielding, high nutritional quality, climate‐resilience and so on." ],
+        "orcidid" : [ "https://orcid.org/0000-0002-7327-2969" ],
+        "issn" : [ "0179-9541" ],
+        "oa" : [ "free_for_read" ],
+        "jtitle" : [ "Plant breeding" ],
+        "genre" : [ "article" ],
+        "au" : [ "Sun, Congwei", "Hu, Huiting", "Cheng, Yongzhen", "Yang, Xi", "Qiao, Qi", "Wang, Canguan", "Zhang, Leilei", "Chen, Daiying", "Zhao, Simin", "Dong, Zhongdong", "Chen, Feng" ],
+        "atitle" : [ "Genomics‐assisted breeding: The next‐generation wheat breeding era" ],
+        "date" : [ "2023-06" ],
+        "risdate" : [ "2023" ],
+        "volume" : [ "142" ],
+        "issue" : [ "3" ],
+        "spage" : [ "259" ],
+        "epage" : [ "268" ],
+        "pages" : [ "259-268" ],
+        "eissn" : [ "1439-0523" ],
+        "ristype" : [ "JOUR" ],
+        "cop" : [ "Berlin" ],
+        "pub" : [ "Wiley Subscription Services, Inc" ],
+        "doi" : [ "10.1111/pbr.13094" ],
+        "tpages" : [ "10" ],
+        "format" : [ "journal" ]
+      },
+      "facets" : {
+        "creationdate" : [ "2023" ],
+        "language" : [ "eng" ],
+        "rsrctype" : [ "articles", "review_article" ],
+        "creatorcontrib" : [ "Sun, Congwei", "Hu, Huiting", "Cheng, Yongzhen", "Yang, Xi", "Qiao, Qi", "Wang, Canguan", "Zhang, Leilei", "Chen, Daiying", "Zhao, Simin", "Dong, Zhongdong", "Chen, Feng" ],
+        "topic" : [ "common wheat", "Cultivars", "Diet", "Dietary intake", "energy intake", "Gene sequencing", "genes", "Genetic diversity", "genetic improvement", "genetic variation", "Genomes", "genomic selection", "Genomics", "genomics‐assisted breeding", "humans", "Information processing", "marker-assisted selection", "multiomics", "Nucleotide sequence", "Nutritive value", "phenotype", "Phenotyping", "Plant breeding", "Single-nucleotide polymorphism", "traditional breeding", "Wheat", "whole‐genome sequencing" ],
+        "prefilter" : [ "articles" ],
+        "collection" : [ "CrossRef", "Biotechnology Research Abstracts", "Industrial and Applied Microbiology Abstracts (Microbiology A)", "Technology Research Database", "Environmental Sciences and Pollution Management", "Engineering Research Database", "Biotechnology and BioEngineering Abstracts", "Genetics Abstracts", "AGRICOLA", "AGRICOLA - Academic" ],
+        "toplevel" : [ "peer_reviewed", "online_resources" ],
+        "frbrgroupid" : [ "cdi_FETCH-LOGICAL-c3654-f14a138f6d1523c933875291d3e231dd3a3710a1ccae83e9e34076131707ae943" ],
+        "frbrtype" : [ "5" ],
+        "jtitle" : [ "Plant breeding" ]
+      },
+      "sort" : {
+        "author" : [ "Sun, Congwei ; Hu, Huiting ; Cheng, Yongzhen ; Yang, Xi ; Qiao, Qi ; Wang, Canguan ; Zhang, Leilei ; Chen, Daiying ; Zhao, Simin ; Dong, Zhongdong ; Chen, Feng" ],
+        "title" : [ "Genomics‐assisted breeding: The next‐generation wheat breeding era" ],
+        "creationdate" : [ "202306" ]
+      },
+      "control" : {
+        "sourceid" : [ "proquest_cross" ],
+        "recordid" : [ "cdi_proquest_journals_2822158454" ],
+        "sourcerecordid" : [ "2834269488" ],
+        "originalsourceid" : [ "FETCH-LOGICAL-c3654-f14a138f6d1523c933875291d3e231dd3a3710a1ccae83e9e34076131707ae943" ],
+        "recordtype" : [ "article" ],
+        "addsrcrecordid" : [ "eNp9kMFKw0AQhhdRsFYPvkHAix7S7mQ2TdabFluFgiL1HLabSbslTepuivbmI_iMPonbVjwUdC7DzHzz8_Mzdg68A766y4ntAHIpDlgLBMqQxxEeshaHRIYyFnDMTpyb882MSYsNhlTVC6Pd18encs64hvJgYolyU02vg_GMgoreG3-dUkVWNaaugrcZqeaXCvz6lB0VqnR09tPb7GVwN-7fh6PH4UP_ZhRq7MUiLEAowLTo5eBtaYmYJnEkIUeKEPIcFSbAFWitKEWShIInPUBIeKJICmyzy53u0tavK3JNtjBOU1mqiuqVy6IURdSTIk09erGHzuuVrbw7T0URxKmIN4JXO0rb2jlLRba0ZqHsOgOebRLNfKLZNlHPdvdYbZptIo1Vpvzv482UtP5bOnu6fd59fAOC4Yed" ],
+        "sourcetype" : [ "Aggregation Database" ],
+        "sourceformat" : [ "XML" ],
+        "sourcesystem" : [ "Other" ],
+        "pqid" : [ "2822158454" ],
+        "iscdi" : [ "true" ],
+        "attribute" : [ "review_article" ],
+        "score" : [ 0.3408896001 ],
+        "save_score" : [ 0.3408896 ]
+      }
+    },
+    "delivery" : {
+      "link" : [ ],
+      "deliveryCategory" : [ "Remote Search Resource" ],
+      "availability" : [ "fulltext" ],
+      "displayLocation" : false,
+      "additionalLocations" : false,
+      "physicalItemTextCodes" : "",
+      "feDisplayOtherLocations" : false,
+      "displayedAvailability" : "true",
+      "holding" : [ ],
+      "almaOpenurl" : "https://na01.alma.exlibrisgroup.com/view/uresolver/01ALLIANCE_UID/openurl?ctx_enc=info:ofi/enc:UTF-8&ctx_id=10_1&ctx_tim=2026-10-19 09:38:54&ctx_ver=Z39.88-2004&url_ctx_fmt=info:ofi/fmt:kev:mtx:ctx&url_ver=Z39.88-2004&rfr_id=info:sid/primo.exlibrisgroup.com-proquest_cross&rft_val_fmt=info:ofi/fmt:kev:mtx:journal&rft.genre=article&rft.atitle=Genomics%E2%80%90assisted+breeding%3A+The+next%E2%80%90generation+wheat+breeding+era&rft.jtitle=Plant+breeding&rft.au=Sun%2C+Congwei&rft.date=2023-06&rft.volume=142&rft.issue=3&rft.spage=259&rft.epage=268&rft.pages=259-268&rft.issn=0179-9541&rft.eissn=1439-0523&rft_id=info:doi/10.1111%2Fpbr.13094&rft.pub=Wiley+Subscription+Services%2C+Inc&rft.place=Berlin&rft_dat=<proquest_cross>2834269488</proquest_cross>&svc_dat=viewit&rft_pqid=2822158454"
+    },
+    "context" : "PC",
+    "adaptor" : "Primo Central",
+    "extras" : {
+      "citationTrails" : {
+        "citing" : [ "FETCH-LOGICAL-c3654-f14a138f6d1523c933875291d3e231dd3a3710a1ccae83e9e34076131707ae943" ],
+        "citedby" : [ "FETCH-LOGICAL-c3654-f14a138f6d1523c933875291d3e231dd3a3710a1ccae83e9e34076131707ae943" ]
+      },
+      "timesCited" : { }
+    },
+    "@id" : "https://na01.alma.exlibrisgroup.com/primaws/rest/pub/pnxs/PC/cdi_proquest_journals_2822158454"
+  } ],
+  "timelog" : {
+    "PC_SEARCH_CALL_TIME" : "280",
+    "PC_BUILD_JSON_AND_HIGLIGHTS" : "27",
+    "PC_SEARCH_TIME_TOTAL" : "307",
+    "CALL_SOLR_GET_IDS_LIST" : "32",
+    "PRIMA_LOCAL_INFO_FACETS_BUILD_DOCS_HIGHLIGHTS" : "0",
+    "PRIMA_LOCAL_SEARCH_TOTAL" : "34",
+    "BUILD_BLEND_AND_CACHE_RESULTS" : 0,
+    "BUILD_COMBINED_RESULTS_MAP" : 308,
+    "COMBINED_SEARCH_TIME" : 315,
+    "PROCESS_COMBINED_RESULTS" : 0,
+    "FEATURED_SEARCH_TIME" : 0
+  },
+  "facetsCacheKey" : -826152382
+}

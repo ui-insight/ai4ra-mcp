@@ -56,6 +56,7 @@ from ai4ra_mcp.servers.grants.server import mcp as grants
 from ai4ra_mcp.servers.icite.server import mcp as icite
 from ai4ra_mcp.servers.idstat.server import mcp as idstat
 from ai4ra_mcp.servers.lakehouse import server as lakehouse
+from ai4ra_mcp.servers.library.server import mcp as library
 from ai4ra_mcp.servers.nih.server import mcp as nih
 from ai4ra_mcp.servers.nihdates.server import mcp as nihdates
 from ai4ra_mcp.servers.nihgps.server import mcp as nihgps
@@ -97,7 +98,7 @@ SERVERS: dict[str, MCPServer] = {
     "perdiem": perdiem, "bls": bls, "treasury": treasury, "osm": osm, "weather": weather, "wolfram": wolfram,
     "openalex": openalex, "pubmed": pubmed, "icite": icite, "crossref": crossref, "datacite": datacite, "re3data": re3data, "orcid": orcid, "osti": osti, "clinicaltrials": clinicaltrials,
     "clickup": clickup, "github": github,
-    "uidaho": uidaho, "classes": classes, "directory": directory, "events": events, "campusmap": campusmap, "costs": costs, **lakehouse.SERVERS,
+    "uidaho": uidaho, "classes": classes, "directory": directory, "events": events, "campusmap": campusmap, "costs": costs, "library": library, **lakehouse.SERVERS,
 }
 SERVERS_DIR = Path(__file__).parent / "servers"
 WEB = "https://github.com/ui-insight/ai4ra-mcp/blob/main/ai4ra_mcp/servers/"
@@ -120,6 +121,7 @@ META: dict[str, dict] = {
     "omb": {"label": "OMB memoranda", "description": "OMB's memoranda to agencies (M-26-01, M-24-11) from whitehouse.gov and the archived prior-administration page, 2017 on: by year or title words, one by number with the later memoranda that name it, each with its date and PDF link. No key."},
     "campusmap": {"label": "Campus map", "institution": UIDAHO, "description": "The University of Idaho campus map (Concept3D): buildings and places by name or category with coordinates and building numbers, what is near a point (accessible entrances, restrooms, parking, bike racks, dining), one place with its entrances and parking, the categories. Read with the map page's own client key, no key of the person's; a route between two places is the osm server's."},
     "costs": {"label": "UI costs", "institution": UIDAHO, "description": "What the University of Idaho charges, from its own pages with their links: the tuition and fee schedule by student group, the estimated cost of attendance by student type and program, payment deadlines, late fees and refunds, and the Student Health Insurance Program's premiums and dates."},
+    "library": {"label": "UI Library", "institution": UIDAHO, "description": "The University of Idaho Library's catalog (Primo): what the library holds by words, title, author, subject, ISBN or ISSN, where a physical copy sits and whether it is on the shelf, articles with their DOI and full-text status, one record in full with its table of contents; Course Reserves and Special Collections as scopes. No key."},
     "uidaho": {"label": "UI guidance", "institution": UIDAHO, "description": "University policy for sponsored projects (APM, FSH), found by what each policy covers or by number and title; a report-only check of a passage against it; and the F&A and fringe rates from the rate agreement and the fringe-rate page, reported in the Rates contract's order."},
     "classes": {"label": "Class schedule", "institution": UIDAHO, "description": "The University of Idaho class schedule and course catalog: who teaches what, when and where, by term, subject, course number or instructor; one section in full; courses by subject, number or title and one course's catalog record, from the registrar's public Browse Classes and Browse Course Catalog. No key."},
     "directory": {"label": "Campus directory", "institution": UIDAHO, "description": "The University of Idaho campus directory, the employees the university publishes at directory.uidaho.edu: a person by last name, first name, email or department, their university email, phone, title, department and office, and the department list. Employees only, read through the directory's own search form. No key."},
