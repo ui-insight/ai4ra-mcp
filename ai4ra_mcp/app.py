@@ -85,6 +85,7 @@ from ai4ra_mcp.servers.udm.server import mcp as udm
 from ai4ra_mcp.servers.uidaho.server import mcp as uidaho
 from ai4ra_mcp.servers.usaspending.server import mcp as usaspending
 from ai4ra_mcp.servers.weather.server import mcp as weather
+from ai4ra_mcp.servers.wikidata.server import mcp as wikidata
 from ai4ra_mcp.servers.wolfram.server import mcp as wolfram
 
 # Index order is picker order: the general fold first, then the research-administration skills, then the public
@@ -96,7 +97,7 @@ SERVERS: dict[str, MCPServer] = {
     "nih": nih, "nsf": nsf, "usaspending": usaspending,
     "sam": sam, "fac": fac, "csl": csl, "oig": oig, "openpayments": openpayments, "propublica": propublica, "ror": ror, "scorecard": scorecard,
     "perdiem": perdiem, "bls": bls, "treasury": treasury, "osm": osm, "weather": weather, "wolfram": wolfram,
-    "openalex": openalex, "pubmed": pubmed, "icite": icite, "crossref": crossref, "datacite": datacite, "re3data": re3data, "orcid": orcid, "osti": osti, "clinicaltrials": clinicaltrials,
+    "openalex": openalex, "pubmed": pubmed, "icite": icite, "crossref": crossref, "datacite": datacite, "re3data": re3data, "orcid": orcid, "osti": osti, "clinicaltrials": clinicaltrials, "wikidata": wikidata,
     "clickup": clickup, "github": github,
     "uidaho": uidaho, "classes": classes, "directory": directory, "events": events, "campusmap": campusmap, "costs": costs, "library": library, **lakehouse.SERVERS,
 }
@@ -173,6 +174,7 @@ META: dict[str, dict] = {
     "orcid": {"label": "ORCID", "description": "A researcher's ORCID iD by name and institution, and their public record: employments, educations, funding with grant numbers, and works with DOIs."},
     "osti": {"label": "OSTI.GOV", "description": "What a DOE award reported: papers, technical reports, data and software in OSTI by contract number, author, institution or words."},
     "clinicaltrials": {"label": "ClinicalTrials.gov", "description": "Clinical studies by condition, intervention, sponsor or status, and one study's registration and results dates, grant ids and design."},
+    "wikidata": {"label": "Wikidata", "description": "Wikidata, the structured knowledge base behind Wikipedia: an entity by name, its statements with properties and values resolved to labels (who influenced whom, a school's members, dates, works, positions, places, the identifiers that join to ORCID and ROR), and a read-only SPARQL query for list questions. No key; the query quota is shared."},
     "clickup": {"label": "ClickUp", "description": "Your ClickUp, with your own token: who you are, your workspaces, spaces, folders and lists, and your tasks across the workspace, in a list or by id. Read only unless the deployment turns writes on.",
                 "key": {"required": True, "hint": "Paste your ClickUp personal API token (avatar, Settings, Apps, Generate API Token; it starts with pk_). It acts as you."}},
 }

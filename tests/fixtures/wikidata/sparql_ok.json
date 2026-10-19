@@ -1,0 +1,83 @@
+{
+  "head" : {
+    "vars" : [ "p", "pLabel", "born" ]
+  },
+  "results" : {
+    "bindings" : [ {
+      "p" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q168004"
+      },
+      "born" : {
+        "datatype" : "http://www.w3.org/2001/XMLSchema#dateTime",
+        "type" : "literal",
+        "value" : "1743-01-25T00:00:00Z"
+      },
+      "pLabel" : {
+        "xml:lang" : "en",
+        "type" : "literal",
+        "value" : "Friedrich Heinrich Jacobi"
+      }
+    }, {
+      "p" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q155547"
+      },
+      "born" : {
+        "datatype" : "http://www.w3.org/2001/XMLSchema#dateTime",
+        "type" : "literal",
+        "value" : "1744-08-25T00:00:00Z"
+      },
+      "pLabel" : {
+        "xml:lang" : "en",
+        "type" : "literal",
+        "value" : "Johann Gottfried Herder"
+      }
+    }, {
+      "p" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q72151"
+      },
+      "born" : {
+        "datatype" : "http://www.w3.org/2001/XMLSchema#dateTime",
+        "type" : "literal",
+        "value" : "1747-01-17T00:00:00Z"
+      },
+      "pLabel" : {
+        "xml:lang" : "en",
+        "type" : "literal",
+        "value" : "Markus Herz"
+      }
+    }, {
+      "p" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q465763"
+      },
+      "born" : {
+        "datatype" : "http://www.w3.org/2001/XMLSchema#dateTime",
+        "type" : "literal",
+        "value" : "1754-01-01T00:00:00Z"
+      },
+      "pLabel" : {
+        "xml:lang" : "en",
+        "type" : "literal",
+        "value" : "Salomon Maimon"
+      }
+    }, {
+      "p" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q22670"
+      },
+      "born" : {
+        "datatype" : "http://www.w3.org/2001/XMLSchema#dateTime",
+        "type" : "literal",
+        "value" : "1759-11-10T00:00:00Z"
+      },
+      "pLabel" : {
+        "xml:lang" : "en",
+        "type" : "literal",
+        "value" : "Friedrich Schiller"
+      }
+    } ]
+  }
+}

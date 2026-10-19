@@ -109,6 +109,7 @@ works without one and a key raises its quota.
 | `/orcid/mcp` | ORCID public API | none | `orcid_index`, `orcid_search`, `orcid_record` | none |
 | `/osti/mcp` | OSTI.GOV | none | `osti_index`, `osti_search`, `osti_record` | none |
 | `/clinicaltrials/mcp` | ClinicalTrials.gov | none | `clinicaltrials_index`, `clinicaltrials_search`, `clinicaltrials_study` | none |
+| `/wikidata/mcp` | Wikidata's action API and the Wikidata Query Service | none (the query quota is shared) | `wikidata_index`, `wikidata_search`, `wikidata_entity`, `wikidata_sparql` | none |
 
 **Project trackers**
 
@@ -1656,6 +1657,35 @@ that NIH-funded trials must be registered within 21 days of first enrollment
 and have results submitted within a year of primary completion (42 CFR 11,
 NOT-OD-16-149), which dates to compare, the status values, the sponsor
 classes, and to cite the study link.
+
+### wikidata
+
+Wikidata, the structured knowledge base behind Wikipedia, through two public
+interfaces and no key: the Wikibase action API at www.wikidata.org
+(`wbsearchentities` for entities by name or alias, `wbgetentities` for an
+item's labels, descriptions, aliases, claims and sitelinks and for resolving
+up to fifty ids to labels in one call) and the Wikidata Query Service at
+query.wikidata.org (SPARQL, JSON results). `wikidata_search(query, type,
+language, rows)` is the matching items or properties with id, label,
+description and page. `wikidata_entity(id, properties, language,
+identifiers)` is one entity with its statements grouped by property, every
+property and item value resolved to a label in batches of fifty, dates at
+their own precision (1724-04-22, 1740, a century marked, a Julian date
+said), quantities with their unit's label, qualifiers and the count of
+references, deprecated statements left out and external identifiers left
+out unless asked for (Kant's item carries 318 of them, and the count is
+given); the id from `wikidata_search`, stated as given. `wikidata_sparql(query,
+rows)` runs a SELECT or ASK the caller wrote and refuses anything else,
+returning the variables and rows with entity URIs shortened to ids and up to
+500 rows with a note when it cut; the Service's own message comes back on a
+syntax error. The Service limits one client (user agent and address) to 60
+seconds of processing a minute, five parallel queries and a 60-second query,
+and this server is one client for everyone on it, so a 429 is said with its
+Retry-After and the index says the quota is shared. An entity is cached a
+day, a search an hour, a query five minutes (the Service's own max-age).
+Data is CC0. Offline tests run on a search, a property search, Kant's item
+(336 properties), an unknown id, a label batch and a SPARQL result captured
+2026-10-19 in `tests/fixtures/wikidata/`.
 
 ### github
 

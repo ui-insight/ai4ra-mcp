@@ -30,6 +30,7 @@ EXPECTED_TOOLS = {
     "wolfram": {"wolfram_index", "wolfram_ask", "wolfram_answer"},
     "costs": {"costs_index", "costs_tuition", "costs_attendance", "costs_deadlines", "costs_insurance"},
     "library": {"library_index", "library_search", "library_record"},
+    "wikidata": {"wikidata_index", "wikidata_search", "wikidata_entity", "wikidata_sparql"},
     "nihdates": {"nihdates_index", "nihdates_due", "nihdates_cycles", "nihdates_salary_cap"},
     "omb": {"omb_index", "omb_memoranda", "omb_memorandum"},
     "ncura": {"ncura_index", "ncura_events", "ncura_event"},
