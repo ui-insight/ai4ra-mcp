@@ -45,7 +45,9 @@ AVAILABILITY = {
     "fulltext_multiple": "online through more than one provider, through the link resolver",
     "fulltext_linktorsrc": "online at the source's own site, linked from the catalog page",
     "not_restricted": "online with no login (open access), through the link resolver",
+    "ResourceSharingRequest": "the library's copy is out on loan to another Alliance library (Summit Lending) and is not on the shelf; the catalog page is where a request is made",
 }
+MAX_SUBJECTS = 8
 _ADATA = ("isbn", "issn", "doi", "jtitle", "volume", "issue", "spage", "epage", "pmid")
 _TAG = re.compile(r"<[^>]+>")
 _cache = TTLCache()
@@ -91,15 +93,18 @@ def slim_doc(doc: dict, full: bool = False) -> dict:
         "id": record_id, "context": context, "title": _first(display.get("title")), "creators": _names(display.get("creator")),
         "contributors": _names(display.get("contributor")), "type": _first(display.get("type")), "publisher": _first(display.get("publisher")),
         "year": _first(display.get("creationdate")), "format": _first(display.get("format")), "language": _first(display.get("language")),
-        "edition": _first(display.get("edition")), "part_of": _first(display.get("ispartof")), "subjects": _names(display.get("subject")),
+        "edition": _first(display.get("edition")), "part_of": _first(display.get("ispartof")), "subjects": _names(display.get("subject"))[:MAX_SUBJECTS],
         "availability": availability, "availability_means": AVAILABILITY.get(availability or ""),
         "location": _location(delivery.get("bestlocation")), "record_owner": delivery.get("recordOwner"),
-        "openurl": delivery.get("almaOpenurl") or None, "link": record_page(record_id, context) if record_id else None,
+        "link": record_page(record_id, context) if record_id else None,
     }
     for k in _ADATA:
         if addata.get(k):
             out[k] = addata[k] if k in ("isbn", "issn") else _first(addata[k])
     if full:
+        # The link resolver's URL runs to 900 characters and leads where the catalog page does; it is on the record alone.
+        out["openurl"] = delivery.get("almaOpenurl") or None
+        out["subjects"] = _names(display.get("subject"))
         out["summary"] = _text(display.get("lds99")) or _text(display.get("description"))
         out["series"] = _text(display.get("description")) if (_first(display.get("description")) or "").startswith("<b>Series") else None
         out["contents"] = _text(display.get("contents"))
@@ -118,7 +123,7 @@ async def library_index() -> dict:
     """How to use the University of Idaho Library catalog tools. READ THIS FIRST: the scopes, the fields, what availability means, how to cite."""
     return {
         "upstream": f"The University of Idaho Library's catalog, Primo VE on the Orbis Cascade Alliance host ({SEARCH_PAGE}); the library's page is {LIBRARY_PAGE}. No key.",
-        "workflow": ["library_search by words (field 'any'), or by title, author, subject, isbn or issn; type narrows to books, articles and the other resource types; available=true keeps physical copies on the shelf here",
+        "workflow": ["library_search once, with the field that fits: a title with field='title' and type='books' for 'does the library have X' (available=true for a copy on the shelf), an author with field='author', a topic with field='subject' or 'any'; read the hits and report, with one more search by another field when the first finds nothing and no more than that",
                      "library_record for one record's table of contents, summary, subjects and every holding, by the id library_search gave (an alma… id is a local record, context L; a cdi_… id is the central index, context PC)",
                      "cite the record with its link (the catalog page), and for an article the DOI and the journal citation (part_of)"],
         "scopes": {"everything": "the local catalog and the central index of articles and e-resources together (the catalog's Everything tab); the default", "reserves": "Course Reserves", "special": "Special Collections and Archives"},
@@ -126,7 +131,9 @@ async def library_index() -> dict:
         "availability": AVAILABILITY,
         "notes": ["Totals come as total_local (the library's own catalog) and total_central (the central index), and the hits are Primo's ranking of both unless sort says otherwise.",
                   "location is the best physical copy's library, location (floor or collection), call number and status; holdings in library_record list every copy. A Special Collections copy is for reading-room use only, as its location says.",
-                  "Online items reach their full text through openurl, the library's link resolver, which may ask for a university login; whether the university licenses an article is what the availability code says, not whether it exists.",
+                  "Online items reach their full text from the record's catalog page (link), through the library's link resolver, which may ask for a university login; library_record carries the resolver URL (openurl). Whether the university licenses an article is what the availability code says, not whether it exists.",
+                  "A hit carries up to eight subjects; library_record carries them all.",
+                  "A title the person gives is searched as given, and a title that returns nothing is reported as not found, never replaced by a guessed title: ask the person which work they meant.",
                   "Not here: Verso (the research portal of theses and faculty outputs), interlibrary loan and Summit requests, renewals and the person's account; those are on the catalog page the link opens.",
                   "Nothing is held in memory: a title the catalog does not return is not in the catalog as searched, and a search by another field or spelling is the next step, not a guess."],
     }
@@ -136,9 +143,12 @@ async def library_index() -> dict:
 async def library_search(query: str, field: str = "any", type: str = "", available: bool = False, scope: str = "everything", sort: str = "rank", offset: int = 0, rows: int = 10) -> dict:
     """Search the University of Idaho Library's catalog.
 
-    Returns hits with id, title, creators, type, publisher, year, format, identifiers (ISBN, ISSN, DOI), the journal citation for an
-    article, subjects, Primo's availability code with what it means, the physical copy's library, location and call number, the
-    link resolver and the record's catalog page; and the totals for the local catalog and the central index.
+    One search answers most questions. For "does the library have X" search the title with field='title' and type='books'
+    (available=True for a copy on the shelf), read the hits, and report; one more search by another field is reasonable when the
+    first returns nothing, a third is not. Returns hits with id, title, creators, type, publisher, year, format, identifiers
+    (ISBN, ISSN, DOI), the journal citation for an article, subjects, Primo's availability code with what it means, the physical
+    copy's library, location and call number, and the record's catalog page; and the totals for the local catalog and the central
+    index. The default scope mixes in the central index's articles, so a book question is narrower with type='books'.
 
     Args:
         query: Words, a title, a name, a subject, an ISBN or an ISSN, e.g. 'wheat breeding', 'Idaho a bicentennial history', '9780393056006'.
@@ -165,6 +175,8 @@ async def library_search(query: str, field: str = "any", type: str = "", availab
         return {"error": f"type must be one of {list(TYPES)} or empty"}
     tab, scope_id = SCOPES[scope]
     operator = "exact" if f in ("isbn", "issn") else "contains"
+    # Primo ignores case, so the query is lowered before it is sent and the cache sees one search for "Emperors" and "emperors".
+    q = q.lower()
     params: dict = {"q": f"{f},{operator},{q}", "vid": VID, "tab": tab, "scope": scope_id, "inst": INST, "lang": "en",
                     "offset": max(0, int(offset or 0)), "limit": max(1, min(int(rows or 10), 50)), "pcAvailability": "false", "sort": sort}
     include = ([f"facet_rtype,exact,{t}"] if t else []) + (["facet_tlevel,exact,available_p"] if available else [])
@@ -176,14 +188,14 @@ async def library_search(query: str, field: str = "any", type: str = "", availab
         return {"error": str(e), "link": SEARCH_PAGE}
     info = body.get("info") or {}
     hits = [slim_doc(d) for d in body.get("docs") or []]
-    out = {"query": q, "field": field, "type": t or None, "available": bool(available), "scope": scope, "sort": sort, "offset": params["offset"], "returned": len(hits),
+    out = {"query": query.strip(), "field": field, "type": t or None, "available": bool(available), "scope": scope, "sort": sort, "offset": params["offset"], "returned": len(hits),
            "total_local": info.get("totalResultsLocal"), "total_central": info.get("totalResultsPC"), "total": info.get("total"), "hits": hits,
            "link": f"{SEARCH_PAGE}&tab={tab}&search_scope={scope_id}&query={f},{operator},{q.replace(' ', '%20')}"}
     total = info.get("total") if isinstance(info.get("total"), int) else None
     if total is not None and params["offset"] + len(hits) < total:
         out["next_offset"] = params["offset"] + len(hits)
     if not hits:
-        out["note"] = "The catalog returns nothing for this search as phrased; try another field (title, author, subject), fewer words or another spelling before saying the library lacks it."
+        out["note"] = "The catalog returns nothing for this search as phrased. One more search by title with fewer words is reasonable; after that, report that the catalog has no record matching the title as given, with the search link, and ask the person which work they meant if the title was a guess."
     return out
 
 

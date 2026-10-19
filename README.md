@@ -2136,12 +2136,19 @@ articles and the rest of Primo's facet) or to physical copies on the shelf
 here, in the Everything scope (the local catalog and the central index
 together), Course Reserves or Special Collections and Archives; each hit
 with id, title, creators, type, publisher, year, format, ISBN or ISSN, DOI,
-the journal citation for an article, subjects, Primo's availability code
-with what it means in the catalog's own terms (on the shelf here at a
-library, location and call number; no copy held here; online through the
-link resolver), the best physical copy's location, the link resolver and
-the record's catalog page; totals for the local catalog and the central
-index separately. `library_record(id, context)` is one record in full with
+the journal citation for an article, up to eight subjects, Primo's
+availability code with what it means in the catalog's own terms (on the
+shelf here at a library, location and call number; no copy held here; out
+on loan through Summit; online through the link resolver), the best
+physical copy's location and the record's catalog page; totals for the
+local catalog and the central index separately. A hit leaves out the link
+resolver's URL (900 characters that lead where the catalog page does) and
+carries eight subjects at most, since a pane session on 2026-10-19 put
+eight searches of ten hits each into a small model's context chasing a
+title the model had guessed; the record carries both in full, the zero-hit
+note allows one more search by title and then asks for a report and a
+question back, and the tool's description says a "does the library have X"
+question is one search by title and type. `library_record(id, context)` is one record in full with
 its summary, table of contents, subjects and every holding, by the id
 `library_search` gave (`alma…` local, `cdi_…` the central index), stated as
 given. Verso, interlibrary loan and a person's account are not here, which

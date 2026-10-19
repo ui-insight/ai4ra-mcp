@@ -51,7 +51,8 @@ def test_slim_doc_physical_and_article():
     assert special["location"]["location"].startswith("UI Library Special Collections") and special["subjects"]
     art = lib.slim_doc(F["search_articles"]["docs"][0])
     assert art["context"] == "PC" and art["type"] == "article" and art["doi"] == "10.1111/tpj.16190" and art["jtitle"].startswith("The Plant journal") and art["volume"] == "114" and art["spage"] == "1475"
-    assert art["part_of"].startswith("The Plant journal") and art["availability"] == "fulltext" and art["openurl"].startswith("https://na01.alma.exlibrisgroup.com/view/uresolver/01ALLIANCE_UID/openurl") and art["location"] is None
+    assert art["part_of"].startswith("The Plant journal") and art["availability"] == "fulltext" and "openurl" not in art and art["location"] is None and len(art["subjects"]) <= 8
+    assert lib.AVAILABILITY["ResourceSharingRequest"].startswith("the library's copy is out on loan")
     mixed = [lib.slim_doc(d) for d in F["search_mixed"]["docs"]]
     assert mixed[0]["availability"] == "no_inventory" and mixed[0]["record_owner"] == "01ALLIANCE_NETWORK" and "no copy is held here" in mixed[0]["availability_means"]
     assert mixed[3]["availability"] == "available_in_library" and mixed[3]["location"]["call_number"]
@@ -63,23 +64,24 @@ async def test_search_builds_the_request_and_slims(monkeypatch):
     calls = _catalog(monkeypatch)
     out = await lib.library_search("Idaho a bicentennial history", rows=5)
     url, params, headers = calls[0]
-    assert url == lib.PNXS and params["q"] == "any,contains,Idaho a bicentennial history" and params["vid"] == "01ALLIANCE_UID:UID" and params["tab"] == "Everything" and params["scope"] == "DN_and_CI"
+    assert url == lib.PNXS and params["q"] == "any,contains,idaho a bicentennial history" and out["query"] == "Idaho a bicentennial history" and params["vid"] == "01ALLIANCE_UID:UID" and params["tab"] == "Everything" and params["scope"] == "DN_and_CI"
     assert params["inst"] == "01ALLIANCE_UID" and params["limit"] == 5 and params["offset"] == 0 and params["pcAvailability"] == "false" and params["sort"] == "rank" and "qInclude" not in params
     assert headers["User-Agent"].startswith("Mozilla/5.0")
     assert out["total_local"] == F["search_physical"]["info"]["totalResultsLocal"] and out["total_central"] == F["search_physical"]["info"]["totalResultsPC"]
     assert out["returned"] == 5 and out["hits"][0]["id"] == "alma9921606601851" and out["next_offset"] == 5 and out["link"].startswith("https://alliance-uidaho.primo.exlibrisgroup.com/discovery/search?vid=")
-    # The same search within the hour is one request upstream.
-    await lib.library_search("Idaho  a bicentennial   history", rows=5)
+    # The same search within the hour, whatever its spacing or case, is one request upstream.
+    await lib.library_search("idaho  A Bicentennial   HISTORY", rows=5)
     assert len(calls) == 1
     out = await lib.library_search("wheat breeding", available=True, rows=3)
     assert calls[-1][1]["qInclude"] == "facet_tlevel,exact,available_p" and out["available"] is True and all(h["availability"] == "available_in_library" for h in out["hits"]) and out["total_central"] == 0
     out = await lib.library_search("wheat breeding", field="title", type="articles", rows=3)
     assert calls[-1][1]["q"] == "title,contains,wheat breeding" and calls[-1][1]["qInclude"] == "facet_rtype,exact,articles" and out["hits"][0]["doi"] == "10.1111/tpj.16190" and out["total_local"] == 0
+    assert all("openurl" not in h for h in out["hits"])
     await lib.library_search("9780393056006", field="isbn", type="books", available=True, scope="special", sort="date")
     p = calls[-1][1]
     assert p["q"] == "isbn,exact,9780393056006" and p["qInclude"] == "facet_rtype,exact,books|,|facet_tlevel,exact,available_p" and p["tab"] == "SPECAW_Slot" and p["scope"] == "SPECAW" and p["sort"] == "date"
     out = await lib.library_search("zzqxv florp")
-    assert out["returned"] == 0 and out["total"] == 0 and "note" in out and "next_offset" not in out
+    assert out["returned"] == 0 and out["total"] == 0 and "One more search" in out["note"] and "ask the person" in out["note"] and "next_offset" not in out
 
 
 async def test_record(monkeypatch):
@@ -88,9 +90,10 @@ async def test_record(monkeypatch):
     assert calls[0][0] == lib.PNXS + "/L/alma9921606601851" and calls[0][1] == {"vid": "01ALLIANCE_UID:UID", "lang": "en", "search_scope": "DN_and_CI", "adaptor": "Local Search Engine"}
     assert rec["title"] == "Idaho : a bicentennial history" and rec["contents"].startswith("Table of contents: Invitation to the reader") and rec["summary"].startswith("A native historian")
     assert rec["series"] == "Series statement: The States and the Nation series" and rec["subjects"] == ["Idaho -- History"] and len(rec["holdings"]) == 2 and rec["holdings"][0]["call_number"] == "F746.P47"
-    assert rec["location"]["status"] == "available" and rec["source"] == "Alma" and rec["read_from"] == rec["link"]
+    assert rec["location"]["status"] == "available" and rec["source"] == "Alma" and rec["read_from"] == rec["link"] and "openurl" in rec
     pc = await lib.library_record("cdi_gutenberg_primary_43572")
     assert calls[-1][0].endswith("/PC/cdi_gutenberg_primary_43572") and calls[-1][1]["adaptor"] == "Primo Central" and pc["title"].startswith("A commentary to Kant") and pc["availability"] == "fulltext_linktorsrc"
+    assert "openurl" in pc
     bad = await lib.library_record("alma0000000000")
     assert bad["error"].startswith("no record alma0000000000 in context L") and "library_search" in bad["error"]
     assert "id is required" in (await lib.library_record(""))["error"] and "context must be" in (await lib.library_record("alma1", context="X"))["error"]
@@ -108,4 +111,4 @@ async def test_arguments_and_down(monkeypatch):
     assert out["error"].startswith("503 from") and out["link"] == lib.SEARCH_PAGE
     assert (await lib.library_record("alma9921606601851"))["error"].startswith("503 from")
     idx = await lib.library_index()
-    assert set(idx["scopes"]) == {"everything", "reserves", "special"} and idx["availability"]["no_inventory"] and "Verso" in idx["notes"][3]
+    assert set(idx["scopes"]) == {"everything", "reserves", "special"} and idx["availability"]["no_inventory"] and any("Verso" in n for n in idx["notes"]) and any("never replaced by a guessed title" in n for n in idx["notes"]) and idx["workflow"][0].startswith("library_search once")
