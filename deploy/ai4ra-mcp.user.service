@@ -17,6 +17,8 @@ WorkingDirectory=%h/ai4ra-mcp
 Environment=AI4RA_MCP_HOST=127.0.0.1
 Environment=AI4RA_MCP_PORT=8000
 Environment=AI4RA_MCP_CONTACT=osp@uidaho.edu
+Environment=AI4RA_MCP_S2S_WRITES=1
+Environment=AI4RA_MCP_CLICKUP_WRITES=1
 ExecStart=%h/.local/bin/uv run --no-sync ai4ra-mcp
 Restart=on-failure
 RestartSec=5

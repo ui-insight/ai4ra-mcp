@@ -14,7 +14,12 @@ gets the same files as static content. Everything a client needs that does not
 touch its own document lives here: the Office add-in keeps only the tools that
 read and write cells, paragraphs and slides.
 
-Every tool is read-only. Nothing here writes to an upstream.
+Every tool is read-only, with two exceptions that are off unless the
+deployment turns them on and are annotated as writes: the `clickup` server's
+task writes (`AI4RA_MCP_CLICKUP_WRITES=1`) and the `s2s` server's
+`s2s_submit` (`AI4RA_MCP_S2S_WRITES=1`). The compose file and the systemd
+units turn both on; each write is as the person whose credential the call
+carries, and a client asks the person before any tool not marked read-only.
 
 **Contents**
 
@@ -116,7 +121,7 @@ works without one and a key raises its quota.
 
 | Path | Upstream | Key | Tools | Skills |
 |---|---|---|---|---|
-| `/clickup/mcp` | ClickUp, as the person | **required** (ClickUp personal API token) | `clickup_index`, `clickup_whoami`, `clickup_tasks_search` (the whole workspace in one call: by assignee, status, space, list or tag), `clickup_workspace`, `clickup_tasks`, `clickup_task`, `clickup_list_fields` (a list's custom fields with a drop-down's options); with `AI4RA_MCP_CLICKUP_WRITES=1` also `clickup_task_create`, `clickup_task_update`, `clickup_task_comment`, `clickup_task_attach`, `clickup_task_field_set` (off by default: read only) | none yet (the skill that files a piece of mail into a project goes here; `feature-prd-interview` on `uidaho` writes through these tools) |
+| `/clickup/mcp` | ClickUp, as the person | **required** (ClickUp personal API token) | `clickup_index`, `clickup_whoami`, `clickup_tasks_search` (the whole workspace in one call: by assignee, status, space, list or tag), `clickup_workspace`, `clickup_tasks`, `clickup_task`, `clickup_list_fields` (a list's custom fields with a drop-down's options); with `AI4RA_MCP_CLICKUP_WRITES=1` also `clickup_task_create`, `clickup_task_update`, `clickup_task_comment`, `clickup_task_attach`, `clickup_task_field_set` (off by default; the compose file and the systemd units turn them on, #60) | none yet (the skill that files a piece of mail into a project goes here; `feature-prd-interview` on `uidaho` writes through these tools) |
 
 | `/github/mcp` | none: GitHub's own remote MCP server holds the tools | none (the key is GitHub's server's) | `github_guide` | `code-change` (a described change as a pull request on an agent branch), `actions-check` (one look at the Actions runs); both name GitHub's tools in `requires` |
 
@@ -269,7 +274,8 @@ event stream, so a client needs no session and a proxy needs no special
 handling. The protocol is JSON-RPC 2.0 over POST; the methods a client uses
 are `initialize`, `tools/list`, `tools/call`, `prompts/list` and
 `prompts/get`. Every tool is annotated read-only (`readOnlyHint` true,
-`destructiveHint` false).
+`destructiveHint` false) except the write tools the two switches register,
+which carry `readOnlyHint` false so a client asks before each call.
 
 A session with curl, against a local process:
 
@@ -2482,7 +2488,8 @@ no keys.
 | `AI4RA_MCP_S2S_ENDPOINT` | The s2s server's default endpoint, used when a call passes none. The compose file sets it to the mock's mutual-TLS port on the compose network | unset: every call must pass one |
 | `AI4RA_MCP_S2S_CA_FILE` | The CA that signs the default endpoint's server certificate (the mock's `ca.crt`); other endpoints use the system trust store or the bundle's own `ca` | unset |
 | `AI4RA_MCP_S2S_CERT_FILE`, `AI4RA_MCP_S2S_KEY_FILE` | Fallback client certificate and key for a request that sends no bearer bundle; the compose file points them at a mock-minted pair | unset |
-| `AI4RA_MCP_S2S_WRITES` | `1` registers `s2s_submit` | unset: read only |
+| `AI4RA_MCP_S2S_WRITES` | `1` registers `s2s_submit`; the compose file and the systemd units set it | unset: read only |
+| `AI4RA_MCP_CLICKUP_WRITES` | `1` registers the `clickup` server's write tools (`clickup_task_create`, `clickup_task_update`, `clickup_task_comment`, `clickup_task_attach`, `clickup_task_field_set`) and `clickup_index` reports `writes` true; the compose file and the systemd units set it | unset: read only |
 | `AI4RA_MCP_S2S_PRODUCTION` | `1` lets `s2s_submit` reach `ws07.grants.gov`; otherwise production is refused | unset |
 | `AI4RA_MCP_LOG_HEADERS` | `1` logs one line per request: method, path, whether an `Authorization` header arrived and was accepted and why not, its fields (form, length, scheme, separator code points, token length, padding) with the credential redacted, the header names, never a credential (see [What a request without a key gets](#what-a-request-without-a-key-gets)); the compose file passes it through from `.env` | unset: nothing logged |
 | `SEARXNG_SECRET` | SearXNG's own secret, read by the compose file from the environment or a `.env` file beside it | a placeholder that should be changed |
