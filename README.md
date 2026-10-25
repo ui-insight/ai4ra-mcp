@@ -546,8 +546,8 @@ new commit.
 The AI4RA Unified Data Model, the vendor-neutral specification for
 research-administration data, read from the schema JSON its repository
 publishes on GitHub Pages
-(https://ui-insight.github.io/AI4RA-UDM/data/udm_schema_v2.json; the prose
-spec is in the AI4RA-UDM repository). No key. `AI4RA_MCP_UDM_SCHEMA_URL`
+(https://ui-insight.github.io/AI4RA-UDM/data/udm_schema.json, UDM 3; the
+prose spec is in the AI4RA-UDM repository). No key. `AI4RA_MCP_UDM_SCHEMA_URL`
 points at another copy and `AI4RA_MCP_UDM_SCHEMA_FILE` reads a local file
 instead, which is how a checkout ahead of the published release is served;
 the published copy is cached a day, and every answer carries the version it
@@ -556,16 +556,21 @@ came from.
 Two things a model needs to convert records to the UDM, and nothing that
 interprets the records for it. **The schema, in portions**, since the file
 is a few hundred kilobytes: `udm_index` is the overview (the version, the
-47 core tables in their six modules, the two implementation tables, the
-optional modules' tables each marked with its module, every table with a
-line, the audit columns, and the file's other sections by name);
+46 core tables in their six modules, the six optional modules and their
+24 tables, the two implementation tables, every table with a line marked
+with its module, the audit columns, and the sections by name);
 `udm_schema` with a table name is that table as the file has it, its
 columns in the spec's order with type, required flag, primary-key flag,
-references, allowed values (the column's own, or the status taxonomy the
-file keeps apart), description and synonyms, then the audit columns every
-table carries and the cross-row constraints on it; `udm_schema` with a
-section name is one top-level section verbatim (`universal_patterns`,
-`semantic_conventions`, `status_taxonomies`, `derived_values`). **The
+references, allowed values, description and synonyms, its constraints,
+then the audit columns every table carries; `udm_schema` with a section
+name is one section verbatim: a convention (`lifecycle_stage`,
+`two_fk_exclusive_or`, `value_normalization`, `semantic` and the rest), a
+module by its key for its own text without its tables (`funding_cycle`
+holds its conventions and example views), `laws`, `types` or `metadata`.
+A file with no tables where UDM 3 keeps them (`modules.core`,
+`modules.optional`, `implementation_tables`) is reported as an error, not
+served as an empty model, and `tests/test_udm_live.py` reads the published
+file, so a rename or reshape upstream fails the tests first. **The
 conversion guide**: `udm_guide` with the name `udm-conversion-guide` (a
 catalogued component, also an MCP prompt) returns the way the job is done
 written once as text: look at the data before the schema and

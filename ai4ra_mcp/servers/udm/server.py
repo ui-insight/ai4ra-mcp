@@ -1,7 +1,7 @@
 """udm: the AI4RA Unified Data Model, the vendor-neutral schema for research-administration data.
 
 Upstream: the schema JSON the AI4RA-UDM repository publishes on GitHub Pages
-(https://ui-insight.github.io/AI4RA-UDM/data/udm_schema_v2.json). No key. Two things a model needs to
+(https://ui-insight.github.io/AI4RA-UDM/data/udm_schema.json, UDM 3). No key. Two things a model needs to
 convert records to the UDM: the schema, served in portions (an overview, one table, one section), and
 the conversion guide, the way the job is done written once as text, a catalogued component served by
 udm_guide and as a prompt. The conversion itself is the model's judgment over the data it can see;
@@ -19,7 +19,7 @@ from ai4ra_mcp.common.skills import register_prompts
 from . import schema
 
 _READ_ONLY = {"readOnlyHint": True, "destructiveHint": False, "idempotentHint": True, "openWorldHint": True}
-_BIG_SECTIONS = {"tables"}
+_BIG_SECTIONS = {"tables", "modules", "implementation_tables"}
 
 mcp = MCPServer(
     "udm",
@@ -41,14 +41,14 @@ def _link(table: str | None = None) -> str:
 
 @mcp.tool(name="udm_index", annotations=_READ_ONLY)
 async def udm_index() -> dict:
-    """How to use the UDM tools, and the overview of the loaded schema. READ THIS FIRST: the version, the modules, every table with a line each, the audit columns, the sections, and the order to call the tools in."""
+    """How to use the UDM tools, and the overview of the loaded schema. READ THIS FIRST: the version, the core and optional modules with their tables, every table with a line each, the audit columns, the sections, and the order to call the tools in."""
     m, err = await _model()
     if err:
         return err
     out = m.overview()
     out["workflow"] = ["udm_guide with name udm-conversion-guide before converting anything: how the job is done, from looking at the data to the report",
-                       "udm_schema with a table name for that table's columns in the spec's order, with types, required flags, references, allowed values, descriptions and synonyms, plus the audit columns and the constraints on it",
-                       "udm_schema with a section name (from sections above) for one of the file's other parts verbatim: the universal patterns, the semantic conventions, the status taxonomies, the derived values"]
+                       "udm_schema with a table name for that table's columns in the spec's order, with types, required flags, references, allowed values, descriptions and synonyms, plus its constraints and the audit columns",
+                       "udm_schema with a section name (from sections above) for one of the file's other parts verbatim: a convention (lifecycle_stage, two_fk_exclusive_or, value_normalization, semantic), a module's own conventions and example views by its key (funding_cycle, governance), the laws, the types"]
     out["notes"] = ["The synonyms are examples of what a column has been called elsewhere, not a closed list; read the data.",
                     f"Cite the dashboard, {schema.DASHBOARD}, as the link; a table's page is {_link('Award')}."]
     out["link"] = _link()
@@ -57,11 +57,11 @@ async def udm_index() -> dict:
 
 @mcp.tool(name="udm_schema", annotations=_READ_ONLY)
 async def udm_schema(table: str = "", section: str = "") -> dict:
-    """A portion of the UDM schema JSON: one table (its columns in the spec's order with types, required flags, references, allowed values, descriptions and synonyms; the audit columns; the constraints on it), or one top-level section verbatim.
+    """A portion of the UDM schema JSON: one table (its columns in the spec's order with types, required flags, references, allowed values, descriptions and synonyms; its constraints; the audit columns), or one named section verbatim.
 
     Args:
         table: A table's name, e.g. 'Award', 'Personnel', 'Subaward' (case and spacing forgiven). udm_index lists them.
-        section: A top-level section of the file instead, e.g. 'universal_patterns', 'semantic_conventions', 'status_taxonomies', 'column_synonyms', 'derived_values'. udm_index lists them. 'tables' is refused: ask for one table.
+        section: A named section instead: a convention ('lifecycle_stage', 'two_fk_exclusive_or', 'value_normalization', 'semantic'), a module by its key for its own conventions and example views ('funding_cycle', 'governance'), 'laws', 'types', 'metadata'. udm_index lists them. 'modules' is refused: ask for one table.
     """
     m, err = await _model()
     if err:
@@ -77,7 +77,7 @@ async def udm_schema(table: str = "", section: str = "") -> dict:
         return t
     if section:
         if section in _BIG_SECTIONS:
-            return {"error": f"'{section}' is the whole table set; ask for one table with table=", "udm_version": m.version}
+            return {"error": f"'{section}' holds the tables; ask for one table with table=, or a module by its key for its text", "udm_version": m.version}
         body = m.section_json(section)
         if body is None:
             return {"error": f"no section {section!r}; udm_index lists them", "udm_version": m.version}

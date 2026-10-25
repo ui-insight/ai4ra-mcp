@@ -1,6 +1,6 @@
 ---
 name: udm-conversion-guide
-version: 0.2.0
+version: 0.3.0
 category: guide
 domain: research-administration
 status: experimental
@@ -8,7 +8,7 @@ tags: [udm, unified-data-model, conversion, crosswalk, mapping, guide]
 audience: [research-administrators, data-stewards, analysts]
 owner: nlayman
 created: 2026-09-29
-updated: 2026-09-30
+updated: 2026-10-24
 ---
 
 # UDM Conversion — Guide
@@ -31,7 +31,7 @@ Then say what one row is. One row is one award, one person, one subaward, one tr
 
 ## 2. Fetch the schema, then the table
 
-`udm_index` gives the version, the modules and the tables with a line each. Choose the table the row is. Then `udm_schema` with that table's name gives its columns in the spec's order, each with its type, whether it is required, whether it is the primary key, what it references, its allowed values, its description and its synonyms; then the audit columns every table carries; then the cross-row constraints on it. When the table is not obvious, `udm_schema` with a section name (`core_module_membership`, `universal_patterns`, `semantic_conventions`) explains the model's organizing ideas.
+`udm_index` gives the version, the modules and the tables with a line each. Choose the table the row is. Then `udm_schema` with that table's name gives its columns in the spec's order, each with its type, whether it is required, whether it is the primary key, what it references, its allowed values, its description and its synonyms; then the constraints on it; then the audit columns every table carries. When the table is not obvious, `udm_schema` with a section name explains the model's organizing ideas: a module by its key (`funding_cycle`, `effort`) for its own conventions, such as when a sponsor action is a Modification and when it is a new Award, and a convention (`semantic`, `lifecycle_stage`, `two_fk_exclusive_or`) for the patterns the tables share.
 
 ## 3. Map each source column
 

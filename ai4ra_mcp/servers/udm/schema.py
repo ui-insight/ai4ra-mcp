@@ -1,13 +1,14 @@
-"""The AI4RA Unified Data Model (UDM) v2 schema, read from where it is published and served in portions.
+"""The AI4RA Unified Data Model (UDM) schema, read from where it is published and served in portions.
 
 Upstream: the JSON the AI4RA-UDM repository publishes on GitHub Pages
-(https://ui-insight.github.io/AI4RA-UDM/data/udm_schema_v2.json), the machine-readable half of the
+(https://ui-insight.github.io/AI4RA-UDM/data/udm_schema.json, UDM 3), the machine-readable half of the
 spec. AI4RA_MCP_UDM_SCHEMA_URL points at another copy; AI4RA_MCP_UDM_SCHEMA_FILE reads a local file
 instead (a checkout of the repository, or a test fixture). Cached a day.
 
-The whole file is a few hundred kilobytes, so it is served as an overview, one table at a time (with
-the synonyms and the status taxonomy the file keeps apart from the table folded in), or one top-level
-section at a time. Nothing here interprets the schema.
+The whole file is a few hundred kilobytes, so it is served as an overview, one table at a time (from a
+core module, an optional module or the implementation tables), or one named section at a time (a
+convention, a module's text without its tables, the laws, the types). A file with no tables where UDM 3
+keeps them is an error, not an empty model. Nothing here interprets the schema.
 """
 
 from __future__ import annotations
@@ -18,7 +19,7 @@ from pathlib import Path
 
 from ai4ra_mcp.common.http import DAY, TTLCache, get_json
 
-DEFAULT_URL = "https://ui-insight.github.io/AI4RA-UDM/data/udm_schema_v2.json"
+DEFAULT_URL = "https://ui-insight.github.io/AI4RA-UDM/data/udm_schema.json"
 URL_ENV = "AI4RA_MCP_UDM_SCHEMA_URL"
 FILE_ENV = "AI4RA_MCP_UDM_SCHEMA_FILE"
 DASHBOARD = "https://ui-insight.github.io/AI4RA-UDM/"
@@ -43,8 +44,10 @@ def _norm(s: str) -> str:
 
 
 class Model:
-    """The schema with its tables in one place: the core tables and the optional modules' tables, each
-    knowing its module; the synonyms and status taxonomies keyed by table; the audit columns; the constraints."""
+    """The schema with its tables in one place: each core module's, each optional module's and the implementation
+    tables, each knowing its module; the audit columns; and the named sections, every convention, every module's
+    own text without its tables, the laws, the types and the metadata. A column carries its own synonyms and
+    allowed values and a table its own constraints in the file, so nothing is folded in."""
 
     def __init__(self, raw: dict, src: str):
         self.raw = raw
@@ -53,34 +56,33 @@ class Model:
         self.released = meta.get("released")
         self.source = src
         self.spec_source = meta.get("spec_source")
-        self.synonyms: dict[str, str] = ((raw.get("column_synonyms") or {}).get("values")) or {}
+        modules = raw.get("modules") or {}
+        conventions = raw.get("conventions") or {}
         self.tables: dict[str, dict] = {}
-        for name, spec in (raw.get("tables") or {}).items():
-            self.tables[name] = {"spec": spec, "module": spec.get("core_module") or "", "optional_module": None}
+        self.core_modules: dict[str, dict] = {}
         self.modules: dict[str, dict] = {}
-        for key, mod in ((raw.get("optional_modules") or {}).get("modules") or {}).items():
-            self.modules[key] = {"key": key, "name": mod.get("name", key), "story": mod.get("story", ""), "requires": mod.get("requires") or [],
-                                 "tables": list((mod.get("tables") or {}).keys())}
-            for name, spec in (mod.get("tables") or {}).items():
-                self.tables.setdefault(name, {"spec": spec, "module": mod.get("name", key), "optional_module": key})
-        self.audit_columns: dict = ((raw.get("audit_columns") or {}).get("columns")) or {}
-        self.taxonomies: dict[str, dict[str, list]] = {}
-        for key, values in (raw.get("status_taxonomies") or {}).items():
-            if not isinstance(values, list):
-                continue
-            if "." in key:
-                t, c = key.split(".", 1)
-                self.taxonomies.setdefault(t, {})[c] = values
-            else:
-                for t, entry in self.tables.items():
-                    if key in (entry["spec"].get("columns") or {}):
-                        self.taxonomies.setdefault(t, {})[key] = values
-        self.constraints: list[dict] = [c for c in (raw.get("cross_row_constraints") or []) if isinstance(c, dict)]
-        for mod in ((raw.get("optional_modules") or {}).get("modules") or {}).values():
-            self.constraints += [c for c in (mod.get("cross_row_constraints") or []) if isinstance(c, dict)]
-        self.core_modules: dict[str, list[str]] = raw.get("core_module_membership") or {}
-        it = raw.get("implementation_tables")
-        self.implementation_tables: list[str] = [t for t in it if isinstance(t, str)] if isinstance(it, list) else []
+        self.sections: dict = dict(conventions)
+        if "laws" in modules:
+            self.sections["laws"] = modules["laws"]
+        for group, into in (("core", self.core_modules), ("optional", self.modules)):
+            for key, mod in (modules.get(group) or {}).items():
+                name = mod.get("name", key)
+                tables = mod.get("tables") or {}
+                into[key] = {"key": key, "name": name, "story": mod.get("story", ""), "requires": mod.get("requires"), "tables": list(tables)}
+                for t, spec in tables.items():
+                    self.tables.setdefault(t, {"spec": spec, "module": name, "optional_module": key if group == "optional" else None})
+                self.sections[key] = {k: v for k, v in mod.items() if k != "tables"}
+        impl = (raw.get("implementation_tables") or {}).get("tables") or {}
+        for t, spec in impl.items():
+            self.tables.setdefault(t, {"spec": spec, "module": None, "optional_module": None})
+        self.implementation_tables: list[str] = list(impl)
+        for key in ("types", "metadata"):
+            if key in raw:
+                self.sections[key] = raw[key]
+        if not self.tables:
+            raise ValueError("the file holds no tables under modules.core, modules.optional or implementation_tables, "
+                             "where UDM 3 keeps them; its shape has changed and this server must be updated to read it")
+        self.audit_columns: dict = (conventions.get("audit_columns") or {}).get("columns") or {}
 
     def table_name(self, name: str) -> str | None:
         if name in self.tables:
@@ -89,46 +91,35 @@ class Model:
         return next((t for t in self.tables if _norm(t) == key), None)
 
     def overview(self) -> dict:
-        """What the file holds: the version, the modules and their tables with a line each, the audit columns, the sections."""
+        """What the file holds: the version, the modules and their tables, every table with a line, the audit columns, the sections."""
         tables = []
         for name, entry in self.tables.items():
             spec = entry["spec"]
             tables.append({"table": name, "module": entry["module"], "optional_module": entry["optional_module"],
                            "columns": len(spec.get("columns") or {}), "description": str(spec.get("description", ""))[:240]})
         sections = {k: (v[:200] if isinstance(v, str) else (f"{type(v).__name__} of {len(v)}" if hasattr(v, "__len__") else type(v).__name__))
-                    for k, v in self.raw.items() if k != "tables"}
+                    for k, v in self.sections.items()}
         return {"udm_version": self.version, "released": self.released, "source": self.source, "spec_source": self.spec_source,
-                "core_modules": [{"module": m, "tables": ts} for m, ts in self.core_modules.items()],
+                "core_modules": [{"key": k, "name": v["name"], "tables": v["tables"], "story": str(v["story"])[:300]} for k, v in self.core_modules.items()],
+                "optional_modules": [{"key": k, "name": v["name"], "requires": v["requires"], "tables": v["tables"], "story": str(v["story"])[:300]} for k, v in self.modules.items()],
                 "implementation_tables": self.implementation_tables,
-                "optional_modules": [{"key": k, "name": v["name"], "requires": v["requires"], "tables": v["tables"], "story": str(v["story"])[:300]} for k, v in self.modules.values() and self.modules.items()],
                 "tables": tables, "audit_columns": list(self.audit_columns.keys()), "sections": sections}
 
     def table_json(self, name: str) -> dict | None:
-        """One table as the file has it, with each column's synonyms and, where the file keeps the vocabulary in
-        status_taxonomies rather than on the column, its allowed values; then the audit columns and the constraints."""
+        """One table as the file has it, its columns in the spec's order with their synonyms and allowed values, its
+        constraints, and the audit columns every table carries."""
         real = self.table_name(name)
         if not real:
             return None
         entry = self.tables[real]
         spec = entry["spec"]
-        tax = self.taxonomies.get(real, {})
-        columns = {}
-        for col, cs in (spec.get("columns") or {}).items():
-            c = dict(cs)
-            syn = self.synonyms.get(f"{real}.{col}")
-            if syn:
-                c["synonyms"] = syn
-            if "allowed_values" not in c and col in tax:
-                c["allowed_values"] = tax[col]
-            columns[col] = c
         return {"udm_version": self.version, "table": real, "module": entry["module"], "optional_module": entry["optional_module"],
-                "description": spec.get("description", ""), "columns": columns,
+                "description": spec.get("description", ""), "columns": spec.get("columns") or {},
                 "audit_columns": self.audit_columns,
-                "cross_row_constraints": [c for c in self.constraints if str(c.get("location", "")).split(".")[0].split(" ")[0] == real],
-                **{k: v for k, v in spec.items() if k not in ("columns", "description", "core_module")}}
+                **{k: v for k, v in spec.items() if k not in ("columns", "description")}}
 
     def section_json(self, key: str):
-        return self.raw.get(key)
+        return self.sections.get(key)
 
 
 async def model() -> Model:

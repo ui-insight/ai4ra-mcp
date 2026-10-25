@@ -8,7 +8,7 @@
       "slug": "udm-conversion-guide",
       "name": "udm-conversion-guide",
       "summary": "How records are converted to one UDM table: look at the data, say what one row is, fetch the table, decide each column's operation (rename, split, combine, transform, recode, default, derive, resolve, route, generate, drop), conform values, fill provenance, ask once, report; one output row per source row.",
-      "version": "0.2.0",
+      "version": "0.3.0",
       "category": "guide",
       "domain": "research-administration",
       "status": "experimental",
@@ -22,7 +22,7 @@
         {
           "type": "prompt",
           "path": "components/udm-conversion-guide/prompt.md",
-          "version": "0.2.0",
+          "version": "0.3.0",
           "role": "canonical_prompt"
         }
       ],
