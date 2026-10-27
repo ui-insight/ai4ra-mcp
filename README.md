@@ -1097,7 +1097,14 @@ deviation applies only when the award incorporates it), and, for a date
 before any held version, that it is not held, with the listing page. A
 document is named by its id or a deviation number (`2026-USDA-0002-F`).
 Every result that carries text gives the publisher's PDF with a `#page=`
-anchor, the section, the PDF pages and the date saved. The documents are
+anchor, the section, the PDF pages and the date saved, and `copy`, a
+download of the stored PDF exactly as saved from this repository on
+GitHub (`.../raw/main/ai4ra_mcp/servers/usda/data/pdf/<id>.pdf`): USDA has
+replaced a PDF at the same address without changing its date, so the
+copy is the version the answers quote, and its sha256 is in
+`usda_terms_documents`. The process does not serve the files itself,
+since behind a proxy that strips a prefix it cannot know its own public
+address. The documents are
 works of the U.S. Government (17 U.S.C. 105(a)). Not built yet: the daily
 check that marks a copy stale when APHIS's listing or a PDF's checksum
 changes and opens a `stale-terms` issue (APHIS's page answered 403 to a

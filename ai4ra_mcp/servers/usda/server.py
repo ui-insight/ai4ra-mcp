@@ -27,6 +27,8 @@ _READ_ONLY = {"readOnlyHint": True, "destructiveHint": False, "idempotentHint": 
 DATA = Path(__file__).parent / "data"
 PIECE = 6000   # characters of one section per call; the largest section (3.0 of the Federal Awards terms) is 8,192
 APHIS_PAGE = "https://www.aphis.usda.gov/organization/business-services/asc/terms-conditions"
+# The stored PDFs as this repository publishes them: a download of the copy exactly as saved, beside the publisher's link.
+COPY_BASE = "https://github.com/ui-insight/ai4ra-mcp/raw/main/ai4ra_mcp/servers/usda/data/pdf/"
 USDA_PAGE = "https://www.usda.gov/about-usda/general-information/staff-offices/office-chief-financial-officer/federal-financial-assistance-policy/usda-general-terms-and-conditions"
 
 MANIFEST = json.loads((DATA / "manifest.json").read_text(encoding="utf-8"))
@@ -72,7 +74,7 @@ def _source(e: dict, s: dict | None = None) -> dict:
         out |= {"section": _ref(s), "pdf_pages": _pages(s), "link": f"{e['source_url']}#page={s['page_start']}"}
     else:
         out["link"] = e["source_url"]
-    out["saved"] = e["saved"]
+    out |= {"copy": f"{COPY_BASE}{e['id']}.pdf", "saved": e["saved"]}
     if e.get("stale_since"):
         out["stale"] = _stale(e)
     return out
@@ -135,7 +137,8 @@ async def usda_index() -> dict:
                   "A deviation (2026-USDA-NNNN-F for Federal Awards, -M for MIA) modifies one edition. It applies to an award only when the award incorporates it, so a deviation in force on a date was available, not necessarily applied. 0001 (research security, FOCI, disclosures, malign foreign talent recruitment) is optional for awarding agencies; 0002 applies only to the Seattle Plaintiffs named in it.",
                   "APHIS's terms incorporate the USDA General Terms for Federal Awards by reference. APHIS's page says the version in force when the award was signed applies, and a substantial amendment moves an award to the current version.",
                   "A section is named by its number, or by its title where the document numbers none (the APHIS terms and the NWS supplement). usda_terms_section returns a long section in pieces with next_offset; it is never cut silently.",
-                  "Cite the document, its version, the section and the PDF page, with the link given (the publisher's PDF with #page=). Every answer also carries the date the copy was saved."],
+                  "Cite the document, its version, the section and the PDF page, with the link given (the publisher's PDF with #page=). Every answer also carries the date the copy was saved.",
+                  "copy is a download of the stored PDF exactly as saved (its sha256 is in usda_terms_documents), for a person who wants the file: www.usda.gov refuses some automated requests, and USDA has replaced a PDF at the same address without changing its date, so the copy is the version these answers quote."],
         "caveats": ["Only the versions listed by usda_terms_documents are held. An award signed before a held version's effective date was governed by an earlier one: say it is not held here and give the listing page (" + APHIS_PAGE + " or " + USDA_PAGE + ").",
                     "A copy marked stale may have been replaced by a newer version; every answer from it says so. USDA has replaced a PDF without changing its effective date, so a version is told apart by its checksum and the PDF's creation date (usda_terms_documents gives both).",
                     "The award document itself governs: its terms, the deviations it incorporates and any special conditions. These tools give the standard terms, not one award's."],
@@ -148,7 +151,7 @@ async def usda_terms_documents() -> dict:
     """Every document held: id, title, agency, kind, who it applies to, version, status (current, superseded or stale), what a deviation modifies and which sections it names, the source PDF and the date the copy was saved."""
     docs = [{"id": e["id"], "title": e["title"], "agency": e["agency"].upper(), "kind": e["kind"], "applies_to": e["applies_to"], "effective": e["effective"],
              "deviation": e["deviation"], "modifies": e.get("modifies"), "names_sections": e.get("names_sections"), "status": _status(e), "stale": _stale(e),
-             "note": e.get("note"), "pages": e["pages"], "sections": e["sections"], "source_url": e["source_url"], "listed_on": e["listed_on"],
+             "note": e.get("note"), "pages": e["pages"], "sections": e["sections"], "source_url": e["source_url"], "copy": f"{COPY_BASE}{e['id']}.pdf", "listed_on": e["listed_on"],
              "saved": e["saved"], "saved_how": e["saved_how"], "sha256": e["sha256"], "pdf_created": e["pdf_created"]} for e in DOCS.values()]
     return {"total": len(docs), "documents": docs, "license": MANIFEST["license"]}
 

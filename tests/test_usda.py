@@ -23,6 +23,7 @@ def test_stored_copy_is_the_manifests(doc_id):
     assert hashlib.sha256(raw).hexdigest() == e["sha256"] and len(raw) == e["bytes"]
     assert len(usda.SECTIONS[doc_id]["sections"]) == e["sections"]
     assert e["source_url"].startswith(("https://www.usda.gov/", "https://www.aphis.usda.gov/"))
+    assert usda._source(e)["copy"] == f"{usda.COPY_BASE}{doc_id}.pdf"
 
 
 def test_deviations_name_their_sections():
