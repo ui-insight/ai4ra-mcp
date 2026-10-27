@@ -33,6 +33,7 @@ EXPECTED_TOOLS = {
     "wikidata": {"wikidata_index", "wikidata_search", "wikidata_entity", "wikidata_sparql"},
     "perseus": {"perseus_index", "perseus_library", "perseus_passage", "perseus_search"},
     "nihdates": {"nihdates_index", "nihdates_due", "nihdates_cycles", "nihdates_salary_cap"},
+    "usda": {"usda_index", "usda_terms_documents", "usda_terms_contents", "usda_terms_section", "usda_terms_search", "usda_terms_for_award"},
     "omb": {"omb_index", "omb_memoranda", "omb_memorandum"},
     "ncura": {"ncura_index", "ncura_events", "ncura_event"},
     "lakehouse": {"lakehouse_guide", "lakehouse_index", "lakehouse_streams", "lakehouse_schema", "lakehouse_query", "lakehouse_files", "lakehouse_file", "lakehouse_sql_catalog", "lakehouse_sql"},

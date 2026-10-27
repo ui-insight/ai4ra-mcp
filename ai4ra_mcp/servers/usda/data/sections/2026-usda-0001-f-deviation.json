@@ -1,0 +1,65 @@
+{
+ "title": "U.S. DEPARTMENT OF AGRICULTURE General Terms and Conditions for Federal Awards Effective Date: June 3, 2026",
+ "source": "https://www.usda.gov/sites/default/files/documents/2026-usda-0001-f-deviation.pdf",
+ "pages": 3,
+ "split": "layout",
+ "sections": [
+  {
+   "num": "",
+   "title": "Preamble",
+   "level": 1,
+   "page_start": 1,
+   "page_end": 2,
+   "text": "Deviation #: 2026-USDA-0001-F\n\nIn applying the USDA General Terms and Conditions for Federal Awards (December 31, 2025) to this agreement, the following modifications shall be made:\n\n1. The definition of “covered individual” below is added to Section 10.0, and the definition of “individual” is removed: “Covered individual” means:\n\n1. An individual who meets both of the following criteria:\n\na. Contributes to the scientific development or execution of research, carried out as part of this USDA award, through any of the following responsibilities:\n\ni. Directing the overall scientific direction of the project;\n\nii. Designing or critically evaluating key experiments or methodologies;\n\niii. Interpreting primary research data or results;\n\niv. Serving as a primary or senior author on publications resulting from the project;\n\nv. Exercising direct supervisory authority over research personnel working on the research project; or\n\nvi. Generating, handling, or having direct access to primary, pre-publication research data; proprietary materials; or critical, specialized methodologies essential to the project’s execution.\n\nb. Is a principal investigator (PI), other senior or key personnel, or a researcher (including undergraduate, graduate, and postdoctoral students) who is not a USDA employee; or\n\n2. Any other individual who USDA specifically identifies in writing as a covered individual.\n\n2. The definition of “foreign interest” below is added to Section 10.0: “Foreign interest” means a foreign person or foreign entity.\n\n3. The definition of “foreign person” in Section 10.0 is replaced as follows: “Foreign person” means any natural person who is not a citizen, national, or lawful permanent resident of the United States.\n\n4. The definition of “foreign ownership, control, or influence (FOCI)” below is added to Section 10.0, and the definition of “U.S. citizen or entity subject to foreign ownership, control, or influence (FOCI)” is removed.\n\n“Foreign ownership, control, or influence (FOCI)” means a situation where the degree of ownership, control, or influence over the recipient or a covered individual by a foreign person or foreign entity that is a citizen or permanent resident of; representing; organized, chartered, or incorporated under the laws of; or otherwise substantially connected to a foreign adversary or foreign country of concern such that a reasonable basis exists for concluding that compromise to that foreign person or foreign entity of non-public research, development, scientific, or technological information associated with the Federal award may result.\n\n5. Section 10.6 is replaced in full with the following:"
+  },
+  {
+   "num": "10.6",
+   "title": "Research Security Training",
+   "level": 2,
+   "page_start": 2,
+   "page_end": 2,
+   "text": "The recipient of a research award (whether an institution or individual) must either\n\n(1) certify that each covered individual working on the award has completed research security training (RST) or (2) otherwise ensure that each such covered individual certifies on their own behalf that they have completed RST. RST must have been completed either at the time of application, where applicable, or within the 12-month period immediately preceding the commencement of work on the award. Recertification must occur annually for the duration of the award. The required RST can be satisfied by utilizing the training made available by the National Science Foundation or the SECURE Center.\n\n6. Section 10.7 is replaced in full with the following:"
+  },
+  {
+   "num": "10.7",
+   "title": "Foreign Ownership, Control, or Influence (FOCI) by a Country of Concern",
+   "level": 2,
+   "page_start": 2,
+   "page_end": 2,
+   "text": "By accepting the Federal award, the recipient (whether an institution or individual) certifies that neither itself nor any covered individuals are subject to FOCI. During the period of performance, if the recipient discovers that it or any covered individuals are subject to FOCI, it must report such discovery to the USDA awarding agency within five calendar days. The recipient further agrees that neither itself nor covered individuals will, during the period of performance, enter into any subawards, contracts, or other agreements reasonably related to the Federal award, or otherwise provide any form of direct benefit (material or non-material) through work conducted under, in direct support of, or otherwise reasonably related to the Federal award, to any foreign adversary or foreign country of concern or any person or entity known to be subject to FOCI.\n\n7. Section 10.8 is replaced in full with the following:"
+  },
+  {
+   "num": "10.8",
+   "title": "Disclosures",
+   "level": 2,
+   "page_start": 2,
+   "page_end": 3,
+   "text": "The recipient of a research award (whether an institution or individual) must ensure that all covered individuals have completed and certified the Common Forms (OMB Number 3145-0279) as directed by USDA using the USDA-designated forms in SciENcv. The recipient must ensure new covered individuals complete and certify the Common Forms prior to contributing to the award, and that existing covered individuals update and recertify the Common Forms upon request by USDA during the term of the award, but no less than annually. The recipient must provide any supporting documentation, including copies of contracts, grants, or any other agreements, specific to foreign appointments, employment with a foreign entity, participation in a foreign talent recruitment program (FTRP), and other information reported as current and pending support for all covered individuals. By accepting the award, the recipient certifies that they reviewed the documents provided by covered individuals for compliance with these terms and conditions and verified that the Common Forms are certified by the covered individuals to be current, accurate, and complete.\n\n8. Section 10.9 is replaced in full with the following:"
+  },
+  {
+   "num": "10.9",
+   "title": "Malign Foreign Talent Recruitment Program",
+   "level": 2,
+   "page_start": 3,
+   "page_end": 3,
+   "text": "Covered individuals are prohibited from participating in malign FTRPs. Such prohibition does not extend to activities described in 42 U.S.C. 19232(d). Each covered individual must certify on the Common Forms (OMB Number 3145-0279) via SciENcv that they are not party to a malign FTRP and agree to an annual recertification for the duration of the award, in accordance with 42 U.S.C. § 19232(a). By accepting the Federal award, the recipient (whether an institution or individual) certifies that any covered individual is not participating, and has not participated within the past 10 years, in a malign FTRP as defined in 42 U.S.C. § 19237. The recipient acknowledges that the 10-year lookback period is a USDA-specific requirement based on its risk and stewardship assessments. The recipient must provide training on the risks of malign FTRPs to covered individuals."
+  }
+ ],
+ "dropped": [
+  {
+   "page": 1,
+   "reason": "running header or footer",
+   "text": "1"
+  },
+  {
+   "page": 2,
+   "reason": "running header or footer",
+   "text": "2"
+  },
+  {
+   "page": 3,
+   "reason": "running header or footer",
+   "text": "3"
+  }
+ ]
+}

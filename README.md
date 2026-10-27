@@ -71,6 +71,7 @@ works without one and a key raises its quota.
 | `/nihgps/mcp` | the NIH Grants Policy Statement, web edition at grants.nih.gov | none | `nihgps_index`, `nihgps_toc`, `nihgps_section`, `nihgps_search` | none |
 | `/nihguide/mcp` | the NIH Guide for Grants and Contracts: its search service, notice pages and weekly index | none | `nihguide_index`, `nihguide_search`, `nihguide_notice`, `nihguide_weekly` | none |
 | `/nihdates/mcp` | grants.nih.gov's standard due dates and salary cap pages | none | `nihdates_index`, `nihdates_due`, `nihdates_cycles`, `nihdates_salary_cap` | none |
+| `/usda/mcp` | the USDA General Terms and Conditions, the USDA deviations and APHIS's award terms: official PDFs from usda.gov and aphis.usda.gov, saved here and split by section | none | `usda_index`, `usda_terms_documents`, `usda_terms_contents`, `usda_terms_section`, `usda_terms_search`, `usda_terms_for_award` | none |
 | `/omb/mcp` | OMB's memoranda page on whitehouse.gov and the archived prior-administration page | none | `omb_index`, `omb_memoranda`, `omb_memorandum` | none |
 | `/ncura/mcp` | NCURA's public event listing (cvweb) behind its calendar page | none | `ncura_index`, `ncura_events`, `ncura_event` | none |
 | `/nih/mcp` | NIH RePORTER | none | `nih_guide`, `nih_index`, `nih_projects_search`, `nih_project`, `nih_publications` | `funding-history` |
@@ -1039,6 +1040,70 @@ covers it and the latest posted when none does (the page had no FY 2027
 period on 2026-10-16). Every answer carries the page URL and the date the
 page says it was last updated. Offline tests run on both pages' main content
 captured in `tests/fixtures/nihdates/`.
+
+### usda
+
+The terms and conditions a USDA or APHIS award is under, from the official
+PDFs stored in `ai4ra_mcp/servers/usda/data/` and never read at request
+time; no key (#62). Eight documents, saved 2026-10-27:
+
+- the USDA General Terms and Conditions effective 2025-12-31, in its two
+  editions, for Federal Awards and for Mutual Interest Agreements (48 and
+  47 pages, 88 sections each, numbered differently);
+- the four 2026 USDA deviations to them, each `-F` (Federal Awards) or
+  `-M` (MIA): 0001 (2026-06-03, research security training, FOCI,
+  disclosures, malign foreign talent recruitment; optional for awarding
+  agencies) and 0002 (2026-07-08, only for the Seattle Plaintiffs under
+  the injunction in City of Seattle v. Trump);
+- APHIS's General Terms and Conditions for Cooperative Agreements and
+  Grants effective 2026-02-14, which incorporate the USDA Federal Awards
+  terms, and APHIS's New World Screwworm Grand Challenge supplement
+  (2026-08-03).
+
+www.usda.gov refuses automated requests (a 403 from the deployment host
+and two other networks), so the six USDA files were saved by a person in
+a browser; the two APHIS files were fetched. `convert.py` splits each PDF
+at its own contents list or, where it has none, at headings found by
+layout, word for word with no model: running headers and footers (lines
+in the page's top or bottom band recurring at the same height on half the
+pages or more), page numbers and the contents list are dropped and
+listed, and the sections' words must equal the PDF's in order, less those
+lines, or nothing is written. A line that recurs in the body is kept:
+"5. Section 10.6 is replaced in full with the following:" in the 0001
+deviations and a sentence in the NWS supplement's Inventions section were
+dropped as headers by the first version of the converter. `manifest.json`
+holds each document's source URL and listing page, the date saved and
+how, its version (effective date, deviation number), what a deviation
+modifies, the PDF's sha256 and its own creation date (USDA replaced the
+Federal Awards PDF after publishing it with the effective date
+unchanged, so a version is told apart by checksum), and, for a deviation,
+the section numbers its text names, found by pattern. A `stale_since`
+date marks a copy that a newer version may have replaced; every answer
+from it says so. Run `python -m ai4ra_mcp.servers.usda.convert ID` (or
+`--all`) after saving a PDF to `data/pdf/<id>.pdf` and writing its
+manifest entry; it needs poppler's `pdftohtml` and `pdfinfo`.
+
+`usda_terms_documents` lists the documents with their versions and status
+(current, superseded or stale); `usda_terms_contents(document)` one
+document's sections with PDF pages and sizes, the first call for a
+question about what a document says; `usda_terms_section(document,
+section, offset)` one section by number (`10.7`) or title (`PATENTS AND
+INVENTIONS`, where the APHIS documents number none), over 6,000
+characters in pieces with `next_offset`, with the deviations that name
+it; `usda_terms_search(words, document, rows)` title matches first, then
+text, with an excerpt; `usda_terms_for_award(date)` the held version of
+each document in force on the date, the deviations available then (a
+deviation applies only when the award incorporates it), and, for a date
+before any held version, that it is not held, with the listing page. A
+document is named by its id or a deviation number (`2026-USDA-0002-F`).
+Every result that carries text gives the publisher's PDF with a `#page=`
+anchor, the section, the PDF pages and the date saved. The documents are
+works of the U.S. Government (17 U.S.C. 105(a)). Not built yet: the daily
+check that marks a copy stale when APHIS's listing or a PDF's checksum
+changes and opens a `stale-terms` issue (APHIS's page answered 403 to a
+plain request from a workstation on 2026-10-27, so its parser waits on a
+capture). Offline tests check the stored copies against the manifest and,
+with poppler, convert every PDF again and compare.
 
 ### omb
 
