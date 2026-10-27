@@ -305,12 +305,36 @@ def named_sections(doc):
     return seen
 
 
+def rebuild(e: dict) -> tuple[bool, str]:
+    """Convert data/pdf/<id>.pdf and, when it passes, write its sections and fill in its manifest entry (in memory)."""
+    pdf = DATA / "pdf" / f"{e['id']}.pdf"
+    doc, report = convert(pdf, e["source_url"])
+    line = f"{e['id']}: {report['check']}; {report['dropped']} lines dropped" + "".join(f"\n  MISSING {m}" for m in report["missing"])
+    if doc is None:
+        return False, line
+    (DATA / "sections" / f"{e['id']}.json").write_text(json.dumps(doc, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")
+    info, raw = pdf_info(pdf), pdf.read_bytes()
+    e.update(sha256=hashlib.sha256(raw).hexdigest(), bytes=len(raw), pdf_created=info.get("CreationDate"), pdf_modified=info.get("ModDate"),
+             pages=doc["pages"], sections=len(doc["sections"]), split=doc["split"])
+    if e["kind"] == "deviation":
+        e["names_sections"] = named_sections(doc)
+    return True, line
+
+
+def load_manifest() -> dict:
+    return json.loads(MANIFEST.read_text(encoding="utf-8"))
+
+
+def save_manifest(manifest: dict) -> None:
+    MANIFEST.write_text(json.dumps(manifest, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("ids", nargs="*")
     ap.add_argument("--all", action="store_true")
     a = ap.parse_args()
-    manifest = json.loads(MANIFEST.read_text(encoding="utf-8"))
+    manifest = load_manifest()
     entries = {d["id"]: d for d in manifest["documents"]}
     ids = list(entries) if a.all else a.ids
     unknown = [i for i in ids if i not in entries]
@@ -318,19 +342,10 @@ def main():
         raise SystemExit(f"name documents by manifest id, or --all; unknown: {unknown}" if unknown else "name documents by manifest id, or --all")
     failed = False
     for i in ids:
-        e, pdf = entries[i], DATA / "pdf" / f"{i}.pdf"
-        doc, report = convert(pdf, e["source_url"])
-        print(f"{i}: {report['check']}; {report['dropped']} lines dropped" + "".join(f"\n  MISSING {m}" for m in report["missing"]))
-        if doc is None:
-            failed = True
-            continue
-        (DATA / "sections" / f"{i}.json").write_text(json.dumps(doc, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")
-        info, raw = pdf_info(pdf), pdf.read_bytes()
-        e.update(sha256=hashlib.sha256(raw).hexdigest(), bytes=len(raw), pdf_created=info.get("CreationDate"), pdf_modified=info.get("ModDate"),
-                 pages=doc["pages"], sections=len(doc["sections"]), split=doc["split"])
-        if e["kind"] == "deviation":
-            e["names_sections"] = named_sections(doc)
-    MANIFEST.write_text(json.dumps(manifest, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")
+        ok, line = rebuild(entries[i])
+        print(line)
+        failed |= not ok
+    save_manifest(manifest)
     if failed:
         raise SystemExit(1)
 

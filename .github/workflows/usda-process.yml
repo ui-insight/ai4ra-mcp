@@ -1,0 +1,39 @@
+# The usda server's stored PDFs (ai4ra_mcp/servers/usda/data/pdf/) are added by hand. When a push changes one, this
+# converts every PDF whose checksum no longer matches the manifest (process.py) and commits the new sections and
+# manifest. A PDF that fails its conversion is marked stale and committed, and a PDF with no manifest entry is
+# reported; either fails the run, so GitHub notifies. Nothing goes online. The deployment takes the commit at its next
+# pull and rebuild.
+name: usda process
+
+on:
+  push:
+    branches: [main]
+    paths: ["ai4ra_mcp/servers/usda/data/pdf/**", "ai4ra_mcp/servers/usda/data/manifest.json"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  process:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+      - run: sudo apt-get update && sudo apt-get install -y poppler-utils
+      - run: uv sync --frozen
+      - id: process
+        run: uv run python -m ai4ra_mcp.servers.usda.process --report "$RUNNER_TEMP/usda-process.json"
+        continue-on-error: true
+      - name: Commit what changed
+        run: |
+          git add ai4ra_mcp/servers/usda/data
+          if git diff --cached --quiet; then exit 0; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "usda: reprocessed the PDFs that changed ($(date -u +%F)): $(jq -r '[.[] | select(.result != "unchanged") | "\(.id) \(.result)"] | join("; ")' "$RUNNER_TEMP/usda-process.json")"
+          git push
+      - if: steps.process.outcome == 'failure'
+        run: |
+          echo "A PDF needs a person: a conversion failed (marked stale) or a PDF has no manifest entry; see the process step." >&2
+          exit 1

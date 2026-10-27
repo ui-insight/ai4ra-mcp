@@ -11,6 +11,7 @@ import pytest
 
 from ai4ra_mcp.servers.usda import convert
 from ai4ra_mcp.servers.usda import server as usda
+from ai4ra_mcp.servers.usda import process
 
 FEDERAL = "usda-general-terms-conditions-2025"
 APHIS = "tcs-for-award-feb14-2026-until-amended_0"
@@ -104,3 +105,54 @@ def test_body_lines_that_recur_are_kept():
     assert inventions.endswith("your program manager and NWS.Grand.Challenge@usda.gov . Include in the subject line of the email\n\n(1) APP ID # and FAIN agreement number and (2) “INVENTION”.")
     assert all(d["reason"] != "running header or footer" or d["text"].isdigit() for i in usda.DOCS for d in usda.SECTIONS[i]["dropped"]
                if i.startswith("2026-usda-0001"))
+
+
+
+@pytest.fixture
+def scratch(tmp_path, monkeypatch):
+    """A copy of the data folder for the processing to change, never the repository's."""
+    data = tmp_path / "data"
+    shutil.copytree(usda.DATA, data)
+    monkeypatch.setattr(convert, "DATA", data)
+    monkeypatch.setattr(convert, "MANIFEST", data / "manifest.json")
+    monkeypatch.setattr(process, "DATA", data)
+    return data
+
+
+def _entry(data, doc_id):
+    return next(e for e in json.loads((data / "manifest.json").read_text())["documents"] if e["id"] == doc_id)
+
+
+def test_process_leaves_unchanged_pdfs_alone(scratch):
+    before = (scratch / "manifest.json").read_text()
+    assert {r["result"] for r in process.process("2026-11-01")} == {"unchanged"}
+    assert (scratch / "manifest.json").read_text() == before
+
+
+@pytest.mark.skipif(not (shutil.which("pdftohtml") and shutil.which("pdfinfo")), reason="needs poppler")
+def test_process_rebuilds_a_replaced_pdf(scratch):
+    # a stand-in for a new version saved over the old file: another document's PDF under this one's name
+    new = (scratch / "pdf" / "2026-usda-0002-m.pdf").read_bytes()
+    (scratch / "pdf" / "2026-usda-0002-f.pdf").write_bytes(new)
+    results = {r["id"]: r["result"] for r in process.process("2026-11-01")}
+    assert results["2026-usda-0002-f"] == "rebuilt" and results[FEDERAL] == "unchanged"
+    e = _entry(scratch, "2026-usda-0002-f")
+    assert e["sha256"] == hashlib.sha256(new).hexdigest() and e["saved"] == "2026-11-01" and e["stale_since"] is None
+    assert e["names_sections"] == ["11.2", "12.7", "11.2.2", "12.6"]
+
+
+@pytest.mark.skipif(not (shutil.which("pdftohtml") and shutil.which("pdfinfo")), reason="needs poppler")
+def test_process_marks_stale_and_keeps_the_sections_when_a_pdf_fails(scratch):
+    sections = (scratch / "sections" / f"{APHIS}.json").read_text()
+    (scratch / "pdf" / f"{APHIS}.pdf").write_bytes(b"%PDF-1.4 not really a pdf")
+    results = {r["id"]: r["result"] for r in process.process("2026-11-01")}
+    assert results[APHIS].startswith("changed, conversion failed")
+    e = _entry(scratch, APHIS)
+    assert e["stale_since"] == "2026-11-01" and e["sha256"] == usda.DOCS[APHIS]["sha256"]
+    assert (scratch / "sections" / f"{APHIS}.json").read_text() == sections
+
+
+def test_process_reports_a_pdf_without_an_entry(scratch):
+    shutil.copy(scratch / "pdf" / f"{APHIS}.pdf", scratch / "pdf" / "tcs-for-award-2027.pdf")
+    results = {r["id"]: r for r in process.process("2026-11-01")}
+    assert results["tcs-for-award-2027"]["result"].startswith("no manifest entry") and results["tcs-for-award-2027"]["entry"]["id"] == "tcs-for-award-2027"

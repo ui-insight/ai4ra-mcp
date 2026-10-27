@@ -1105,12 +1105,27 @@ copy is the version the answers quote, and its sha256 is in
 `usda_terms_documents`. The process does not serve the files itself,
 since behind a proxy that strips a prefix it cannot know its own public
 address. The documents are
-works of the U.S. Government (17 U.S.C. 105(a)). Not built yet: the daily
-check that marks a copy stale when APHIS's listing or a PDF's checksum
-changes and opens a `stale-terms` issue (APHIS's page answered 403 to a
-plain request from a workstation on 2026-10-27, so its parser waits on a
-capture). Offline tests check the stored copies against the manifest and,
-with poppler, convert every PDF again and compare.
+works of the U.S. Government (17 U.S.C. 105(a)).
+
+New versions arrive by hand, never by a fetch: a person saves the PDF
+from the publisher in a browser and commits it to `data/pdf/`, over the
+old file when the address is the same, or under a new name with a
+manifest entry written for it. A push that changes a PDF (or the
+manifest) runs `.github/workflows/usda-process.yml`, which runs
+`process.py` (`python -m ai4ra_mcp.servers.usda.process`): every PDF whose
+sha256 no longer matches its manifest entry is converted again, and one
+that passes the word check gets new sections, its entry refilled
+(checksum, PDF dates, pages, sections, the sections a deviation names) and
+`saved` set to the day; one that fails keeps its old sections and gets
+`stale_since`, so every answer says a newer version may exist. A PDF with
+no manifest entry is reported with the fields to fill in, since the
+title, kind, effective date and what a deviation modifies are a person's
+to write. The workflow commits what changed to main and fails the run
+when anything needs a person, so GitHub notifies; the deployment takes the
+commit at its next pull and rebuild. Offline tests check the stored copies
+against the manifest, the processing on a scratch copy of the data
+(unchanged, rebuilt, failed and marked stale, no entry) and, with poppler,
+convert every PDF again and compare.
 
 ### omb
 
