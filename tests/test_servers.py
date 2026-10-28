@@ -6,7 +6,7 @@ from pathlib import Path
 import pytest
 from starlette.testclient import TestClient
 
-from ai4ra_mcp.app import SERVERS, build_app
+from ai4ra_mcp.app import SERVERS, UNLISTED, build_app
 from ai4ra_mcp.common.given import given_of
 from ai4ra_mcp.common.skills import load_catalog
 from ai4ra_mcp.servers.lakehouse import server as lakehouse
@@ -157,7 +157,7 @@ def test_app_mounts_every_server_and_its_skills():
         assert index["description"].startswith("ai4ra-mcp:") and "SearXNG metasearch" in index["description"] and index["readme"] == "README.md"
         readme = client.get("/README.md")
         assert readme.status_code == 200 and readme.headers["content-type"].startswith("text/markdown") and readme.text.startswith("# ai4ra-mcp")
-        assert [s["name"] for s in index["servers"]] == list(SERVERS)
+        assert [s["name"] for s in index["servers"]] == [n for n in SERVERS if n not in UNLISTED]
         by = {s["name"]: s for s in index["servers"]}
         assert by["sam"]["key"]["required"] is True and by["sam"]["key"]["hint"]
         assert by["ecfr"]["key"] is None and by["ecfr"]["label"] == "eCFR"
@@ -244,3 +244,12 @@ def test_rate_agreement_link_is_the_one_the_page_labels():
     assert uidaho.pick_agreement_link(page) == "https://content-hub.uidaho.edu/api/public/content/bbb?v=2&x=1"
     assert uidaho.pick_agreement_link("<a href=\"https://x/y\">Rate Agreement</a>") is None
 
+
+
+def test_an_unlisted_server_is_mounted_but_not_in_the_index():
+    assert "s2s" in UNLISTED
+    with TestClient(build_app()) as client:
+        names = {e["name"] for e in client.get("/").json()["servers"]}
+        assert not names & UNLISTED and "usda" in names
+        assert client.post("/s2s/mcp", json={"jsonrpc": "2.0", "id": 1, "method": "tools/list"},
+                           headers={"Accept": "application/json, text/event-stream"}).status_code == 200

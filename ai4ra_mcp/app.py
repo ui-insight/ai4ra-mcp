@@ -103,6 +103,9 @@ SERVERS: dict[str, MCPServer] = {
     "clickup": clickup, "github": github,
     "uidaho": uidaho, "classes": classes, "directory": directory, "events": events, "campusmap": campusmap, "costs": costs, "library": library, **lakehouse.SERVERS,
 }
+# Mounted and reachable by its path, but left out of the index at `/`, so no client's picker offers it until it is ready
+# to share: s2s, held back 2026-10-28.
+UNLISTED = {"s2s"}
 SERVERS_DIR = Path(__file__).parent / "servers"
 WEB = "https://github.com/ui-insight/ai4ra-mcp/blob/main/ai4ra_mcp/servers/"
 
@@ -260,7 +263,7 @@ def build_app(only: list[str] | None = None) -> Starlette:
 
     async def index(_request):
         out = []
-        for name in mounted:
+        for name in (n for n in mounted if n not in UNLISTED):
             tools = await SERVERS[name].list_tools()
             prompts = await SERVERS[name].list_prompts()
             meta = META.get(name, {})

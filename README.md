@@ -37,7 +37,9 @@ carries, and a client asks the person before any tool not marked read-only.
 The index at `/` lists the servers in this order, which is the order a
 client's picker shows them: general first, then the research-administration
 skills, then the public upstreams grouped by the job they serve, and last the
-one institution's own servers. A **Key** of *required* means every tool of
+one institution's own servers. `s2s` is mounted at its path but left out
+of the index, so no client's picker offers it, until it is ready to share
+(2026-10-28); its row below says so. A **Key** of *required* means every tool of
 that server answers "no API key on this request" until the person's own key
 arrives as a bearer token (see [Keys](#keys)); *optional* means the server
 works without one and a key raises its quota.
@@ -61,7 +63,7 @@ works without one and a key raises its quota.
 | `/govinfo/mcp` | GovInfo (Government Publishing Office) | **required** (api.data.gov) | `govinfo_index`, `govinfo_collections`, `govinfo_search`, `govinfo_package`, `govinfo_text` | none |
 | `/congress/mcp` | Congress.gov | **required** (api.data.gov) | `congress_index`, `congress_bill`, `congress_bill_actions`, `congress_bills`, `congress_laws`, `congress_members` | none |
 | `/grants/mcp` | grants.gov | none | `grants_gov_search`, `grants_gov_opportunity`, `grants_guide` | `funding-opportunity-finder` |
-| `/s2s/mcp` | the Grants.gov Applicant System-to-System (S2S) SOAP service, at any endpoint: training, production, or the deployment's default (a mock) | optional (the person's own S2S certificate and key as a bearer bundle; a deployment may hold a fallback that only the mock accepts) | `s2s_index`, `s2s_check`, `s2s_opportunity`, `s2s_validate_package`, `s2s_submissions`, `s2s_application_info`; with `AI4RA_MCP_S2S_WRITES=1` also `s2s_submit` (off by default) | none yet |
+| `/s2s/mcp` (not in the index yet) | the Grants.gov Applicant System-to-System (S2S) SOAP service, at any endpoint: training, production, or the deployment's default (a mock) | optional (the person's own S2S certificate and key as a bearer bundle; a deployment may hold a fallback that only the mock accepts) | `s2s_index`, `s2s_check`, `s2s_opportunity`, `s2s_validate_package`, `s2s_submissions`, `s2s_application_info`; with `AI4RA_MCP_S2S_WRITES=1` also `s2s_submit` (off by default) | none yet |
 
 **Awards held**
 
@@ -895,6 +897,10 @@ attachment links. An attachment is read with `fetch_document` on the
 `general` server. The `funding-opportunity-finder` skill runs that sequence.
 
 ### s2s
+
+Not in the index at `/` yet (`UNLISTED` in `app.py`, 2026-10-28): mounted
+and reachable at `/s2s/mcp` for testing against the mock, but offered to no
+client's picker until it is ready to share.
 
 The Grants.gov Applicant System-to-System web services, V2.0: SOAP over
 mutual TLS, the contract Grants.gov publishes as a WSDL and form XSDs (vendored
