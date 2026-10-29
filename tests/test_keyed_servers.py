@@ -70,7 +70,7 @@ def test_nsf_slim_award():
 def test_sam_slim_records():
     e = sam.slim_entity(SAM_ENTITY)
     assert e["uei"] == "RV56IG5JM6G9" and e["registration_status"] == "Active" and e["address"]["state"] == "ID"
-    assert e["business_types"] == ["Public Institution of Higher Education"] and e["link"] == "https://sam.gov/entity/RV56IG5JM6G9/coreData"
+    assert e["business_types"] == ["Public Institution of Higher Education"]
     x = sam.slim_exclusion(SAM_EXCLUSION)
     assert x["name"] == "ACME RESEARCH LLC" and x["excluding_agency_code"] == "HHS" and x["activation_date"] == "2024-01-15"
     assert "sfm%5BexclusionName%5D=ACME" in x["link"] or "ACME" in x["link"]

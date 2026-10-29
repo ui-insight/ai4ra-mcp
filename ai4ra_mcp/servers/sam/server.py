@@ -62,7 +62,8 @@ def slim_entity(e: dict) -> dict:
         "address": {"line1": addr.get("addressLine1"), "city": addr.get("city"), "state": addr.get("stateOrProvinceCode"), "zip": addr.get("zipCode"), "country": addr.get("countryCode")},
         "entity_structure": gen.get("entityStructureDesc"), "entity_type": gen.get("entityTypeDesc"), "organization_structure": gen.get("organizationStructureDesc"),
         "state_of_incorporation": gen.get("stateOfIncorporationCode"), "business_types": types,
-        "link": f"https://sam.gov/entity/{uei}/coreData" if uei else None,
+        # The entity page has no stable deep link (/entity/<uei>/coreData and /profile both 404); a search by UEI lands on its card.
+        "link": f"https://sam.gov/search/?index=_all&sfm%5BsimpleSearch%5D%5BkeywordRadio%5D=ALL&sfm%5BsimpleSearch%5D%5BkeywordTags%5D%5B0%5D%5Bvalue%5D={uei}" if uei else None,
     }
 
 
