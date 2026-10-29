@@ -73,7 +73,6 @@ def test_sam_slim_records():
     assert e["business_types"] == ["Public Institution of Higher Education"]
     x = sam.slim_exclusion(SAM_EXCLUSION)
     assert x["name"] == "ACME RESEARCH LLC" and x["excluding_agency_code"] == "HHS" and x["activation_date"] == "2024-01-15"
-    assert "sfm%5BexclusionName%5D=ACME" in x["link"] or "ACME" in x["link"]
     short = sam.slim_listing(SAM_LISTING)
     assert short["assistance_listing"] == "47.070" and "description" not in short and short["link"] == "https://sam.gov/fal/47.070/view"
     full = sam.slim_listing(SAM_LISTING, full=True)

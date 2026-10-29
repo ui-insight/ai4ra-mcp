@@ -45,6 +45,11 @@ async def _get(url: str, params: dict, ttl: float) -> dict:
     return await _cache.remember(cache_key, ttl, make)
 
 
+def _search_link(index: str, term: str | None) -> str | None:
+    # SAM.gov's record pages have no stable deep link and its per-field filters in a URL are ignored; a keyword search is what loads.
+    return f"https://sam.gov/search/?index={index}&sfm%5BsimpleSearch%5D%5BkeywordRadio%5D=ALL&sfm%5BsimpleSearch%5D%5BkeywordTags%5D%5B0%5D%5Bvalue%5D={quote(term)}" if term else None
+
+
 def slim_entity(e: dict) -> dict:
     reg = e.get("entityRegistration") or {}
     core = e.get("coreData") or {}
@@ -62,8 +67,7 @@ def slim_entity(e: dict) -> dict:
         "address": {"line1": addr.get("addressLine1"), "city": addr.get("city"), "state": addr.get("stateOrProvinceCode"), "zip": addr.get("zipCode"), "country": addr.get("countryCode")},
         "entity_structure": gen.get("entityStructureDesc"), "entity_type": gen.get("entityTypeDesc"), "organization_structure": gen.get("organizationStructureDesc"),
         "state_of_incorporation": gen.get("stateOfIncorporationCode"), "business_types": types,
-        # The entity page has no stable deep link (/entity/<uei>/coreData and /profile both 404); a search by UEI lands on its card.
-        "link": f"https://sam.gov/search/?index=_all&sfm%5BsimpleSearch%5D%5BkeywordRadio%5D=ALL&sfm%5BsimpleSearch%5D%5BkeywordTags%5D%5B0%5D%5Bvalue%5D={uei}" if uei else None,
+        "link": _search_link("_all", uei),   # registrations show only to a signed-in viewer
     }
 
 
@@ -74,16 +78,17 @@ def slim_exclusion(x: dict) -> dict:
     act = actions[0] if actions else {}
     addr = x.get("exclusionPrimaryAddress") or x.get("exclusionAddress") or {}
     other = x.get("exclusionOtherInformation") or {}
+    uei = ident.get("ueiSAM")
     name = ident.get("entityName") or ident.get("name") or " ".join(p for p in [ident.get("firstName"), ident.get("middleName"), ident.get("lastName")] if p)
     return {
         "name": name or None, "classification": det.get("classificationType"), "exclusion_type": det.get("exclusionType"),
         "exclusion_program": det.get("exclusionProgram"), "excluding_agency": det.get("excludingAgencyName"), "excluding_agency_code": det.get("excludingAgencyCode"),
-        "uei": ident.get("ueiSAM"), "cage": ident.get("cageCode"),
+        "uei": uei, "cage": ident.get("cageCode"),
         "activation_date": act.get("activateDate"), "termination_date": act.get("terminationDate"), "termination_type": act.get("terminationType"),
         "record_status": act.get("recordStatus"), "updated": act.get("updateDate"),
         "address": {"city": addr.get("city"), "state": addr.get("stateOrProvinceCode"), "country": addr.get("countryCode")},
         "ct_code": other.get("ctCode"), "comments": other.get("additionalComments"),
-        "link": "https://sam.gov/search/?index=ex&sfm[exclusionName]=" + quote(name) if name else "https://sam.gov/search/?index=ex",
+        "link": _search_link("ex", uei or name) or "https://sam.gov/search/?index=ex",
     }
 
 
