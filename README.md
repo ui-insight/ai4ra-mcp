@@ -2591,6 +2591,7 @@ no keys.
 | `AI4RA_MCP_S2S_PRODUCTION` | `1` lets `s2s_submit` reach `ws07.grants.gov`; otherwise production is refused | unset |
 | `AI4RA_MCP_LOG_HEADERS` | `1` logs one line per request: method, path, whether an `Authorization` header arrived and was accepted and why not, its fields (form, length, scheme, separator code points, token length, padding) with the credential redacted, the header names, never a credential (see [What a request without a key gets](#what-a-request-without-a-key-gets)); the compose file passes it through from `.env` | unset: nothing logged |
 | `SEARXNG_SECRET` | SearXNG's own secret, read by the compose file from the environment or a `.env` file beside it | a placeholder that should be changed |
+| `SPEEDTEST_SECRET` | The path secret of the separate speedtest container (see [Hosting](#hosting)), read by the compose file like `SEARXNG_SECRET`; not read by this process | unset: the speed test answers 404 to everything |
 
 ## Hosting
 
@@ -2638,6 +2639,41 @@ Its control API has no auth and is limited to campus addresses by a Caddy
 matcher. It is retired, and its blocks and the `AI4RA_MCP_S2S_*` defaults
 repointed at training, the day the university's real certificate works
 against training.grants.gov.
+
+Also on the same host and also not an MCP server: **speedtest**
+(`deploy/speedtest/`), a private speed test for one remote field device, which
+needs an endpoint that will not rate limit it. It is one standard-library file
+in its own low-priority container (`cpu_shares` 128, half a CPU, 64 MB, read
+only, its own compose network), on localhost:8082, and has no part in the
+process, the index or any client's picker.
+
+    GET  /speedtest/<secret>/down?bytes=N    N random bytes, 0 to 32 MiB (default 10,000,000)
+    POST /speedtest/<secret>/up              reads and discards the body, up to 32 MiB
+
+Anything else, a wrong secret included, is an empty 404. A real route answers
+with `X-Speedtest-Server: ai4ra-mcp`. Three transfers run at a time. A fourth
+takes the slot of one that has moved no bytes for 2 seconds, since the device can
+reconnect at any time and over a dead link the proxy may not see the old
+connection end; only when all three are moving does it get a 429 with
+`Retry-After: 5`. A client may hang up at any point, and a stalled connection
+closes after 20 seconds. It stores nothing, and logs one line
+per transfer with no path, address or secret.
+
+The secret is `SPEEDTEST_SECRET` in the `.env` beside the compose file (at least
+32 characters; without it every request is a 404 and the other services are
+unaffected). To set or rotate it, on the VM:
+
+    sed -i '/^SPEEDTEST_SECRET=/d' .env && echo "SPEEDTEST_SECRET=$(openssl rand -hex 32)" >> .env
+    docker compose up -d --build speedtest
+
+then give the device its new URLs. Caddy never holds the secret, so a rotation
+needs no reload. Caddy forwards `/speedtest/*` with compression and buffering
+off (`deploy/Caddyfile`). Because the path holds the secret, that file also keeps
+it out of Caddy's logs in two places: `log_skip` for the access log, and a global
+rule that deletes the URI from the runtime logs, which Caddy writes when a client
+hangs up mid-download or the container is down. That rule takes the URI off those
+two loggers' lines for every site on the host. `deploy/speedtest/check.py` runs
+the checks through the public path and prints no secret.
 
 Clients such as the Office add-in call these servers from inside a browser
 engine, so the process answers CORS itself: any origin, any method, and the
@@ -2810,7 +2846,8 @@ deploy/
   ai4ra-mcp.user.service      a user-level systemd unit, no sudo
   Dockerfile
   searxng/settings.yml        SearXNG for web_search
-docker-compose.yml            the process and SearXNG as two containers
+  speedtest/                  the field device's private speed test, not an MCP server: the server, its Dockerfile, check.py
+docker-compose.yml            the process, SearXNG, the S2S mock and the speed test as containers
 tests/                        offline, one file per server plus the app
 ```
 

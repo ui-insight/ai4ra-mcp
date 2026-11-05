@@ -43,6 +43,47 @@ mcp.example.uidaho.edu {
     }
 }
 
+# The private speed test (deploy/speedtest, docker-compose.yml), in either form. Caddy does not know the secret: it
+# forwards /speedtest/* and the process answers 404 to a wrong one. Paste the block into the site, above the other
+# handle blocks. log_skip is Caddy 2.8 or later (skip_log before that).
+#
+# example.uidaho.edu {
+#     @speedtest path /speedtest/*
+#     log_skip @speedtest                  # the path holds the secret
+#     request_header @speedtest -Accept-Encoding   # site level, since encode runs before handle: never compressed
+#     handle @speedtest {
+#         reverse_proxy 127.0.0.1:8082 {
+#             flush_interval -1            # responses pass through as they arrive
+#             request_buffers 0            # a buffered upload would make its measured speed meaningless
+#             response_buffers 0
+#             transport http {
+#                 dial_timeout 5s
+#                 read_timeout 120s
+#                 write_timeout 120s
+#             }
+#         }
+#     }
+#     # ... the rest of the site
+# }
+#
+# log_skip covers the access log only. Caddy's runtime logs carry the request URI too: reverse_proxy's "aborting with
+# incomplete response" (WARN, on every client that hangs up mid-download) and http.log.error (ERROR, on a 502 when the
+# container is down). So the global options at the very top of the Caddyfile split those two loggers out and delete
+# the URI from them, every site's lines included; access logs keep theirs. Merge with any global log settings already
+# there.
+#
+# {
+#     log default {
+#         exclude http.handlers.reverse_proxy http.log.error
+#     }
+#     log no_uri {
+#         include http.handlers.reverse_proxy http.log.error
+#         format filter {
+#             request>uri delete
+#         }
+#     }
+# }
+
 # Form 2: the process under /mcp/ on a host that serves other things (the demo
 # deployment). handle_path strips the prefix, so the index is https://host/mcp/
 # and each server https://host/mcp/<name>/mcp; the index's relative paths

@@ -55,6 +55,36 @@ services:
       MOCK_STEP_SECONDS: "20"
       MOCK_CERT_HOSTS: grants-gov-s2s-mock   # extra SAN for the server cert, so the s2s server can verify it
 
+  # speedtest: a private speed test for one remote field device (deploy/speedtest/speedtest.py). Not an MCP server;
+  # it shares the host, nothing else, including no network with the services above. Set SPEEDTEST_SECRET in the .env
+  # beside this file; without it the container runs and answers 404 to everything, so a missing secret stops no other
+  # service here. It starts, restarts and rotates alone: `docker compose up -d --build speedtest`.
+  speedtest:
+    build: deploy/speedtest
+    container_name: ai4ra-speedtest
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8082:8080"           # localhost only; Caddy is the public face
+    networks:
+      - speedtest
+    environment:
+      SPEEDTEST_SECRET: ${SPEEDTEST_SECRET:-}
+    # Yields to everything else on the VM. These bound this process; the TLS for its traffic is Caddy's, on the host.
+    cpu_shares: 128
+    cpus: 0.5
+    mem_limit: 64m
+    pids_limit: 32
+    read_only: true                     # it stores nothing
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    logging:
+      driver: json-file
+      options:
+        max-size: 1m
+        max-file: "1"
+
   # SearXNG answers web_search: a self-hosted metasearch over Google, Bing, DuckDuckGo, Brave and others,
   # no key, reachable only from this compose network (no host port). Set SEARXNG_SECRET in the environment
   # or a .env file next to this compose file.
@@ -73,3 +103,6 @@ services:
       - CHOWN
       - SETGID
       - SETUID
+
+networks:
+  speedtest: {}
