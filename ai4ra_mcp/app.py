@@ -53,6 +53,7 @@ from ai4ra_mcp.servers.general.server import mcp as general
 from ai4ra_mcp.servers.github.server import mcp as github
 from ai4ra_mcp.servers.govinfo.server import mcp as govinfo
 from ai4ra_mcp.servers.grants.server import mcp as grants
+from ai4ra_mcp.servers.groupsio.server import mcp as groupsio
 from ai4ra_mcp.servers.icite.server import mcp as icite
 from ai4ra_mcp.servers.idstat.server import mcp as idstat
 from ai4ra_mcp.servers.lakehouse import server as lakehouse
@@ -92,7 +93,7 @@ from ai4ra_mcp.servers.wolfram.server import mcp as wolfram
 
 # Index order is picker order: the general fold first, then the research-administration skills, then the public
 # upstreams grouped by the job they serve (the rules and announcements, the awards held, the vetting lists, the
-# budget figures, the scholarly record, the project trackers), and last the one institution's own servers.
+# budget figures, the scholarly record, the project trackers and mailing lists), and last the one institution's own servers.
 SERVERS: dict[str, MCPServer] = {
     "general": general, "ai4ra": ai4ra, "udm": udm,
     "ecfr": ecfr, "fedreg": fedreg, "regulations": regulations, "idstat": idstat, "govinfo": govinfo, "congress": congress, "grants": grants, "s2s": s2s, "pappg": pappg, "nihgps": nihgps, "nihguide": nihguide, "nihdates": nihdates, "usda": usda, "omb": omb, "ncura": ncura,
@@ -100,7 +101,7 @@ SERVERS: dict[str, MCPServer] = {
     "sam": sam, "fac": fac, "csl": csl, "oig": oig, "openpayments": openpayments, "propublica": propublica, "ror": ror, "scorecard": scorecard,
     "perdiem": perdiem, "bls": bls, "treasury": treasury, "osm": osm, "weather": weather, "wolfram": wolfram,
     "openalex": openalex, "pubmed": pubmed, "icite": icite, "crossref": crossref, "datacite": datacite, "re3data": re3data, "orcid": orcid, "osti": osti, "clinicaltrials": clinicaltrials, "wikidata": wikidata, "perseus": perseus,
-    "clickup": clickup, "github": github,
+    "clickup": clickup, "groupsio": groupsio, "github": github,
     "uidaho": uidaho, "classes": classes, "directory": directory, "events": events, "campusmap": campusmap, "costs": costs, "library": library, **lakehouse.SERVERS,
 }
 # Mounted and reachable by its path, but left out of the index at `/`, so no client's picker offers it until it is ready
@@ -184,6 +185,8 @@ META: dict[str, dict] = {
     "perseus": {"label": "Perseus", "description": "The Perseus Digital Library's Greek and Latin texts through the Scaife Viewer: the library's authors and corpora, an author's works, a work's versions (the original and its translations) with their tables of contents, a passage by CTS URN as plain text and the same reference in another version, and a search of the library for a word. No key."},
     "clickup": {"label": "ClickUp", "description": "Your ClickUp, with your own token: who you are, your workspaces, spaces, folders and lists, and your tasks across the workspace, in a list or by id. Read only unless the deployment turns writes on.",
                 "key": {"required": True, "hint": "Paste your ClickUp personal API token (avatar, Settings, Apps, Generate API Token; it starts with pk_). It acts as you."}},
+    "groupsio": {"label": "Groups.io", "description": "The Groups.io mailing lists you belong to, with your own key: your groups, a group's messages by words, a thread or one message, and its wiki, files and calendar. Read only, with no member lists.",
+                 "key": {"required": True, "hint": "Paste your Groups.io API key, from https://groups.io/settings/apikeys. It acts as you."}},
 }
 
 

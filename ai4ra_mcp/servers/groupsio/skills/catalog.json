@@ -1,0 +1,7 @@
+{
+  "catalog_version": "1.0",
+  "repo": "ui-insight/ai4ra-mcp",
+  "server": "groupsio",
+  "note": "Skills that use the groupsio server's tools. None yet.",
+  "components": []
+}

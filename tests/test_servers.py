@@ -39,6 +39,7 @@ EXPECTED_TOOLS = {
     "lakehouse": {"lakehouse_guide", "lakehouse_index", "lakehouse_streams", "lakehouse_schema", "lakehouse_query", "lakehouse_files", "lakehouse_file", "lakehouse_sql_catalog", "lakehouse_sql"},
     "general": {"general_guide", "fetch_document", "web_search"},
     "github": {"github_guide"},   # the two GitHub skills; their tools are GitHub's own server's
+    "groupsio": {"groupsio_index", "groupsio_groups", "groupsio_search", "groupsio_topics", "groupsio_topic", "groupsio_message", "groupsio_wiki", "groupsio_files", "groupsio_events"},
     "ai4ra": {"ai4ra_guide"},   # skills and guides only
     "udm": {"udm_index", "udm_schema", "udm_guide"},
     "nih": {"nih_guide", "nih_index", "nih_projects_search", "nih_project", "nih_publications"},

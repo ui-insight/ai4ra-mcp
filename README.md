@@ -120,11 +120,12 @@ works without one and a key raises its quota.
 | `/wikidata/mcp` | Wikidata's action API and the Wikidata Query Service | none (the query quota is shared) | `wikidata_index`, `wikidata_search`, `wikidata_entity`, `wikidata_sparql` | none |
 | `/perseus/mcp` | the Perseus Digital Library through the Scaife Viewer's JSON pages | none | `perseus_index`, `perseus_library`, `perseus_passage`, `perseus_search` | none |
 
-**Project trackers**
+**Project trackers and mailing lists**
 
 | Path | Upstream | Key | Tools | Skills |
 |---|---|---|---|---|
 | `/clickup/mcp` | ClickUp, as the person | **required** (ClickUp personal API token) | `clickup_index`, `clickup_whoami`, `clickup_tasks_search` (the whole workspace in one call: by assignee, status, space, list or tag), `clickup_workspace`, `clickup_tasks`, `clickup_task`, `clickup_list_fields` (a list's custom fields with a drop-down's options); with `AI4RA_MCP_CLICKUP_WRITES=1` also `clickup_task_create`, `clickup_task_update`, `clickup_task_comment`, `clickup_task_attach`, `clickup_task_field_set` (off by default; the compose file and the systemd units turn them on, #60) | none yet (the skill that files a piece of mail into a project goes here; `feature-prd-interview` on `uidaho` writes through these tools) |
+| `/groupsio/mcp` | Groups.io, as the person, read only | **required** (Groups.io API key) | `groupsio_index`, `groupsio_groups`, `groupsio_search`, `groupsio_topics`, `groupsio_topic`, `groupsio_message`, `groupsio_wiki`, `groupsio_files`, `groupsio_events` | none |
 
 | `/github/mcp` | none: GitHub's own remote MCP server holds the tools | none (the key is GitHub's server's) | `github_guide` | `code-change` (a described change as a pull request on an agent branch), `actions-check` (one look at the Actions runs); both name GitHub's tools in `requires` |
 
@@ -338,7 +339,7 @@ instead.
 
 ## Keys
 
-Thirteen servers talk to an upstream that wants a key, and one more wants a
+Fourteen servers talk to an upstream that wants a key, and one more wants a
 shared secret. **The key is the person's own**, sent by their client as
 `Authorization: Bearer <key>` on each MCP request, and it is used for that
 request only: held in a request-scoped variable, never logged, never stored.
@@ -361,6 +362,7 @@ deployment holds no secrets at all.
 | `pubmed` | optional | The settings page of an NCBI account, https://account.ncbi.nlm.nih.gov/settings/ (free) | 3 requests a second without one, shared; 10 with one | `api_key` query parameter |
 | `openalex` | optional | https://openalex.org/settings/api (free) | OpenAlex meters by a daily budget rather than a rate (since February 2026): $0.10 a day shared by everyone on the server's network address without one, $1 a day of the person's own with one; a list call costs $0.0001, a text search $0.001, one record by id nothing | `api_key` query parameter |
 | `clickup` | required | ClickUp: click your avatar, Settings, Apps, Generate API Token (starts with `pk_`). It acts as you in every workspace you belong to, so a task it creates is created by you | 100 requests a minute per token | Raw in the `Authorization` header, the way ClickUp wants it (the server takes the bearer the client sent and re-sends it that way) |
+| `groupsio` | required | https://groups.io/settings/apikeys. It acts as you in every group you belong to, and shows what you may see there | Not published; a 429 is reported, not retried | `Authorization: Bearer` header |
 | `lakehouse` | required | The shared secret issued with the lakehouse client id (today `mr-365`) by Research Computing and Data Services; or another client's id, a colon and its secret (`other-client:its-secret`) to run as that client. It is one client's secret, not a personal key, so its limits (100 requests a minute, 1,000 an hour) are shared by everyone who uses it | per client | Exchanged at Marina's `/auth/token` for an OAuth bearer, kept in memory until it expires |
 
 One api.data.gov key works for `fac`, `regulations`, `perdiem`, `govinfo`,
@@ -1831,6 +1833,38 @@ interface, so it is the upstream until that changes. Offline tests run on
 three groups of the root, Plato's works, the Republic and its two versions,
 Republic 1.327a in Greek and English, a missing reference and a search
 captured 2026-10-19 in `tests/fixtures/perseus/`.
+
+### groupsio
+
+The Groups.io lists a person belongs to, through https://groups.io/api/v1/
+with their own key. The key is required even for a public group's archive
+(checked 2026-11-06: `unauthorized_error` without one), and what a call returns
+is what that person may see in that group. `groupsio_groups` gives the group
+names the other tools take. `groupsio_search` finds a group's messages by words,
+hashtag, poster and dates and returns each match's summary and link;
+`groupsio_topics` lists threads, `groupsio_topic` reads one in order and
+`groupsio_message` reads one message, with HTML reduced to text and each link's
+address kept beside its words, the quoted
+reply and the raw MIME left out, and attachment links kept. `groupsio_wiki`
+reads a page, searches or lists; `groupsio_files` searches or lists a folder,
+with download links but not the files' contents; `groupsio_events` reads a
+group's calendar from a date, or one event. Links are built from the
+`group_url` that `getgroup` returns, since an enterprise group lives on its own
+domain and `groups.io/g/<name>/<page>` can lose the page on the way there; it is
+cached a day per key. A next-page token is a string, since Groups.io's run past
+what a JavaScript client's JSON holds exactly.
+
+Read only, with no switch: a post reaches everyone on a list, so posting,
+moderating, RSVPs and votes are not offered. There is no member tool, and the
+email addresses and phone numbers in the upstream's subscription, file and event
+fields are left out; what a person typed into a message stays as written.
+Groups.io calls this API alpha
+and may break it without a new version. Search's `collapse_topics` parameter
+is not offered: it changed nothing when tried. Run against the live API on
+2026-11-06 with a key, on one enterprise group: groups, search, topics, threads,
+messages, events and paging, and a message's link opened in a browser signed in.
+That group's wiki and files are empty, so reading a wiki page and the file
+fields are tested offline only.
 
 ### github
 
