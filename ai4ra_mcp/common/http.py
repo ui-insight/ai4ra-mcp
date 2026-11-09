@@ -231,6 +231,14 @@ async def get_text(url: str, params: Params = None, headers: dict | None = None)
     return resp.text
 
 
+async def get_bytes(url: str, params: Params = None, headers: dict | None = None) -> bytes:
+    """GET a binary body (a PDF) with the shared User-Agent and the same status handling as get_json."""
+    async with httpx.AsyncClient(timeout=TIMEOUT_S, headers={**HEADERS, **(headers or {})}, follow_redirects=True) as client:
+        resp = await client.get(url, params=params)
+    _check(resp, url)
+    return resp.content
+
+
 def _check(resp: httpx.Response, url: str) -> None:
     if resp.status_code == 429:
         raise ValueError(f"rate limit exceeded at {resp.request.url.host}; wait before retrying")

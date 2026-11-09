@@ -75,7 +75,7 @@ works without one and a key raises its quota.
 | `/nihdates/mcp` | grants.nih.gov's standard due dates and salary cap pages | none | `nihdates_index`, `nihdates_due`, `nihdates_cycles`, `nihdates_salary_cap` | none |
 | `/usda/mcp` | the USDA General Terms and Conditions, the USDA deviations and APHIS's award terms: official PDFs from usda.gov and aphis.usda.gov, saved here and split by section | none | `usda_index`, `usda_terms_documents`, `usda_terms_contents`, `usda_terms_section`, `usda_terms_search`, `usda_terms_for_award` | none |
 | `/omb/mcp` | OMB's memoranda page on whitehouse.gov and the archived prior-administration page | none | `omb_index`, `omb_memoranda`, `omb_memorandum` | none |
-| `/ncura/mcp` | NCURA's public event listing (cvweb) behind its calendar page | none | `ncura_index`, `ncura_events`, `ncura_event` | none |
+| `/ncura/mcp` | NCURA's public event listing (cvweb) behind its calendar page; the Regions VI & VII meeting program PDF linked from Region VI's meeting page | none | `ncura_index`, `ncura_events`, `ncura_event`, `ncura_program` | none |
 | `/nih/mcp` | NIH RePORTER | none | `nih_guide`, `nih_index`, `nih_projects_search`, `nih_project`, `nih_publications` | `funding-history` |
 | `/nsf/mcp` | NSF Award Search | none | `nsf_index`, `nsf_awards_search`, `nsf_award`, `nsf_award_outcomes` | none |
 | `/usaspending/mcp` | USAspending | none | `usaspending_index`, `usaspending_recipients`, `usaspending_recipient`, `usaspending_awards_search`, `usaspending_subawards_search`, `usaspending_award` | none |
@@ -1177,6 +1177,26 @@ early and regular), the description, the venue and address and the hotel
 link. The code is NCURA's handle and is read from `ncura_events`, never
 guessed. Offline tests run on the two lists and two events (a regional
 meeting and a virtual workshop) captured in `tests/fixtures/ncura/`.
+
+`ncura_program(query, day, details)` is the program of the 2026 Regions VI &
+VII Regional Meeting (Denver, November 8-11) as Markdown. The program is not on
+ncura.edu: Region VI's meeting page, `https://www.ncuraregionvi.org/rm2026`,
+links it as a PDF under its 'Conference Program' button, and the address
+changes with every upload, so the tool reads the page, follows the button and
+parses the PDF, cached an hour. The PDF is an Excel sheet printed to 17 pages.
+pypdf's own text merges neighbouring cells, so each text operator is read with
+its position and decoded through its font, and runs are placed by the column
+they start in. A row begins at its date cell; a day heading sits in the track
+column. A line ending in a space or hyphen is a wrap, any other a break. A row
+whose name is printed in the description column (Dinner Groups) takes it as its
+title. A date cell that disagrees with its heading ('Uniform Guidance
+Reconstructed', 9-Nov under Tuesday) stays under the heading and is shown as
+printed. The result is a schedule table per day (time, session, track, type,
+level, room), or with `details` each session's presenters and description,
+narrowed by words of any field and by words of the day heading. On 2026-11-09
+the program had 102 rows. `get_bytes` beside `get_text` in `common/http.py`
+fetches the PDF. Offline tests run on the program PDF and on the meeting page
+cut to its button.
 
 ### nih
 

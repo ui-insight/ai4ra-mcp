@@ -35,7 +35,7 @@ EXPECTED_TOOLS = {
     "nihdates": {"nihdates_index", "nihdates_due", "nihdates_cycles", "nihdates_salary_cap"},
     "usda": {"usda_index", "usda_terms_documents", "usda_terms_contents", "usda_terms_section", "usda_terms_search", "usda_terms_for_award"},
     "omb": {"omb_index", "omb_memoranda", "omb_memorandum"},
-    "ncura": {"ncura_index", "ncura_events", "ncura_event"},
+    "ncura": {"ncura_index", "ncura_events", "ncura_event", "ncura_program"},
     "lakehouse": {"lakehouse_guide", "lakehouse_index", "lakehouse_streams", "lakehouse_schema", "lakehouse_query", "lakehouse_files", "lakehouse_file", "lakehouse_sql_catalog", "lakehouse_sql"},
     "general": {"general_guide", "fetch_document", "web_search"},
     "github": {"github_guide"},   # the two GitHub skills; their tools are GitHub's own server's
